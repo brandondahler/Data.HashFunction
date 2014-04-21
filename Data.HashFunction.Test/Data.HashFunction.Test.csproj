@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FFCE0E36-1B66-4C8D-803E-A28754A7D4E4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System.Data.HashFunction.Test</RootNamespace>
+    <AssemblyName>System.Data.HashFunction.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="xunit">
+      <HintPath>..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Coverage\CityHashTests.cs" />
+    <Compile Include="Coverage\HashAlgorithmWrapperTests.cs" />
+    <Compile Include="Coverage\HashFunctionBaseTests.cs" />
+    <Compile Include="Coverage\IHashFunctionTests.cs" />
+    <Compile Include="HashAlgorithmWrapperTests.cs" />
+    <Compile Include="IHashFunctionTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UtilityExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Data.HashFunction.BaseHashFunction\Data.HashFunction.HashFunctionBase.csproj">
+      <Project>{d8268071-2147-4364-9803-ed0921246899}</Project>
+      <Name>Data.HashFunction.HashFunctionBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Data.HashFunction.CityHash\Data.HashFunction.CityHash.csproj">
+      <Project>{0026aa91-4a24-4419-b96d-a808ee65706e}</Project>
+      <Name>Data.HashFunction.CityHash</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Data.HashFunction.Jenkins\Data.HashFunction.Jenkins.csproj">
+      <Project>{43f16b99-6f01-4fe8-b030-897cbae5a8df}</Project>
+      <Name>Data.HashFunction.Jenkins</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Data.HashFunction.MurmurHash\Data.HashFunction.MurmurHash.csproj">
+      <Project>{7b21e479-6d8c-4b57-a2e0-a030825cb382}</Project>
+      <Name>Data.HashFunction.MurmurHash</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Data.HashFunction.SpookyHash\Data.HashFunction.SpookyHash.csproj">
+      <Project>{df59cc7d-d731-4a78-b90e-adcdc25ef48a}</Project>
+      <Name>Data.HashFunction.SpookyHash</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
