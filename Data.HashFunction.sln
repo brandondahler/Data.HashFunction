@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.HashFunctionBase", "Data.HashFunction.BaseHashFunction\Data.HashFunction.HashFunctionBase.csproj", "{D8268071-2147-4364-9803-ED0921246899}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.HashFunctionBase", "BaseHashFunction\Data.HashFunction.HashFunctionBase.csproj", "{D8268071-2147-4364-9803-ED0921246899}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Test", "Data.HashFunction.Test\Data.HashFunction.Test.csproj", "{FFCE0E36-1B66-4C8D-803E-A28754A7D4E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Test", "Test\Data.HashFunction.Test.csproj", "{FFCE0E36-1B66-4C8D-803E-A28754A7D4E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Jenkins", "Data.HashFunction.Jenkins\Data.HashFunction.Jenkins.csproj", "{43F16B99-6F01-4FE8-B030-897CBAE5A8DF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Jenkins", "Jenkins\Data.HashFunction.Jenkins.csproj", "{43F16B99-6F01-4FE8-B030-897CBAE5A8DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.SpookyHash", "Data.HashFunction.SpookyHash\Data.HashFunction.SpookyHash.csproj", "{DF59CC7D-D731-4A78-B90E-ADCDC25EF48A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.SpookyHash", "SpookyHash\Data.HashFunction.SpookyHash.csproj", "{DF59CC7D-D731-4A78-B90E-ADCDC25EF48A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.MurmurHash", "Data.HashFunction.MurmurHash\Data.HashFunction.MurmurHash.csproj", "{7B21E479-6D8C-4B57-A2E0-A030825CB382}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.MurmurHash", "MurmurHash\Data.HashFunction.MurmurHash.csproj", "{7B21E479-6D8C-4B57-A2E0-A030825CB382}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.CityHash", "Data.HashFunction.CityHash\Data.HashFunction.CityHash.csproj", "{0026AA91-4A24-4419-B96D-A808EE65706E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.CityHash", "CityHash\Data.HashFunction.CityHash.csproj", "{0026AA91-4A24-4419-B96D-A808EE65706E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D0A9A68F-2401-42E4-A6E7-D9FF9F080197}"
 	ProjectSection(SolutionItems) = preProject
