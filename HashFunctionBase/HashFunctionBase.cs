@@ -10,7 +10,7 @@ namespace System.Data.HashFunction
     public abstract class HashFunctionBase 
         : IHashFunction
     {
-        public int HashSize 
+        public virtual int HashSize 
         { 
             get { return _HashSize; }
             set

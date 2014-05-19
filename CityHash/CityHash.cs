@@ -377,9 +377,6 @@ namespace System.Data.HashFunction
                 UInt64 c = Rotate(b, 37) * mul + a;
                 UInt64 d = (Rotate(a, 25) + b) * mul;
 
-                Console.WriteLine("{0} {1} {2} {3}",
-                    a, b, c, d);
-
                 return HashLen16(c, d, mul);
             }
 
@@ -506,9 +503,6 @@ namespace System.Data.HashFunction
 
                 for (int i = 0; i < (data.Length - 1) / 16; ++i)
                 {
-
-                    Console.WriteLine("{0} {1} {2} {3}", a, b, c, d);
-
                     a ^= Mix(BitConverter.ToUInt64(data, i * 16) * k1) * k1;
                     a *= k1;
                     b ^= a;

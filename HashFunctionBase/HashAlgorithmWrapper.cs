@@ -60,7 +60,7 @@ namespace System.Data.HashFunction
         public byte[] ComputeHash(byte[] data)
         {
             lock (SyncRoot)
-                return _hashAlgorithm.ComputeHash(data);
+                return _hashAlgorithm.ComputeHash(data.ToArray());
         }
 
         public byte[] ComputeHash(Stream inputStream)
@@ -122,7 +122,7 @@ namespace System.Data.HashFunction
         public byte[] ComputeHash(byte[] data)
         {
             lock (SyncRoot)
-                return _hashAlgorithm.ComputeHash(data);
+                return _hashAlgorithm.ComputeHash(data.ToArray());
         }
 
         public byte[] ComputeHash(Stream inputStream)

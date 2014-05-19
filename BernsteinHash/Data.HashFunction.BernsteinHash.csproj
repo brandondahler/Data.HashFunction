@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D8268071-2147-4364-9803-ED0921246899}</ProjectGuid>
+    <ProjectGuid>{CAD4A025-D79C-4FD5-B72C-B29F0B87880D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>System.Data.HashFunction</RootNamespace>
-    <AssemblyName>System.Data.HashFunctions.HashFunctionBase</AssemblyName>
+    <AssemblyName>System.Data.HashFunction.BernsteinHash</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -29,6 +29,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\Data.HashFunction.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -39,13 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\SolutionInfo.cs">
-      <Link>Properties\SolutionInfo.cs</Link>
-    </Compile>
-    <Compile Include="HashAlgorithmWrapper.cs" />
-    <Compile Include="HashFunctionBase.cs" />
-    <Compile Include="IHashFunction.cs" />
+    <Compile Include="ModifiedBernsteinHash.cs" />
+    <Compile Include="BernsteinHash.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HashFunctionBase\Data.HashFunction.HashFunctionBase.csproj">
+      <Project>{d8268071-2147-4364-9803-ed0921246899}</Project>
+      <Name>Data.HashFunction.HashFunctionBase</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

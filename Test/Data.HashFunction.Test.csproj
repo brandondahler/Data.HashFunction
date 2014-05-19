@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MoreLinq">
+      <HintPath>..\packages\morelinq.1.0.16006\lib\net35\MoreLinq.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -58,25 +61,49 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Data.HashFunction.BaseHashFunction\Data.HashFunction.HashFunctionBase.csproj">
-      <Project>{d8268071-2147-4364-9803-ed0921246899}</Project>
-      <Name>Data.HashFunction.HashFunctionBase</Name>
+    <ProjectReference Include="..\BernsteinHash\Data.HashFunction.BernsteinHash.csproj">
+      <Project>{cad4a025-d79c-4fd5-b72c-b29f0b87880d}</Project>
+      <Name>Data.HashFunction.BernsteinHash</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Data.HashFunction.CityHash\Data.HashFunction.CityHash.csproj">
+    <ProjectReference Include="..\Buzhash\Data.HashFunction.BuzHash.csproj">
+      <Project>{a1f9be6a-f321-4cc5-be2c-40ff2c5222fb}</Project>
+      <Name>Data.HashFunction.BuzHash</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CityHash\Data.HashFunction.CityHash.csproj">
       <Project>{0026aa91-4a24-4419-b96d-a808ee65706e}</Project>
       <Name>Data.HashFunction.CityHash</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Data.HashFunction.Jenkins\Data.HashFunction.Jenkins.csproj">
+    <ProjectReference Include="..\ELF\Data.HashFunction.ELF.csproj">
+      <Project>{5644704b-272e-41ee-9a70-fed7c40205d1}</Project>
+      <Name>Data.HashFunction.ELF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FNV\Data.HashFunction.FNV.csproj">
+      <Project>{4586f5c8-93b9-4dc6-894a-1120b8dee175}</Project>
+      <Name>Data.HashFunction.FNV</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HashFunctionBase\Data.HashFunction.HashFunctionBase.csproj">
+      <Project>{d8268071-2147-4364-9803-ed0921246899}</Project>
+      <Name>Data.HashFunction.HashFunctionBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jenkins\Data.HashFunction.Jenkins.csproj">
       <Project>{43f16b99-6f01-4fe8-b030-897cbae5a8df}</Project>
       <Name>Data.HashFunction.Jenkins</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Data.HashFunction.MurmurHash\Data.HashFunction.MurmurHash.csproj">
+    <ProjectReference Include="..\MurmurHash\Data.HashFunction.MurmurHash.csproj">
       <Project>{7b21e479-6d8c-4b57-a2e0-a030825cb382}</Project>
       <Name>Data.HashFunction.MurmurHash</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Data.HashFunction.SpookyHash\Data.HashFunction.SpookyHash.csproj">
+    <ProjectReference Include="..\Pearson\Data.HashFunction.Pearson.csproj">
+      <Project>{6828adda-b5c8-49f4-a40f-c60b0f309165}</Project>
+      <Name>Data.HashFunction.Pearson</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpookyHash\Data.HashFunction.SpookyHash.csproj">
       <Project>{df59cc7d-d731-4a78-b90e-adcdc25ef48a}</Project>
       <Name>Data.HashFunction.SpookyHash</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xxHash\Data.HashFunction.xxHash.csproj">
+      <Project>{c22e1f37-5d18-4e15-9fc9-b3b043468680}</Project>
+      <Name>Data.HashFunction.xxHash</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

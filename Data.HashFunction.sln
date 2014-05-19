@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.HashFunctionBase", "BaseHashFunction\Data.HashFunction.HashFunctionBase.csproj", "{D8268071-2147-4364-9803-ED0921246899}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Test", "Test\Data.HashFunction.Test.csproj", "{FFCE0E36-1B66-4C8D-803E-A28754A7D4E4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Jenkins", "Jenkins\Data.HashFunction.Jenkins.csproj", "{43F16B99-6F01-4FE8-B030-897CBAE5A8DF}"
@@ -17,8 +15,25 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.CityHash"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D0A9A68F-2401-42E4-A6E7-D9FF9F080197}"
 	ProjectSection(SolutionItems) = preProject
+		Data.HashFunction.pfx = Data.HashFunction.pfx
+		Data.HashFunction.Production.pfx = Data.HashFunction.Production.pfx
+		Readme_PFX.txt = Readme_PFX.txt
 		SolutionInfo.cs = SolutionInfo.cs
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Pearson", "Pearson\Data.HashFunction.Pearson.csproj", "{6828ADDA-B5C8-49F4-A40F-C60B0F309165}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.FNV", "FNV\Data.HashFunction.FNV.csproj", "{4586F5C8-93B9-4DC6-894A-1120B8DEE175}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.BuzHash", "Buzhash\Data.HashFunction.BuzHash.csproj", "{A1F9BE6A-F321-4CC5-BE2C-40FF2C5222FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.BernsteinHash", "BernsteinHash\Data.HashFunction.BernsteinHash.csproj", "{CAD4A025-D79C-4FD5-B72C-B29F0B87880D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.ELF", "ELF\Data.HashFunction.ELF.csproj", "{5644704B-272E-41EE-9A70-FED7C40205D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.xxHash", "xxHash\Data.HashFunction.xxHash.csproj", "{C22E1F37-5D18-4E15-9FC9-B3B043468680}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.HashFunctionBase", "HashFunctionBase\Data.HashFunction.HashFunctionBase.csproj", "{D8268071-2147-4364-9803-ED0921246899}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,10 +41,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D8268071-2147-4364-9803-ED0921246899}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D8268071-2147-4364-9803-ED0921246899}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D8268071-2147-4364-9803-ED0921246899}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D8268071-2147-4364-9803-ED0921246899}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FFCE0E36-1B66-4C8D-803E-A28754A7D4E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FFCE0E36-1B66-4C8D-803E-A28754A7D4E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFCE0E36-1B66-4C8D-803E-A28754A7D4E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -50,6 +61,34 @@ Global
 		{0026AA91-4A24-4419-B96D-A808EE65706E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0026AA91-4A24-4419-B96D-A808EE65706E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0026AA91-4A24-4419-B96D-A808EE65706E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6828ADDA-B5C8-49F4-A40F-C60B0F309165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6828ADDA-B5C8-49F4-A40F-C60B0F309165}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6828ADDA-B5C8-49F4-A40F-C60B0F309165}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6828ADDA-B5C8-49F4-A40F-C60B0F309165}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4586F5C8-93B9-4DC6-894A-1120B8DEE175}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4586F5C8-93B9-4DC6-894A-1120B8DEE175}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4586F5C8-93B9-4DC6-894A-1120B8DEE175}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4586F5C8-93B9-4DC6-894A-1120B8DEE175}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1F9BE6A-F321-4CC5-BE2C-40FF2C5222FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1F9BE6A-F321-4CC5-BE2C-40FF2C5222FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1F9BE6A-F321-4CC5-BE2C-40FF2C5222FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1F9BE6A-F321-4CC5-BE2C-40FF2C5222FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAD4A025-D79C-4FD5-B72C-B29F0B87880D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAD4A025-D79C-4FD5-B72C-B29F0B87880D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAD4A025-D79C-4FD5-B72C-B29F0B87880D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAD4A025-D79C-4FD5-B72C-B29F0B87880D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5644704B-272E-41EE-9A70-FED7C40205D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5644704B-272E-41EE-9A70-FED7C40205D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5644704B-272E-41EE-9A70-FED7C40205D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5644704B-272E-41EE-9A70-FED7C40205D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C22E1F37-5D18-4E15-9FC9-B3B043468680}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C22E1F37-5D18-4E15-9FC9-B3B043468680}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C22E1F37-5D18-4E15-9FC9-B3B043468680}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C22E1F37-5D18-4E15-9FC9-B3B043468680}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8268071-2147-4364-9803-ED0921246899}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8268071-2147-4364-9803-ED0921246899}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8268071-2147-4364-9803-ED0921246899}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8268071-2147-4364-9803-ED0921246899}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
