@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.UnitTests.Test
+namespace System.Data.HashFunction.Test.Test
 {
     public class UtilityExtensionTests
     {

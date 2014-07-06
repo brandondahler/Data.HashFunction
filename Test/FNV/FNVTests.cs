@@ -9,9 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.UnitTests
+namespace System.Data.HashFunction.Test.FNV
 {
-    public class FNVTests
+    public class FNVBaseTests
     {
         [Fact]
         public void FNVBase_Constructor_InvalidDefaultHashSize_Throws()

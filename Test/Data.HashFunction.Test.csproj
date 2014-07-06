@@ -60,22 +60,35 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Core\HashFunctionBaseTests.cs" />
+    <Compile Include="Core\Utilities\IntegerManipulation\ToBytesExtensionsTests.cs" />
+    <Compile Include="Core\Utilities\IntegerManipulation\ReflectBitsExtensionsTests.cs" />
     <Compile Include="Core\Utilities\IntegerManipulation\ReverseByteOrderExtensionsTests.cs" />
     <Compile Include="Core\Utilities\IntegerManipulation\RotateLeftExtensionsTests.cs" />
     <Compile Include="Core\Utilities\IntegerManipulation\RotateRightExtensionsTests.cs" />
     <Compile Include="Core\Utilities\StreamExtensionsTests.cs" />
     <Compile Include="Core\Utilities\UInt32ExtensionsTests.cs" />
     <Compile Include="Core\Utilities\BigIntegerExtensionsTests.cs" />
+    <Compile Include="IHashFunctionTests_CRC.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IHashFunctionTests_CRC.tt</DependentUpon>
+    </Compile>
     <Compile Include="Mocks\HashFunctionBaseImpl.cs" />
-    <Compile Include="UnitTests\FNVTests.cs" />
+    <Compile Include="CRC\CRCTests.cs" />
+    <Compile Include="CRC\CRCSettingsTests.cs" />
+    <Compile Include="FNV\FNVTests.cs" />
     <Compile Include="Core\Utilities\IntegerManipulation\ExtendedMultiplyExtensionsTests.cs" />
-    <Compile Include="UnitTests\Test\UtilityExtensionTests.cs" />
+    <Compile Include="Test\UtilityExtensionTests.cs" />
     <Compile Include="HashAlgorithmWrapperTests.cs" />
     <Compile Include="IHashFunctionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UtilityExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="IHashFunctionTests_CRC.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>IHashFunctionTests_CRC.cs</LastGenOutput>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +107,10 @@
     <ProjectReference Include="..\Core\Data.HashFunction.Core.csproj">
       <Project>{d8268071-2147-4364-9803-ed0921246899}</Project>
       <Name>Data.HashFunction.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Crc\Data.HashFunction.Crc.csproj">
+      <Project>{fc9c9416-a84d-4087-8f54-065dbc3d4c23}</Project>
+      <Name>Data.HashFunction.Crc</Name>
     </ProjectReference>
     <ProjectReference Include="..\ELF64\Data.HashFunction.ELF64.csproj">
       <Project>{5644704b-272e-41ee-9a70-fed7c40205d1}</Project>
@@ -125,6 +142,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
