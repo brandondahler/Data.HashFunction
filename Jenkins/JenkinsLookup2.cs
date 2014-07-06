@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -65,7 +66,12 @@ namespace System.Data.HashFunction
 
                 case  3: a += (UInt32) data[remainderStartIndex + 2] << 16; goto case  2;
                 case  2: a += (UInt32) data[remainderStartIndex + 1] <<  8; goto case  1;
-                case  1: a += (UInt32) data[remainderStartIndex];         break;
+                case  1: 
+                    a += (UInt32) data[remainderStartIndex];         
+                    break;
+
+                case 0:
+                    break;
             }
 
             Mix(ref a, ref b, ref c);

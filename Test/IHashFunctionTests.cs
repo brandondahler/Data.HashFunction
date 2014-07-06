@@ -425,6 +425,7 @@ namespace System.Data.HashFunction.Test
             get
             {
                 return new[] {
+                    new KnownValue(32, TestConstants.Empty,  "0dd149bd"),
                     new KnownValue(32, TestConstants.FooBar, "02fa3f9d"),
 
                     new KnownValue(32, TestConstants.LoremIpsum.Take(15), "7e78390c"),

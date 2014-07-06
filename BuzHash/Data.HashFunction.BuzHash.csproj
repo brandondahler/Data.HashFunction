@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
     <Compile Include="BuzHashBase.cs" />
     <Compile Include="DefaultBuzHash.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -54,6 +57,11 @@
       <Project>{d8268071-2147-4364-9803-ed0921246899}</Project>
       <Name>Data.HashFunction.HashFunctionBase</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Data.HashFunction.pfx">
+      <Link>Properties\Data.HashFunction.pfx</Link>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
