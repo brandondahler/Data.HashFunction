@@ -23,6 +23,9 @@ The following hash functions have been implemented from the most reliable refere
   * BuzHashBase - Abstract implementation, there is no authoritative implementation
   * DefaultBuzHash - Concrete implementation, uses 256 random 64-bit integers
 * [CityHash](https://code.google.com/p/cityhash/)
+* [CRC](http://en.wikipedia.org/wiki/Cyclic_redundancy_check)
+  * CRC - Generalized implementation to allow any CRC parameters between 1 and 64 bits.
+  * CRCStandards - 71 implementations on top of CRC that use the parameters defined by their respective standard.  Standards and their parameters provided by [CRC RevEng's catalogue](http://reveng.sourceforge.net/crc-catalogue/).
 * [ELF64](http://downloads.openwatcom.org/ftp/devel/docs/elf-64-gen.pdf)
 * [FNV](http://www.isthe.com/chongo/tech/comp/fnv/index.html)
   * FNV1Base - Abstract base of the FNV-1 algorithms

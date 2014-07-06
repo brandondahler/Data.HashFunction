@@ -1,0 +1,25 @@
+﻿<#@ assembly name="System.Web.Extensions" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Web.Script.Serialization" #>
+<#+
+    public CRCStandard[] ReadDefinedStandards(string fileLocation)
+    {
+        var jsonSerializer = new JavaScriptSerializer();
+     
+        using (var fs = File.OpenRead(Path.ChangeExtension(fileLocation, "json")))
+        using (var sr = new StreamReader(fs))
+            return jsonSerializer.Deserialize<CRCStandard[]>(sr.ReadToEnd());
+    }
+
+    public struct CRCStandard
+    {
+        public string Name { get; set; }
+        public int    Bits { get; set; }
+        public string Polynomial { get; set; }
+        public string InitialValue { get; set; }
+        public bool   ReflectIn { get; set; }
+        public bool   ReflectOut { get; set; }
+        public string XOrOut { get; set; }
+        public string Check { get; set; }
+    }
+#>

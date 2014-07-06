@@ -2,6 +2,7 @@
 using MoreLinq;
 using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.Utilities.IntegerManipulation;
 using System.Data.HashFunction.Test.Mocks;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -11,6 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using System.Reflection;
 
 namespace System.Data.HashFunction.Test
 {
@@ -58,7 +60,6 @@ namespace System.Data.HashFunction.Test
     public class IHashFunctionTests_Buzhash
         : IHashFunctionTests<DefaultBuzHash>
     {
-        // TODO: Calculate known values
         protected override IEnumerable<KnownValue> KnownValues
         {
             get
@@ -247,6 +248,14 @@ namespace System.Data.HashFunction.Test
         }
     }
 
+    #endregion
+
+    #region Data.HashFunction.CRC
+
+
+
+    // Each standard is tested via IHashFunctionTests_CRC.tt
+     
     #endregion
 
     #region Data.HashFunction.ELF
@@ -1615,13 +1624,49 @@ namespace System.Data.HashFunction.Test
         {
             public int HashSize;
             public byte[] TestValue;
-            public string HashHex;
+            public byte[] ExpectedValue;
 
-            public KnownValue(int size, IEnumerable<byte> value, string hash)
+            public KnownValue(int size, string utf8Value, string expectedValue)
+            {
+                HashSize = size;
+                TestValue = utf8Value.ToBytes();
+                ExpectedValue = expectedValue.HexToBytes();
+            }
+
+            public KnownValue(int size, string utf8Value, UInt32 expectedValue)
+            {
+                HashSize = size;
+                TestValue = utf8Value.ToBytes();
+                ExpectedValue = expectedValue.ToBytes(size);
+            }
+
+            public KnownValue(int size, string utf8Value, UInt64 expectedValue)
+            {
+                HashSize = size;
+                TestValue = utf8Value.ToBytes();
+                ExpectedValue = expectedValue.ToBytes(size);
+            }
+
+
+            public KnownValue(int size, IEnumerable<byte> value, string expectedValue)
             {
                 HashSize = size;
                 TestValue = value.ToArray();
-                HashHex = hash;
+                ExpectedValue = expectedValue.HexToBytes();
+            }
+
+            public KnownValue(int size, IEnumerable<byte> value, UInt32 expectedValue)
+            {
+                HashSize = size;
+                TestValue = value.ToArray();
+                ExpectedValue = expectedValue.ToBytes(size);
+            }
+
+            public KnownValue(int size, IEnumerable<byte> value, UInt64 expectedValue)
+            {
+                HashSize = size;
+                TestValue = value.ToArray();
+                ExpectedValue = expectedValue.ToBytes(size);
             }
         }
 
@@ -1668,7 +1713,7 @@ namespace System.Data.HashFunction.Test
 
                 var hashResults = hf.ComputeHash(knownValue.TestValue);
 
-                Assert.Equal(knownValue.HashHex.HexToBytes(), hashResults);
+                Assert.Equal(knownValue.ExpectedValue, hashResults);
             }
         }
 
@@ -1685,7 +1730,7 @@ namespace System.Data.HashFunction.Test
                 {
                     var hashResults = hf.ComputeHash(ms);
 
-                    Assert.Equal(knownValue.HashHex.HexToBytes(), hashResults);
+                    Assert.Equal(knownValue.ExpectedValue, hashResults);
                 }
             }
         }
@@ -1712,7 +1757,7 @@ namespace System.Data.HashFunction.Test
                 {
                     var hashResults = hf.ComputeHash(ms);
 
-                    Assert.Equal(knownValue.HashHex.HexToBytes(), hashResults);
+                    Assert.Equal(knownValue.ExpectedValue, hashResults);
                 }
             }
         }
@@ -1720,6 +1765,11 @@ namespace System.Data.HashFunction.Test
         [Fact]
         public void IHashFunction_ComputeHash_ByteArray_InvalidHashSize_Throws()
         {
+            // Ignore mocking sealed classes.
+            //   If this causes incomplete code coverage, you need to adapt the class as an internal one that can be tested.
+            if (typeof(IHashFunctionT).IsSealed) 
+                return;
+
             var hfMock = new Mock<IHashFunctionT>() { CallBase = true };
             hfMock.SetupGet(p => p.HashSize)
                 .Returns(-1);
