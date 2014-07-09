@@ -25,7 +25,10 @@ namespace System.Data.HashFunction
 
         public CityHash()
             : base(32)
-        { }
+        { 
+        
+        }
+
 
         public override byte[] ComputeHash(byte[] data)
         {
@@ -50,7 +53,7 @@ namespace System.Data.HashFunction
                     return resultArray;
 
                 default:
-                    throw new ArgumentOutOfRangeException("HashSize is set to an invalid value.");
+                    throw new ArgumentOutOfRangeException("HashSize");
             }
         }
 

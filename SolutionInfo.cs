@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyDescription("C# library to create a common interface to non-cryptographic hash functions and provide implementations of public hash functions.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Data.HashFunction Developers")]
 [assembly: AssemblyCopyright("Copyright 2014")]

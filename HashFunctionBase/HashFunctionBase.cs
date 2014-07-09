@@ -16,7 +16,7 @@ namespace System.Data.HashFunction
             set
             {
                 if (!ValidHashSizes.Contains(value))
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException("value");
 
                 _HashSize = value;
             }

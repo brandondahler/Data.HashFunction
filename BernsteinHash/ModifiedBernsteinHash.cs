@@ -18,10 +18,11 @@ namespace System.Data.HashFunction
             
         }
 
+
         public override byte[] ComputeHash(byte[] data)
         {
             if (HashSize != 32)
-                throw new ArgumentOutOfRangeException("HashSize is set to an invalid value.");
+                throw new ArgumentOutOfRangeException("HashSize");
 
 
             UInt32 h = 0;

@@ -12,6 +12,6 @@
     <description>$description$</description>
     <releaseNotes>Initial release.</releaseNotes>
     <copyright>Copyright 2014</copyright>
-    <tags>ELF hash function</tags>
+    <tags>ELF hash function elf64</tags>
   </metadata>
 </package>

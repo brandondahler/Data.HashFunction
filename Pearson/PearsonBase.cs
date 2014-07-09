@@ -37,6 +37,9 @@ namespace System.Data.HashFunction
 
         public override byte[] ComputeHash(byte[] data)
         {
+            if (HashSize < 8 || HashSize > 2040 || HashSize % 8 != 0)
+                throw new ArgumentOutOfRangeException("HashSize");
+
             var h = new byte[HashSize / 8];
 
             for (int x = 0; x < HashSize / 8; ++x)

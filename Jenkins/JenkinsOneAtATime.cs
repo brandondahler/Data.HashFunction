@@ -22,6 +22,9 @@ namespace System.Data.HashFunction
 
         public override byte[] ComputeHash(byte[] data)
         {
+            if (HashSize != 32)
+                throw new ArgumentOutOfRangeException("HashSize");
+
             UInt32 hash = 0;
 
             foreach (var dataByte in data)

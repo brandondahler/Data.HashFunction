@@ -1,4 +1,5 @@
-﻿using MoreLinq;
+﻿using Moq;
+using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,7 +26,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public abstract class IHashFunctionTests<IHashFunctionT>
-        where IHashFunctionT : IHashFunction, new()
+        where IHashFunctionT : class, IHashFunction, new()
     {
         protected class KnownValue
         {
@@ -47,19 +48,18 @@ namespace System.Data.HashFunction.Test
         private readonly int SpeedTestMaxSizes = 6;
         
         [Fact]
-        public void IHashFunction_Manipulate_HashSizes()
+        public void IHashFunction_HashSizes_Manipulate()
         {
             var hf = new IHashFunctionT();
 
             Assert.NotNull(hf.ValidHashSizes);
 
-            Assert.Equal(hf.ValidHashSizes.Take(10000), hf.ValidHashSizes.Take(10000).Distinct());
-
-
             var validHashSizes = hf.ValidHashSizes.Take(10000);
-
-            Assert.NotEqual(0, validHashSizes.Count());
-
+            
+            Assert.NotEmpty(validHashSizes);
+            Assert.Equal(validHashSizes, validHashSizes.Distinct());
+            
+            // Assume goes on infinitely, accepting any power of 2
             if (validHashSizes.Count() == 10000)
                 validHashSizes = Enumerable.Range(0, 31).Select(x => 1 << x).ToArray();
 
@@ -71,10 +71,13 @@ namespace System.Data.HashFunction.Test
 
                 Assert.Equal(hashSize, hf.HashSize);
             }
+
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                hf.HashSize = -1);
         }
 
         [Fact]
-        public void IHashFunction_Computes_KnownValues()
+        public void IHashFunction_ComputerHash_MatchesKnownValues()
         {
             var hf = new IHashFunctionT();
 
@@ -86,6 +89,19 @@ namespace System.Data.HashFunction.Test
 
                 Assert.Equal(knownValue.HashHex.HexToBytes(), hashResults);
             }
+        }
+
+        [Fact]
+        public void IHashFunctionTests_ComputeHash_InvalidHashSize_Throws()
+        {
+            var hfMock = new Mock<IHashFunctionT>() { CallBase = true };
+            hfMock.SetupGet(p => p.HashSize)
+                .Returns(-1);
+
+            var hf = hfMock.Object;
+
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                hf.ComputeHash(new byte[0]));
         }
 
         [Fact(Skip = "SpeedTest is for relative benchmarking only.")]
@@ -151,6 +167,22 @@ namespace System.Data.HashFunction.Test
         }
     }
 
+    public abstract class IHashFunctionTests_HashFunctionWrapper_NonGeneric<HashAlgorithmT>
+        : IHashFunctionTests<IHashFunctionTests_HashFunctionWrapper_NonGeneric<HashAlgorithmT>.Wrapper>
+        where HashAlgorithmT : HashAlgorithm, new()
+    {
+        public class Wrapper
+            : HashAlgorithmWrapper
+        {
+            public Wrapper()
+                : base(new HashAlgorithmT())
+            {
+
+            }
+        }
+
+
+    }
 
     #region Concrete Tests
 
@@ -159,12 +191,15 @@ namespace System.Data.HashFunction.Test
     public class IHashFunctionTests_BernsteinHash
         : IHashFunctionTests<BernsteinHash>
     {
-        // TODO: Calculate known values
         protected override IEnumerable<KnownValue> KnownValues
         {
             get
             {
-                return new KnownValue[0];
+                return new[] {
+                    new KnownValue(32, TestConstants.Empty,      "00000000"),
+                    new KnownValue(32, TestConstants.FooBar,     "f95b05f6"),
+                    new KnownValue(32, TestConstants.LoremIpsum, "48c2bd24"),
+                };
             }
         }
     }
@@ -172,12 +207,15 @@ namespace System.Data.HashFunction.Test
     public class IHashFunctionTests_ModifiedBernsteinHash
         : IHashFunctionTests<ModifiedBernsteinHash>
     {
-        // TODO: Calculate known values
         protected override IEnumerable<KnownValue> KnownValues
         {
             get
             {
-                return new KnownValue[0];
+                return new[] {
+                    new KnownValue(32, TestConstants.Empty,      "00000000"),
+                    new KnownValue(32, TestConstants.FooBar,     "97b330f0"),
+                    new KnownValue(32, TestConstants.LoremIpsum, "2aafcefe"),
+                };
             }
         }
     }
@@ -194,7 +232,115 @@ namespace System.Data.HashFunction.Test
         {
             get
             {
-                return new KnownValue[0];
+                return new KnownValue[] {
+                    new KnownValue(8, TestConstants.Empty, "d3"),
+                    new KnownValue(8, TestConstants.FooBar, "b2"),
+                    new KnownValue(8, TestConstants.LoremIpsum, "83"),
+
+                    new KnownValue(16, TestConstants.Empty, "d337"),
+                    new KnownValue(16, TestConstants.FooBar, "88d0"),
+                    new KnownValue(16, TestConstants.LoremIpsum, "4a28"),
+
+                    new KnownValue(32, TestConstants.Empty, "d33703fd"),
+                    new KnownValue(32, TestConstants.FooBar, "b6d0d9e3"),
+                    new KnownValue(32, TestConstants.LoremIpsum, "a7d6162f"),
+
+                    new KnownValue(64, TestConstants.Empty, "d33703fd6753d03c"),
+                    new KnownValue(64, TestConstants.FooBar, "9fd0d9e327aaebe8"),
+                    new KnownValue(64, TestConstants.LoremIpsum, "ddc80851bfd8d1fa"),
+                };
+            }
+        }
+    }
+
+    public class IHashFunctionTests_Buzhash_RightShiftDefaultBuzHash
+        : IHashFunctionTests<IHashFunctionTests_Buzhash_RightShiftDefaultBuzHash.RightShiftDefaultBuzHash>
+    {
+        public class RightShiftDefaultBuzHash
+            : DefaultBuzHash
+        {
+            public override CShiftDirection ShiftDirection { get { return CShiftDirection.Right; } }
+        }
+
+        // TODO: Calculate known values
+        protected override IEnumerable<KnownValue> KnownValues
+        {
+            get
+            {
+                return new KnownValue[] {
+                    new KnownValue(8, TestConstants.Empty, "d3"),
+                    new KnownValue(8, TestConstants.FooBar, "8b"),
+                    new KnownValue(8, TestConstants.LoremIpsum, "97"),
+
+                    new KnownValue(16, TestConstants.Empty, "d337"),
+                    new KnownValue(16, TestConstants.FooBar, "6be1"),
+                    new KnownValue(16, TestConstants.LoremIpsum, "6f07"),
+
+                    new KnownValue(32, TestConstants.Empty, "d33703fd"),
+                    new KnownValue(32, TestConstants.FooBar, "6bf1d7d2"),
+                    new KnownValue(32, TestConstants.LoremIpsum, "ab06d336"),
+
+                    new KnownValue(64, TestConstants.Empty, "d33703fd6753d03c"),
+                    new KnownValue(64, TestConstants.FooBar, "6bf1d7ca6ecd447f"),
+                    new KnownValue(64, TestConstants.LoremIpsum, "a39953cb48c026b8"),
+                };
+            }
+        }
+    }
+
+    public class IHashFunctionTests_Buzhash_DefaultInitializationBuzHash
+        : IHashFunctionTests<IHashFunctionTests_Buzhash_DefaultInitializationBuzHash.DefaultInitializationBuzHash>
+    {
+        public class DefaultInitializationBuzHash
+            : BuzHashBase
+        {
+            public override CShiftDirection ShiftDirection { get { return CShiftDirection.Left; } }
+
+            public override UInt64[] Rtab { get { return _Rtab; } }
+
+            private readonly UInt64[] _Rtab = new UInt64[256] { 
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            };
+        }
+
+        // TODO: Calculate known values
+        protected override IEnumerable<KnownValue> KnownValues
+        {
+            get
+            {
+                return new KnownValue[] {
+                    
+                    new KnownValue(8, TestConstants.Empty,      "00"),
+                    new KnownValue(8, TestConstants.FooBar,     "00"),
+                    new KnownValue(8, TestConstants.LoremIpsum, "00"),
+
+                    new KnownValue(16, TestConstants.Empty,      "0000"),
+                    new KnownValue(16, TestConstants.FooBar,     "0000"),
+                    new KnownValue(16, TestConstants.LoremIpsum, "0000"),
+
+                    new KnownValue(32, TestConstants.Empty,      "00000000"),
+                    new KnownValue(32, TestConstants.FooBar,     "00000000"),
+                    new KnownValue(32, TestConstants.LoremIpsum, "00000000"),
+
+                    new KnownValue(64, TestConstants.Empty,      "0000000000000000"),
+                    new KnownValue(64, TestConstants.FooBar,     "0000000000000000"),
+                    new KnownValue(64, TestConstants.LoremIpsum, "0000000000000000"),
+                };
             }
         }
     }
@@ -251,17 +397,20 @@ namespace System.Data.HashFunction.Test
 
     #endregion
 
-    #region Data.HashFunction.BernsteinHash
+    #region Data.HashFunction.ELF
 
     public class IHashFunctionTests_ELF64
         : IHashFunctionTests<ELF64>
     {
-        // TODO: Calculate known values
         protected override IEnumerable<KnownValue> KnownValues
         {
             get
             {
-                return new KnownValue[0];
+                return new[] {
+                    new KnownValue(32, TestConstants.Empty,      "00000000"),
+                    new KnownValue(32, TestConstants.FooBar,     "8258d606"),
+                    new KnownValue(32, TestConstants.LoremIpsum, "3ea5e009"),
+                };
             }
         }
     }
@@ -278,11 +427,17 @@ namespace System.Data.HashFunction.Test
             get 
             { 
                 return new[] {
-                    new KnownValue(32, TestConstants.Empty, "c59d1c81"),
-                    new KnownValue(64, TestConstants.Empty, "25232284e49cf2cb"),
+                    new KnownValue(32, TestConstants.Empty,      "c59d1c81"),
+                    new KnownValue(32, TestConstants.FooBar,     "62b2f031"),
+                    new KnownValue(32, TestConstants.LoremIpsum, "fb1efbe1"),
 
-                    new KnownValue(32, TestConstants.FooBar, "62b2f031"),
-                    new KnownValue(64, TestConstants.FooBar, "c2a9dda465870d34")
+                    new KnownValue(64, TestConstants.Empty,      "25232284e49cf2cb"),
+                    new KnownValue(64, TestConstants.FooBar,     "c2a9dda465870d34"),
+                    new KnownValue(64, TestConstants.LoremIpsum, "1b096d551070d3e1"),
+
+                    new KnownValue(128, TestConstants.Empty,      "8dc595627521b8624201bb072e27626c"),
+                    new KnownValue(128, TestConstants.FooBar,     "aa93c2d25383c56dbf643c9ceabf9678"),
+                    new KnownValue(128, TestConstants.LoremIpsum, "130c122234e097c352c819800a56ea75"),
                 }; 
             }
         }
@@ -297,10 +452,16 @@ namespace System.Data.HashFunction.Test
             {
                 return new[] {
                     new KnownValue(32, TestConstants.Empty, "c59d1c81"),
-                    new KnownValue(64, TestConstants.Empty, "25232284e49cf2cb"),
-
                     new KnownValue(32, TestConstants.FooBar, "68f99cbf"),
-                    new KnownValue(64, TestConstants.FooBar, "e86739f771419485")
+                    new KnownValue(32, TestConstants.LoremIpsum, "db3fcc15"),
+                    
+                    new KnownValue(64, TestConstants.Empty, "25232284e49cf2cb"),
+                    new KnownValue(64, TestConstants.FooBar, "e86739f771419485"),
+                    new KnownValue(64, TestConstants.LoremIpsum, "fb7cf16a3df7dad9"),
+
+                    new KnownValue(128, TestConstants.Empty,      "8dc595627521b8624201bb072e27626c"),
+                    new KnownValue(128, TestConstants.FooBar,     "186f44ba97350d6fbf643c7962163e34"),
+                    new KnownValue(128, TestConstants.LoremIpsum, "b3db4ee71f492ed1c2166a4bccdce8b6"),
                 };
             }
         }
@@ -309,6 +470,124 @@ namespace System.Data.HashFunction.Test
     #endregion
 
     #region Data.HashFunction.HashFunctionBase
+
+    public class IHashFunctionTests_TestHashFunction
+            : IHashFunctionTests<IHashFunctionTests_TestHashFunction.TestHashFunction>
+    {
+        public class TestHashFunction 
+            : HashFunctionBase
+        {
+            public override IEnumerable<int> ValidHashSizes
+            {
+                get { return new[] { 0 }; }
+            }
+
+            public TestHashFunction()
+                : base(0)
+            {
+
+            }
+
+            public override byte[] ComputeHash(byte[] data)
+            {
+                throw new ArgumentOutOfRangeException("HashSize");
+            }
+        }
+
+        protected override IEnumerable<KnownValue> KnownValues
+        {
+            get { return new KnownValue[0]; }
+        }
+    }
+
+
+    public class IHashFunctionTests_HashAlgorithmWrapper_NonGeneric_SHA1
+        : IHashFunctionTests_HashFunctionWrapper_NonGeneric<SHA1Managed>
+    {
+        protected override IEnumerable<KnownValue> KnownValues
+        {
+            get
+            {
+                return new[] {
+                    new KnownValue(160, TestConstants.Empty,        "da39a3ee5e6b4b0d3255bfef95601890afd80709"),
+                    new KnownValue(160, TestConstants.FooBar,       "8843d7f92416211de9ebb963ff4ce28125932878"),
+                    new KnownValue(160, TestConstants.LoremIpsum,   "2dd4010f15f21c9e26e31a693ba31c6ab78a5a4c" ),
+                    new KnownValue(160, TestConstants.RandomShort,  "d64df40c72068b01e7dfb5ceb2b519ad3b483eb0" ),
+                    new KnownValue(160, TestConstants.RandomLong,   "e5901cb4679133729c5555210c3cfe3e5851a2aa" )
+                };
+            }
+        }
+    }
+
+    public class IHashFunctionTests_HashAlgorithmWrapper_NonGeneric_SHA256
+        : IHashFunctionTests_HashFunctionWrapper_NonGeneric<SHA256Managed>
+    {
+        protected override IEnumerable<KnownValue> KnownValues
+        {
+            get
+            {
+                return new[] {
+                    new KnownValue(256, TestConstants.FooBar,        "C3AB8FF13720E8AD9047DD39466B3C8974E592C2FA383D4A3960714CAEF0C4F2"),
+                };
+            }
+        }
+    }
+
+    public class IHashFunctionTests_HashAlgorithmWrapper_NonGeneric_SHA384
+        : IHashFunctionTests_HashFunctionWrapper_NonGeneric<SHA384Managed>
+    {
+        protected override IEnumerable<KnownValue> KnownValues
+        {
+            get
+            {
+                return new[] {
+                    new KnownValue(384, TestConstants.FooBar,        "3C9C30D9F665E74D515C842960D4A451C83A0125FD3DE7392D7B37231AF10C72EA58AEDFCDF89A5765BF902AF93ECF06")
+                };
+            }
+        }
+    }
+
+    public class IHashFunctionTests_HashAlgorithmWrapper_NonGeneric_SHA512
+        : IHashFunctionTests_HashFunctionWrapper_NonGeneric<SHA512Managed>
+    {
+        protected override IEnumerable<KnownValue> KnownValues
+        {
+            get
+            {
+                return new[] {
+                    new KnownValue(512, TestConstants.FooBar,       "0A50261EBD1A390FED2BF326F2673C145582A6342D523204973D0219337F81616A8069B012587CF5635F6925F1B56C360230C19B273500EE013E030601BF2425")
+                };
+            }
+        }
+    }
+
+    public class IHashFunctionTests_HashAlgorithmWrapper_NonGeneric_MD5
+        : IHashFunctionTests_HashFunctionWrapper_NonGeneric<MD5CryptoServiceProvider>
+    {
+        protected override IEnumerable<KnownValue> KnownValues
+        {
+            get
+            {
+                return new[] {
+                    new KnownValue(128, TestConstants.FooBar,       "3858F62230AC3C915F300C664312C63F")
+                };
+            }
+        }
+    }
+
+    public class IHashFunctionTests_HashAlgorithmWrapper_NonGeneric_RIPEMD160
+        : IHashFunctionTests_HashFunctionWrapper_NonGeneric<RIPEMD160Managed>
+    {
+        protected override IEnumerable<KnownValue> KnownValues
+        {
+            get
+            {
+                return new[] {
+                    new KnownValue(160, TestConstants.FooBar,       "A06E327EA7388C18E4740E350ED4E60F2E04FC41")
+                };
+            }
+        }
+    }
 
     public class IHashFunctionTests_HashAlgorithmWrapper_SHA1
         : IHashFunctionTests<HashAlgorithmWrapper<SHA1Managed>>
@@ -1478,10 +1757,15 @@ namespace System.Data.HashFunction.Test
     public class IHashFunctionTests_xxHash
         : IHashFunctionTests<xxHash>
     {
-        // TODO: Calculate known values
         protected override IEnumerable<KnownValue> KnownValues
         {
-            get { return new KnownValue[0]; }
+            get { 
+                return new[] {
+                    new KnownValue(32, TestConstants.Empty, "055dcc02"),
+                    new KnownValue(32, TestConstants.FooBar, "af4aa3ed"),
+                    new KnownValue(32, TestConstants.LoremIpsum, "ac46ea92"),
+                }; 
+            }
         }
     }
 

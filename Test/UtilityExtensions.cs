@@ -56,16 +56,5 @@ namespace System.Data.HashFunction.Test
         {
             return Encoding.UTF8.GetBytes(value);
         }
-
-
-        public static string ToHexString(this byte[] value, bool lowercase = true)
-        {
-            var sb = new StringBuilder(value.Length * 2);
-            foreach (var b in value)
-                sb.Append(b.ToString(lowercase ? "x2" : "X2"));
-
-            return sb.ToString();
-        }
-
     }
 }

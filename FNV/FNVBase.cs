@@ -17,7 +17,7 @@ namespace System.Data.HashFunction
             set
             {
                 if (!HashParameters.ContainsKey(value))
-                    throw new NotImplementedException("No HashParameters implemented for this HashSize.");
+                    throw new ArgumentOutOfRangeException("value", "No HashParameters implemented for this HashSize.");
 
                 base.HashSize = value;
             }
@@ -25,7 +25,7 @@ namespace System.Data.HashFunction
 
         public override IEnumerable<int> ValidHashSizes
         {
-            get { return new[] { 32, 64, 128, 256, 512, 1024 }; }
+            get { return HashParameters.Keys; }
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace System.Data.HashFunction
             foreach (var hashSize in ValidHashSizes)
             {
                 if (!HashParameters.ContainsKey(hashSize))
-                    throw new NotImplementedException("No hash parameters specified for hash size " + hashSize + ".");
+                    throw new InvalidOperationException("No hash parameters specified for hash size " + hashSize + " despite being listed as valid.");
             }
 
             // Precompute all hash parameters

@@ -27,6 +27,9 @@ namespace System.Data.HashFunction
 
         public override byte[] ComputeHash(byte[] data)
         {
+            if (HashSize != 32)
+                throw new ArgumentOutOfRangeException("HashSize");
+
             const UInt32 m = 0XC6A4A793;
 
             UInt32 h = Seed ^ ((UInt32) data.Length * m);

@@ -12,6 +12,6 @@
     <description>$description$</description>
     <releaseNotes>Initial release.</releaseNotes>
     <copyright>Copyright 2014</copyright>
-    <tags>Bernstein hash function</tags>
+    <tags>Bernstein hash function djb2</tags>
   </metadata>
 </package>

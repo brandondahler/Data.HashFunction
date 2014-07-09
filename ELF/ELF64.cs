@@ -13,7 +13,7 @@ namespace System.Data.HashFunction
 
 
         public ELF64()
-            : base(64)
+            : base(32)
         {
 
         }
@@ -21,19 +21,22 @@ namespace System.Data.HashFunction
 
         public override byte[] ComputeHash(byte[] data)
         {
-            if (HashSize != 64)
-                throw new ArgumentOutOfRangeException("HashSize is set to an invalid value.");
+            if (HashSize != 32)
+                throw new ArgumentOutOfRangeException("HashSize");
 
-            var hash = 0UL;
+            UInt32 hash = 0;
 
             foreach (var b in data)
             {
+                hash <<= 4;
+                hash += b;
+
                 var tmp = hash & 0xF0000000;
 
 		        if (tmp != 0)
 		            hash ^= tmp >> 24;
 		        
-                hash &= ~tmp;
+                hash &= 0x0FFFFFFF;
             }
 
             return BitConverter.GetBytes(hash);

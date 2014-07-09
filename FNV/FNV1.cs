@@ -13,7 +13,9 @@ namespace System.Data.HashFunction
         public FNV1()
             : base(64)
         {
+
         }
+
 
         public override byte[] ComputeHash(byte[] data)
         {
@@ -21,6 +23,9 @@ namespace System.Data.HashFunction
                 return ComputeHash32(data);
             else if (HashSize == 64)
                 return ComputeHash64(data);
+
+            if (!PrecomputedOffsets.ContainsKey(HashSize) || !PrecomputedPrimes.ContainsKey(HashSize))
+                throw new ArgumentOutOfRangeException("HashSize");
 
             // Initialize hash with the offset, make copy since hash will be modified.
             var hash = new UInt32[HashSize / 32];

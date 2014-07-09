@@ -78,7 +78,7 @@ namespace System.Data.HashFunction
                     return results;
 
                 default:
-                    throw new ArgumentOutOfRangeException("HashSize set to unexpected value.");
+                    throw new ArgumentOutOfRangeException("HashSize");
             }
         }
 

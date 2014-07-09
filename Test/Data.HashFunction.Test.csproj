@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.2.1402.2112\lib\net40\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="MoreLinq">
       <HintPath>..\packages\morelinq.1.0.16006\lib\net35\MoreLinq.dll</HintPath>
     </Reference>
@@ -51,9 +54,8 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Coverage\CityHashTests.cs" />
-    <Compile Include="Coverage\HashAlgorithmWrapperTests.cs" />
-    <Compile Include="Coverage\HashFunctionBaseTests.cs" />
-    <Compile Include="Coverage\IHashFunctionTests.cs" />
+    <Compile Include="Coverage\FNVTests.cs" />
+    <Compile Include="Coverage\Test\UtilityExtensionTests.cs" />
     <Compile Include="HashAlgorithmWrapperTests.cs" />
     <Compile Include="IHashFunctionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

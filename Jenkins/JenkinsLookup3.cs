@@ -25,6 +25,7 @@ namespace System.Data.HashFunction
             InitVal2 = 0;
         }
 
+
         public override byte[] ComputeHash(byte[] data)
         {
             UInt32 a = 0xdeadbeef + (UInt32) data.Length + InitVal1;
@@ -78,7 +79,7 @@ namespace System.Data.HashFunction
                 case 64:
                     return BitConverter.GetBytes((((UInt64)b) << 32) | c);
                 default:
-                    throw new ArgumentOutOfRangeException("HashSize is set to an invalid value.");
+                    throw new ArgumentOutOfRangeException("HashSize");
             }
         }
 

@@ -37,6 +37,7 @@ namespace System.Data.HashFunction
 
         }
 
+
         public override byte[] ComputeHash(byte[] data)
         {
             switch (HashSize)
@@ -54,7 +55,7 @@ namespace System.Data.HashFunction
                     return ComputeHash64(data);
 
                 default:
-                    throw new ArgumentOutOfRangeException("HashSize is set to an invalid value.");
+                    throw new ArgumentOutOfRangeException("HashSize");
             }
         }
 
@@ -64,9 +65,9 @@ namespace System.Data.HashFunction
             byte h = (byte) InitVal;
 
             foreach (byte b in data)
-                h = (byte) (CShift(h, 1) ^ (UInt32) Rtab[(int) b]);
+                h = (byte) (CShift(h, 1) ^ (byte) Rtab[(int) b]);
 
-            return BitConverter.GetBytes(h);
+            return new byte[] { h };
         }
 
         protected byte[] ComputeHash16(byte[] data)

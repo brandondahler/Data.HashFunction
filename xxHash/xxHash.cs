@@ -14,7 +14,7 @@ namespace System.Data.HashFunction
 
         public UInt32 InitVal { get; set; }
 
-        protected readonly UInt32[] Primes = new[] {
+        protected static readonly UInt32[] Primes = new[] {
             2654435761U,
             2246822519U,
             3266489917U,
@@ -32,7 +32,7 @@ namespace System.Data.HashFunction
         public override byte[] ComputeHash(byte[] data)
         {
             if (HashSize != 32)
-                throw new ArgumentOutOfRangeException("HashSize is set to an invalid value.");
+                throw new ArgumentOutOfRangeException("HashSize");
 
             var h = InitVal + Primes[4];
 

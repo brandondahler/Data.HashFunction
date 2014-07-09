@@ -11,10 +11,10 @@ namespace System.Data.HashFunction
     public class HashAlgorithmWrapper
         : IHashFunction, IDisposable
     {
-        public int HashSize
+        public virtual int HashSize
         {
             get { return _hashAlgorithm.HashSize; }
-            set { if (value != _hashAlgorithm.HashSize) throw new ArgumentOutOfRangeException(); }
+            set { if (value != _hashAlgorithm.HashSize) throw new ArgumentOutOfRangeException("value"); }
         }
 
         public IEnumerable<int> ValidHashSizes { get { return new[] { _hashAlgorithm.HashSize }; } }
@@ -59,12 +59,18 @@ namespace System.Data.HashFunction
 
         public byte[] ComputeHash(byte[] data)
         {
+            if (HashSize != _hashAlgorithm.HashSize)
+                throw new ArgumentOutOfRangeException("HashSize");
+
             lock (SyncRoot)
                 return _hashAlgorithm.ComputeHash(data.ToArray());
         }
 
         public byte[] ComputeHash(Stream inputStream)
         {
+            if (HashSize != _hashAlgorithm.HashSize)
+                throw new ArgumentOutOfRangeException("HashSize");
+
             lock (SyncRoot)
                 return _hashAlgorithm.ComputeHash(inputStream);
         }
@@ -75,10 +81,10 @@ namespace System.Data.HashFunction
         : IHashFunction, IDisposable
         where HashAlgorithmT : HashAlgorithm, new()
     {
-        public int HashSize
+        public virtual int HashSize
         {
             get { return _hashAlgorithm.HashSize; }
-            set { if (value != _hashAlgorithm.HashSize) throw new ArgumentOutOfRangeException(); }
+            set { if (value != _hashAlgorithm.HashSize) throw new ArgumentOutOfRangeException("value"); }
         }
 
         public IEnumerable<int> ValidHashSizes { get { return new[] { _hashAlgorithm.HashSize }; } }
@@ -121,12 +127,18 @@ namespace System.Data.HashFunction
         
         public byte[] ComputeHash(byte[] data)
         {
+            if (HashSize != _hashAlgorithm.HashSize)
+                throw new ArgumentOutOfRangeException("HashSize");
+
             lock (SyncRoot)
                 return _hashAlgorithm.ComputeHash(data.ToArray());
         }
 
         public byte[] ComputeHash(Stream inputStream)
         {
+            if (HashSize != _hashAlgorithm.HashSize)
+                throw new ArgumentOutOfRangeException("HashSize");
+
             lock (SyncRoot)
                 return _hashAlgorithm.ComputeHash(inputStream);
         }
