@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\System.Data.HashFunction.FNV.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -51,7 +52,8 @@
     </Compile>
     <Compile Include="FNV1a.cs" />
     <Compile Include="FNV1.cs" />
-    <Compile Include="FNVBase.cs" />
+    <Compile Include="FNV1Base.cs" />
+    <Compile Include="FNVPrimeOffset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

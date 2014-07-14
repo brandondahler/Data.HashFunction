@@ -53,7 +53,6 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="Coverage\CityHashTests.cs" />
     <Compile Include="Coverage\FNVTests.cs" />
     <Compile Include="Coverage\Test\UtilityExtensionTests.cs" />
     <Compile Include="HashAlgorithmWrapperTests.cs" />

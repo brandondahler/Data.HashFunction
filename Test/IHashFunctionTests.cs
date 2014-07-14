@@ -77,7 +77,7 @@ namespace System.Data.HashFunction.Test
         }
 
         [Fact]
-        public void IHashFunction_ComputerHash_MatchesKnownValues()
+        public void IHashFunction_ComputeHash_MatchesKnownValues()
         {
             var hf = new IHashFunctionT();
 
@@ -92,7 +92,7 @@ namespace System.Data.HashFunction.Test
         }
 
         [Fact]
-        public void IHashFunctionTests_ComputeHash_InvalidHashSize_Throws()
+        public void IHashFunction_ComputeHash_InvalidHashSize_Throws()
         {
             var hfMock = new Mock<IHashFunctionT>() { CallBase = true };
             hfMock.SetupGet(p => p.HashSize)
@@ -104,8 +104,9 @@ namespace System.Data.HashFunction.Test
                 hf.ComputeHash(new byte[0]));
         }
 
+        //[Fact]
         [Fact(Skip = "SpeedTest is for relative benchmarking only.")]
-        public void IHashFunction_SpeedTest_ByteArray()
+        public void IHashFunction_ComputeHash_SpeedTest_ByteArray()
         {
             var hf = new IHashFunctionT();
 
@@ -155,11 +156,11 @@ namespace System.Data.HashFunction.Test
 
                     testCount = (long) (testCount * testCountMultiplier);
                 }
-                
 
-                Console.WriteLine("{0} bits - {1} hashes/sec ({2} in {3}ms, {4} tries)", 
+
+                Console.WriteLine("{0} bits - {1:N3} hashes/sec ({2:N} in {3}ms, {4} tries)", 
                     hashSize,
-                    (testCount / (sw.ElapsedMilliseconds / 1000.0d)).ToString("N3"),
+                    (testCount / (sw.ElapsedMilliseconds / 1000.0d)),
                     testCount, 
                     sw.ElapsedMilliseconds,
                     tries);
@@ -259,7 +260,7 @@ namespace System.Data.HashFunction.Test
         public class RightShiftDefaultBuzHash
             : DefaultBuzHash
         {
-            public override CShiftDirection ShiftDirection { get { return CShiftDirection.Right; } }
+            public override CircularShiftDirection ShiftDirection { get { return CircularShiftDirection.Right; } }
         }
 
         // TODO: Calculate known values
@@ -294,7 +295,7 @@ namespace System.Data.HashFunction.Test
         public class DefaultInitializationBuzHash
             : BuzHashBase
         {
-            public override CShiftDirection ShiftDirection { get { return CShiftDirection.Left; } }
+            public override CircularShiftDirection ShiftDirection { get { return CircularShiftDirection.Left; } }
 
             public override UInt64[] Rtab { get { return _Rtab; } }
 
@@ -490,7 +491,10 @@ namespace System.Data.HashFunction.Test
 
             public override byte[] ComputeHash(byte[] data)
             {
-                throw new ArgumentOutOfRangeException("HashSize");
+                if (HashSize != 0)
+                    throw new ArgumentOutOfRangeException("HashSize");
+
+                return new byte[0];
             }
         }
 

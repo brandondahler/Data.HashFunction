@@ -4,19 +4,27 @@ using System.Collections.Generic;
 using System.IO;
 namespace System.Data.HashFunction
 {
+    /// <summary>
+    /// Common interface to non-cryptographic hash functions.
+    /// </summary>
     public interface IHashFunction
     {
         /// <summary>
-        /// Size of resulting hash in bits.
+        /// Size of produced hash, in bits.  Must be one of the values in <see cref="ValidHashSizes"/>.
         /// </summary>
         int HashSize { get; set; }
 
         /// <summary>
-        /// Valid sizes of <see cref="HashSize"/> in bits.
+        /// Valid sizes of <see cref="HashSize"/>, in bits.
         /// </summary>
         IEnumerable<int> ValidHashSizes { get; }
 
 
+        /// <summary>
+        /// Computes hash value for given byte array.
+        /// </summary>
+        /// <param name="data">Array of data to hash.</param>
+        /// <returns>Hash value of the data.</returns>
         byte[] ComputeHash(byte[] data);
     }
 }

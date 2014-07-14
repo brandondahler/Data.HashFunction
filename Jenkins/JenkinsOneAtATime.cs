@@ -7,12 +7,24 @@ using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
+    /// <summary>
+    /// Implementation of Bob Jenkins' One-at-a-Time hash function as specified at http://www.burtleburtle.net/bob/hash/doobs.html (function named "one_at_a_time").
+    /// 
+    /// This hash function has been superseded by JenkinsLookup2 and JenkinsLookup3.
+    /// </summary>
     public class JenkinsOneAtATime
         : HashFunctionBase
     {
+        /// <inheritdoc/>
         public override IEnumerable<int> ValidHashSizes { get { return new[] { 32 }; } }
         
 
+        /// <summary>
+        /// Constructs new <see cref="JenkinsOneAtATime"/> instance.
+        /// </summary>
+        /// <remarks>
+        /// Defaults to 32-bit hash size.
+        /// </remarks>
         public JenkinsOneAtATime()
             : base(32)
         {
@@ -20,6 +32,7 @@ namespace System.Data.HashFunction
         }
 
 
+        /// <inheritdoc/>
         public override byte[] ComputeHash(byte[] data)
         {
             if (HashSize != 32)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.Utilities;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -8,17 +9,28 @@ using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
+    /// <summary>
+    /// Implementation of MurmurHash3 as specified at https://code.google.com/p/smhasher/source/browse/trunk/MurmurHash3.cpp 
+    ///   and https://code.google.com/p/smhasher/wiki/MurmurHash3.
+    /// </summary>
     public class MurmurHash3
         : HashFunctionBase
     {
+        /// <inheritdoc/>
         public override IEnumerable<int> ValidHashSizes
         {
             get { return new[] { 32, 128 }; }
         }
 
+        /// <summary>
+        /// Seed value for hash calculation.
+        /// </summary>
         public UInt32 Seed { get; set; }
 
 
+        /// <summary>
+        /// Constructs new <see cref="MurmurHash3"/> instance.
+        /// </summary>
         public MurmurHash3()
             : base(32)
         {
@@ -26,6 +38,7 @@ namespace System.Data.HashFunction
         }
 
 
+        /// <inheritdoc/>
         public override byte[] ComputeHash(byte[] data)
         {
             switch (HashSize)
@@ -41,7 +54,12 @@ namespace System.Data.HashFunction
             }
         }
 
-        
+
+        /// <summary>
+        /// Computes 32-bit hash value for given byte array.
+        /// </summary>
+        /// <param name="data">Array of data to hash.</param>
+        /// <returns>Hash value of the data.</returns>
         protected byte[] ComputeHash32(byte[] data)
         {
             const UInt32 c1 = 0xcc9e2d51;
@@ -58,11 +76,11 @@ namespace System.Data.HashFunction
                 UInt32 k1 = BitConverter.ToUInt32(data, x * 4);
 
                 k1 *= c1;
-                k1 = Rotl(k1, 15);
+                k1  = k1.RotateLeft(15);
                 k1 *= c2;
    
                 h1 ^= k1;
-                h1 = Rotl(h1, 13);
+                h1  = h1.RotateLeft(13);
                 h1 = (h1 * 5) + 0xe6546b64;
             }
 
@@ -81,8 +99,8 @@ namespace System.Data.HashFunction
                     case 2: k1 ^= (UInt32) data[remainderStartIndex + 1] <<  8;   goto case 1;
                     case 1: 
                         k1 ^= (UInt32) data[remainderStartIndex];
-                        k1 *= c1; 
-                        k1 = Rotl(k1, 15); 
+                        k1 *= c1;
+                        k1  = k1.RotateLeft(15); 
                         k1 *= c2; 
                         h1 ^= k1;
                         break;
@@ -99,6 +117,11 @@ namespace System.Data.HashFunction
             return BitConverter.GetBytes(h1);
         }
 
+        /// <summary>
+        /// Computes 64-bit hash value for given byte array.
+        /// </summary>
+        /// <param name="data">Array of data to hash.</param>
+        /// <returns>Hash value of the data.</returns>
         protected byte[] ComputeHash128(byte[] data)
         {
             const UInt64 c1 = 0x87c37b91114253d5;
@@ -117,21 +140,21 @@ namespace System.Data.HashFunction
                 UInt64 k1 = BitConverter.ToUInt64(data, 0);
                 UInt64 k2 = BitConverter.ToUInt64(data, 8);
 
-                k1 *= c1; 
-                k1  = Rotl(k1, 31); 
+                k1 *= c1;
+                k1  = k1.RotateLeft(31); 
                 k1 *= c2; 
                 h1 ^= k1;
 
-                h1  = Rotl(h1, 27); 
+                h1  = h1.RotateLeft(27); 
                 h1 += h2; 
                 h1  = (h1 * 5) + 0x52dce729;
 
                 k2 *= c2; 
-                k2  = Rotl(k2, 33); 
+                k2  = k2.RotateLeft(33); 
                 k2 *= c1; 
                 h2 ^= k2;
 
-                h2  = Rotl(h2, 31); 
+                h2  = h2.RotateLeft(31); 
                 h2 += h1; 
                 h2  = (h2 * 5) + 0x38495ab5;
             }
@@ -156,7 +179,7 @@ namespace System.Data.HashFunction
                     case  9: 
                         k2 ^= ((UInt64) data[remainderStartIndex + 8]) <<  0;
                         k2 *= c2; 
-                        k2  = Rotl(k2, 33); 
+                        k2  = k2.RotateLeft(33); 
                         k2 *= c1; h2 ^= k2;
 
                         goto case 8;
@@ -179,7 +202,7 @@ namespace System.Data.HashFunction
                 if (data.Length % 16 != 0)
                 {
                     k1 *= c1;
-                    k1 = Rotl(k1, 31);
+                    k1  = k1.RotateLeft(31);
                     k1 *= c2;
                     h1 ^= k1;
                 }
@@ -213,22 +236,8 @@ namespace System.Data.HashFunction
         }
 
 
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected UInt32 Rotl(UInt32 value, int amount)
-        {
-            return (value << amount | value >> (32 - amount));
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected UInt64 Rotl(UInt64 value, int amount)
-        {
-            return (value << amount | value >> (64 - amount));
-        }
-
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected UInt32 Mix (UInt32 h)
+        private static UInt32 Mix(UInt32 h)
         {
             h ^= h >> 16;
             h *= 0x85ebca6b;
@@ -240,7 +249,7 @@ namespace System.Data.HashFunction
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected UInt64 Mix(UInt64 k)
+        private static UInt64 Mix(UInt64 k)
         {
             k ^= k >> 33;
             k *= 0xff51afd7ed558ccd;

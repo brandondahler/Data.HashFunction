@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\System.Data.HashFunction.HashFunctionBase.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -38,6 +39,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -51,7 +53,15 @@
     <Compile Include="HashAlgorithmWrapper.cs" />
     <Compile Include="HashFunctionBase.cs" />
     <Compile Include="IHashFunction.cs" />
+    <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\FriendAssemblies.cs" />
+    <Compile Include="Utilities\ExtendedMultiplyExtensions.cs" />
+    <Compile Include="Utilities\RotateRightExtensions.cs" />
+    <Compile Include="Utilities\RotateLeftExtensions.cs" />
+    <Compile Include="Utilities\ReverseByteOrderExtensions.cs" />
+    <Compile Include="Utilities\ToBytesExtensions.cs" />
+    <Compile Include="Utilities\ToUInt32ArrayExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Data.HashFunction.pfx">

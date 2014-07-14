@@ -9,14 +9,26 @@ using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
+    /// <summary>
+    /// Implementation of Bob Jenkins' Lookup2 hash function as specified at http://burtleburtle.net/bob/c/lookup2.c and http://www.burtleburtle.net/bob/hash/doobs.html.
+    /// 
+    /// This hash function has been superseded by JenkinsLookup3.
+    /// </summary>
     public class JenkinsLookup2
         : HashFunctionBase
     {
+        /// <inheritdoc/>
         public override IEnumerable<int> ValidHashSizes { get { return new[] { 32 }; } }
 
+        /// <summary>
+        /// Seed value for hash calculation.
+        /// </summary>
         public UInt32 InitVal { get; set; }
         
 
+        /// <summary>
+        /// Constructs new <see cref="JenkinsLookup2"/> instance.
+        /// </summary>
         public JenkinsLookup2()
             : base(32)
         {
@@ -24,6 +36,7 @@ namespace System.Data.HashFunction
         }
 
 
+        /// <inheritdoc/>
         public override byte[] ComputeHash(byte[] data)
         {
             if (HashSize != 32)

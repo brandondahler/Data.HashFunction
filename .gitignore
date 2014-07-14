@@ -109,3 +109,6 @@ UpgradeLog*.XML
 
 # NuGet Packages
 *.nupkg
+
+# Help documentation
+Help/

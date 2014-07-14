@@ -7,17 +7,30 @@ using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
+    /// <summary>
+    /// Implementation of MurmurHash1 as specified at https://code.google.com/p/smhasher/source/browse/trunk/MurmurHash1.cpp 
+    ///   and https://code.google.com/p/smhasher/wiki/MurmurHash1.
+    /// 
+    /// This hash function has been superseded by MurmurHash2 and MurmurHash3.
+    /// </summary>
     public class MurmurHash1
         : HashFunctionBase
     {
+        /// <inheritdoc/>
         public override IEnumerable<int> ValidHashSizes
         {
             get { return new[] { 32 }; }
         }
 
+        /// <summary>
+        /// Seed value for hash calculation.
+        /// </summary>
         public UInt32 Seed { get; set; }
 
 
+        /// <summary>
+        /// Constructs new <see cref="MurmurHash1"/> instance.
+        /// </summary>
         public MurmurHash1()
             : base(32)
         {
@@ -25,6 +38,7 @@ namespace System.Data.HashFunction
         }
 
 
+        /// <inheritdoc/>
         public override byte[] ComputeHash(byte[] data)
         {
             if (HashSize != 32)

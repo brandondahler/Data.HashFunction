@@ -10,7 +10,7 @@ namespace System.Data.HashFunction
     /// Implementation of Pearson hashing using the lookup table given in the article at
     /// http://en.wikipedia.org/wiki/Pearson_hashing as of 2014-04-21.
     /// 
-    /// The implementation was modified to allow whole-byte outputs between 8 and 256 bits (provided by <see cref="PearsonBase"/>).
+    /// The implementation was modified to allow whole-byte outputs between 8 and 2040 bits (provided by <see cref="PearsonBase"/>).
     /// </summary>
     /// <remarks>
     /// There is nothing special about this implementation's lookup table that makes it explicitly
@@ -19,8 +19,8 @@ namespace System.Data.HashFunction
     public class WikipediaPearson
         : PearsonBase
     {
-        /// <inheritdoc />
-        protected override byte[] T { get { return _T; } }
+        /// <inheritdoc/>
+        protected override IReadOnlyList<byte> T { get { return _T; } }
 
         private static readonly byte[] _T = new byte[] {
              98,   6,  85, 150,  36,  23, 112, 164, 135, 207, 169,   5,  26,  64, 165, 219, //  1

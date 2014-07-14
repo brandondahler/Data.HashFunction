@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.Utilities;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -7,14 +8,22 @@ using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
+    /// <summary>
+    /// Implements xxHash as specified at https://code.google.com/p/xxhash/source/browse/trunk/xxhash.c and 
+    ///   https://code.google.com/p/xxhash/.
+    /// </summary>
     public class xxHash
         : HashFunctionBase
     {
+        /// <inheritdoc/>
         public override IEnumerable<int> ValidHashSizes { get { return new[] { 32 }; } }
 
+        /// <summary>
+        /// Seed value for hash calculation.
+        /// </summary>
         public UInt32 InitVal { get; set; }
 
-        protected static readonly UInt32[] Primes = new[] {
+        private static readonly IReadOnlyList<UInt32> Primes = new[] {
             2654435761U,
             2246822519U,
             3266489917U,
@@ -22,6 +31,10 @@ namespace System.Data.HashFunction
              374761393U
         };
 
+
+        /// <summary>
+        /// Constructs new <see cref="xxHash"/> instance.
+        /// </summary>
         public xxHash()
             : base(32)
         {
@@ -29,6 +42,7 @@ namespace System.Data.HashFunction
         }
 
 
+        /// <inheritdoc/>
         public override byte[] ComputeHash(byte[] data)
         {
             if (HashSize != 32)
@@ -53,7 +67,7 @@ namespace System.Data.HashFunction
                     Process16(BitConverter.ToUInt32(data, x * 16 + 12), ref values[3]);
                 }
 
-                h = Rotl(values[0], 1) + Rotl(values[1], 7) + Rotl(values[2], 12) + Rotl(values[3], 18);
+                h = values[0].RotateLeft(1) + values[1].RotateLeft(7) + values[2].RotateLeft(12) + values[3].RotateLeft(18);
             }
 
             h += (UInt32) data.Length;
@@ -66,7 +80,7 @@ namespace System.Data.HashFunction
                 for (int x = startIndex; x < stopIndex; x += 4)
                 {
                     h += BitConverter.ToUInt32(data, x) * Primes[2];
-                    h = Rotl(h, 17) * Primes[3];
+                    h = h.RotateLeft(17) * Primes[3];
                 }
             }
 
@@ -77,7 +91,7 @@ namespace System.Data.HashFunction
                 for (int x = startIndex; x < data.Length; ++x)
                 {
                     h += (UInt32) data[x] * Primes[4];
-                    h = Rotl(h, 11) * Primes[0];
+                    h = h.RotateLeft(11) * Primes[0];
                 }
             }
 
@@ -95,15 +109,8 @@ namespace System.Data.HashFunction
         private void Process16(UInt32 data, ref UInt32 curValue)
         {
             curValue += data * Primes[1];
-            curValue = Rotl(curValue, 13);
+            curValue = curValue.RotateLeft(13);
             curValue *= Primes[0];
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private UInt32 Rotl(UInt32 value, int amount)
-        {
-            return (value << amount) | (value >> (32 - amount));
-        }
-
     }
 }

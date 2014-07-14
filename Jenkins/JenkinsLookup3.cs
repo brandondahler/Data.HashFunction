@@ -8,16 +8,35 @@ using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
+    /// <summary>
+    /// Implementation of Bob Jenkins' Lookup3 hash function as specified at http://burtleburtle.net/bob/c/lookup3.c.
+    /// </summary>
     public class JenkinsLookup3
         : HashFunctionBase
     {
+        /// <inheritdoc/>
         public override IEnumerable<int> ValidHashSizes { get { return new[] { 32, 64}; } }
 
+        /// <summary>
+        /// First seed value for hash calculation.
+        /// </summary>
+        /// <remarks>
+        /// Only seed value for 32-bit mode, first seed value for 64-bit mode.
+        /// </remarks>
         public UInt32 InitVal1 { get; set; }
 
+        /// <summary>
+        /// Second seed value for hash calculation.
+        /// </summary>
+        /// <remarks>
+        /// Not used for 32-bit mode, second seed value for 64-bit mode.
+        /// </remarks>
         public UInt32 InitVal2 { get; set; }
 
 
+        /// <summary>
+        /// Constructs new <see cref="JenkinsLookup3"/> instance.
+        /// </summary>
         public JenkinsLookup3()
             : base(64)
         {
@@ -26,6 +45,7 @@ namespace System.Data.HashFunction
         }
 
 
+        /// <inheritdoc/>
         public override byte[] ComputeHash(byte[] data)
         {
             UInt32 a = 0xdeadbeef + (UInt32) data.Length + InitVal1;
@@ -77,7 +97,7 @@ namespace System.Data.HashFunction
                 case 32:
                     return BitConverter.GetBytes(c);
                 case 64:
-                    return BitConverter.GetBytes((((UInt64)b) << 32) | c);
+                    return BitConverter.GetBytes((((UInt64) b) << 32) | c);
                 default:
                     throw new ArgumentOutOfRangeException("HashSize");
             }

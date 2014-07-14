@@ -7,19 +7,36 @@ using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
+    /// <summary>
+    /// Implementation of MurmurHash2 as specified at https://code.google.com/p/smhasher/source/browse/trunk/MurmurHash2.cpp 
+    ///   and https://code.google.com/p/smhasher/wiki/MurmurHash2.
+    /// 
+    /// This hash function has been superseded by MurmurHash3.
+    /// </summary>
     public class MurmurHash2
         : HashFunctionBase
     {
+        /// <inheritdoc/>
         public override IEnumerable<int> ValidHashSizes
         {
             get { return new[] { 32, 64 }; }
         }
 
+        /// <summary>
+        /// Seed value for hash calculation.
+        /// </summary>
         public UInt64 Seed { get; set; }
 
 
+        /// <summary>
+        /// Constant as defined by MurmurHash2 specification.
+        /// </summary>
         protected const UInt64 MixConstant = 0xc6a4a7935bd1e995;
 
+
+        /// <summary>
+        /// Constructs new <see cref="MurmurHash2"/> instance.
+        /// </summary>
         public MurmurHash2()
             : base(64)
         {
@@ -27,6 +44,7 @@ namespace System.Data.HashFunction
         }
 
 
+        /// <inheritdoc/>
         public override byte[] ComputeHash(byte[] data)
         {
             switch (HashSize)
@@ -43,6 +61,12 @@ namespace System.Data.HashFunction
 
         }
 
+
+        /// <summary>
+        /// Computes 32-bit hash value for given byte array.
+        /// </summary>
+        /// <param name="data">Array of data to hash.</param>
+        /// <returns>Hash value of the data.</returns>
         protected byte[] ComputeHash32(byte[] data)
         {
             const UInt32 m = unchecked((UInt32) MixConstant);
@@ -90,6 +114,11 @@ namespace System.Data.HashFunction
             return BitConverter.GetBytes(h);
         }
 
+        /// <summary>
+        /// Computes 64-bit hash value for given byte array.
+        /// </summary>
+        /// <param name="data">Array of data to hash.</param>
+        /// <returns>Hash value of the data.</returns>
         protected byte[] ComputeHash64(byte[] data)
         {
             const UInt64 m = MixConstant;

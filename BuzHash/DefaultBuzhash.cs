@@ -6,13 +6,33 @@ using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
+    /// <summary>
+    /// Basic implementation of <see cref="BuzHashBase" /> class.  
+    /// 
+    /// Uses randomly generated table and left circular shift.
+    /// </summary>
     public class DefaultBuzHash
         : BuzHashBase
     {
+        /// <summary>
+        /// Table of 256 random and distinct UInt64 values.
+        /// </summary>
+        /// <remarks>
+        /// Returns reference to private static readonly UInt64 array.
+        /// Do not modify values contained within returned array.
+        /// </remarks>
         public override UInt64[] Rtab { get { return _Rtab; } }
 
-        public override CShiftDirection ShiftDirection { get { return CShiftDirection.Left; } }
+        /// <inheritdoc/>
+        public override CircularShiftDirection ShiftDirection { get { return CircularShiftDirection.Left; } }
 
+        /// <inheritdoc/>
+        public override ulong InitVal { get { return 0x3CD05367FD0337D3; } }
+
+
+        /// <summary>
+        /// Array of 256 random and distinct UInt64 values.
+        /// </summary>
         private static readonly UInt64[] _Rtab = new UInt64[] {
             0xBDBF3FFFDEEF8A14, 0xFFB5AC3C0DB31F7F, 0x7BF7207BF73C4D2E, 0xADBFFF96358377F6,
             0xC6BF8D442C4FD166, 0x7EB1EFF12B7D81F9, 0x88024802AB9F22C2, 0x2191221208E98495,
@@ -79,7 +99,5 @@ namespace System.Data.HashFunction
             0xDD645E45898E166D, 0x80000D38B28D2BC0, 0xF7ADA101A6F34F0F, 0x04404000A27DB2F2,
             0x7B79E1EC83874C2A, 0x6B2FFD2662DA5E68, 0xCF3EEBA20B383BCE, 0x4503C00A838F9989
         };
-
-        public override ulong InitVal { get { return 0x3CD05367FD0337D3; } }
     }
 }
