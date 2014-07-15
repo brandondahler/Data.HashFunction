@@ -22,7 +22,7 @@ namespace System.Data.HashFunction.Test
                 .ToCharArray();
 
             if (chars.Length % 2 == 1)
-                throw new ArgumentException("hexString's length must be divisible by 2 after removing spaces, underscores, and dashes");
+                throw new ArgumentException("hexString's length must be divisible by 2 after removing spaces, underscores, and dashes.", "hexString");
 
             var bytes = new byte[chars.Length / 2];
 
@@ -41,7 +41,7 @@ namespace System.Data.HashFunction.Test
                 else if (chars[x] >= 'A' && chars[x] <= 'F')
                     bytes[x / 2] |= (byte)(chars[x] - 'A' + 10);
                 else
-                    throw new ArgumentException("hexString contains an invalid character, only [0-9a-fA-F _-] expected");
+                    throw new ArgumentException("hexString contains an invalid character, only [0-9a-fA-F _-] expected", "hexString");
             }
 
             return bytes;

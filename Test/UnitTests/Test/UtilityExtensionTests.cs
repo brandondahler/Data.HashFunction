@@ -5,22 +5,38 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.Coverage.Test
+namespace System.Data.HashFunction.Test.UnitTests.Test
 {
     public class UtilityExtensionTests
     {
         [Fact]
         public void UtilityExtension_HexToBytes_InvalidHexLength_Throws()
         {
-            Assert.Throws<ArgumentException>(() => 
-                "abcde".HexToBytes());
+            foreach (var invalidLength in Enumerable.Range(0, 32).Select(i => (i * 2) + 1))
+            {
+                Assert.Equal("hexString", 
+                    Assert.Throws<ArgumentException>(() =>
+                        (new string('a', invalidLength)).HexToBytes())
+                    .ParamName);
+            }
+            
         }
 
         [Fact]
         public void UtilityExtension_HexToBytes_InvalidCharacters_Throws()
         {
-            Assert.Throws<ArgumentException>(() =>
-                "foobar".HexToBytes());
+            var testValues = new[] {
+                "!012", "0=12", "01^2", "012|",
+                  "//",   "::",   "@@",   "GG",   "``",   "gg"
+            };
+
+            foreach (var testValue in testValues)
+            {
+                Assert.Equal("hexString",
+                    Assert.Throws<ArgumentException>(() =>
+                        testValue.HexToBytes())
+                    .ParamName);
+            }
         }
 
         [Fact]
@@ -97,6 +113,11 @@ namespace System.Data.HashFunction.Test.Coverage.Test
                 "F0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF";
 
             Assert.Equal(expected, testString.HexToBytes());
+        }
+
+        public void UtilityExtension_HexToBytes_EmptyString_Works()
+        {
+            Assert.Equal(new byte[0], "".HexToBytes());
         }
     }
 }

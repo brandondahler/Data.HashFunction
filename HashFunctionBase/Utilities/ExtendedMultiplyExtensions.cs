@@ -27,7 +27,7 @@ namespace System.Data.HashFunction.Utilities
             for (int y = 0; y < operand2.Count; ++y)
             {
                 // Skip multiplying things by zero
-                if (operand1[y] == 0)
+                if (operand2[y] == 0)
                     continue;
 
                 UInt32 carryOver = 0;

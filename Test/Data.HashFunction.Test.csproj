@@ -31,6 +31,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\Data.HashFunction.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.2.1402.2112\lib\net40\Moq.dll</HintPath>
@@ -40,6 +46,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,8 +60,14 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="Coverage\FNVTests.cs" />
-    <Compile Include="Coverage\Test\UtilityExtensionTests.cs" />
+    <Compile Include="HashFunctionBaseTests\UtilitiesTests\ReverseByteOrderExtensionsTests.cs" />
+    <Compile Include="HashFunctionBaseTests\UtilitiesTests\RotateLeftExtensionsTests.cs" />
+    <Compile Include="HashFunctionBaseTests\UtilitiesTests\RotateRightExtensionsTests.cs" />
+    <Compile Include="HashFunctionBaseTests\UtilitiesTests\ToBytesExtensionsTests.cs" />
+    <Compile Include="HashFunctionBaseTests\UtilitiesTests\ToUInt32ArrayExtensionsTests.cs" />
+    <Compile Include="UnitTests\FNVTests.cs" />
+    <Compile Include="HashFunctionBaseTests\UtilitiesTests\ExtendedMultiplyExtensionsTests.cs" />
+    <Compile Include="UnitTests\Test\UtilityExtensionTests.cs" />
     <Compile Include="HashAlgorithmWrapperTests.cs" />
     <Compile Include="IHashFunctionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

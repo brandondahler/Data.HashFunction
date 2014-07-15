@@ -110,6 +110,7 @@ namespace System.Data.HashFunction
     /// <summary>
     /// Generic implementation of <see cref="IHashFunction"/> that wraps cryptographic hash functions known as <see cref="HashAlgorithm" />s.
     /// </summary>
+    /// <typeparam name="HashAlgorithmT">HashAlgorithm type to wrap.</typeparam>
     public class HashAlgorithmWrapper<HashAlgorithmT>
         : IHashFunction, IDisposable
         where HashAlgorithmT : HashAlgorithm, new()

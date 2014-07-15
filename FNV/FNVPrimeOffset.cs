@@ -18,12 +18,12 @@ namespace System.Data.HashFunction
         /// <summary>
         /// FNV prime number as a IReadOnlyList of UInt32 values.
         /// </summary>
-        public IReadOnlyList<UInt32> Prime { get; private set; }
+        public virtual IReadOnlyList<UInt32> Prime { get; private set; }
 
         /// <summary>
         /// FNV prime number as a IReadOnlyList of UInt32 values.
         /// </summary>
-        public IReadOnlyList<UInt32> Offset { get; private set; }
+        public virtual IReadOnlyList<UInt32> Offset { get; private set; }
 
 
         /// <summary>

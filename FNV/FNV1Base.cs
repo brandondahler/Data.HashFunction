@@ -103,7 +103,7 @@ namespace System.Data.HashFunction
         /// Precomputes offsets and primes for the child type.  
         /// Assumes values that already exist in precomputed storage are the correct values for the child type being constructed.
         /// </remarks>
-        protected FNV1Base(int defaultHashSize)
+        protected FNV1Base(int defaultHashSize = 64)
             : base(defaultHashSize)
         {
             // Verify all hash sizes have parameters defined
@@ -114,7 +114,103 @@ namespace System.Data.HashFunction
                     throw new InvalidOperationException(
                         "No hash parameters specified for hash size " + hashSize + " despite being listed as valid.");
                 }
+
+                if (HashParameters[hashSize].Prime.Count != hashSize / 32)
+                {
+                    throw new ArgumentException(
+                        string.Format("HashParameters[{0}].Prime should contain exactly {1} items.", HashSize, HashSize / 32),
+                        string.Format("HashParameters[{0}].Prime", HashSize));
+                }
+                    
+                if (HashParameters[hashSize].Offset.Count != hashSize / 32)
+                {
+                    throw new ArgumentException(
+                        string.Format("HashParameters[{0}].Offset should contain exactly {1} items.", HashSize, HashSize / 32),
+                        string.Format("HashParameters[{0}].Offset", HashSize));
+                }
             }
         }
+
+
+        /// <inheritdoc/>
+        public override byte[] ComputeHash(byte[] data)
+        {
+            if (!HashParameters.ContainsKey(HashSize))
+                throw new ArgumentOutOfRangeException("HashSize");
+
+
+            if (HashSize == 32)
+                return ComputeHash32(data);
+            else if (HashSize == 64)
+                return ComputeHash64(data);
+
+
+            var prime = HashParameters[HashSize].Prime;
+            var offset = HashParameters[HashSize].Offset;
+            
+            return ProcessBytes(prime, offset, data)
+                .ToBytes()
+                .ToArray();
+        }
+
+        /// <summary>
+        /// 32-bit implementation of ComputeHash.
+        /// </summary>
+        /// <param name="data">Data to be hashed.</param>
+        /// <returns>4-byte array containing the results of hashing the data provided.</returns>
+        protected byte[] ComputeHash32(byte[] data)
+        {
+            var prime =  HashParameters[32].Prime[0];
+            var offset = HashParameters[32].Offset[0];
+
+            
+
+            return BitConverter.GetBytes(
+                ProcessBytes32(prime, offset, data));
+        }
+
+        /// <summary>
+        /// 64-bit implementation of ComputeHash.
+        /// </summary>
+        /// <param name="data">Data to be hashed.</param>
+        /// <returns>8-byte array containing the results of hashing the data provided.</returns>
+        protected byte[] ComputeHash64(byte[] data)
+        {
+            var prime =  ((UInt64) HashParameters[64].Prime[1]  << 32) | HashParameters[64].Prime[0];
+            var offset = ((UInt64) HashParameters[64].Offset[1] << 32) | HashParameters[64].Offset[0];
+
+            return BitConverter.GetBytes(
+                ProcessBytes64(prime, offset, data));
+        }
+
+
+        /// <summary>
+        /// Run applicable FNV algorithm on all data supplied.
+        /// </summary>
+        /// <param name="prime">FNV prime to use for calculations.</param>
+        /// <param name="offset">FNV offset to use for calculations.</param>
+        /// <param name="data">Data to calculate against.</param>
+        /// <returns>A read-only list of UInt32 values representing the resulting hash value.</returns>
+        protected abstract IReadOnlyList<UInt32> ProcessBytes(IReadOnlyList<UInt32> prime, IReadOnlyList<UInt32> offset, IReadOnlyList<byte> data);
+
+        /// <summary>
+        /// Run applicable 32-bit FNV algorithm on all data supplied.
+        /// </summary>
+        /// <param name="prime">FNV prime to use for calculations.</param>
+        /// <param name="offset">FNV offset to use for calculations.</param>
+        /// <param name="data">Data to calculate against.</param>
+        /// <returns>A UInt32 value representing the resulting hash value.</returns>
+        protected abstract UInt32 ProcessBytes32(UInt32 prime, UInt32 offset, IReadOnlyList<byte> data);
+
+        /// <summary>
+        /// Run applicable 64-bit FNV algorithm on all data supplied.
+        /// </summary>
+        /// <param name="prime">FNV prime to use for calculations.</param>
+        /// <param name="offset">FNV offset to use for calculations.</param>
+        /// <param name="data">Data to calculate against.</param>
+        /// <returns>A UInt64 value representing the resulting hash value.</returns>
+        protected abstract UInt64 ProcessBytes64(UInt64 prime, UInt64 offset, IReadOnlyList<byte> data);
+
+
     }
 }

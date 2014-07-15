@@ -15,7 +15,7 @@ namespace System.Data.HashFunction.Test
 {
     internal sealed class TestConstants
     {
-        // Constant values avaliable for KnownValues to use.
+        // Constant values available for KnownValues to use.
         public static readonly byte[] Empty = new byte[0];
         public static readonly byte[] FooBar = "foobar".ToBytes();
 
@@ -59,10 +59,6 @@ namespace System.Data.HashFunction.Test
             Assert.NotEmpty(validHashSizes);
             Assert.Equal(validHashSizes, validHashSizes.Distinct());
             
-            // Assume goes on infinitely, accepting any power of 2
-            if (validHashSizes.Count() == 10000)
-                validHashSizes = Enumerable.Range(0, 31).Select(x => 1 << x).ToArray();
-
             foreach (var hashSize in validHashSizes)
             {
                 Assert.DoesNotThrow(() => {
@@ -72,8 +68,10 @@ namespace System.Data.HashFunction.Test
                 Assert.Equal(hashSize, hf.HashSize);
             }
 
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-                hf.HashSize = -1);
+            Assert.Equal("value", 
+                Assert.Throws<ArgumentOutOfRangeException>(() =>
+                    hf.HashSize = -1)
+                .ParamName);
         }
 
         [Fact]
@@ -100,8 +98,10 @@ namespace System.Data.HashFunction.Test
 
             var hf = hfMock.Object;
 
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-                hf.ComputeHash(new byte[0]));
+            Assert.Equal("HashSize", 
+                Assert.Throws<ArgumentOutOfRangeException>(() =>
+                    hf.ComputeHash(new byte[0]))
+                .ParamName);
         }
 
         //[Fact]
@@ -500,7 +500,7 @@ namespace System.Data.HashFunction.Test
 
         protected override IEnumerable<KnownValue> KnownValues
         {
-            get { return new KnownValue[0]; }
+            get { return new[] { new KnownValue(0, TestConstants.Empty, "") }; }
         }
     }
 

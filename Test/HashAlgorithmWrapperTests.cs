@@ -37,8 +37,10 @@ namespace System.Data.HashFunction.Test
 
             using (var ms = new MemoryStream(new byte[0]))
             {
-                Assert.Throws<ArgumentOutOfRangeException>(() =>
-                    haw.ComputeHash(ms));
+                Assert.Equal("HashSize", 
+                    Assert.Throws<ArgumentOutOfRangeException>(() =>
+                        haw.ComputeHash(ms))
+                    .ParamName);
             }
         }
 
@@ -135,8 +137,10 @@ namespace System.Data.HashFunction.Test
 
             using (var ms = new MemoryStream(new byte[0]))
             {
-                Assert.Throws<ArgumentOutOfRangeException>(() =>
-                    haw.ComputeHash(ms));
+                Assert.Equal("HashSize", 
+                    Assert.Throws<ArgumentOutOfRangeException>(() =>
+                        haw.ComputeHash(ms))
+                    .ParamName);
             }
         }
 

@@ -37,6 +37,12 @@
     <DocumentationSources>
       <DocumentationSource sourceFile="Data.HashFunction.sln" xmlns="" />
     </DocumentationSources>
+    <ApiFilter>
+      <Filter entryType="Namespace" fullName="System.Data.HashFunction.Test" isExposed="False" />
+<Filter entryType="Namespace" fullName="System.Data.HashFunction.Test.HashFunctionBaseTests.UtilitiesTests" isExposed="False" />
+<Filter entryType="Namespace" fullName="System.Data.HashFunction.Test.UnitTests" isExposed="False" />
+<Filter entryType="Namespace" fullName="System.Data.HashFunction.Test.UnitTests.Test" isExposed="False" /></ApiFilter>
+    <VisibleItems>InheritedMembers, InheritedFrameworkMembers, Protected, ProtectedInternalAsProtected</VisibleItems>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->
