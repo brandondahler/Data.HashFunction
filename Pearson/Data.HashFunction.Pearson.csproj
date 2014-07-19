@@ -60,9 +60,9 @@
     <None Include="Properties\Data.HashFunction.Pearson.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HashFunctionBase\Data.HashFunction.HashFunctionBase.csproj">
+    <ProjectReference Include="..\Core\Data.HashFunction.Core.csproj">
       <Project>{d8268071-2147-4364-9803-ed0921246899}</Project>
-      <Name>Data.HashFunction.HashFunctionBase</Name>
+      <Name>Data.HashFunction.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

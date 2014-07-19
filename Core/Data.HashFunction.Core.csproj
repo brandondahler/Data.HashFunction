@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>System.Data.HashFunction</RootNamespace>
-    <AssemblyName>System.Data.HashFunction.HashFunctionBase</AssemblyName>
+    <AssemblyName>System.Data.HashFunction.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\System.Data.HashFunction.HashFunctionBase.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\System.Data.HashFunction.Core.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -70,7 +70,7 @@
     <None Include="..\Data.HashFunction.pfx">
       <Link>Properties\Data.HashFunction.pfx</Link>
     </None>
-    <None Include="Properties\Data.HashFunction.HashFunctionBase.nuspec" />
+    <None Include="Properties\Data.HashFunction.Core.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

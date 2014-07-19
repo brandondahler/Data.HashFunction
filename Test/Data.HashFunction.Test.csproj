@@ -92,17 +92,17 @@
       <Project>{0026aa91-4a24-4419-b96d-a808ee65706e}</Project>
       <Name>Data.HashFunction.CityHash</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ELF\Data.HashFunction.ELF.csproj">
+    <ProjectReference Include="..\Core\Data.HashFunction.Core.csproj">
+      <Project>{d8268071-2147-4364-9803-ed0921246899}</Project>
+      <Name>Data.HashFunction.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ELF64\Data.HashFunction.ELF64.csproj">
       <Project>{5644704b-272e-41ee-9a70-fed7c40205d1}</Project>
-      <Name>Data.HashFunction.ELF</Name>
+      <Name>Data.HashFunction.ELF64</Name>
     </ProjectReference>
     <ProjectReference Include="..\FNV\Data.HashFunction.FNV.csproj">
       <Project>{4586f5c8-93b9-4dc6-894a-1120b8dee175}</Project>
       <Name>Data.HashFunction.FNV</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\HashFunctionBase\Data.HashFunction.HashFunctionBase.csproj">
-      <Project>{d8268071-2147-4364-9803-ed0921246899}</Project>
-      <Name>Data.HashFunction.HashFunctionBase</Name>
     </ProjectReference>
     <ProjectReference Include="..\Jenkins\Data.HashFunction.Jenkins.csproj">
       <Project>{43f16b99-6f01-4fe8-b030-897cbae5a8df}</Project>
