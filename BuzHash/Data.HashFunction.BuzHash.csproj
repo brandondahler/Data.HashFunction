@@ -57,7 +57,7 @@
     <None Include="..\Data.HashFunction.pfx">
       <Link>Properties\Data.HashFunction.pfx</Link>
     </None>
-    <None Include="Properties\Data.HashFunction.BuzHash.nuspec">
+    <None Include="Data.HashFunction.BuzHash.nuspec">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

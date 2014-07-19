@@ -57,7 +57,7 @@
     <None Include="..\Data.HashFunction.pfx">
       <Link>Properties\Data.HashFunction.pfx</Link>
     </None>
-    <None Include="Properties\Data.HashFunction.SpookyHash.nuspec" />
+    <None Include="Data.HashFunction.SpookyHash.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Data.HashFunction.Core.csproj">

@@ -70,7 +70,7 @@
     <None Include="..\Data.HashFunction.pfx">
       <Link>Properties\Data.HashFunction.pfx</Link>
     </None>
-    <None Include="Properties\Data.HashFunction.Core.nuspec" />
+    <None Include="Data.HashFunction.Core.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
