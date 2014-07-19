@@ -60,13 +60,16 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="HashFunctionBaseTests\UtilitiesTests\ReverseByteOrderExtensionsTests.cs" />
-    <Compile Include="HashFunctionBaseTests\UtilitiesTests\RotateLeftExtensionsTests.cs" />
-    <Compile Include="HashFunctionBaseTests\UtilitiesTests\RotateRightExtensionsTests.cs" />
-    <Compile Include="HashFunctionBaseTests\UtilitiesTests\ToBytesExtensionsTests.cs" />
-    <Compile Include="HashFunctionBaseTests\UtilitiesTests\ToUInt32ArrayExtensionsTests.cs" />
+    <Compile Include="Core\HashFunctionBaseTests.cs" />
+    <Compile Include="Core\Utilities\IntegerManipulation\ReverseByteOrderExtensionsTests.cs" />
+    <Compile Include="Core\Utilities\IntegerManipulation\RotateLeftExtensionsTests.cs" />
+    <Compile Include="Core\Utilities\IntegerManipulation\RotateRightExtensionsTests.cs" />
+    <Compile Include="Core\Utilities\StreamExtensionsTests.cs" />
+    <Compile Include="Core\Utilities\UInt32ExtensionsTests.cs" />
+    <Compile Include="Core\Utilities\BigIntegerExtensionsTests.cs" />
+    <Compile Include="Mocks\HashFunctionBaseImpl.cs" />
     <Compile Include="UnitTests\FNVTests.cs" />
-    <Compile Include="HashFunctionBaseTests\UtilitiesTests\ExtendedMultiplyExtensionsTests.cs" />
+    <Compile Include="Core\Utilities\IntegerManipulation\ExtendedMultiplyExtensionsTests.cs" />
     <Compile Include="UnitTests\Test\UtilityExtensionTests.cs" />
     <Compile Include="HashAlgorithmWrapperTests.cs" />
     <Compile Include="IHashFunctionTests.cs" />

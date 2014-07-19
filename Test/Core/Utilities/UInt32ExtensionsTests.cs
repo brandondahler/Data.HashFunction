@@ -6,12 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.HashFunctionBaseTests.UtilitiesTests
+namespace System.Data.HashFunction.Test.Core.Utilities
 {
-    public class ToBytesExtensionsTests
+    public class UInt32ExtensionsTests
     {
         [Fact]
-        public void ToBytes_IReadOnlyList_UInt32_ComputesCorrectly()
+        public void UInt32_IEnumerable_ToBytes_ComputesCorrectly()
         {
             var testValues = new[] { 2382910298U, 0U, 32483910U, 231398239U };
 

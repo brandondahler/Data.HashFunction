@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.HashFunction.Utilities;
+using System.Data.HashFunction.Utilities.IntegerManipulation;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -28,6 +29,22 @@ namespace System.Data.HashFunction
         public UInt32 Seed { get; set; }
 
 
+        /// <summary>Constant c1 for 32-bit calculation as defined by MurmurHash3 specification.</summary>
+        protected const UInt32 c1_32 = 0xcc9e2d51;
+
+        /// <summary>Constant c2 for 32-bit calculation as defined by MurmurHash3 specification.</summary>
+        protected const UInt32 c2_32 = 0x1b873593;
+
+
+        /// <summary>Constant c1 for 128-bit calculation as defined by MurMurHash3 specification.</summary>
+        protected const UInt64 c1_128 = 0x87c37b91114253d5;
+
+        /// <summary>Constant c2 for 128-bit calculation as defined by MurMurHash3 specification.</summary>
+        protected const UInt64 c2_128 = 0x4cf5ad432745937f;
+
+
+
+
         /// <summary>
         /// Constructs new <see cref="MurmurHash3"/> instance.
         /// </summary>
@@ -39,7 +56,7 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc/>
-        public override byte[] ComputeHash(byte[] data)
+        protected override byte[] ComputeHashInternal(Stream data)
         {
             switch (HashSize)
             {
@@ -56,163 +73,151 @@ namespace System.Data.HashFunction
 
 
         /// <summary>
-        /// Computes 32-bit hash value for given byte array.
+        /// Computes 32-bit hash value for given stream.
         /// </summary>
-        /// <param name="data">Array of data to hash.</param>
+        /// <param name="data">Stream of data to hash.</param>
         /// <returns>Hash value of the data.</returns>
-        protected byte[] ComputeHash32(byte[] data)
+        protected byte[] ComputeHash32(Stream data)
         {
-            const UInt32 c1 = 0xcc9e2d51;
-            const UInt32 c2 = 0x1b873593;
-
             UInt32 h1 = Seed;
-            
 
-            //----------
-            // body
-            
-            for (int x = 0; x < data.Length / 4; ++x)
+            var dataGroups = data.AsGroupedStreamData(4);
+            int dataCount = 0;
+
+
+            foreach (var dataGroup in dataGroups)
             {
-                UInt32 k1 = BitConverter.ToUInt32(data, x * 4);
+                UInt32 k1 = BitConverter.ToUInt32(dataGroup, 0);
 
-                k1 *= c1;
+                k1 *= c1_32;
                 k1  = k1.RotateLeft(15);
-                k1 *= c2;
+                k1 *= c2_32;
    
                 h1 ^= k1;
                 h1  = h1.RotateLeft(13);
                 h1 = (h1 * 5) + 0xe6546b64;
+
+                dataCount += dataGroup.Length;
             }
 
 
-            //----------
-            // tail
+            var remainder = dataGroups.Remainder;
+            UInt32 k2 = 0;
 
+            switch(remainder.Length)
             {
-
-                UInt32 k1 = 0;
-                var remainderStartIndex = data.Length - (data.Length % 4);
-
-                switch(data.Length % 4)
-                {
-                    case 3: k1 ^= (UInt32) data[remainderStartIndex + 2] << 16;   goto case 2;
-                    case 2: k1 ^= (UInt32) data[remainderStartIndex + 1] <<  8;   goto case 1;
-                    case 1: 
-                        k1 ^= (UInt32) data[remainderStartIndex];
-                        k1 *= c1;
-                        k1  = k1.RotateLeft(15); 
-                        k1 *= c2; 
-                        h1 ^= k1;
-                        break;
-                }
+                case 3: k2 ^= (UInt32) remainder[2] << 16;   goto case 2;
+                case 2: k2 ^= (UInt32) remainder[1] <<  8;   goto case 1;
+                case 1: 
+                    k2 ^= (UInt32) remainder[0];
+                    k2 *= c1_32;
+                    k2  = k2.RotateLeft(15); 
+                    k2 *= c2_32; 
+                    h1 ^= k2;
+                    break;
             }
 
-            //----------
-            // finalization
+            dataCount += remainder.Length;
+            
 
-            h1 ^= (UInt32) data.Length;
-
-            h1 = Mix(h1);
+            h1 ^= (UInt32) dataCount;
+            h1  = Mix(h1);
 
             return BitConverter.GetBytes(h1);
         }
 
         /// <summary>
-        /// Computes 64-bit hash value for given byte array.
+        /// Computes 64-bit hash value for given byte stream.
         /// </summary>
-        /// <param name="data">Array of data to hash.</param>
+        /// <param name="data">Stream of data to hash.</param>
         /// <returns>Hash value of the data.</returns>
-        protected byte[] ComputeHash128(byte[] data)
+        protected byte[] ComputeHash128(Stream data)
         {
-            const UInt64 c1 = 0x87c37b91114253d5;
-            const UInt64 c2 = 0x4cf5ad432745937f;
-
             UInt64 h1 = (UInt64) Seed;
             UInt64 h2 = (UInt64) Seed;
 
+            var dataGroups = data.AsGroupedStreamData(16);
+            int dataCount = 0;
 
-            //----------
-            // body
             
-            for (int x = 0; x < data.Length / 16; ++x)
+            foreach (var dataGroup in dataGroups)
             {
-            
-                UInt64 k1 = BitConverter.ToUInt64(data, 0);
-                UInt64 k2 = BitConverter.ToUInt64(data, 8);
+                UInt64 k1 = BitConverter.ToUInt64(dataGroup, 0);
+                UInt64 k2 = BitConverter.ToUInt64(dataGroup, 8);
 
-                k1 *= c1;
+                k1 *= c1_128;
                 k1  = k1.RotateLeft(31); 
-                k1 *= c2; 
+                k1 *= c2_128; 
                 h1 ^= k1;
 
                 h1  = h1.RotateLeft(27); 
                 h1 += h2; 
                 h1  = (h1 * 5) + 0x52dce729;
 
-                k2 *= c2; 
+                k2 *= c2_128; 
                 k2  = k2.RotateLeft(33); 
-                k2 *= c1; 
+                k2 *= c1_128; 
                 h2 ^= k2;
 
                 h2  = h2.RotateLeft(31); 
                 h2 += h1; 
                 h2  = (h2 * 5) + 0x38495ab5;
+
+                dataCount += dataGroup.Length;
             }
 
             //----------
             // tail
 
+            var remainder = dataGroups.Remainder;
+
+            if (remainder.Length > 0)
             {
                 UInt64 k1 = 0;
                 UInt64 k2 = 0;
 
-                var remainderStartIndex = data.Length - (data.Length % 16);
-
-                switch(data.Length % 16)
+                switch(remainder.Length)
                 {
-                    case 15: k2 ^= (UInt64) data[remainderStartIndex + 14] << 48;   goto case 14;
-                    case 14: k2 ^= (UInt64) data[remainderStartIndex + 13] << 40;   goto case 13;
-                    case 13: k2 ^= (UInt64) data[remainderStartIndex + 12] << 32;   goto case 12;
-                    case 12: k2 ^= (UInt64) data[remainderStartIndex + 11] << 24;   goto case 11;
-                    case 11: k2 ^= (UInt64) data[remainderStartIndex + 10] << 16;   goto case 10;
-                    case 10: k2 ^= (UInt64) data[remainderStartIndex +  9] <<  8;   goto case 9;
+                    case 15: k2 ^= (UInt64) remainder[14] << 48;   goto case 14;
+                    case 14: k2 ^= (UInt64) remainder[13] << 40;   goto case 13;
+                    case 13: k2 ^= (UInt64) remainder[12] << 32;   goto case 12;
+                    case 12: k2 ^= (UInt64) remainder[11] << 24;   goto case 11;
+                    case 11: k2 ^= (UInt64) remainder[10] << 16;   goto case 10;
+                    case 10: k2 ^= (UInt64) remainder[ 9] <<  8;   goto case 9;
                     case  9: 
-                        k2 ^= ((UInt64) data[remainderStartIndex + 8]) <<  0;
-                        k2 *= c2; 
+                        k2 ^= ((UInt64) remainder[8]) <<  0;
+                        k2 *= c2_128; 
                         k2  = k2.RotateLeft(33); 
-                        k2 *= c1; h2 ^= k2;
+                        k2 *= c1_128; h2 ^= k2;
 
                         goto case 8;
 
-                    case  8: 
-                        k1 = BitConverter.ToUInt64(data, remainderStartIndex);
+                    case  8:
+                        k1 = BitConverter.ToUInt64(remainder, 0);
                         break;
 
-                    case  7: k1 ^= (UInt64) data[remainderStartIndex + 6] << 48;    goto case 6;
-                    case  6: k1 ^= (UInt64) data[remainderStartIndex + 5] << 40;    goto case 5;
-                    case  5: k1 ^= (UInt64) data[remainderStartIndex + 4] << 32;    goto case 4;
-                    case  4: k1 ^= (UInt64) data[remainderStartIndex + 3] << 24;    goto case 3;
-                    case  3: k1 ^= (UInt64) data[remainderStartIndex + 2] << 16;    goto case 2;
-                    case  2: k1 ^= (UInt64) data[remainderStartIndex + 1] <<  8;    goto case 1;
+                    case  7: k1 ^= (UInt64) remainder[6] << 48;    goto case 6;
+                    case  6: k1 ^= (UInt64) remainder[5] << 40;    goto case 5;
+                    case  5: k1 ^= (UInt64) remainder[4] << 32;    goto case 4;
+                    case  4: k1 ^= (UInt64) remainder[3] << 24;    goto case 3;
+                    case  3: k1 ^= (UInt64) remainder[2] << 16;    goto case 2;
+                    case  2: k1 ^= (UInt64) remainder[1] <<  8;    goto case 1;
                     case  1: 
-                        k1 ^= (UInt64) data[remainderStartIndex] << 0;
+                        k1 ^= (UInt64) remainder[0] << 0;
                         break;
                 }
 
-                if (data.Length % 16 != 0)
-                {
-                    k1 *= c1;
-                    k1  = k1.RotateLeft(31);
-                    k1 *= c2;
-                    h1 ^= k1;
-                }
+                k1 *= c1_128;
+                k1  = k1.RotateLeft(31);
+                k1 *= c2_128;
+                h1 ^= k1;
+
+                dataCount += remainder.Length;
             }
 
-            //----------
-            // finalization
 
-            h1 ^= (UInt64) data.Length; 
-            h2 ^= (UInt64) data.Length;
+            h1 ^= (UInt64) dataCount; 
+            h2 ^= (UInt64) dataCount;
 
             h1 += h2;
             h2 += h1;

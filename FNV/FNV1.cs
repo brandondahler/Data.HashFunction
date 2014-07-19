@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.HashFunction.Utilities;
+using System.Data.HashFunction.Utilities.IntegerManipulation;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -25,42 +27,43 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc/>
-        protected override IReadOnlyList<UInt32> ProcessBytes(IReadOnlyList<UInt32> prime, IReadOnlyList<UInt32> offset, IReadOnlyList<byte> data)
+        protected override IReadOnlyList<UInt32> ProcessBytes(
+            IReadOnlyList<UInt32> prime, IReadOnlyList<UInt32> offset, Stream data)
         {
             var hash = offset.ToArray();
-
-            foreach (var b in data)
+            
+            foreach (var dataByte in data.AsEnumerable())
             {
                 hash = hash.ExtendedMultiply(prime);
-                hash[0] ^= b;
+                hash[0] ^= dataByte;
             }
 
             return hash;
         }
 
         /// <inheritdoc/>
-        protected override UInt32 ProcessBytes32(UInt32 prime, UInt32 offset, IReadOnlyList<byte> data)
+        protected override UInt32 ProcessBytes32(UInt32 prime, UInt32 offset, Stream data)
         {
             var hash = offset;
-
-            foreach (var b in data)
+            
+            foreach (var dataByte in data.AsEnumerable())
             {
                 hash *= prime;
-                hash ^= b;
-            }
+                hash ^= dataByte;
+             }
 
             return hash;
         }
 
         /// <inheritdoc/>
-        protected override UInt64 ProcessBytes64(UInt64 prime, UInt64 offset, IReadOnlyList<byte> data)
+        protected override UInt64 ProcessBytes64(UInt64 prime, UInt64 offset, Stream data)
         {
             var hash = offset;
 
-            foreach (var b in data)
+            foreach (var dataByte in data.AsEnumerable())
             {
                 hash *= prime;
-                hash ^= b;
+                hash ^= dataByte;
             }
 
             return hash;

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.Utilities;
+using System.Data.HashFunction.Utilities.IntegerManipulation;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -28,6 +30,9 @@ namespace System.Data.HashFunction
         public UInt64 Seed { get; set; }
 
 
+        /// <inheritdoc/>
+        protected override bool RequiresSeekableStream { get { return true; } }        
+        
         /// <summary>
         /// Constant as defined by MurmurHash2 specification.
         /// </summary>
@@ -45,7 +50,7 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc/>
-        public override byte[] ComputeHash(byte[] data)
+        protected override byte[] ComputeHashInternal(Stream data)
         {
             switch (HashSize)
             {
@@ -63,23 +68,24 @@ namespace System.Data.HashFunction
 
 
         /// <summary>
-        /// Computes 32-bit hash value for given byte array.
+        /// Computes 32-bit hash value for given stream.
         /// </summary>
-        /// <param name="data">Array of data to hash.</param>
+        /// <param name="data">Stream of data to hash.</param>
         /// <returns>Hash value of the data.</returns>
-        protected byte[] ComputeHash32(byte[] data)
+        protected byte[] ComputeHash32(Stream data)
         {
             const UInt32 m = unchecked((UInt32) MixConstant);
 
             // Initialize the hash to a 'random' value
 
             UInt32 h = (UInt32) Seed ^ (UInt32) data.Length;
+            var dataGroups = data.AsGroupedStreamData(4);
+
 
             // Mix 4 bytes at a time into the hash
-
-            for (int x = 0; x < data.Length / 4; ++x)
+            foreach (var dataGroup in dataGroups)
             {
-                UInt32 k = BitConverter.ToUInt32(data, x * 4);
+                UInt32 k = BitConverter.ToUInt32(dataGroup, 0);
 
                 k *= m;
                 k ^= k >> 24;
@@ -91,15 +97,14 @@ namespace System.Data.HashFunction
             
 
             // Handle the last few bytes of the input array
+            var remainder = dataGroups.Remainder;
 
-            var remainderStartIndex = data.Length - (data.Length % 4);
-
-            switch(data.Length % 4)
+            switch(remainder.Length)
             {
-                case 3: h ^= (UInt32) data[remainderStartIndex + 2] << 16;  goto case 2;
-                case 2: h ^= (UInt32) data[remainderStartIndex + 1] <<  8;  goto case 1;
+                case 3: h ^= (UInt32) remainder[2] << 16; goto case 2;
+                case 2: h ^= (UInt32) remainder[1] << 8; goto case 1;
                 case 1:
-                    h ^= data[remainderStartIndex];
+                    h ^= remainder[0];
                     h *= m;
                     break;
             };
@@ -115,20 +120,21 @@ namespace System.Data.HashFunction
         }
 
         /// <summary>
-        /// Computes 64-bit hash value for given byte array.
+        /// Computes 64-bit hash value for given stream.
         /// </summary>
-        /// <param name="data">Array of data to hash.</param>
+        /// <param name="data">Stream of data to hash.</param>
         /// <returns>Hash value of the data.</returns>
-        protected byte[] ComputeHash64(byte[] data)
+        protected byte[] ComputeHash64(Stream data)
         {
             const UInt64 m = MixConstant;
 
             UInt64 h = Seed ^ ((UInt64) data.Length * m);
+            var dataGroups = data.AsGroupedStreamData(8);
 
 
-            for (int x = 0; x < data.Length / 8; ++x)
+            foreach (var dataGroup in dataGroups)
             {
-                UInt64 k = BitConverter.ToUInt64(data, x * 8);
+                UInt64 k = BitConverter.ToUInt64(dataGroup, 0);
 
                 k *= m;
                 k ^= k >> 47;
@@ -138,18 +144,19 @@ namespace System.Data.HashFunction
                 h *= m;
             }
 
-            var remainderStartIndex = data.Length - (data.Length % 8);
 
-            switch(data.Length % 8)
+            var remainder = dataGroups.Remainder;
+
+            switch (remainder.Length)
             {
-                case 7: h ^= (UInt64) data[remainderStartIndex + 6] << 48;  goto case 6;
-                case 6: h ^= (UInt64) data[remainderStartIndex + 5] << 40;  goto case 5;
-                case 5: h ^= (UInt64) data[remainderStartIndex + 4] << 32;  goto case 4;
-                case 4: h ^= (UInt64) data[remainderStartIndex + 3] << 24;  goto case 3;
-                case 3: h ^= (UInt64) data[remainderStartIndex + 2] << 16;  goto case 2;
-                case 2: h ^= (UInt64) data[remainderStartIndex + 1] <<  8;  goto case 1;
+                case 7: h ^= (UInt64) remainder[6] << 48;  goto case 6;
+                case 6: h ^= (UInt64) remainder[5] << 40;  goto case 5;
+                case 5: h ^= (UInt64) remainder[4] << 32;  goto case 4;
+                case 4: h ^= (UInt64) remainder[3] << 24;  goto case 3;
+                case 3: h ^= (UInt64) remainder[2] << 16;  goto case 2;
+                case 2: h ^= (UInt64) remainder[1] <<  8;  goto case 1;
                 case 1: 
-                    h ^= (UInt64) data[remainderStartIndex];
+                    h ^= (UInt64) remainder[0];
                     h *= m;
                     break;
             };

@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 namespace System.Data.HashFunction.Utilities
 {
     /// <summary>
-    /// Static class to provide ToBytes extension functions.
+    /// Static class to provide UInt32 value extension functions.
     /// </summary>
-    internal static class ToBytesExtensions
+    internal static class UInt32Extensions
     {
         /// <summary>
         /// Converts an enumerable collection of UInt32 values to an enumerable collection of bytes as if it were a single integer.

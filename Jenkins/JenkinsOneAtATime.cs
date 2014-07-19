@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.Utilities;
+using System.Data.HashFunction.Utilities.IntegerManipulation;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -33,20 +35,21 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc/>
-        public override byte[] ComputeHash(byte[] data)
+        protected override byte[] ComputeHashInternal(Stream data)
         {
             if (HashSize != 32)
                 throw new ArgumentOutOfRangeException("HashSize");
 
-            UInt32 hash = 0;
 
-            foreach (var dataByte in data)
+            UInt32 hash = 0;
+            
+            foreach (var dataByte in data.AsEnumerable())
             {
                 hash += dataByte;
                 hash += (hash << 10);
                 hash ^= (hash >> 6);
             }
-
+            
             hash += hash << 3;
             hash ^= hash >> 11;
             hash += hash << 15;

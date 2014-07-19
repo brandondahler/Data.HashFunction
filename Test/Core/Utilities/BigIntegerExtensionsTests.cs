@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.HashFunctionBaseTests.UtilitiesTests
+namespace System.Data.HashFunction.Test.Core.Utilities
 {
-    public class ToUInt32ArrayExtensionsTests
+    public class BigintegerExtensionsTests
     {
         [Fact]
         public void ToUInt32Array_BigInteger_ComputesCorrectly()

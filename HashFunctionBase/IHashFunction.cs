@@ -24,7 +24,14 @@ namespace System.Data.HashFunction
         /// Computes hash value for given byte array.
         /// </summary>
         /// <param name="data">Array of data to hash.</param>
-        /// <returns>Hash value of the data.</returns>
+        /// <returns>Hash value of the data as byte array.</returns>
         byte[] ComputeHash(byte[] data);
+
+        /// <summary>
+        /// Computes hash value for given stream.
+        /// </summary>
+        /// <param name="data">Stream of data to hash.</param>
+        /// <returns>Hash value of data as byte array.</returns>
+        byte[] ComputeHash(Stream data);
     }
 }

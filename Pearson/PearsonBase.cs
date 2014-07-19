@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.Utilities;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,26 +48,26 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc/>
-        public override byte[] ComputeHash(byte[] data)
+        protected override byte[] ComputeHashInternal(Stream data)
         {
             if (HashSize < 8 || HashSize > 2040 || HashSize % 8 != 0)
                 throw new ArgumentOutOfRangeException("HashSize");
 
+
             var h = new byte[HashSize / 8];
+            bool firstByte = true;
 
-            for (int x = 0; x < HashSize / 8; ++x)
+            foreach (var dataByte in data.AsEnumerable())
             {
-                byte currentH = 0;
+                for (int x = 0; x < HashSize / 8; ++x)
+                {
+                    if (!firstByte)
+                        h[x] = T[h[x] ^ dataByte];
+                    else
+                        h[x] = T[(dataByte + x) & 0xff];
+                }
 
-                // Handle data's item 0
-                if (data.Length > 0)
-                    currentH = T[currentH ^ ((data[0] + x) & 0xff)];
-
-                // Handle data's items 1 to data.Length
-                for (int y = 1; y < data.Length; ++y)
-                    currentH = T[currentH ^ data[y]];
-
-                h[x] = currentH;
+                firstByte = false;
             }
 
             return h;

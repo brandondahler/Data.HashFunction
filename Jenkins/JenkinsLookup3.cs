@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.Utilities;
+using System.Data.HashFunction.Utilities.IntegerManipulation;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -34,6 +36,10 @@ namespace System.Data.HashFunction
         public UInt32 InitVal2 { get; set; }
 
 
+        /// <inheritdoc/>
+        protected override bool RequiresSeekableStream { get { return true; } }
+
+
         /// <summary>
         /// Constructs new <see cref="JenkinsLookup3"/> instance.
         /// </summary>
@@ -46,7 +52,7 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc/>
-        public override byte[] ComputeHash(byte[] data)
+        protected override byte[] ComputeHashInternal(Stream data)
         {
             UInt32 a = 0xdeadbeef + (UInt32) data.Length + InitVal1;
             UInt32 b = 0xdeadbeef + (UInt32) data.Length + InitVal1;
@@ -55,41 +61,48 @@ namespace System.Data.HashFunction
             if (HashSize == 64)
                 c += InitVal2;
 
-            for (int x = 0; x < data.Length / 12; ++x)
+
+            var dataGroups = data.AsGroupedStreamData(12);
+            int dataCount = 0;
+            
+            foreach (var dataGroup in dataGroups)
             {
-                a += BitConverter.ToUInt32(data, (x * 12));
-                b += BitConverter.ToUInt32(data, (x * 12) + 4);
-                c += BitConverter.ToUInt32(data, (x * 12) + 8);
+                a += BitConverter.ToUInt32(dataGroup, 0);
+                b += BitConverter.ToUInt32(dataGroup, 4);
+                c += BitConverter.ToUInt32(dataGroup, 8);
 
                 Mix(ref a, ref b, ref c);
+
+                dataCount += dataGroup.Length;
             }
 
-            var remainderStartIndex = data.Length - (data.Length % 12);
 
-            switch (data.Length % 12)
+            var remainder = dataGroups.Remainder;
+
+            switch (remainder.Length)
             {
-                case 11: c += (UInt32) data[remainderStartIndex + 10] << 16;    goto case 10;
-                case 10: c += (UInt32) data[remainderStartIndex +  9] << 8;     goto case  9;
-                case  9: c += (UInt32) data[remainderStartIndex +  8];           goto case 8;   
+                case 11: c += (UInt32) remainder[10] << 16;    goto case 10;
+                case 10: c += (UInt32) remainder[ 9] << 8;     goto case  9;
+                case  9: c += (UInt32) remainder[ 8];           goto case 8;   
 
                 case 8:
-                    b += BitConverter.ToUInt32(data, remainderStartIndex + 4);
+                    b += BitConverter.ToUInt32(remainder, 4);
                     goto case 4;
 
-                case 7: b += (UInt32) data[remainderStartIndex + 6] << 16;  goto case 6;
-                case 6: b += (UInt32) data[remainderStartIndex + 5] <<  8;  goto case 5;
-                case 5: b += (UInt32) data[remainderStartIndex + 4];        goto case 4;
+                case 7: b += (UInt32) remainder[6] << 16;  goto case 6;
+                case 6: b += (UInt32) remainder[5] <<  8;  goto case 5;
+                case 5: b += (UInt32) remainder[4];        goto case 4;
 
                 case 4:
-                    a += BitConverter.ToUInt32(data, remainderStartIndex);
+                    a += BitConverter.ToUInt32(remainder, 0);
                     break;
                     
-                case 3: a += (UInt32) data[remainderStartIndex + 2] << 16;  goto case 2;
-                case 2: a += (UInt32) data[remainderStartIndex + 1] <<  8;  goto case 1;
-                case 1: a += (UInt32) data[remainderStartIndex];        break;
+                case 3: a += (UInt32) remainder[2] << 16;  goto case 2;
+                case 2: a += (UInt32) remainder[1] <<  8;  goto case 1;
+                case 1: a += (UInt32) remainder[0];        break;
             }
 
-            if (data.Length <= 12 || remainderStartIndex != 0)
+            if (remainder.Length != 0 || dataCount == 12)
                 Final(ref a, ref b, ref c);
 
             switch (HashSize)

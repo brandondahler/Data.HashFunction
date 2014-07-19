@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace System.Data.HashFunction.Utilities
 {
     /// <summary>
-    /// Static class to provide ToUInt32Array extension functions.
+    /// Static class to provide BigInteger extension functions.
     /// </summary>
-    internal static class ToUInt32ArrayExtensions
+    internal static class BigIntegerExtensions
     {
         /// <summary>
         /// Converts a BigInteger to an array of UInt32 values.

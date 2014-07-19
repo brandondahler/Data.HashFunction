@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.Utilities;
+using System.Data.HashFunction.Utilities.IntegerManipulation;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,7 +49,7 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc/>
-        public override byte[] ComputeHash(byte[] data)
+        protected override byte[] ComputeHashInternal(Stream data)
         {
             if (HashSize != 32)
                 throw new ArgumentOutOfRangeException("HashSize");
@@ -54,9 +57,9 @@ namespace System.Data.HashFunction
 
             UInt32 h = 0;
 
-            foreach (var b in data)
-                h = (33 * h) ^ b;
-
+            foreach (var dataByte in data.AsEnumerable())
+                h = (33 * h) ^ dataByte;
+            
             return BitConverter.GetBytes(h);
         }
     }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.HashFunction.Utilities;
+using System.Data.HashFunction.Utilities.IntegerManipulation;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -133,7 +135,7 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc/>
-        public override byte[] ComputeHash(byte[] data)
+        protected override byte[] ComputeHashInternal(Stream data)
         {
             if (!HashParameters.ContainsKey(HashSize))
                 throw new ArgumentOutOfRangeException("HashSize");
@@ -158,12 +160,10 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="data">Data to be hashed.</param>
         /// <returns>4-byte array containing the results of hashing the data provided.</returns>
-        protected byte[] ComputeHash32(byte[] data)
+        protected byte[] ComputeHash32(Stream data)
         {
             var prime =  HashParameters[32].Prime[0];
             var offset = HashParameters[32].Offset[0];
-
-            
 
             return BitConverter.GetBytes(
                 ProcessBytes32(prime, offset, data));
@@ -174,7 +174,7 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="data">Data to be hashed.</param>
         /// <returns>8-byte array containing the results of hashing the data provided.</returns>
-        protected byte[] ComputeHash64(byte[] data)
+        protected byte[] ComputeHash64(Stream data)
         {
             var prime =  ((UInt64) HashParameters[64].Prime[1]  << 32) | HashParameters[64].Prime[0];
             var offset = ((UInt64) HashParameters[64].Offset[1] << 32) | HashParameters[64].Offset[0];
@@ -191,7 +191,8 @@ namespace System.Data.HashFunction
         /// <param name="offset">FNV offset to use for calculations.</param>
         /// <param name="data">Data to calculate against.</param>
         /// <returns>A read-only list of UInt32 values representing the resulting hash value.</returns>
-        protected abstract IReadOnlyList<UInt32> ProcessBytes(IReadOnlyList<UInt32> prime, IReadOnlyList<UInt32> offset, IReadOnlyList<byte> data);
+        protected abstract IReadOnlyList<UInt32> ProcessBytes(
+            IReadOnlyList<UInt32> prime, IReadOnlyList<UInt32> offset, Stream data);
 
         /// <summary>
         /// Run applicable 32-bit FNV algorithm on all data supplied.
@@ -200,7 +201,7 @@ namespace System.Data.HashFunction
         /// <param name="offset">FNV offset to use for calculations.</param>
         /// <param name="data">Data to calculate against.</param>
         /// <returns>A UInt32 value representing the resulting hash value.</returns>
-        protected abstract UInt32 ProcessBytes32(UInt32 prime, UInt32 offset, IReadOnlyList<byte> data);
+        protected abstract UInt32 ProcessBytes32(UInt32 prime, UInt32 offset, Stream data);
 
         /// <summary>
         /// Run applicable 64-bit FNV algorithm on all data supplied.
@@ -209,7 +210,7 @@ namespace System.Data.HashFunction
         /// <param name="offset">FNV offset to use for calculations.</param>
         /// <param name="data">Data to calculate against.</param>
         /// <returns>A UInt64 value representing the resulting hash value.</returns>
-        protected abstract UInt64 ProcessBytes64(UInt64 prime, UInt64 offset, IReadOnlyList<byte> data);
+        protected abstract UInt64 ProcessBytes64(UInt64 prime, UInt64 offset, Stream data);
 
 
     }

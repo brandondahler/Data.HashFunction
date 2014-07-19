@@ -4,7 +4,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.HashFunction.Utilities;
+using System.Data.HashFunction.Utilities.IntegerManipulation;
+using System.IO;
 
 namespace System.Data.HashFunction
 {
@@ -86,6 +87,23 @@ namespace System.Data.HashFunction
             }
         }
 
+        /// <inheritdoc/>
+        protected override byte[] ComputeHashInternal(Stream data)
+        {
+            var ms = data as MemoryStream;
+
+            if (ms != null)
+                return ComputeHash(ms.ToArray());
+            
+            using (ms = new MemoryStream())
+            {
+                data.CopyTo(ms);
+                
+                return ComputeHash(ms.ToArray());
+            }
+        }
+
+
         #region ComputeHash32
 
         /// <summary>
@@ -103,9 +121,9 @@ namespace System.Data.HashFunction
                     return Hash32Len13to24(data);
             }
 
-            // len > 24
-            UInt32 h = (UInt32)data.Length;
-            UInt32 g = c1 * (UInt32)data.Length;
+            // data.Length > 24
+            UInt32 h = (UInt32) data.Length;
+            UInt32 g = (UInt32) data.Length * c1;
             UInt32 f = g;
 
             {

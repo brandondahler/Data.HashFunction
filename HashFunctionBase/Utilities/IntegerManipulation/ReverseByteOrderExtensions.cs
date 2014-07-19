@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.Utilities
+namespace System.Data.HashFunction.Utilities.IntegerManipulation
 {
     /// <summary>
     /// Static class to provide ReverseByteOrder extension functions.

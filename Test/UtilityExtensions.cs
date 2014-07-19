@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -55,6 +56,57 @@ namespace System.Data.HashFunction.Test
         public static byte[] ToBytes(this string value)
         {
             return Encoding.UTF8.GetBytes(value);
+        }
+
+
+        public static void LoadAllReferencedAssemblies(this AppDomain domain)
+        {
+            IEnumerable<AssemblyName> referencedAssemblies;
+
+            var loadedAssemblies = new HashSet<string>();
+
+            do
+            {
+                referencedAssemblies = domain.GetAssemblies()
+                    .SelectMany(a => a.GetReferencedAssemblies())
+                    .Select(an => an.FullName)
+                    .Except(domain.GetAssemblies()
+                        .Select(a => a.GetName().FullName))
+                    .Except(loadedAssemblies)
+                    .Select(fn => new AssemblyName(fn));
+
+                foreach (var referencedAssembly in referencedAssemblies)
+                {
+                    domain.Load(referencedAssembly);
+                    loadedAssemblies.Add(referencedAssembly.FullName);
+                }
+
+            } while (referencedAssemblies.Any());
+
+        }
+
+        /// <summary>
+        /// Recursively resolves all base types.
+        /// </summary>
+        /// <param name="parentType">Type to resolve base types of.</param>
+        /// <param name="includeParentType">If true, includes original type in the returned enumeration.</param>
+        /// <returns>Enumeration yielding each of the base types of the parent type, descending the hierarchy of types.</returns>
+        public static IEnumerable<Type> GetBaseTypes(this Type parentType, bool includeParentType = false)
+        {
+            if (parentType == null)
+                throw new ArgumentNullException("parentType");
+
+            if (includeParentType)
+                yield return parentType;
+
+            var currentType = parentType;
+
+            while (currentType != null)
+            {
+                yield return currentType;
+
+                currentType = currentType.BaseType;
+            }
         }
     }
 }

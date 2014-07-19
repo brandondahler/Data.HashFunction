@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.Utilities;
+using System.Data.HashFunction.Utilities.IntegerManipulation;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -28,6 +30,14 @@ namespace System.Data.HashFunction
         public UInt32 Seed { get; set; }
 
 
+        /// <inheritdoc/>
+        protected override bool RequiresSeekableStream { get { return true; } }
+
+        /// <summary>
+        /// Constant m as defined by MurmurHash1 specification.
+        /// </summary>
+        protected const UInt32 m = 0XC6A4A793;
+
         /// <summary>
         /// Constructs new <see cref="MurmurHash1"/> instance.
         /// </summary>
@@ -39,41 +49,36 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc/>
-        public override byte[] ComputeHash(byte[] data)
+        protected override byte[] ComputeHashInternal(Stream data)
         {
             if (HashSize != 32)
                 throw new ArgumentOutOfRangeException("HashSize");
 
-            const UInt32 m = 0XC6A4A793;
-
             UInt32 h = Seed ^ ((UInt32) data.Length * m);
+            var dataGroups = data.AsGroupedStreamData(4);
 
-            //----------
             
-            for (int x = 0; x < data.Length / 4; ++x)
+            foreach (var dataGroup in dataGroups)
             {
-                h += BitConverter.ToUInt32(data, x * 4);
+                h += BitConverter.ToUInt32(dataGroup, 0);
                 h *= m;
                 h ^= h >> 16;
             }
             
-            //----------
 
-            var remainderStartIndex = data.Length - (data.Length % 4);
+            var remainder = dataGroups.Remainder;
 
-            switch(data.Length % 4)
+            switch(remainder.Length)
             {
-                case 3: h += (UInt32) data[remainderStartIndex + 2] << 16;  goto case 2;
-                case 2: h += (UInt32) data[remainderStartIndex + 1] <<  8;  goto case 1;
+                case 3: h += (UInt32) remainder[2] << 16;  goto case 2;
+                case 2: h += (UInt32) remainder[1] <<  8;  goto case 1;
                 case 1:
-                    h += (UInt32) data[remainderStartIndex];
+                    h += (UInt32) remainder[0];
                     h *= m;
                     h ^= h >> 16;
                     break;
             };
  
-            //----------
-
             h *= m;
             h ^= h >> 10;
             h *= m;

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.Utilities;
+using System.Data.HashFunction.Utilities.IntegerManipulation;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -24,7 +26,7 @@ namespace System.Data.HashFunction
         /// Seed value for hash calculation.
         /// </summary>
         public UInt32 InitVal { get; set; }
-        
+
 
         /// <summary>
         /// Constructs new <see cref="JenkinsLookup2"/> instance.
@@ -37,7 +39,7 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc/>
-        public override byte[] ComputeHash(byte[] data)
+        protected override byte[] ComputeHashInternal(Stream data)
         {
             if (HashSize != 32)
                 throw new ArgumentOutOfRangeException("HashSize");
@@ -46,50 +48,56 @@ namespace System.Data.HashFunction
             UInt32 b = 0x9e3779b9;
             UInt32 c = InitVal;
 
-            for (int x = 0; x < data.Length / 12; ++x)
+            int dataCount = 0;
+            var dataGroups = data.AsGroupedStreamData(12);
+
+            foreach (var dataGroup in dataGroups)
             {
-                a += BitConverter.ToUInt32(data, (x * 12) + 0);
-                b += BitConverter.ToUInt32(data, (x * 12) + 4);
-                c += BitConverter.ToUInt32(data, (x * 12) + 8);
+                a += BitConverter.ToUInt32(dataGroup, 0);
+                b += BitConverter.ToUInt32(dataGroup, 4);
+                c += BitConverter.ToUInt32(dataGroup, 8);
 
                 Mix(ref a, ref b, ref c);
+
+                dataCount += dataGroup.Length;
             }
 
-            c += (UInt32) data.Length;
 
-            var remainderStartIndex = data.Length - (data.Length % 12);
+            byte[] remainder = dataGroups.Remainder;
 
             // All the case statements fall through on purpose
-            switch (data.Length % 12)
+            switch (remainder.Length)
             {
-                case 11: c += (UInt32) data[remainderStartIndex + 10] << 24;    goto case 10;
-                case 10: c += (UInt32) data[remainderStartIndex +  9] << 16;    goto case  9;
-                case  9: c += (UInt32) data[remainderStartIndex +  8] <<  8;    goto case  8;
+                case 11: c += (UInt32) remainder[10] << 24;    goto case 10;
+                case 10: c += (UInt32) remainder[ 9] << 16;    goto case  9;
+                case  9: c += (UInt32) remainder[ 8] <<  8;    goto case  8;
                 // the first byte of c is reserved for the length
 
                 case 8:
-                    b += BitConverter.ToUInt32(data, remainderStartIndex + 4);
+                    b += BitConverter.ToUInt32(remainder, 4);
                     goto case 4;
 
-                case 7: b += (UInt32) data[remainderStartIndex +  6] << 16; goto case 6;
-                case 6: b += (UInt32) data[remainderStartIndex +  5] <<  8; goto case 5;
-                case 5: b += (UInt32) data[remainderStartIndex +  4];       goto case 4;
+                case 7: b += (UInt32) remainder[6] << 16; goto case 6;
+                case 6: b += (UInt32) remainder[5] <<  8; goto case 5;
+                case 5: b += (UInt32) remainder[4];       goto case 4;
 
                 case 4:
-                    a += BitConverter.ToUInt32(data, remainderStartIndex); 
+                    a += BitConverter.ToUInt32(remainder, 0); 
                     break;
 
-                case  3: a += (UInt32) data[remainderStartIndex + 2] << 16; goto case  2;
-                case  2: a += (UInt32) data[remainderStartIndex + 1] <<  8; goto case  1;
+                case  3: a += (UInt32) remainder[2] << 16; goto case  2;
+                case  2: a += (UInt32) remainder[1] <<  8; goto case  1;
                 case  1: 
-                    a += (UInt32) data[remainderStartIndex];         
-                    break;
-
-                case 0:
+                    a += (UInt32) remainder[0];         
                     break;
             }
 
+            dataCount += remainder.Length;
+
+            c += (UInt32) dataCount;
+
             Mix(ref a, ref b, ref c);
+
 
             return BitConverter.GetBytes(c);
         }

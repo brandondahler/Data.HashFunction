@@ -2,6 +2,7 @@
 using MoreLinq;
 using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.Test.Mocks;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -13,177 +14,6 @@ using Xunit;
 
 namespace System.Data.HashFunction.Test
 {
-    internal sealed class TestConstants
-    {
-        // Constant values available for KnownValues to use.
-        public static readonly byte[] Empty = new byte[0];
-        public static readonly byte[] FooBar = "foobar".ToBytes();
-
-        public static readonly byte[] LoremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Ut ornare aliquam mauris, at volutpat massa.  Phasellus pulvinar purus eu venenatis commodo.".ToBytes();
-        
-        public static readonly byte[] RandomShort = "55d0e01ec669dc69".HexToBytes();
-        public static readonly byte[] RandomLong = "1122eeba86d52989b26b0efd2be8d091d3ad307b771ff8d1208104f9aa40b12ab057a0d78656ba037e475178c159bf3ee64dcd279610d64bb7888a97211884c7a894378263135124720ef6ef560da6c85fb491cb732b331e89bcb00e7daef271e127483e91b189ceeaf2f6711394e2eca07fb4db62c5a8fd8195ae3b39da63".HexToBytes();
-    }
-
-    public abstract class IHashFunctionTests<IHashFunctionT>
-        where IHashFunctionT : class, IHashFunction, new()
-    {
-        protected class KnownValue
-        {
-            public int HashSize;
-            public byte[] TestValue;
-            public string HashHex;
-
-            public KnownValue(int size, IEnumerable<byte> value, string hash)
-            {
-                HashSize = size;
-                TestValue = value.ToArray();
-                HashHex = hash;
-            }
-        }
-
-        protected abstract IEnumerable<KnownValue> KnownValues { get; }
-
-        private readonly TimeSpan SpeedTestTarget = new TimeSpan(0, 0, 1);
-        private readonly int SpeedTestMaxSizes = 6;
-        
-        [Fact]
-        public void IHashFunction_HashSizes_Manipulate()
-        {
-            var hf = new IHashFunctionT();
-
-            Assert.NotNull(hf.ValidHashSizes);
-
-            var validHashSizes = hf.ValidHashSizes.Take(10000);
-            
-            Assert.NotEmpty(validHashSizes);
-            Assert.Equal(validHashSizes, validHashSizes.Distinct());
-            
-            foreach (var hashSize in validHashSizes)
-            {
-                Assert.DoesNotThrow(() => {
-                    hf.HashSize = hashSize;
-                });
-
-                Assert.Equal(hashSize, hf.HashSize);
-            }
-
-            Assert.Equal("value", 
-                Assert.Throws<ArgumentOutOfRangeException>(() =>
-                    hf.HashSize = -1)
-                .ParamName);
-        }
-
-        [Fact]
-        public void IHashFunction_ComputeHash_MatchesKnownValues()
-        {
-            var hf = new IHashFunctionT();
-
-            foreach (var knownValue in KnownValues)
-            {
-                hf.HashSize = knownValue.HashSize;
-
-                var hashResults = hf.ComputeHash(knownValue.TestValue);
-
-                Assert.Equal(knownValue.HashHex.HexToBytes(), hashResults);
-            }
-        }
-
-        [Fact]
-        public void IHashFunction_ComputeHash_InvalidHashSize_Throws()
-        {
-            var hfMock = new Mock<IHashFunctionT>() { CallBase = true };
-            hfMock.SetupGet(p => p.HashSize)
-                .Returns(-1);
-
-            var hf = hfMock.Object;
-
-            Assert.Equal("HashSize", 
-                Assert.Throws<ArgumentOutOfRangeException>(() =>
-                    hf.ComputeHash(new byte[0]))
-                .ParamName);
-        }
-
-        //[Fact]
-        [Fact(Skip = "SpeedTest is for relative benchmarking only.")]
-        public void IHashFunction_ComputeHash_SpeedTest_ByteArray()
-        {
-            var hf = new IHashFunctionT();
-
-            var kvBytes = new[] {
-                TestConstants.Empty,
-                TestConstants.FooBar,
-                TestConstants.LoremIpsum,
-                TestConstants.RandomShort,
-                TestConstants.RandomLong
-            };
-
-            var testHashSizes = hf.ValidHashSizes;
-
-            if (testHashSizes.Count() > SpeedTestMaxSizes)
-            {
-                var takeStep = (int) Math.Ceiling((double)hf.ValidHashSizes.Count() / (SpeedTestMaxSizes - 1));
-
-                testHashSizes = testHashSizes.TakeEvery(takeStep)
-                    .Concat(hf.ValidHashSizes.Last());
-            }
-
-            foreach (var hashSize in testHashSizes)
-            {
-                hf.HashSize = hashSize;
-
-                long testCount = 1000;
-                var sw = new Stopwatch();
-                
-                int tries;
-                for (tries = 0; tries < 10; ++tries)
-                {
-                    sw.Restart();
-
-                    Parallel.For(0, testCount, (x) => {
-                        hf.ComputeHash(kvBytes[x % kvBytes.Length]);
-                    });
-
-                    sw.Stop();
-
-                    if (sw.Elapsed.Ticks >= (SpeedTestTarget.Ticks * 0.9))
-                        break;
-
-                    var testCountMultiplier = ((double)SpeedTestTarget.Ticks / sw.Elapsed.Ticks);
-
-                    if (testCountMultiplier < 1.5d)
-                        testCountMultiplier = 1.5d;
-
-                    testCount = (long) (testCount * testCountMultiplier);
-                }
-
-
-                Console.WriteLine("{0} bits - {1:N3} hashes/sec ({2:N} in {3}ms, {4} tries)", 
-                    hashSize,
-                    (testCount / (sw.ElapsedMilliseconds / 1000.0d)),
-                    testCount, 
-                    sw.ElapsedMilliseconds,
-                    tries);
-            }
-        }
-    }
-
-    public abstract class IHashFunctionTests_HashFunctionWrapper_NonGeneric<HashAlgorithmT>
-        : IHashFunctionTests<IHashFunctionTests_HashFunctionWrapper_NonGeneric<HashAlgorithmT>.Wrapper>
-        where HashAlgorithmT : HashAlgorithm, new()
-    {
-        public class Wrapper
-            : HashAlgorithmWrapper
-        {
-            public Wrapper()
-                : base(new HashAlgorithmT())
-            {
-
-            }
-        }
-
-
-    }
 
     #region Concrete Tests
 
@@ -345,13 +175,14 @@ namespace System.Data.HashFunction.Test
             }
         }
     }
-    
+
     #endregion
 
     #region Data.HashFunction.CityHash
 
-    public class IHashFunctionTests_CityHash
-        : IHashFunctionTests<CityHash>
+    public abstract class IHashFunctionTests_CityHash<CityHashT>
+        : IHashFunctionTests<CityHashT>
+        where CityHashT : CityHash, new()
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -396,6 +227,26 @@ namespace System.Data.HashFunction.Test
         }
     }
 
+
+    public class IHashFunctionTests_CityHash
+        : IHashFunctionTests_CityHash<CityHash>
+    {
+
+    }
+
+    public class IHashFunctionTests_CityHash_BufferedStream
+        : IHashFunctionTests_CityHash<IHashFunctionTests_CityHash_BufferedStream.CityHash_BufferedStream>
+    {
+        public class CityHash_BufferedStream : CityHash
+        {
+            protected override byte[] ComputeHashInternal(IO.Stream data)
+            {
+                using (var bs = new BufferedStream(data))
+                    return base.ComputeHashInternal(bs);
+            }
+        }
+    }
+
     #endregion
 
     #region Data.HashFunction.ELF
@@ -425,8 +276,8 @@ namespace System.Data.HashFunction.Test
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
-            get 
-            { 
+            get
+            {
                 return new[] {
                     new KnownValue(32, TestConstants.Empty,      "c59d1c81"),
                     new KnownValue(32, TestConstants.FooBar,     "62b2f031"),
@@ -439,7 +290,7 @@ namespace System.Data.HashFunction.Test
                     new KnownValue(128, TestConstants.Empty,      "8dc595627521b8624201bb072e27626c"),
                     new KnownValue(128, TestConstants.FooBar,     "aa93c2d25383c56dbf643c9ceabf9678"),
                     new KnownValue(128, TestConstants.LoremIpsum, "130c122234e097c352c819800a56ea75"),
-                }; 
+                };
             }
         }
     }
@@ -470,34 +321,11 @@ namespace System.Data.HashFunction.Test
 
     #endregion
 
-    #region Data.HashFunction.HashFunctionBase
+    #region Data.HashFunction.Core
 
     public class IHashFunctionTests_TestHashFunction
-            : IHashFunctionTests<IHashFunctionTests_TestHashFunction.TestHashFunction>
+            : IHashFunctionTests<HashFunctionBaseImpl>
     {
-        public class TestHashFunction 
-            : HashFunctionBase
-        {
-            public override IEnumerable<int> ValidHashSizes
-            {
-                get { return new[] { 0 }; }
-            }
-
-            public TestHashFunction()
-                : base(0)
-            {
-
-            }
-
-            public override byte[] ComputeHash(byte[] data)
-            {
-                if (HashSize != 0)
-                    throw new ArgumentOutOfRangeException("HashSize");
-
-                return new byte[0];
-            }
-        }
-
         protected override IEnumerable<KnownValue> KnownValues
         {
             get { return new[] { new KnownValue(0, TestConstants.Empty, "") }; }
@@ -698,8 +526,8 @@ namespace System.Data.HashFunction.Test
             }
         }
     }
-        
-        
+
+
     public class IHashFunctionTests_JenkinsLookup2
         : IHashFunctionTests<JenkinsLookup2>
     {
@@ -741,8 +569,8 @@ namespace System.Data.HashFunction.Test
             }
         }
     }
-        
-        
+
+
     public class IHashFunctionTests_JenkinsLookup3
         : IHashFunctionTests<JenkinsLookup3>
     {
@@ -1703,7 +1531,7 @@ namespace System.Data.HashFunction.Test
         }
     }
 
-    #pragma warning restore 0618 // End ignoring Obsolete warnings
+#pragma warning restore 0618 // End ignoring Obsolete warnings
 
 
     public class IHashFunctionTests_SpookyHashV2
@@ -1763,18 +1591,244 @@ namespace System.Data.HashFunction.Test
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
-            get { 
+            get
+            {
                 return new[] {
                     new KnownValue(32, TestConstants.Empty, "055dcc02"),
                     new KnownValue(32, TestConstants.FooBar, "af4aa3ed"),
                     new KnownValue(32, TestConstants.LoremIpsum, "ac46ea92"),
-                }; 
+                };
             }
         }
     }
 
     #endregion
     
+    #endregion
+
+    #region Abstract Tests
+
+    public abstract class IHashFunctionTests<IHashFunctionT>
+        where IHashFunctionT : class, IHashFunction, new()
+    {
+        protected class KnownValue
+        {
+            public int HashSize;
+            public byte[] TestValue;
+            public string HashHex;
+
+            public KnownValue(int size, IEnumerable<byte> value, string hash)
+            {
+                HashSize = size;
+                TestValue = value.ToArray();
+                HashHex = hash;
+            }
+        }
+
+        protected abstract IEnumerable<KnownValue> KnownValues { get; }
+
+        private readonly TimeSpan SpeedTestTarget = new TimeSpan(0, 0, 1);
+        private readonly int SpeedTestMaxSizes = 6;
+        
+        [Fact]
+        public void IHashFunction_HashSizes_Manipulate()
+        {
+            var hf = new IHashFunctionT();
+
+            Assert.NotNull(hf.ValidHashSizes);
+
+            var validHashSizes = hf.ValidHashSizes.Take(10000);
+            
+            Assert.NotEmpty(validHashSizes);
+            Assert.Equal(validHashSizes, validHashSizes.Distinct());
+            
+            foreach (var hashSize in validHashSizes)
+            {
+                Assert.DoesNotThrow(() => {
+                    hf.HashSize = hashSize;
+                });
+
+                Assert.Equal(hashSize, hf.HashSize);
+            }
+
+            Assert.Equal("value", 
+                Assert.Throws<ArgumentOutOfRangeException>(() =>
+                    hf.HashSize = -1)
+                .ParamName);
+        }
+
+        [Fact]
+        public void IHashFunction_ComputeHash_ByteArray_MatchesKnownValues()
+        {
+            var hf = new IHashFunctionT();
+
+            foreach (var knownValue in KnownValues)
+            {
+                hf.HashSize = knownValue.HashSize;
+
+                var hashResults = hf.ComputeHash(knownValue.TestValue);
+
+                Assert.Equal(knownValue.HashHex.HexToBytes(), hashResults);
+            }
+        }
+
+        [Fact]
+        public void IHashFunction_ComputeHash_Stream_Seekable_MatchesKnownValues()
+        {
+            var hf = new IHashFunctionT();
+
+            foreach (var knownValue in KnownValues)
+            {
+                hf.HashSize = knownValue.HashSize;
+
+                using (var ms = new MemoryStream(knownValue.TestValue))
+                {
+                    var hashResults = hf.ComputeHash(ms);
+
+                    Assert.Equal(knownValue.HashHex.HexToBytes(), hashResults);
+                }
+            }
+        }
+
+        [Fact]
+        public void IHashFunction_ComputeHash_Stream_NonSeekable_MatchesKnownValues()
+        {
+            var hf = new IHashFunctionT();
+
+            foreach (var knownValue in KnownValues)
+            {
+                hf.HashSize = knownValue.HashSize;
+
+                var msMock = new Mock<MemoryStream>(knownValue.TestValue) { CallBase = true };
+
+                msMock.SetupGet(ms => ms.CanSeek)
+                    .Returns(false);
+
+                msMock.SetupGet(ms => ms.Length)
+                    .Throws(new NotSupportedException("Seeking not supported.  Hash function likely needs RequiresSeekableStream override."));
+
+
+                using (var ms = msMock.Object)
+                {
+                    var hashResults = hf.ComputeHash(ms);
+
+                    Assert.Equal(knownValue.HashHex.HexToBytes(), hashResults);
+                }
+            }
+        }
+
+        [Fact]
+        public void IHashFunction_ComputeHash_ByteArray_InvalidHashSize_Throws()
+        {
+            var hfMock = new Mock<IHashFunctionT>() { CallBase = true };
+            hfMock.SetupGet(p => p.HashSize)
+                .Returns(-1);
+
+            var hf = hfMock.Object;
+
+            Assert.Equal("HashSize", 
+                Assert.Throws<ArgumentOutOfRangeException>(() =>
+                    hf.ComputeHash(new byte[0]))
+                .ParamName);
+        }
+
+        //[Fact]
+        [Fact(Skip = "SpeedTest is for relative benchmarking only.")]
+        public void IHashFunction_ComputeHash_ByteArray_SpeedTest_ByteArray()
+        {
+            var hf = new IHashFunctionT();
+
+            var kvBytes = new[] {
+                TestConstants.Empty,
+                TestConstants.FooBar,
+                TestConstants.LoremIpsum,
+                TestConstants.RandomShort,
+                TestConstants.RandomLong
+            };
+
+            var testHashSizes = hf.ValidHashSizes;
+
+            if (testHashSizes.Count() > SpeedTestMaxSizes)
+            {
+                var takeStep = (int) Math.Ceiling((double)hf.ValidHashSizes.Count() / (SpeedTestMaxSizes - 1));
+
+                testHashSizes = testHashSizes.TakeEvery(takeStep)
+                    .Concat(hf.ValidHashSizes.Last());
+            }
+
+            foreach (var hashSize in testHashSizes)
+            {
+                hf.HashSize = hashSize;
+
+                long testCount = 1000;
+                var sw = new Stopwatch();
+                
+                int tries;
+                for (tries = 0; tries < 10; ++tries)
+                {
+                    sw.Restart();
+
+                    Parallel.For(0, testCount, (x) => {
+                        hf.ComputeHash(kvBytes[x % kvBytes.Length]);
+                    });
+
+                    sw.Stop();
+
+                    if (sw.Elapsed.Ticks >= (SpeedTestTarget.Ticks * 0.9))
+                        break;
+
+                    var testCountMultiplier = ((double)SpeedTestTarget.Ticks / sw.Elapsed.Ticks);
+
+                    if (testCountMultiplier < 1.5d)
+                        testCountMultiplier = 1.5d;
+
+                    testCount = (long) (testCount * testCountMultiplier);
+                }
+
+
+                Console.WriteLine("{0} bits - {1:N3} hashes/sec ({2:N} in {3}ms, {4} tries)", 
+                    hashSize,
+                    (testCount / (sw.ElapsedMilliseconds / 1000.0d)),
+                    testCount, 
+                    sw.ElapsedMilliseconds,
+                    tries);
+            }
+        }
+    }
+
+    public abstract class IHashFunctionTests_HashFunctionWrapper_NonGeneric<HashAlgorithmT>
+        : IHashFunctionTests<IHashFunctionTests_HashFunctionWrapper_NonGeneric<HashAlgorithmT>.Wrapper>
+        where HashAlgorithmT : HashAlgorithm, new()
+    {
+        public class Wrapper
+            : HashAlgorithmWrapper
+        {
+            public Wrapper()
+                : base(new HashAlgorithmT())
+            {
+
+            }
+        }
+
+
+    }
+
+    #endregion
+
+    #region Constants
+
+    internal sealed class TestConstants
+    {
+        // Constant values available for KnownValues to use.
+        public static readonly byte[] Empty = new byte[0];
+        public static readonly byte[] FooBar = "foobar".ToBytes();
+
+        public static readonly byte[] LoremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Ut ornare aliquam mauris, at volutpat massa.  Phasellus pulvinar purus eu venenatis commodo.".ToBytes();
+
+        public static readonly byte[] RandomShort = "55d0e01ec669dc69".HexToBytes();
+        public static readonly byte[] RandomLong = "1122eeba86d52989b26b0efd2be8d091d3ad307b771ff8d1208104f9aa40b12ab057a0d78656ba037e475178c159bf3ee64dcd279610d64bb7888a97211884c7a894378263135124720ef6ef560da6c85fb491cb732b331e89bcb00e7daef271e127483e91b189ceeaf2f6711394e2eca07fb4db62c5a8fd8195ae3b39da63".HexToBytes();
+    }
+
     #endregion
 
 }

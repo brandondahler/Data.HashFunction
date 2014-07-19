@@ -27,6 +27,13 @@ namespace System.Data.HashFunction
             }
         }
 
+        /// <summary>
+        /// Flag to determine if a hash function needs a seekable stream in order to calculate the hash.
+        /// 
+        /// Override to true to make <see cref="ComputeHash(Stream)"/> pass a seekable stream to <see cref="ComputeHashInternal(Stream)"/>.
+        /// </summary>
+        protected virtual bool RequiresSeekableStream { get { return false; } }
+
         /// <inheritdoc/>
         public abstract IEnumerable<int> ValidHashSizes { get; }
 
@@ -43,6 +50,31 @@ namespace System.Data.HashFunction
         }
 
         /// <inheritdoc/>
-        public abstract byte[] ComputeHash(byte[] data);
+        public virtual byte[] ComputeHash(byte[] data)
+        {
+            return ComputeHash(new MemoryStream(data));
+        }
+
+        /// <inheritdoc/>
+        public byte[] ComputeHash(Stream data)
+        {
+            if (!data.CanRead)
+                throw new ArgumentException("Stream \"data\" must be readable.", "data");
+
+            if (!RequiresSeekableStream || data.CanSeek)
+                return ComputeHashInternal(data);
+
+            using (var ms = new MemoryStream())
+            {
+                data.CopyTo(ms);
+
+                ms.Seek(0, SeekOrigin.Begin);
+
+                return ComputeHashInternal(ms);
+            }
+        }
+
+        /// <inheritdoc/>
+        protected abstract byte[] ComputeHashInternal(Stream data);
     }
 }

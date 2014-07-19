@@ -25,13 +25,13 @@ namespace System.Data.HashFunction
         public IEnumerable<int> ValidHashSizes { get { return new[] { _hashAlgorithm.HashSize }; } }
 
 
-
         private readonly HashAlgorithm _hashAlgorithm;
         private readonly bool _ownsInstance;
 
         private readonly object SyncRoot = new object();
 
         private bool _disposed = false;
+
 
         /// <summary>
         /// Constructs new <see cref="HashAlgorithmWrapper"/> instance.
@@ -63,8 +63,6 @@ namespace System.Data.HashFunction
             Dispose(true);
         }
 
-
-
         /// <summary>
         /// Disposes <see cref="HashAlgorithm"/> passed in constructor if it is owned by this <see cref="HashAlgorithmWrapper"/>.
         /// </summary>
@@ -91,11 +89,7 @@ namespace System.Data.HashFunction
                 return _hashAlgorithm.ComputeHash(data.ToArray());
         }
 
-        /// <summary>
-        /// Computes hash value for given stream.
-        /// </summary>
-        /// <param name="inputStream">Readable stream of data to hash.</param>
-        /// <returns>Hash value of the data that was read from the stream.</returns>
+        /// <inheritdoc/>
         public byte[] ComputeHash(Stream inputStream)
         {
             if (HashSize != _hashAlgorithm.HashSize)
@@ -128,7 +122,6 @@ namespace System.Data.HashFunction
 
         private readonly HashAlgorithmT _hashAlgorithm;
         private readonly object SyncRoot = new object();
-        
         
         private bool _disposed = false;
 
@@ -184,11 +177,7 @@ namespace System.Data.HashFunction
                 return _hashAlgorithm.ComputeHash(data.ToArray());
         }
 
-        /// <summary>
-        /// Computes hash value for given stream.
-        /// </summary>
-        /// <param name="inputStream">Readable stream of data to hash.</param>
-        /// <returns>Hash value of the data that was read from the stream.</returns>
+        /// <inheritdoc/>
         public byte[] ComputeHash(Stream inputStream)
         {
             if (HashSize != _hashAlgorithm.HashSize)
