@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/brandondahler/Data.HashFunction/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Initial release.</releaseNotes>
+    <releaseNotes></releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>BuzHash hash function buz</tags>
   </metadata>

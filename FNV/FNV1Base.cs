@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.HashFunction.Utilities;
 using System.Data.HashFunction.Utilities.IntegerManipulation;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -105,6 +106,8 @@ namespace System.Data.HashFunction
         /// Precomputes offsets and primes for the child type.  
         /// Assumes values that already exist in precomputed storage are the correct values for the child type being constructed.
         /// </remarks>
+        [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", 
+            Justification = "ValidHashSizes must be verified at construction to prevent runtime issues.")]
         protected FNV1Base(int defaultHashSize = 64)
             : base(defaultHashSize)
         {
