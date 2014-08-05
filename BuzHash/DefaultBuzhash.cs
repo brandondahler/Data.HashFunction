@@ -15,25 +15,9 @@ namespace System.Data.HashFunction
         : BuzHashBase
     {
         /// <summary>
-        /// Table of 256 random and distinct UInt64 values.
-        /// </summary>
-        /// <remarks>
-        /// Returns reference to private static readonly UInt64 array.
-        /// Do not modify values contained within returned array.
-        /// </remarks>
-        public override UInt64[] Rtab { get { return _Rtab; } }
-
-        /// <inheritdoc/>
-        public override CircularShiftDirection ShiftDirection { get { return CircularShiftDirection.Left; } }
-
-        /// <inheritdoc/>
-        public override ulong InitVal { get { return 0x3CD05367FD0337D3; } }
-
-
-        /// <summary>
         /// Array of 256 random and distinct UInt64 values.
         /// </summary>
-        private static readonly UInt64[] _Rtab = new UInt64[] {
+        private static readonly IReadOnlyList<UInt64> _Rtab = new UInt64[] {
             0xBDBF3FFFDEEF8A14, 0xFFB5AC3C0DB31F7F, 0x7BF7207BF73C4D2E, 0xADBFFF96358377F6,
             0xC6BF8D442C4FD166, 0x7EB1EFF12B7D81F9, 0x88024802AB9F22C2, 0x2191221208E98495,
             0xA9377F55EBA6AE60, 0x2954721569FD66AE, 0xB109C13854720646, 0x42088A01BE975A1D,
@@ -99,5 +83,54 @@ namespace System.Data.HashFunction
             0xDD645E45898E166D, 0x80000D38B28D2BC0, 0xF7ADA101A6F34F0F, 0x04404000A27DB2F2,
             0x7B79E1EC83874C2A, 0x6B2FFD2662DA5E68, 0xCF3EEBA20B383BCE, 0x4503C00A838F9989
         };
+
+
+        
+        /// <remarks>
+        /// Defaults <see cref="BuzHashBase.ShiftDirection" /> to <see cref="BuzHashBase.CircularShiftDirection.Left" />.
+        /// <inheritdoc cref="DefaultBuzHash(CircularShiftDirection)" />
+        /// </remarks>
+        /// <inheritdoc cref="DefaultBuzHash(CircularShiftDirection)" />
+        public DefaultBuzHash()
+            : this(CircularShiftDirection.Left)
+        {
+
+        }
+
+        /// <param name="shiftDirection">The shift direction.</param>
+        /// <remarks>
+        /// Defaults <see cref="BuzHashBase.InitVal" /> to 0x3CD05367FD0337D3.
+        /// <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, UInt64)" />
+        /// </remarks>
+        /// <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, UInt64)" />
+        public DefaultBuzHash(CircularShiftDirection shiftDirection)
+            : base(_Rtab, shiftDirection, 0x3CD05367FD0337D3)
+        {
+
+        }
+
+        /// <remarks>
+        /// Defaults <see cref="BuzHashBase.ShiftDirection" /> to <see cref="BuzHashBase.CircularShiftDirection.Left" />.
+        /// <inheritdoc cref="DefaultBuzHash(CircularShiftDirection, int)" />
+        /// </remarks>
+        /// <inheritdoc cref="DefaultBuzHash(CircularShiftDirection, int)" />
+        public DefaultBuzHash(int hashSize)
+            : this(CircularShiftDirection.Left, hashSize)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultBuzHash"/> class.
+        /// </summary>
+        /// <remarks>
+        /// Defaults <see cref="BuzHashBase.InitVal" /> to 0x3CD05367FD0337D3.
+        /// </remarks>
+        /// <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, UInt64, int)" />
+        public DefaultBuzHash(CircularShiftDirection shiftDirection, int hashSize)
+            : base(_Rtab, shiftDirection, 0x3CD05367FD0337D3, hashSize)
+        {
+
+        }
     }
 }

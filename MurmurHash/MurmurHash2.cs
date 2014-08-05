@@ -18,38 +18,86 @@ namespace System.Data.HashFunction
     public class MurmurHash2
         : HashFunctionBase
     {
-        /// <inheritdoc/>
-        public override IEnumerable<int> ValidHashSizes
-        {
-            get { return new[] { 32, 64 }; }
-        }
-
         /// <summary>
         /// Seed value for hash calculation.
         /// </summary>
-        public UInt64 Seed { get; set; }
+        /// <value>
+        /// The seed value for hash calculation.
+        /// </value>
+        public UInt64 Seed { get { return _Seed; } }
+
+
+        /// <summary>
+        /// The list of possible hash sizes that can be provided to the <see cref="MurmurHash2" /> constructor.
+        /// </summary>
+        /// <value>
+        /// The list of valid hash sizes.
+        /// </value>
+        public static IEnumerable<int> ValidHashSizes { get { return _ValidHashSizes; } }
 
 
         /// <inheritdoc/>
-        protected override bool RequiresSeekableStream { get { return true; } }        
-        
+        protected override bool RequiresSeekableStream { get { return true; } }
+
         /// <summary>
         /// Constant as defined by MurmurHash2 specification.
         /// </summary>
         protected const UInt64 MixConstant = 0xc6a4a7935bd1e995;
 
 
-        /// <summary>
-        /// Constructs new <see cref="MurmurHash2"/> instance.
-        /// </summary>
+        private readonly UInt64 _Seed;
+
+        private static readonly IEnumerable<int> _ValidHashSizes = new[] { 32, 64 };
+
+
+        /// <remarks>
+        /// Defaults <see cref="Seed" /> to 0.  <inheritdoc cref="MurmurHash2(UInt64)" />
+        /// </remarks>
+        /// <inheritdoc cref="MurmurHash2(UInt64)" />
         public MurmurHash2()
-            : base(64)
+            : this(0U)
         {
-            Seed = 0;
+            
         }
 
+        /// <remarks>
+        /// Defaults <see cref="Seed" /> to 0.
+        /// </remarks>
+        /// <inheritdoc cref="MurmurHash2(int, UInt64)" />
+        public MurmurHash2(int hashSize)
+            : this(hashSize, 0U)
+        {
 
-        /// <inheritdoc/>
+        }
+
+        /// <remarks>
+        /// Defaults <see cref="HashFunctionBase.HashSize" /> to 64.
+        /// </remarks>
+        /// <inheritdoc cref="MurmurHash2(int, UInt64)" />
+        public MurmurHash2(UInt64 seed)
+            : this(64, seed)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MurmurHash2"/> class.
+        /// </summary>
+        /// <param name="hashSize"><inheritdoc cref="HashFunctionBase(int)" /></param>
+        /// <param name="seed"><inheritdoc cref="Seed" /></param>
+        /// <exception cref="System.ArgumentOutOfRangeException">hashSize;hashSize must be contained within MurmurHash2.ValidHashSizes.</exception>
+        /// <inheritdoc cref="HashFunctionBase(int)" />
+        public MurmurHash2(int hashSize, UInt64 seed)
+            : base(hashSize)
+        {
+            if (!ValidHashSizes.Contains(hashSize))
+                throw new ArgumentOutOfRangeException("hashSize", "hashSize must be contained within MurmurHash2.ValidHashSizes.");
+
+            _Seed = seed;
+        }
+
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
         protected override byte[] ComputeHashInternal(Stream data)
         {
             switch (HashSize)
@@ -61,7 +109,7 @@ namespace System.Data.HashFunction
                     return ComputeHash64(data);
 
                 default:
-                    throw new ArgumentOutOfRangeException("HashSize");
+                    throw new InvalidOperationException("HashSize set to an invalid value.");
             }
 
         }
@@ -71,7 +119,9 @@ namespace System.Data.HashFunction
         /// Computes 32-bit hash value for given stream.
         /// </summary>
         /// <param name="data">Stream of data to hash.</param>
-        /// <returns>Hash value of the data.</returns>
+        /// <returns>
+        /// Hash value of the data.
+        /// </returns>
         protected byte[] ComputeHash32(Stream data)
         {
             const UInt32 m = unchecked((UInt32) MixConstant);
@@ -123,7 +173,9 @@ namespace System.Data.HashFunction
         /// Computes 64-bit hash value for given stream.
         /// </summary>
         /// <param name="data">Stream of data to hash.</param>
-        /// <returns>Hash value of the data.</returns>
+        /// <returns>
+        /// Hash value of the data.
+        /// </returns>
         protected byte[] ComputeHash64(Stream data)
         {
             const UInt64 m = MixConstant;

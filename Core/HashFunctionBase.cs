@@ -14,48 +14,44 @@ namespace System.Data.HashFunction
     public abstract class HashFunctionBase 
         : IHashFunction
     {
-        /// <inheritdoc/>
+
+        /// <inheritdoc />
         public virtual int HashSize 
         { 
             get { return _HashSize; }
-            set
-            {
-                if (!ValidHashSizes.Contains(value))
-                    throw new ArgumentOutOfRangeException("value");
-
-                _HashSize = value;
-            }
         }
 
         /// <summary>
         /// Flag to determine if a hash function needs a seekable stream in order to calculate the hash.
-        /// 
-        /// Override to true to make <see cref="ComputeHash(Stream)"/> pass a seekable stream to <see cref="ComputeHashInternal(Stream)"/>.
+        /// Override to true to make <see cref="ComputeHash(Stream)" /> pass a seekable stream to <see cref="ComputeHashInternal(Stream)" />.
         /// </summary>
+        /// <value>
+        /// <c>true</c> if a seekable stream; otherwise, <c>false</c>.
+        /// </value>
         protected virtual bool RequiresSeekableStream { get { return false; } }
 
-        /// <inheritdoc/>
-        public abstract IEnumerable<int> ValidHashSizes { get; }
 
+        private readonly int _HashSize;
 
-        private int _HashSize;
 
         /// <summary>
-        /// Constructs new <see cref="HashFunctionBase"/> instance.
+        /// Initializes a new instance of the <see cref="HashFunctionBase"/> class.
         /// </summary>
-        /// <param name="defaultHashSize">Default value for the <see cref="HashSize"/> property.</param>
-        protected HashFunctionBase(int defaultHashSize)
+        /// <param name="hashSize"><inheritdoc cref="HashSize" /></param>
+        protected HashFunctionBase(int hashSize)
         {
-            _HashSize = defaultHashSize;
+            _HashSize = hashSize;
         }
 
-        /// <inheritdoc/>
+
+        /// <inheritdoc />
         public virtual byte[] ComputeHash(byte[] data)
         {
             return ComputeHash(new MemoryStream(data));
         }
 
-        /// <inheritdoc/>
+        /// <exception cref="System.ArgumentException">Stream \data\ must be readable.;data</exception>
+        /// <inheritdoc />
         public byte[] ComputeHash(Stream data)
         {
             if (!data.CanRead)
@@ -74,7 +70,7 @@ namespace System.Data.HashFunction
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc cref="ComputeHash(Stream)" />
         protected abstract byte[] ComputeHashInternal(Stream data);
     }
 }

@@ -1,0 +1,100 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Web.Extensions" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Web.Script.Serialization" #>
+<#@ output extension=".cs" #>
+<#
+    var testGroups = ReadIHashFunctionTests(Host.ResolvePath("IHashFunctionTests_HashFunctionBase.json"));
+#>
+//! Automatically generated from IHashFunctionTests_HashFunctionBase.tt
+//! Direct modifications to this file will be lost.
+
+using Moq;
+using System;
+using System.Collections.Generic;
+using System.Data.HashFunction.Test.Mocks;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using Xunit;
+
+namespace System.Data.HashFunction.Test
+{
+
+    #pragma warning disable 0618 // Disable ObsoleteAttribute warnings
+
+<# foreach (var testGroup in testGroups) { #>
+    #region <#= testGroup.Name #>
+
+<# foreach (var test in testGroup.Tests) { #>
+<# for (var x = 0; x < test.ConstructionParameters.Length; ++x) { #>
+    public class IHashFunctionTests_<#= test.IHashFunctionT.Replace("<", "_").Replace(">", "") #><#= test.NamePostfix == null ? "" : string.Format("_{0}", test.NamePostfix) #><#= x > 1 ? string.Format("_{0}", x) : "" #>
+        : IHashFunctionTests<<#= test.IHashFunctionT #>>
+    {
+        protected override IEnumerable<KnownValue> KnownValues
+        {
+            get
+            {
+                return new KnownValue[] {
+<# foreach (var knownValue in test.KnownValues) { #>
+                    new KnownValue(<#= knownValue.Bits #>, <#= knownValue.TestValue #>, <#= knownValue.ExpectedValue #>),
+<# } #>
+                };
+            }
+        }
+
+        protected override <#= test.IHashFunctionT #> CreateHashFunction(int hashSize)
+        {
+            return new <#= test.IHashFunctionT #>(<#= test.ConstructionParameters[x] #>);
+        }
+
+        protected override Mock<<#= test.IHashFunctionT #>> CreateHashFunctionMock(int hashSize)
+        {
+            return new Mock<<#= test.IHashFunctionT #>>(<#= test.ConstructionParameters[x] #>);
+        }
+    }
+
+<# } #>
+<# } #>
+    #endregion
+
+<# } #>
+
+    #pragma warning restore 0618 // Restore ObsoleteAttribute warnings
+
+}
+
+<#+
+    public TestGroup[] ReadIHashFunctionTests(string fileLocation)
+    {
+        var jsonSerializer = new JavaScriptSerializer();
+     
+        using (var fs = File.OpenRead(Path.ChangeExtension(fileLocation, "json")))
+        using (var sr = new StreamReader(fs))
+            return jsonSerializer.Deserialize<TestGroup[]>(sr.ReadToEnd());
+    }
+
+    public class TestGroup
+    {
+        public string Name { get; set; }
+        public Test[] Tests { get; set; }
+    }
+
+    public class Test
+    {
+        public string       IHashFunctionT { get; set; }
+        public string       NamePostfix { get; set; }
+        public string[]     ConstructionParameters { get; set; }
+        public KnownValue[] KnownValues { get; set; }
+
+        public class KnownValue
+        {
+            public int    Bits { get; set; }
+            public string TestValue { get; set; }
+            public string ExpectedValue { get; set; }
+        }
+    }
+#>

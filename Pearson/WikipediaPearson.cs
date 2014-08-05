@@ -19,9 +19,6 @@ namespace System.Data.HashFunction
     public class WikipediaPearson
         : PearsonBase
     {
-        /// <inheritdoc/>
-        protected override IReadOnlyList<byte> T { get { return _T; } }
-
         private static readonly byte[] _T = new byte[] {
              98,   6,  85, 150,  36,  23, 112, 164, 135, 207, 169,   5,  26,  64, 165, 219, //  1
              61,  20,  68,  89, 130,  63,  52, 102,  24, 229, 132, 245,  80, 216, 195, 115, //  2
@@ -40,5 +37,19 @@ namespace System.Data.HashFunction
             238,  87, 240, 155, 180, 170, 242, 212, 191, 163,  78, 218, 137, 194, 175, 110, // 15
              43, 119, 224,  71, 122, 142,  42, 160, 104,  48, 247, 103,  15,  11, 138, 239  // 16
         };
+
+        /// <inheritdoc cref="PearsonBase(IReadOnlyList{byte})" />
+        public WikipediaPearson()
+            : base(_T)
+        {
+
+        }
+
+        /// <inheritdoc cref="PearsonBase(IReadOnlyList{byte}, int)" />
+        public WikipediaPearson(int hashSize)
+            : base(_T, hashSize)
+        { 
+        
+        }
     }
 }

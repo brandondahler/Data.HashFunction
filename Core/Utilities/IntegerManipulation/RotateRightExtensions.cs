@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 
 namespace System.Data.HashFunction.Utilities.IntegerManipulation
 {
-    /// <summary>
-    /// Static class to provide RotateRight extension functions.
-    /// </summary>
+    /// <summary>Static class to provide RotateRight extension functions.</summary>
     internal static class RotateRightExtensions
     {
         /// <summary>

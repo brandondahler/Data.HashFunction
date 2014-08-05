@@ -11,32 +11,67 @@ namespace System.Data.HashFunction
     /// </summary>
     public class CRCSettings
     {
-        /// <summary>Length of the CRC output in bits.</summary>
+        /// <summary>
+        /// Length of the produced CRC value, in bits.
+        /// </summary>
+        /// <value>
+        /// The length of the produced CRC value, in bits
+        /// </value>
         public int Bits { get; private set; }
 
 
-        /// <summary>Divisor to use when calculating the CRC.</summary>
+        /// <summary>
+        /// Divisor to use when calculating the CRC.
+        /// </summary>
+        /// <value>
+        /// The divisor that will be used when calculating the CRC value.
+        /// </value>
         public UInt64 Polynomial { get; private set; }
 
 
-        /// <summary>Value to initialize the CRC register to before calculating the CRC.</summary>
+        /// <summary>
+        /// Value to initialize the CRC register to before calculating the CRC.
+        /// </summary>
+        /// <value>
+        /// The value that will be used to initialize the CRC register before the calculation of the CRC value.
+        /// </value>
         public UInt64 InitialValue { get; private set; }
 
 
-        /// <summary>If true, the CRC calculation processes input as big endian bit order.</summary>
+        /// <summary>
+        /// If true, the CRC calculation processes input as big endian bit order.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the input should be processed in big endian bit order; otherwise, <c>false</c>.
+        /// </value>
         public bool ReflectIn { get; private set; }
 
 
-        /// <summary>If true, the CRC calculation processes output as big endian bit order.</summary>
+        /// <summary>
+        /// If true, the CRC calculation processes the output as big endian bit order.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the CRC calculation processes the output as big endian bit order; otherwise, <c>false</c>.
+        /// </value>
         public bool ReflectOut { get; private set; }
 
 
-        /// <summary>Value to xor the final CRC value by.</summary>
+        /// <summary>
+        /// Value to xor with the final CRC value.
+        /// </summary>
+        /// <value>
+        /// The value to xor with the final CRC value.
+        /// </value>
         public UInt64 XOrOut { get; private set; }
 
 
-        /// <summary>Lookup table of precalculated divisions of the index divided by the <see cref="CRCSettings.Polynomial"/>.</summary>
-        public UInt64[] DataDivisionTable { get { return _DataDivisionTable.Value; } }
+        /// <summary>
+        /// Lookup table of precalculated divisions of the index divided by the <see cref="Polynomial" />.
+        /// </summary>
+        /// <value>
+        /// The precalculated table giving the result of dividing the items index by the <see cref="Polynomial" />.
+        /// </value>
+        public IReadOnlyList<UInt64> DataDivisionTable { get { return _DataDivisionTable.Value; } }
 
 
 
@@ -44,24 +79,17 @@ namespace System.Data.HashFunction
 
 
 
+
         /// <summary>
-        /// Creates new <see cref="CRCSettings"/> instance.  Ensures the settings are complete and valid.
+        /// Initializes a new instance of the <see cref="CRCSettings"/> class.
         /// </summary>
-        /// <param name="bits">Length of the CRC output in bits, must be in the range [1, 64].</param>
-        /// <param name="polynomial">
-        /// Divisor to use when calculating the CRC, 
-        ///   must not be greater than the maximum unsigned value for a [bits]-length integer.
-        /// </param>
-        /// <param name="initialValue">
-        /// Value to initialize the CRC register to before calculating the CRC,
-        ///   must not be greater than the maximum unsigned value for a [bits]-length integer.
-        /// </param>
-        /// <param name="reflectIn">If true, the CRC calculation processes input as big endian bit order.</param>
-        /// <param name="reflectOut">If true, the CRC calculation processes output as big endian bit order.</param>
-        /// <param name="xOrOut">
-        /// Value to xor the final CRC value by,
-        ///   must not be greater than the maximum unsigned value for a [bits]-length integer.
-        /// </param>
+        /// <param name="bits"><inheritdoc cref="Bits" /></param>
+        /// <param name="polynomial"><inheritdoc cref="Polynomial" /></param>
+        /// <param name="initialValue"><inheritdoc cref="InitialValue" /></param>
+        /// <param name="reflectIn"><inheritdoc cref="ReflectIn" /></param>
+        /// <param name="reflectOut"><inheritdoc cref="ReflectOut" /></param>
+        /// <param name="xOrOut"><inheritdoc cref="XOrOut" /></param>
+        /// <exception cref="System.ArgumentOutOfRangeException">bits;bitLength must be in the range [1, 64].</exception>
         public CRCSettings(
             int bits, UInt64 polynomial, UInt64 initialValue, 
             bool reflectIn, bool reflectOut, UInt64 xOrOut)
@@ -71,7 +99,7 @@ namespace System.Data.HashFunction
 
             CheckInput("polynomial",   polynomial,   bits);
             CheckInput("initialValue", initialValue, bits);
-            CheckInput("xOrOut", xOrOut, bits);
+            CheckInput("xOrOut",       xOrOut, bits);
 
 
             Bits = bits;
@@ -92,14 +120,16 @@ namespace System.Data.HashFunction
         /// <summary>
         /// Calculates the DataDivisionTable property eagerly so that it is not calculated just-in-time.
         /// </summary>
-        /// <returns>True if the table was calculated, false if the table has already been calculated.</returns>
+        /// <returns>
+        /// True if the table was calculated, false if the table has already been calculated.
+        /// </returns>
         public bool PreCalculateTable()
         {
             if (_DataDivisionTable.IsValueCreated)
                 return false;
 
-            var noOp = _DataDivisionTable.Value;
-            noOp = null;
+            GC.KeepAlive(
+                _DataDivisionTable.Value);
 
             return true;
         }
@@ -111,6 +141,7 @@ namespace System.Data.HashFunction
         /// <param name="paramName">Name of the parameter being passed, used in exception that is thrown if the value is invalid.</param>
         /// <param name="inputValue">Value to check.</param>
         /// <param name="bitLength">Expected bit length of the inputValue parameter.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException"></exception>
         private static void CheckInput(string paramName, UInt64 inputValue, int bitLength)
         {
             var maxInputValue = UInt64.MaxValue >> (64 - bitLength);

@@ -17,18 +17,24 @@ namespace System.Data.HashFunction
     public class FNVPrimeOffset
     {
         /// <summary>
-        /// FNV prime number as a IReadOnlyList of UInt32 values.
+        /// FNV prime number as an <see cref="IReadOnlyList{UInt32}" />.
         /// </summary>
+        /// <value>
+        /// The prime number as an <see cref="IReadOnlyList{UInt32}" />.
+        /// </value>
         public virtual IReadOnlyList<UInt32> Prime { get; private set; }
 
         /// <summary>
-        /// FNV prime number as a IReadOnlyList of UInt32 values.
+        /// FNV offset as an <see cref="IReadOnlyList{UInt32}" />.
         /// </summary>
+        /// <value>
+        /// The offset as an <see cref="IReadOnlyList{UInt32}" />.
+        /// </value>
         public virtual IReadOnlyList<UInt32> Offset { get; private set; }
 
 
         /// <summary>
-        /// Constructs new <see cref="FNVPrimeOffset"/> instance.
+        /// Initializes a new instance of the <see cref="FNVPrimeOffset"/> class.
         /// </summary>
         /// <param name="bitSize">Number of bits the prime and offset use each.</param>
         /// <param name="prime">Prime integer to be represented.</param>

@@ -16,35 +16,116 @@ namespace System.Data.HashFunction
     public class SpookyHashV2
         : HashFunctionBase
     {
-        /// <inheritdoc/>
-        public override IEnumerable<int> ValidHashSizes { get { return new[] { 32, 64, 128 }; } }
-
         /// <summary>
         /// First seed value for hash calculation.
         /// </summary>
-        public UInt64 InitVal1 { get; set; }
+        /// <value>
+        /// The first seed value for hash calculation.
+        /// </value>
+        public UInt64 InitVal1 { get { return _InitVal1; } }
 
         /// <summary>
         /// Second seed value for hash calculation.
         /// </summary>
+        /// <value>
+        /// The second seed value for hash calculation.
+        /// </value>
         /// <remarks>
         /// Not used for 32-bit and 64-bit modes, used as second seed for 128-bit mode.
         /// </remarks>
-        public UInt64 InitVal2 { get; set; }
+        public UInt64 InitVal2 { get { return _InitVal2; } }
 
 
         /// <summary>
-        /// Constructs new <see cref="SpookyHashV2"/> instance.
+        /// The list of possible hash sizes that can be provided to the <see cref="SpookyHashV2" /> constructor.
         /// </summary>
+        /// <value>
+        /// The list of valid hash sizes.
+        /// </value>
+        public static IEnumerable<int> ValidHashSizes { get { return _validHashSizes; } }
+
+
+
+        private readonly UInt64 _InitVal1;
+        private readonly UInt64 _InitVal2;
+
+        private static readonly IEnumerable<int> _validHashSizes = new[] { 32, 64, 128 };
+
+
+
+        /// <remarks>
+        /// Defaults <see cref="InitVal1" /> to 0. <inheritdoc cref="SpookyHashV2(UInt64)" />
+        /// </remarks>
+        /// <inheritdoc cref="SpookyHashV2(UInt64)" />
         public SpookyHashV2()
-            : base(128)
+            : this(0U)
         {
-            InitVal1 = 0;
-            InitVal2 = 0;
+
+        }
+
+        /// <remarks>
+        /// Defaults <see cref="InitVal1" /> to 0. <inheritdoc cref="SpookyHashV2(int, UInt64)" />
+        /// </remarks>
+        /// <inheritdoc cref="SpookyHashV2(int, UInt64)" />
+        public SpookyHashV2(int hashSize)
+            : this(hashSize, 0U)
+        {
+
+        }
+
+        /// <remarks>
+        /// Defaults <see cref="InitVal2" /> to 0. <inheritdoc cref="SpookyHashV2(UInt64, UInt64)" />
+        /// </remarks>
+        /// <inheritdoc cref="SpookyHashV2(UInt64, UInt64)" />
+        public SpookyHashV2(UInt64 initVal1)
+            : this(initVal1, 0U)
+        { 
+        
+        }
+
+        /// <remarks>
+        /// Defaults <see cref="HashFunctionBase.HashSize" /> to 128.
+        /// </remarks>
+        /// <inheritdoc cref="SpookyHashV2(int, UInt64, UInt64)" />
+        public SpookyHashV2(UInt64 initVal1, UInt64 initVal2)
+            : this(128, initVal1, initVal2)
+        {
+
+        }
+
+        /// <remarks>
+        /// Defaults <see cref="InitVal2" /> to 0.
+        /// </remarks>
+        /// <inheritdoc cref="SpookyHashV2(int, UInt64, UInt64)" />
+        public SpookyHashV2(int hashSize, UInt64 initVal1)
+            : this(hashSize, initVal1, 0U)
+        {
+
         }
 
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SpookyHashV2"/> class.
+        /// </summary>
+        /// <param name="hashSize"><inheritdoc cref="HashFunctionBase(int)" /></param>
+        /// <param name="initVal1"><inheritdoc cref="InitVal1" /></param>
+        /// <param name="initVal2"><inheritdoc cref="InitVal2" /></param>
+        /// <exception cref="System.ArgumentOutOfRangeException">hashSize;hashSize must be contained within SpookyHashV2.ValidHashSizes.</exception>
+        /// <inheritdoc cref="HashFunctionBase(int)" />
+        public SpookyHashV2(int hashSize, UInt64 initVal1, UInt64 initVal2)
+            : base(hashSize)
+        {
+            if (!ValidHashSizes.Contains(hashSize))
+                throw new ArgumentOutOfRangeException("hashSize", "hashSize must be contained within SpookyHashV2.ValidHashSizes.");
+
+            _InitVal1 = initVal1;
+            _InitVal2 = initVal2;
+        }
+
+
+
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
         protected override byte[] ComputeHashInternal(Stream data)
         {
             UInt64[] h = new UInt64[12];
@@ -86,7 +167,7 @@ namespace System.Data.HashFunction
                     return results;
 
                 default:
-                    throw new ArgumentOutOfRangeException("HashSize");
+                    throw new InvalidOperationException("HashSize set to an invalid value.");
             }
         }
 

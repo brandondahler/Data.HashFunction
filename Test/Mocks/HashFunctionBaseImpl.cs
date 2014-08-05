@@ -10,12 +10,6 @@ namespace System.Data.HashFunction.Test.Mocks
     public class HashFunctionBaseImpl
             : HashFunctionBase
     {
-        public override IEnumerable<int> ValidHashSizes
-        {
-            get { return new[] { 0 }; }
-        }
-
-
         public HashFunctionBaseImpl()
             : base(0)
         {
@@ -26,7 +20,7 @@ namespace System.Data.HashFunction.Test.Mocks
         protected override byte[] ComputeHashInternal(Stream data)
         {
             if (HashSize != 0)
-                throw new ArgumentOutOfRangeException("HashSize");
+                throw new InvalidOperationException("HashSize set to an invalid value.");
 
             return new byte[0];
         }
