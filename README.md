@@ -59,6 +59,10 @@ Usage
 
 The usage for all hash functions has been standardized and is accessible via the System.Data.HashFunction.IHashFunction interface.  The core package, Data.HashFunction, only contains wrappers for the .Net BCL's Cryptographic HashAlgorithm functions.  In order to use a different function, you will need to reference one of the implementation packages.
 
+Release Notes
+-------------
+See [Release Notes](https://github.com/brandondahler/Data.HashFunction/wiki/Release-Notes) wiki page.
+
 
 The System.Data.HashFunction namespace?
 -------------------------------------------
