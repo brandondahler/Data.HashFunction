@@ -17,16 +17,11 @@ namespace System.Data.HashFunction
     public class JenkinsOneAtATime
         : HashFunctionBase
     {
-        /// <inheritdoc/>
-        public override IEnumerable<int> ValidHashSizes { get { return new[] { 32 }; } }
-        
 
         /// <summary>
-        /// Constructs new <see cref="JenkinsOneAtATime"/> instance.
+        /// Initializes a new instance of the <see cref="JenkinsOneAtATime" /> class.
         /// </summary>
-        /// <remarks>
-        /// Defaults to 32-bit hash size.
-        /// </remarks>
+        /// <inheritdoc cref="HashFunctionBase(int)" />
         public JenkinsOneAtATime()
             : base(32)
         {
@@ -34,11 +29,12 @@ namespace System.Data.HashFunction
         }
 
 
-        /// <inheritdoc/>
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
         protected override byte[] ComputeHashInternal(Stream data)
         {
             if (HashSize != 32)
-                throw new ArgumentOutOfRangeException("HashSize");
+                throw new InvalidOperationException("HashSize set to an invalid value.");
 
 
             UInt32 hash = 0;

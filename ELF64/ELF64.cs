@@ -18,14 +18,10 @@ namespace System.Data.HashFunction
     public class ELF64
         : HashFunctionBase
     {
-        /// <inheritdoc/>
-        public override IEnumerable<int> ValidHashSizes { get { return new[] { 32 }; } }
-
-
         /// <summary>
-        /// Creates new <see cref="ELF64" /> instance.
+        /// Initializes a new instance of the <see cref="ELF64"/> class.
         /// </summary>
-        /// <remarks>HashSize defaults to 32 bits.</remarks>
+        /// <inheritdoc cref="HashFunctionBase(int)" />
         public ELF64()
             : base(32)
         {
@@ -33,11 +29,12 @@ namespace System.Data.HashFunction
         }
 
 
-        /// <inheritdoc/>
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
         protected override byte[] ComputeHashInternal(Stream data)
         {
             if (HashSize != 32)
-                throw new ArgumentOutOfRangeException("HashSize");
+                throw new InvalidOperationException("HashSize set to an invalid value.");
 
             UInt32 hash = 0;
 

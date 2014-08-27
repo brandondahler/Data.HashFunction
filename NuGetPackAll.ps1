@@ -2,6 +2,6 @@ foreach ($directory in get-childitem -Directory -Exclude:.nuget,.git,packages,Te
 {
 	foreach ($project in get-childitem -File $directory\*.csproj)
 	{
-		nuget pack $project -Build -Prop Configuration=Release -IncludeReferencedProjects;
+		nuget pack $project -Build -Prop Configuration=NuGetDeploy -IncludeReferencedProjects;
 	}
 }

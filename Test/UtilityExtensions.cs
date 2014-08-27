@@ -9,9 +9,7 @@ namespace System.Data.HashFunction.Test
 {
     public static class UtilityExtensions
     {
-        /// <summary>
-        /// Converts a hex string to byte array.
-        /// </summary>
+        /// <summary>Converts a hex string to byte array.</summary>
         /// <param name="hexString">String containing a hexadecimal value, [0-9a-fA-F _-] allowed.</param>
         /// <returns>Byte array of the binary representation of the hexString.</returns>
         public static byte[] HexToBytes(this string hexString)
@@ -48,9 +46,7 @@ namespace System.Data.HashFunction.Test
             return bytes;
         }
 
-        /// <summary>
-        /// Converts string to byte array.
-        /// </summary>
+        /// <summary>Converts string to byte array.</summary>
         /// <param name="value">String to encode into bytes.</param>
         /// <returns>UTF-8 encoding of the string as a byte array.</returns>
         public static byte[] ToBytes(this string value)
@@ -85,9 +81,7 @@ namespace System.Data.HashFunction.Test
 
         }
 
-        /// <summary>
-        /// Recursively resolves all base types.
-        /// </summary>
+        /// <summary>Recursively resolves all base types.</summary>
         /// <param name="parentType">Type to resolve base types of.</param>
         /// <param name="includeParentType">If true, includes original type in the returned enumeration.</param>
         /// <returns>Enumeration yielding each of the base types of the parent type, descending the hierarchy of types.</returns>

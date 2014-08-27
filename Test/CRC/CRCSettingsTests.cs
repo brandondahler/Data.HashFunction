@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.CRC
+namespace System.Data.HashFunction.Test.CRC_Tests
 {
     public class CRCSettingsTests
     {

@@ -11,6 +11,7 @@
 //! Automatically generated from CRCStandards.tt
 //! Direct modifications to this file will be lost.
 
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,16 @@ namespace System.Data.HashFunction.Test
                     new KnownValue(<#= standard.Bits #>, "123456789", <#= standard.Check #>),
                 };
             }
+        }
+
+        protected override <#= standard.Name #> CreateHashFunction(int hashSize)
+        {
+            return new <#= standard.Name #>();
+        }
+
+        protected override Mock<<#= standard.Name #>> CreateHashFunctionMock(int hashSize)
+        {
+            return new Mock<<#= standard.Name #>>();
         }
     }
 <# } #>

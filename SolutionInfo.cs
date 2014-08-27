@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Data.HashFunction Developers")]
@@ -6,4 +7,6 @@
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-[assembly: AssemblyVersion("0.1.2.0")]
+[assembly: CLSCompliant(false)]
+
+[assembly: AssemblyVersion("1.1.1")]

@@ -11,5 +11,6 @@ namespace System.Data.HashFunction.Utilities
     /// </summary>
     internal static class NamespaceDoc
     {
+
     }
 }

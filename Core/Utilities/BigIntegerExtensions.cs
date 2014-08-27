@@ -18,12 +18,15 @@ namespace System.Data.HashFunction.Utilities
         /// </summary>
         /// <param name="value">BigInteger to be converted.</param>
         /// <param name="bitSize">Expected bit-length of resulting array.  Must be a positive multiple of 32.</param>
-        /// <returns>Array of UInt32 values representing the BigInteger value.</returns>
+        /// <returns>
+        /// Array of UInt32 values representing the BigInteger value.
+        /// </returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">bitSize;bitSize must be a positive a multiple of 32.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static UInt32[] ToUInt32Array(this BigInteger value, int bitSize)
         {
             if (bitSize < 0 || bitSize % 32 != 0)
-                throw new ArgumentOutOfRangeException("bitSize", "bigSize must be a positive a multiple of 32.");
+                throw new ArgumentOutOfRangeException("bitSize", "bitSize must be a positive a multiple of 32.");
 
             var uint32Values = new UInt32[bitSize / 32];
             var bigIntegerBytes = value.ToByteArray();

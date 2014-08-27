@@ -18,19 +18,16 @@ namespace System.Data.HashFunction
     public class MurmurHash1
         : HashFunctionBase
     {
-        /// <inheritdoc/>
-        public override IEnumerable<int> ValidHashSizes
-        {
-            get { return new[] { 32 }; }
-        }
-
         /// <summary>
         /// Seed value for hash calculation.
         /// </summary>
-        public UInt32 Seed { get; set; }
+        /// <value>
+        /// The seed value for hash calculation.
+        /// </value>
+        public UInt32 Seed { get { return _Seed; } }
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override bool RequiresSeekableStream { get { return true; } }
 
         /// <summary>
@@ -38,21 +35,35 @@ namespace System.Data.HashFunction
         /// </summary>
         protected const UInt32 m = 0XC6A4A793;
 
-        /// <summary>
-        /// Constructs new <see cref="MurmurHash1"/> instance.
-        /// </summary>
+
+        private readonly UInt32 _Seed;
+
+        /// <remarks>Defaults <see cref="Seed" /> to 0.</remarks>
+        /// <inheritdoc cref="MurmurHash1(UInt32)"/>
         public MurmurHash1()
+            : this(0U)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MurmurHash1"/> class.
+        /// </summary>
+        /// <param name="seed"><inheritdoc cref="Seed" /></param>
+        /// <inheritdoc cref="HashFunctionBase(int)" />
+        public MurmurHash1(UInt32 seed)
             : base(32)
         {
-            Seed = 0;
+            _Seed = seed;
         }
 
 
-        /// <inheritdoc/>
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
         protected override byte[] ComputeHashInternal(Stream data)
         {
             if (HashSize != 32)
-                throw new ArgumentOutOfRangeException("HashSize");
+                throw new InvalidOperationException("HashSize set to an invalid value.");
 
             UInt32 h = Seed ^ ((UInt32) data.Length * m);
             var dataGroups = data.AsGroupedStreamData(4);

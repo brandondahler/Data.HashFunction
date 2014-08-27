@@ -12,229 +12,377 @@ using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
-    /// <summary>Static class containing enumeration and a dictionary of CRC standards and their <see cref="CRCSettings"/>.</summary>
+    /// <summary>
+    /// Static class containing enumeration and a dictionary of CRC standards and their <see cref="CRCSettings" />.
+    /// </summary>
     public static class CRCStandards
     {
-        /// <summary>Enumeration of all defined and implemented CRC standards.</summary>
+        /// <summary>
+        /// Enumeration of all defined and implemented CRC standards.
+        /// </summary>
         public enum Standard
         {
 
-            /// <summary>CRC standard named "CRC3_ROHC".</summary>
+            /// <summary>
+            /// CRC standard named "CRC3_ROHC".
+            /// </summary>
             CRC3_ROHC,
 
-            /// <summary>CRC standard named "CRC4_ITU".</summary>
+            /// <summary>
+            /// CRC standard named "CRC4_ITU".
+            /// </summary>
             CRC4_ITU,
 
-            /// <summary>CRC standard named "CRC5_EPC".</summary>
+            /// <summary>
+            /// CRC standard named "CRC5_EPC".
+            /// </summary>
             CRC5_EPC,
 
-            /// <summary>CRC standard named "CRC5_ITU".</summary>
+            /// <summary>
+            /// CRC standard named "CRC5_ITU".
+            /// </summary>
             CRC5_ITU,
 
-            /// <summary>CRC standard named "CRC5_USB".</summary>
+            /// <summary>
+            /// CRC standard named "CRC5_USB".
+            /// </summary>
             CRC5_USB,
 
-            /// <summary>CRC standard named "CRC6_CDMA2000A".</summary>
+            /// <summary>
+            /// CRC standard named "CRC6_CDMA2000A".
+            /// </summary>
             CRC6_CDMA2000A,
 
-            /// <summary>CRC standard named "CRC6_CDMA2000B".</summary>
+            /// <summary>
+            /// CRC standard named "CRC6_CDMA2000B".
+            /// </summary>
             CRC6_CDMA2000B,
 
-            /// <summary>CRC standard named "CRC6_DARC".</summary>
+            /// <summary>
+            /// CRC standard named "CRC6_DARC".
+            /// </summary>
             CRC6_DARC,
 
-            /// <summary>CRC standard named "CRC6_ITU".</summary>
+            /// <summary>
+            /// CRC standard named "CRC6_ITU".
+            /// </summary>
             CRC6_ITU,
 
-            /// <summary>CRC standard named "CRC7".</summary>
+            /// <summary>
+            /// CRC standard named "CRC7".
+            /// </summary>
             CRC7,
 
-            /// <summary>CRC standard named "CRC7_ROHC".</summary>
+            /// <summary>
+            /// CRC standard named "CRC7_ROHC".
+            /// </summary>
             CRC7_ROHC,
 
-            /// <summary>CRC standard named "CRC8".</summary>
+            /// <summary>
+            /// CRC standard named "CRC8".
+            /// </summary>
             CRC8,
 
-            /// <summary>CRC standard named "CRC8_CDMA2000".</summary>
+            /// <summary>
+            /// CRC standard named "CRC8_CDMA2000".
+            /// </summary>
             CRC8_CDMA2000,
 
-            /// <summary>CRC standard named "CRC8_DARC".</summary>
+            /// <summary>
+            /// CRC standard named "CRC8_DARC".
+            /// </summary>
             CRC8_DARC,
 
-            /// <summary>CRC standard named "CRC8_DVBS2".</summary>
+            /// <summary>
+            /// CRC standard named "CRC8_DVBS2".
+            /// </summary>
             CRC8_DVBS2,
 
-            /// <summary>CRC standard named "CRC8_EBU".</summary>
+            /// <summary>
+            /// CRC standard named "CRC8_EBU".
+            /// </summary>
             CRC8_EBU,
 
-            /// <summary>CRC standard named "CRC8_ICODE".</summary>
+            /// <summary>
+            /// CRC standard named "CRC8_ICODE".
+            /// </summary>
             CRC8_ICODE,
 
-            /// <summary>CRC standard named "CRC8_ITU".</summary>
+            /// <summary>
+            /// CRC standard named "CRC8_ITU".
+            /// </summary>
             CRC8_ITU,
 
-            /// <summary>CRC standard named "CRC8_MAXIM".</summary>
+            /// <summary>
+            /// CRC standard named "CRC8_MAXIM".
+            /// </summary>
             CRC8_MAXIM,
 
-            /// <summary>CRC standard named "CRC8_ROHC".</summary>
+            /// <summary>
+            /// CRC standard named "CRC8_ROHC".
+            /// </summary>
             CRC8_ROHC,
 
-            /// <summary>CRC standard named "CRC8_WCDMA".</summary>
+            /// <summary>
+            /// CRC standard named "CRC8_WCDMA".
+            /// </summary>
             CRC8_WCDMA,
 
-            /// <summary>CRC standard named "CRC10".</summary>
+            /// <summary>
+            /// CRC standard named "CRC10".
+            /// </summary>
             CRC10,
 
-            /// <summary>CRC standard named "CRC10_CDMA2000".</summary>
+            /// <summary>
+            /// CRC standard named "CRC10_CDMA2000".
+            /// </summary>
             CRC10_CDMA2000,
 
-            /// <summary>CRC standard named "CRC11".</summary>
+            /// <summary>
+            /// CRC standard named "CRC11".
+            /// </summary>
             CRC11,
 
-            /// <summary>CRC standard named "CRC12_3GPP".</summary>
+            /// <summary>
+            /// CRC standard named "CRC12_3GPP".
+            /// </summary>
             CRC12_3GPP,
 
-            /// <summary>CRC standard named "CRC12_CDMA2000".</summary>
+            /// <summary>
+            /// CRC standard named "CRC12_CDMA2000".
+            /// </summary>
             CRC12_CDMA2000,
 
-            /// <summary>CRC standard named "CRC12_DECT".</summary>
+            /// <summary>
+            /// CRC standard named "CRC12_DECT".
+            /// </summary>
             CRC12_DECT,
 
-            /// <summary>CRC standard named "CRC13_BBC".</summary>
+            /// <summary>
+            /// CRC standard named "CRC13_BBC".
+            /// </summary>
             CRC13_BBC,
 
-            /// <summary>CRC standard named "CRC14_DARC".</summary>
+            /// <summary>
+            /// CRC standard named "CRC14_DARC".
+            /// </summary>
             CRC14_DARC,
 
-            /// <summary>CRC standard named "CRC15".</summary>
+            /// <summary>
+            /// CRC standard named "CRC15".
+            /// </summary>
             CRC15,
 
-            /// <summary>CRC standard named "CRC15_MPT1327".</summary>
+            /// <summary>
+            /// CRC standard named "CRC15_MPT1327".
+            /// </summary>
             CRC15_MPT1327,
 
-            /// <summary>CRC standard named "ARC".</summary>
+            /// <summary>
+            /// CRC standard named "ARC".
+            /// </summary>
             ARC,
 
-            /// <summary>CRC standard named "CRC16_AUGCCITT".</summary>
+            /// <summary>
+            /// CRC standard named "CRC16_AUGCCITT".
+            /// </summary>
             CRC16_AUGCCITT,
 
-            /// <summary>CRC standard named "CRC16_BUYPASS".</summary>
+            /// <summary>
+            /// CRC standard named "CRC16_BUYPASS".
+            /// </summary>
             CRC16_BUYPASS,
 
-            /// <summary>CRC standard named "CRC16_CCITTFALSE".</summary>
+            /// <summary>
+            /// CRC standard named "CRC16_CCITTFALSE".
+            /// </summary>
             CRC16_CCITTFALSE,
 
-            /// <summary>CRC standard named "CRC16_CDMA2000".</summary>
+            /// <summary>
+            /// CRC standard named "CRC16_CDMA2000".
+            /// </summary>
             CRC16_CDMA2000,
 
-            /// <summary>CRC standard named "CRC16_DDS110".</summary>
+            /// <summary>
+            /// CRC standard named "CRC16_DDS110".
+            /// </summary>
             CRC16_DDS110,
 
-            /// <summary>CRC standard named "CRC16_DECTR".</summary>
+            /// <summary>
+            /// CRC standard named "CRC16_DECTR".
+            /// </summary>
             CRC16_DECTR,
 
-            /// <summary>CRC standard named "CRC16_DECTX".</summary>
+            /// <summary>
+            /// CRC standard named "CRC16_DECTX".
+            /// </summary>
             CRC16_DECTX,
 
-            /// <summary>CRC standard named "CRC16_DNP".</summary>
+            /// <summary>
+            /// CRC standard named "CRC16_DNP".
+            /// </summary>
             CRC16_DNP,
 
-            /// <summary>CRC standard named "CRC16_EN13757".</summary>
+            /// <summary>
+            /// CRC standard named "CRC16_EN13757".
+            /// </summary>
             CRC16_EN13757,
 
-            /// <summary>CRC standard named "CRC16_GENIBUS".</summary>
+            /// <summary>
+            /// CRC standard named "CRC16_GENIBUS".
+            /// </summary>
             CRC16_GENIBUS,
 
-            /// <summary>CRC standard named "CRC16_MAXIM".</summary>
+            /// <summary>
+            /// CRC standard named "CRC16_MAXIM".
+            /// </summary>
             CRC16_MAXIM,
 
-            /// <summary>CRC standard named "CRC16_MCRF4XX".</summary>
+            /// <summary>
+            /// CRC standard named "CRC16_MCRF4XX".
+            /// </summary>
             CRC16_MCRF4XX,
 
-            /// <summary>CRC standard named "CRC16_RIELLO".</summary>
+            /// <summary>
+            /// CRC standard named "CRC16_RIELLO".
+            /// </summary>
             CRC16_RIELLO,
 
-            /// <summary>CRC standard named "CRC16_T10DIF".</summary>
+            /// <summary>
+            /// CRC standard named "CRC16_T10DIF".
+            /// </summary>
             CRC16_T10DIF,
 
-            /// <summary>CRC standard named "CRC16_TELEDISK".</summary>
+            /// <summary>
+            /// CRC standard named "CRC16_TELEDISK".
+            /// </summary>
             CRC16_TELEDISK,
 
-            /// <summary>CRC standard named "CRC16_TMS37157".</summary>
+            /// <summary>
+            /// CRC standard named "CRC16_TMS37157".
+            /// </summary>
             CRC16_TMS37157,
 
-            /// <summary>CRC standard named "CRC16_USB".</summary>
+            /// <summary>
+            /// CRC standard named "CRC16_USB".
+            /// </summary>
             CRC16_USB,
 
-            /// <summary>CRC standard named "CRCA".</summary>
+            /// <summary>
+            /// CRC standard named "CRCA".
+            /// </summary>
             CRCA,
 
-            /// <summary>CRC standard named "KERMIT".</summary>
+            /// <summary>
+            /// CRC standard named "KERMIT".
+            /// </summary>
             KERMIT,
 
-            /// <summary>CRC standard named "MODBUS".</summary>
+            /// <summary>
+            /// CRC standard named "MODBUS".
+            /// </summary>
             MODBUS,
 
-            /// <summary>CRC standard named "X25".</summary>
+            /// <summary>
+            /// CRC standard named "X25".
+            /// </summary>
             X25,
 
-            /// <summary>CRC standard named "XMODEM".</summary>
+            /// <summary>
+            /// CRC standard named "XMODEM".
+            /// </summary>
             XMODEM,
 
-            /// <summary>CRC standard named "CRC24".</summary>
+            /// <summary>
+            /// CRC standard named "CRC24".
+            /// </summary>
             CRC24,
 
-            /// <summary>CRC standard named "CRC24_FLEXRAYA".</summary>
+            /// <summary>
+            /// CRC standard named "CRC24_FLEXRAYA".
+            /// </summary>
             CRC24_FLEXRAYA,
 
-            /// <summary>CRC standard named "CRC24_FLEXRAYB".</summary>
+            /// <summary>
+            /// CRC standard named "CRC24_FLEXRAYB".
+            /// </summary>
             CRC24_FLEXRAYB,
 
-            /// <summary>CRC standard named "CRC31_PHILIPS".</summary>
+            /// <summary>
+            /// CRC standard named "CRC31_PHILIPS".
+            /// </summary>
             CRC31_PHILIPS,
 
-            /// <summary>CRC standard named "CRC32".</summary>
+            /// <summary>
+            /// CRC standard named "CRC32".
+            /// </summary>
             CRC32,
 
-            /// <summary>CRC standard named "CRC32_BZIP2".</summary>
+            /// <summary>
+            /// CRC standard named "CRC32_BZIP2".
+            /// </summary>
             CRC32_BZIP2,
 
-            /// <summary>CRC standard named "CRC32C".</summary>
+            /// <summary>
+            /// CRC standard named "CRC32C".
+            /// </summary>
             CRC32C,
 
-            /// <summary>CRC standard named "CRC32D".</summary>
+            /// <summary>
+            /// CRC standard named "CRC32D".
+            /// </summary>
             CRC32D,
 
-            /// <summary>CRC standard named "CRC32_MPEG2".</summary>
+            /// <summary>
+            /// CRC standard named "CRC32_MPEG2".
+            /// </summary>
             CRC32_MPEG2,
 
-            /// <summary>CRC standard named "CRC32_POSIX".</summary>
+            /// <summary>
+            /// CRC standard named "CRC32_POSIX".
+            /// </summary>
             CRC32_POSIX,
 
-            /// <summary>CRC standard named "CRC32Q".</summary>
+            /// <summary>
+            /// CRC standard named "CRC32Q".
+            /// </summary>
             CRC32Q,
 
-            /// <summary>CRC standard named "JAMCRC".</summary>
+            /// <summary>
+            /// CRC standard named "JAMCRC".
+            /// </summary>
             JAMCRC,
 
-            /// <summary>CRC standard named "XFER".</summary>
+            /// <summary>
+            /// CRC standard named "XFER".
+            /// </summary>
             XFER,
 
-            /// <summary>CRC standard named "CRC40_GSM".</summary>
+            /// <summary>
+            /// CRC standard named "CRC40_GSM".
+            /// </summary>
             CRC40_GSM,
 
-            /// <summary>CRC standard named "CRC64".</summary>
+            /// <summary>
+            /// CRC standard named "CRC64".
+            /// </summary>
             CRC64,
 
-            /// <summary>CRC standard named "CRC64_WE".</summary>
+            /// <summary>
+            /// CRC standard named "CRC64_WE".
+            /// </summary>
             CRC64_WE,
 
-            /// <summary>CRC standard named "CRC64_XZ".</summary>
+            /// <summary>
+            /// CRC standard named "CRC64_XZ".
+            /// </summary>
             CRC64_XZ,
 
         }
 
-        /// <summary>Dictionary of CRCSettings for each of the defined and implemented CRC standards.</summary>
+        /// <summary>
+        /// Dictionary of CRCSettings for each of the defined and implemented CRC standards.
+        /// </summary>
         public static readonly IReadOnlyDictionary<Standard, CRCSettings> Standards = 
             new Dictionary<Standard, CRCSettings>() {
                 { Standard.CRC3_ROHC,         new CRCSettings( 3,                0x3,                0x7,  true,  true,                0x0 ) },
@@ -313,13 +461,13 @@ namespace System.Data.HashFunction
 
 
     /// <summary>
-    /// Automatically generated implementation of CRC3_ROHC CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC3_ROHC CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC3_ROHC
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC3_ROHC"/> instance.
+        /// Initializes a new instance of the <see cref="CRC3_ROHC"/> class.
         /// </summary>
         public CRC3_ROHC()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC3_ROHC])
@@ -329,13 +477,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC4_ITU CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC4_ITU CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC4_ITU
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC4_ITU"/> instance.
+        /// Initializes a new instance of the <see cref="CRC4_ITU"/> class.
         /// </summary>
         public CRC4_ITU()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC4_ITU])
@@ -345,13 +493,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC5_EPC CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC5_EPC CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC5_EPC
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC5_EPC"/> instance.
+        /// Initializes a new instance of the <see cref="CRC5_EPC"/> class.
         /// </summary>
         public CRC5_EPC()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC5_EPC])
@@ -361,13 +509,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC5_ITU CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC5_ITU CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC5_ITU
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC5_ITU"/> instance.
+        /// Initializes a new instance of the <see cref="CRC5_ITU"/> class.
         /// </summary>
         public CRC5_ITU()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC5_ITU])
@@ -377,13 +525,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC5_USB CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC5_USB CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC5_USB
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC5_USB"/> instance.
+        /// Initializes a new instance of the <see cref="CRC5_USB"/> class.
         /// </summary>
         public CRC5_USB()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC5_USB])
@@ -393,13 +541,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC6_CDMA2000A CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC6_CDMA2000A CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC6_CDMA2000A
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC6_CDMA2000A"/> instance.
+        /// Initializes a new instance of the <see cref="CRC6_CDMA2000A"/> class.
         /// </summary>
         public CRC6_CDMA2000A()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC6_CDMA2000A])
@@ -409,13 +557,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC6_CDMA2000B CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC6_CDMA2000B CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC6_CDMA2000B
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC6_CDMA2000B"/> instance.
+        /// Initializes a new instance of the <see cref="CRC6_CDMA2000B"/> class.
         /// </summary>
         public CRC6_CDMA2000B()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC6_CDMA2000B])
@@ -425,13 +573,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC6_DARC CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC6_DARC CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC6_DARC
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC6_DARC"/> instance.
+        /// Initializes a new instance of the <see cref="CRC6_DARC"/> class.
         /// </summary>
         public CRC6_DARC()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC6_DARC])
@@ -441,13 +589,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC6_ITU CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC6_ITU CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC6_ITU
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC6_ITU"/> instance.
+        /// Initializes a new instance of the <see cref="CRC6_ITU"/> class.
         /// </summary>
         public CRC6_ITU()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC6_ITU])
@@ -457,13 +605,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC7 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC7 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC7
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC7"/> instance.
+        /// Initializes a new instance of the <see cref="CRC7"/> class.
         /// </summary>
         public CRC7()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC7])
@@ -473,13 +621,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC7_ROHC CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC7_ROHC CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC7_ROHC
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC7_ROHC"/> instance.
+        /// Initializes a new instance of the <see cref="CRC7_ROHC"/> class.
         /// </summary>
         public CRC7_ROHC()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC7_ROHC])
@@ -489,13 +637,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC8 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC8 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC8
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC8"/> instance.
+        /// Initializes a new instance of the <see cref="CRC8"/> class.
         /// </summary>
         public CRC8()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC8])
@@ -505,13 +653,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC8_CDMA2000 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC8_CDMA2000 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC8_CDMA2000
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC8_CDMA2000"/> instance.
+        /// Initializes a new instance of the <see cref="CRC8_CDMA2000"/> class.
         /// </summary>
         public CRC8_CDMA2000()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC8_CDMA2000])
@@ -521,13 +669,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC8_DARC CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC8_DARC CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC8_DARC
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC8_DARC"/> instance.
+        /// Initializes a new instance of the <see cref="CRC8_DARC"/> class.
         /// </summary>
         public CRC8_DARC()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC8_DARC])
@@ -537,13 +685,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC8_DVBS2 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC8_DVBS2 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC8_DVBS2
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC8_DVBS2"/> instance.
+        /// Initializes a new instance of the <see cref="CRC8_DVBS2"/> class.
         /// </summary>
         public CRC8_DVBS2()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC8_DVBS2])
@@ -553,13 +701,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC8_EBU CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC8_EBU CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC8_EBU
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC8_EBU"/> instance.
+        /// Initializes a new instance of the <see cref="CRC8_EBU"/> class.
         /// </summary>
         public CRC8_EBU()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC8_EBU])
@@ -569,13 +717,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC8_ICODE CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC8_ICODE CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC8_ICODE
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC8_ICODE"/> instance.
+        /// Initializes a new instance of the <see cref="CRC8_ICODE"/> class.
         /// </summary>
         public CRC8_ICODE()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC8_ICODE])
@@ -585,13 +733,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC8_ITU CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC8_ITU CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC8_ITU
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC8_ITU"/> instance.
+        /// Initializes a new instance of the <see cref="CRC8_ITU"/> class.
         /// </summary>
         public CRC8_ITU()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC8_ITU])
@@ -601,13 +749,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC8_MAXIM CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC8_MAXIM CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC8_MAXIM
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC8_MAXIM"/> instance.
+        /// Initializes a new instance of the <see cref="CRC8_MAXIM"/> class.
         /// </summary>
         public CRC8_MAXIM()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC8_MAXIM])
@@ -617,13 +765,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC8_ROHC CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC8_ROHC CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC8_ROHC
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC8_ROHC"/> instance.
+        /// Initializes a new instance of the <see cref="CRC8_ROHC"/> class.
         /// </summary>
         public CRC8_ROHC()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC8_ROHC])
@@ -633,13 +781,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC8_WCDMA CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC8_WCDMA CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC8_WCDMA
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC8_WCDMA"/> instance.
+        /// Initializes a new instance of the <see cref="CRC8_WCDMA"/> class.
         /// </summary>
         public CRC8_WCDMA()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC8_WCDMA])
@@ -649,13 +797,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC10 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC10 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC10
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC10"/> instance.
+        /// Initializes a new instance of the <see cref="CRC10"/> class.
         /// </summary>
         public CRC10()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC10])
@@ -665,13 +813,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC10_CDMA2000 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC10_CDMA2000 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC10_CDMA2000
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC10_CDMA2000"/> instance.
+        /// Initializes a new instance of the <see cref="CRC10_CDMA2000"/> class.
         /// </summary>
         public CRC10_CDMA2000()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC10_CDMA2000])
@@ -681,13 +829,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC11 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC11 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC11
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC11"/> instance.
+        /// Initializes a new instance of the <see cref="CRC11"/> class.
         /// </summary>
         public CRC11()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC11])
@@ -697,13 +845,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC12_3GPP CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC12_3GPP CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC12_3GPP
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC12_3GPP"/> instance.
+        /// Initializes a new instance of the <see cref="CRC12_3GPP"/> class.
         /// </summary>
         public CRC12_3GPP()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC12_3GPP])
@@ -713,13 +861,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC12_CDMA2000 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC12_CDMA2000 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC12_CDMA2000
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC12_CDMA2000"/> instance.
+        /// Initializes a new instance of the <see cref="CRC12_CDMA2000"/> class.
         /// </summary>
         public CRC12_CDMA2000()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC12_CDMA2000])
@@ -729,13 +877,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC12_DECT CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC12_DECT CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC12_DECT
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC12_DECT"/> instance.
+        /// Initializes a new instance of the <see cref="CRC12_DECT"/> class.
         /// </summary>
         public CRC12_DECT()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC12_DECT])
@@ -745,13 +893,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC13_BBC CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC13_BBC CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC13_BBC
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC13_BBC"/> instance.
+        /// Initializes a new instance of the <see cref="CRC13_BBC"/> class.
         /// </summary>
         public CRC13_BBC()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC13_BBC])
@@ -761,13 +909,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC14_DARC CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC14_DARC CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC14_DARC
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC14_DARC"/> instance.
+        /// Initializes a new instance of the <see cref="CRC14_DARC"/> class.
         /// </summary>
         public CRC14_DARC()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC14_DARC])
@@ -777,13 +925,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC15 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC15 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC15
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC15"/> instance.
+        /// Initializes a new instance of the <see cref="CRC15"/> class.
         /// </summary>
         public CRC15()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC15])
@@ -793,13 +941,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC15_MPT1327 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC15_MPT1327 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC15_MPT1327
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC15_MPT1327"/> instance.
+        /// Initializes a new instance of the <see cref="CRC15_MPT1327"/> class.
         /// </summary>
         public CRC15_MPT1327()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC15_MPT1327])
@@ -809,13 +957,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of ARC CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of ARC CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class ARC
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="ARC"/> instance.
+        /// Initializes a new instance of the <see cref="ARC"/> class.
         /// </summary>
         public ARC()
             : base(CRCStandards.Standards[CRCStandards.Standard.ARC])
@@ -825,13 +973,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC16_AUGCCITT CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC16_AUGCCITT CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC16_AUGCCITT
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC16_AUGCCITT"/> instance.
+        /// Initializes a new instance of the <see cref="CRC16_AUGCCITT"/> class.
         /// </summary>
         public CRC16_AUGCCITT()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC16_AUGCCITT])
@@ -841,13 +989,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC16_BUYPASS CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC16_BUYPASS CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC16_BUYPASS
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC16_BUYPASS"/> instance.
+        /// Initializes a new instance of the <see cref="CRC16_BUYPASS"/> class.
         /// </summary>
         public CRC16_BUYPASS()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC16_BUYPASS])
@@ -857,13 +1005,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC16_CCITTFALSE CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC16_CCITTFALSE CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC16_CCITTFALSE
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC16_CCITTFALSE"/> instance.
+        /// Initializes a new instance of the <see cref="CRC16_CCITTFALSE"/> class.
         /// </summary>
         public CRC16_CCITTFALSE()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC16_CCITTFALSE])
@@ -873,13 +1021,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC16_CDMA2000 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC16_CDMA2000 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC16_CDMA2000
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC16_CDMA2000"/> instance.
+        /// Initializes a new instance of the <see cref="CRC16_CDMA2000"/> class.
         /// </summary>
         public CRC16_CDMA2000()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC16_CDMA2000])
@@ -889,13 +1037,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC16_DDS110 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC16_DDS110 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC16_DDS110
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC16_DDS110"/> instance.
+        /// Initializes a new instance of the <see cref="CRC16_DDS110"/> class.
         /// </summary>
         public CRC16_DDS110()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC16_DDS110])
@@ -905,13 +1053,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC16_DECTR CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC16_DECTR CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC16_DECTR
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC16_DECTR"/> instance.
+        /// Initializes a new instance of the <see cref="CRC16_DECTR"/> class.
         /// </summary>
         public CRC16_DECTR()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC16_DECTR])
@@ -921,13 +1069,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC16_DECTX CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC16_DECTX CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC16_DECTX
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC16_DECTX"/> instance.
+        /// Initializes a new instance of the <see cref="CRC16_DECTX"/> class.
         /// </summary>
         public CRC16_DECTX()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC16_DECTX])
@@ -937,13 +1085,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC16_DNP CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC16_DNP CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC16_DNP
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC16_DNP"/> instance.
+        /// Initializes a new instance of the <see cref="CRC16_DNP"/> class.
         /// </summary>
         public CRC16_DNP()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC16_DNP])
@@ -953,13 +1101,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC16_EN13757 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC16_EN13757 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC16_EN13757
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC16_EN13757"/> instance.
+        /// Initializes a new instance of the <see cref="CRC16_EN13757"/> class.
         /// </summary>
         public CRC16_EN13757()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC16_EN13757])
@@ -969,13 +1117,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC16_GENIBUS CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC16_GENIBUS CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC16_GENIBUS
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC16_GENIBUS"/> instance.
+        /// Initializes a new instance of the <see cref="CRC16_GENIBUS"/> class.
         /// </summary>
         public CRC16_GENIBUS()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC16_GENIBUS])
@@ -985,13 +1133,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC16_MAXIM CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC16_MAXIM CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC16_MAXIM
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC16_MAXIM"/> instance.
+        /// Initializes a new instance of the <see cref="CRC16_MAXIM"/> class.
         /// </summary>
         public CRC16_MAXIM()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC16_MAXIM])
@@ -1001,13 +1149,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC16_MCRF4XX CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC16_MCRF4XX CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC16_MCRF4XX
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC16_MCRF4XX"/> instance.
+        /// Initializes a new instance of the <see cref="CRC16_MCRF4XX"/> class.
         /// </summary>
         public CRC16_MCRF4XX()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC16_MCRF4XX])
@@ -1017,13 +1165,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC16_RIELLO CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC16_RIELLO CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC16_RIELLO
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC16_RIELLO"/> instance.
+        /// Initializes a new instance of the <see cref="CRC16_RIELLO"/> class.
         /// </summary>
         public CRC16_RIELLO()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC16_RIELLO])
@@ -1033,13 +1181,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC16_T10DIF CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC16_T10DIF CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC16_T10DIF
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC16_T10DIF"/> instance.
+        /// Initializes a new instance of the <see cref="CRC16_T10DIF"/> class.
         /// </summary>
         public CRC16_T10DIF()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC16_T10DIF])
@@ -1049,13 +1197,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC16_TELEDISK CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC16_TELEDISK CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC16_TELEDISK
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC16_TELEDISK"/> instance.
+        /// Initializes a new instance of the <see cref="CRC16_TELEDISK"/> class.
         /// </summary>
         public CRC16_TELEDISK()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC16_TELEDISK])
@@ -1065,13 +1213,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC16_TMS37157 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC16_TMS37157 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC16_TMS37157
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC16_TMS37157"/> instance.
+        /// Initializes a new instance of the <see cref="CRC16_TMS37157"/> class.
         /// </summary>
         public CRC16_TMS37157()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC16_TMS37157])
@@ -1081,13 +1229,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC16_USB CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC16_USB CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC16_USB
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC16_USB"/> instance.
+        /// Initializes a new instance of the <see cref="CRC16_USB"/> class.
         /// </summary>
         public CRC16_USB()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC16_USB])
@@ -1097,13 +1245,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRCA CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRCA CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRCA
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRCA"/> instance.
+        /// Initializes a new instance of the <see cref="CRCA"/> class.
         /// </summary>
         public CRCA()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRCA])
@@ -1113,13 +1261,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of KERMIT CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of KERMIT CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class KERMIT
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="KERMIT"/> instance.
+        /// Initializes a new instance of the <see cref="KERMIT"/> class.
         /// </summary>
         public KERMIT()
             : base(CRCStandards.Standards[CRCStandards.Standard.KERMIT])
@@ -1129,13 +1277,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of MODBUS CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of MODBUS CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class MODBUS
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="MODBUS"/> instance.
+        /// Initializes a new instance of the <see cref="MODBUS"/> class.
         /// </summary>
         public MODBUS()
             : base(CRCStandards.Standards[CRCStandards.Standard.MODBUS])
@@ -1145,13 +1293,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of X25 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of X25 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class X25
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="X25"/> instance.
+        /// Initializes a new instance of the <see cref="X25"/> class.
         /// </summary>
         public X25()
             : base(CRCStandards.Standards[CRCStandards.Standard.X25])
@@ -1161,13 +1309,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of XMODEM CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of XMODEM CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class XMODEM
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="XMODEM"/> instance.
+        /// Initializes a new instance of the <see cref="XMODEM"/> class.
         /// </summary>
         public XMODEM()
             : base(CRCStandards.Standards[CRCStandards.Standard.XMODEM])
@@ -1177,13 +1325,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC24 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC24 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC24
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC24"/> instance.
+        /// Initializes a new instance of the <see cref="CRC24"/> class.
         /// </summary>
         public CRC24()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC24])
@@ -1193,13 +1341,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC24_FLEXRAYA CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC24_FLEXRAYA CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC24_FLEXRAYA
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC24_FLEXRAYA"/> instance.
+        /// Initializes a new instance of the <see cref="CRC24_FLEXRAYA"/> class.
         /// </summary>
         public CRC24_FLEXRAYA()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC24_FLEXRAYA])
@@ -1209,13 +1357,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC24_FLEXRAYB CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC24_FLEXRAYB CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC24_FLEXRAYB
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC24_FLEXRAYB"/> instance.
+        /// Initializes a new instance of the <see cref="CRC24_FLEXRAYB"/> class.
         /// </summary>
         public CRC24_FLEXRAYB()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC24_FLEXRAYB])
@@ -1225,13 +1373,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC31_PHILIPS CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC31_PHILIPS CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC31_PHILIPS
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC31_PHILIPS"/> instance.
+        /// Initializes a new instance of the <see cref="CRC31_PHILIPS"/> class.
         /// </summary>
         public CRC31_PHILIPS()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC31_PHILIPS])
@@ -1241,13 +1389,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC32 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC32 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC32
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC32"/> instance.
+        /// Initializes a new instance of the <see cref="CRC32"/> class.
         /// </summary>
         public CRC32()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC32])
@@ -1257,13 +1405,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC32_BZIP2 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC32_BZIP2 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC32_BZIP2
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC32_BZIP2"/> instance.
+        /// Initializes a new instance of the <see cref="CRC32_BZIP2"/> class.
         /// </summary>
         public CRC32_BZIP2()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC32_BZIP2])
@@ -1273,13 +1421,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC32C CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC32C CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC32C
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC32C"/> instance.
+        /// Initializes a new instance of the <see cref="CRC32C"/> class.
         /// </summary>
         public CRC32C()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC32C])
@@ -1289,13 +1437,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC32D CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC32D CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC32D
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC32D"/> instance.
+        /// Initializes a new instance of the <see cref="CRC32D"/> class.
         /// </summary>
         public CRC32D()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC32D])
@@ -1305,13 +1453,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC32_MPEG2 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC32_MPEG2 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC32_MPEG2
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC32_MPEG2"/> instance.
+        /// Initializes a new instance of the <see cref="CRC32_MPEG2"/> class.
         /// </summary>
         public CRC32_MPEG2()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC32_MPEG2])
@@ -1321,13 +1469,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC32_POSIX CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC32_POSIX CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC32_POSIX
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC32_POSIX"/> instance.
+        /// Initializes a new instance of the <see cref="CRC32_POSIX"/> class.
         /// </summary>
         public CRC32_POSIX()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC32_POSIX])
@@ -1337,13 +1485,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC32Q CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC32Q CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC32Q
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC32Q"/> instance.
+        /// Initializes a new instance of the <see cref="CRC32Q"/> class.
         /// </summary>
         public CRC32Q()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC32Q])
@@ -1353,13 +1501,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of JAMCRC CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of JAMCRC CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class JAMCRC
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="JAMCRC"/> instance.
+        /// Initializes a new instance of the <see cref="JAMCRC"/> class.
         /// </summary>
         public JAMCRC()
             : base(CRCStandards.Standards[CRCStandards.Standard.JAMCRC])
@@ -1369,13 +1517,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of XFER CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of XFER CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class XFER
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="XFER"/> instance.
+        /// Initializes a new instance of the <see cref="XFER"/> class.
         /// </summary>
         public XFER()
             : base(CRCStandards.Standards[CRCStandards.Standard.XFER])
@@ -1385,13 +1533,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC40_GSM CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC40_GSM CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC40_GSM
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC40_GSM"/> instance.
+        /// Initializes a new instance of the <see cref="CRC40_GSM"/> class.
         /// </summary>
         public CRC40_GSM()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC40_GSM])
@@ -1401,13 +1549,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC64 CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC64 CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC64
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC64"/> instance.
+        /// Initializes a new instance of the <see cref="CRC64"/> class.
         /// </summary>
         public CRC64()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC64])
@@ -1417,13 +1565,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC64_WE CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC64_WE CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC64_WE
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC64_WE"/> instance.
+        /// Initializes a new instance of the <see cref="CRC64_WE"/> class.
         /// </summary>
         public CRC64_WE()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC64_WE])
@@ -1433,13 +1581,13 @@ namespace System.Data.HashFunction
     }
 
     /// <summary>
-    /// Automatically generated implementation of CRC64_XZ CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of CRC64_XZ CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class CRC64_XZ
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="CRC64_XZ"/> instance.
+        /// Initializes a new instance of the <see cref="CRC64_XZ"/> class.
         /// </summary>
         public CRC64_XZ()
             : base(CRCStandards.Standards[CRCStandards.Standard.CRC64_XZ])

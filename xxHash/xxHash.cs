@@ -17,12 +17,12 @@ namespace System.Data.HashFunction
     public class xxHash
         : HashFunctionBase
     {
-        /// <inheritdoc/>
-        public override IEnumerable<int> ValidHashSizes { get { return new[] { 32 }; } }
-
         /// <summary>
         /// Seed value for hash calculation.
         /// </summary>
+        /// <value>
+        /// The seed value for hash calculation.
+        /// </value>
         public UInt32 InitVal { get; set; }
 
 
@@ -36,8 +36,9 @@ namespace System.Data.HashFunction
 
 
         /// <summary>
-        /// Constructs new <see cref="xxHash"/> instance.
+        /// Initializes a new instance of the <see cref="xxHash"/> class.
         /// </summary>
+        /// <inheritdoc cref="HashFunctionBase(int)" />
         public xxHash()
             : base(32)
         {
@@ -45,11 +46,12 @@ namespace System.Data.HashFunction
         }
 
 
-        /// <inheritdoc/>
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
         protected override byte[] ComputeHashInternal(Stream data)
         {
             if (HashSize != 32)
-                throw new ArgumentOutOfRangeException("HashSize");
+                throw new InvalidOperationException("HashSize set to an invalid value.");
 
 
             var h = InitVal + Primes[4];
@@ -124,7 +126,7 @@ namespace System.Data.HashFunction
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Process16(UInt32 data, ref UInt32 curValue)
+        private static void Process16(UInt32 data, ref UInt32 curValue)
         {
             curValue += data * Primes[1];
             curValue = curValue.RotateLeft(13);

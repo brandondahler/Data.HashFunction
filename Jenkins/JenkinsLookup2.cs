@@ -19,30 +19,48 @@ namespace System.Data.HashFunction
     public class JenkinsLookup2
         : HashFunctionBase
     {
-        /// <inheritdoc/>
-        public override IEnumerable<int> ValidHashSizes { get { return new[] { 32 }; } }
-
         /// <summary>
         /// Seed value for hash calculation.
         /// </summary>
-        public UInt32 InitVal { get; set; }
+        /// <value>
+        /// The seed value for hash calculation.
+        /// </value>
+        public UInt32 InitVal { get { return _InitVal; } }
 
+
+        private readonly UInt32 _InitVal;
+
+
+
+        /// <remarks>
+        /// Defaults <see cref="InitVal" /> to 0. <inheritdoc cref="JenkinsLookup2(UInt32)" />
+        /// </remarks>
+        /// <inheritdoc cref="JenkinsLookup2(UInt32)" />
+        public JenkinsLookup2()
+            : this(0U)
+        {
+
+        }
 
         /// <summary>
-        /// Constructs new <see cref="JenkinsLookup2"/> instance.
+        /// Initializes a new instance of the <see cref="JenkinsLookup2"/> class.
         /// </summary>
-        public JenkinsLookup2()
+        /// <param name="initVal"><inheritdoc cref="InitVal" /></param>
+        /// <inheritdoc cref="HashFunctionBase(int)" />
+        public JenkinsLookup2(UInt32 initVal)
             : base(32)
         {
-            InitVal = 0;
+            _InitVal = initVal;
         }
 
 
-        /// <inheritdoc/>
+
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
         protected override byte[] ComputeHashInternal(Stream data)
         {
             if (HashSize != 32)
-                throw new ArgumentOutOfRangeException("HashSize");
+                throw new InvalidOperationException("HashSize set to an invalid value.");
 
             UInt32 a = 0x9e3779b9;
             UInt32 b = 0x9e3779b9;
@@ -104,7 +122,7 @@ namespace System.Data.HashFunction
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Mix(ref UInt32 a, ref UInt32 b, ref UInt32 c)
+        private static void Mix(ref UInt32 a, ref UInt32 b, ref UInt32 c)
         {
             a -= b; a -= c; a ^= (c >> 13);
             b -= c; b -= a; b ^= (a << 8);

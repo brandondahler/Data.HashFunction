@@ -24,38 +24,67 @@ namespace System.Data.HashFunction
     /// </summary>
     public class CityHash : HashFunctionBase
     {
-        /// <inheritdoc/>
-        public override IEnumerable<int> ValidHashSizes
-        {
-            get { return new[] { 32, 64, 128 }; }
-        }
-
-
-        /// <summary>Constant k0 as defined by CityHash specification.</summary>
-        protected const UInt64 k0 = 0xc3a5c85c97cb3127;
-
-        /// <summary>Constant k1 as defined by CityHash specification.</summary>
-        protected const UInt64 k1 = 0xb492b66fbe98f273;
-
-        /// <summary>Constant k2 as defined by CityHash specification.</summary>
-        protected const UInt64 k2 = 0x9ae16a3b2f90404f;
-
-
-        /// <summary>Constant c1 as defined by CityHash specification.</summary>
-        protected const UInt32 c1 = 0xcc9e2d51;
-
-        /// <summary>Constant c2 as defined by CityHash specification.</summary>
-        protected const UInt32 c2 = 0x1b873593;
+        /// <summary>
+        /// The list of possible hash sizes that can be provided to the <see cref="CityHash" /> constructor.
+        /// </summary>
+        /// <value>
+        /// The list of valid hash sizes.
+        /// </value>
+        public static IEnumerable<int> ValidHashSizes { get { return _ValidHashSizes; } }
 
 
         /// <summary>
-        /// Creates new <see cref="CityHash"/> instance.
+        /// Constant k0 as defined by CityHash specification.
         /// </summary>
-        /// <remarks>HashSize defaults to 32 bits.</remarks>
+        protected const UInt64 k0 = 0xc3a5c85c97cb3127;
+
+        /// <summary>
+        /// Constant k1 as defined by CityHash specification.
+        /// </summary>
+        protected const UInt64 k1 = 0xb492b66fbe98f273;
+
+        /// <summary>
+        /// Constant k2 as defined by CityHash specification.
+        /// </summary>
+        protected const UInt64 k2 = 0x9ae16a3b2f90404f;
+
+
+        /// <summary>
+        /// Constant c1 as defined by CityHash specification.
+        /// </summary>
+        protected const UInt32 c1 = 0xcc9e2d51;
+
+        /// <summary>
+        /// Constant c2 as defined by CityHash specification.
+        /// </summary>
+        protected const UInt32 c2 = 0x1b873593;
+
+
+        private static readonly IEnumerable<int> _ValidHashSizes = new[] { 32, 64, 128 };
+
+
+
+        /// <remarks>
+        /// Defaults <see cref="HashFunctionBase.HashSize" /> to 32. <inheritdoc cref="CityHash(int)" />
+        /// </remarks>
+        /// <inheritdoc cref="CityHash(int)" />
         public CityHash()
-            : base(32)
+            : this(32)
         { 
         
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CityHash"/> class.
+        /// </summary>
+        /// <param name="hashSize"><inheritdoc cref="HashFunctionBase(int)" select="param[name=hashSize]" /></param>
+        /// <exception cref="System.ArgumentOutOfRangeException">hashSize;hashSize must be contained within CityHash.ValidHashSizes.</exception>
+        /// <inheritdoc cref="HashFunctionBase(int)" />
+        public CityHash(int hashSize)
+            : base(hashSize)
+        {
+            if (!ValidHashSizes.Contains(hashSize))
+                throw new ArgumentOutOfRangeException("hashSize", "hashSize must be contained within CityHash.ValidHashSizes.");
         }
 
 
@@ -83,7 +112,7 @@ namespace System.Data.HashFunction
                     return resultArray;
 
                 default:
-                    throw new ArgumentOutOfRangeException("HashSize");
+                    throw new InvalidOperationException("HashSize set to an invalid value.");
             }
         }
 
@@ -106,12 +135,10 @@ namespace System.Data.HashFunction
 
         #region ComputeHash32
 
-        /// <summary>
-        /// 32-bit implementation of ComputeHash.
-        /// </summary>
+        /// <summary>32-bit implementation of ComputeHash.</summary>
         /// <param name="data">Data to be hashed.</param>
         /// <returns>UInt32 value representing the hash value.</returns>
-        protected UInt32 ComputeHash32(byte[] data)
+        protected virtual UInt32 ComputeHash32(byte[] data)
         {
             if (data.Length <= 24)
             {
@@ -253,12 +280,10 @@ namespace System.Data.HashFunction
 
         #region ComputeHash64
 
-        /// <summary>
-        /// 64-bit implementation of ComputeHash.
-        /// </summary>
+        /// <summary>64-bit implementation of ComputeHash.</summary>
         /// <param name="data">Data to be hashed.</param>
         /// <returns>UInt64 value representing the hash value.</returns>
-        protected UInt64 ComputeHash64(byte[] data) 
+        protected virtual UInt64 ComputeHash64(byte[] data) 
         {
             if (data.Length <= 32) 
             {
@@ -434,12 +459,10 @@ namespace System.Data.HashFunction
 
         #region ComputeHash128
 
-        /// <summary>
-        /// 128-bit implementation of ComputeHash.
-        /// </summary>
+        /// <summary>128-bit implementation of ComputeHash.</summary>
         /// <param name="data">Data to be hashed.</param>
         /// <returns>UInt128 value representing the hash value.</returns>
-        protected UInt128 ComputeHash128(byte[] data) {
+        protected virtual UInt128 ComputeHash128(byte[] data) {
             return 
                 data.Length >= 16 ?
                 CityHash128WithSeed(
@@ -586,9 +609,7 @@ namespace System.Data.HashFunction
 
         #region Shared Utilities
 
-        /// <summary>
-        /// Structure to store 128-bit integer as two 64-bit integers.
-        /// </summary>
+        /// <summary>Structure to store 128-bit integer as two 64-bit integers.</summary>
         protected struct UInt128
         {
             /// <summary>Low-order 64-bits.</summary>
@@ -596,6 +617,45 @@ namespace System.Data.HashFunction
 
             /// <summary>High-order 64-bits.</summary>
             public UInt64 High { get; set; }
+
+
+            #region Object overrides
+
+            /// <summary>Determines whether the specified <see cref="UInt128"/> is equal to the current <see cref="UInt128"/>.</summary>
+            /// <param name="obj">The value to compare with the current value.</param>
+            /// <returns>true if the specified value is equal to the current value; otherwise, false.</returns>
+            public override bool Equals(object obj)
+            {
+                if (!(obj is UInt128))
+                    return false;
+
+
+                var other = (UInt128) obj;
+
+                return (Low == other.Low && 
+                    High == other.High);
+            }
+
+            /// <inheritdoc/>
+            public override int GetHashCode()
+            {
+                return (32190 + 
+                    Low.GetHashCode() ^ High.GetHashCode());
+            }
+
+            /// <summary>Determines whether the second <see cref="UInt128"/> is equal to the first <see cref="UInt128"/>.</summary>
+            /// <param name="a">The first value to compare.</param>
+            /// <param name="b">The second value to compare.</param>
+            /// <returns>true if the specified value is equal to the current value; otherwise, false.</returns>
+            public static bool operator==(UInt128 a, UInt128 b) { return a.Equals(b); }
+
+            /// <summary>Determines whether the second <see cref="UInt128"/> is not equal to the first <see cref="UInt128"/>.</summary>
+            /// <param name="a">The first object to compare.</param>
+            /// <param name="b">The second object to compare.</param>
+            /// <returns>true if the specified value is not equal to the current value; otherwise, false.</returns>
+            public static bool operator!=(UInt128 a, UInt128 b) { return !a.Equals(b); }
+
+            #endregion
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

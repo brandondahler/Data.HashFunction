@@ -20,21 +20,29 @@ using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
-    /// <summary>Static class containing enumeration and a dictionary of CRC standards and their <see cref="CRCSettings"/>.</summary>
+    /// <summary>
+    /// Static class containing enumeration and a dictionary of CRC standards and their <see cref="CRCSettings" />.
+    /// </summary>
     public static class CRCStandards
     {
-        /// <summary>Enumeration of all defined and implemented CRC standards.</summary>
+        /// <summary>
+        /// Enumeration of all defined and implemented CRC standards.
+        /// </summary>
         public enum Standard
         {
 <# foreach (var standard in standards) { #>
 
-            /// <summary>CRC standard named "<#= standard.Name #>".</summary>
+            /// <summary>
+            /// CRC standard named "<#= standard.Name #>".
+            /// </summary>
             <#= standard.Name #>,
 <# } #>
 
         }
 
-        /// <summary>Dictionary of CRCSettings for each of the defined and implemented CRC standards.</summary>
+        /// <summary>
+        /// Dictionary of CRCSettings for each of the defined and implemented CRC standards.
+        /// </summary>
         public static readonly IReadOnlyDictionary<Standard, CRCSettings> Standards = 
             new Dictionary<Standard, CRCSettings>() {
 <# foreach (var standard in standards) { 
@@ -57,13 +65,13 @@ namespace System.Data.HashFunction
 
 <# foreach (var standard in standards) { #>
     /// <summary>
-    /// Automatically generated implementation of <#= standard.Name #> CRC standard, based on the <see cref="CRC"/> class.
+    /// Automatically generated implementation of <#= standard.Name #> CRC standard, based on the <see cref="CRC" /> class.
     /// </summary>
     public class <#= standard.Name #>
-            : CRC
+        : CRC
     {
         /// <summary>
-        /// Creates new <see cref="<#= standard.Name #>"/> instance.
+        /// Initializes a new instance of the <see cref="<#= standard.Name #>"/> class.
         /// </summary>
         public <#= standard.Name #>()
             : base(CRCStandards.Standards[CRCStandards.Standard.<#= standard.Name #>])

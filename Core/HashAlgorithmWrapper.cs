@@ -9,21 +9,13 @@ using System.Threading.Tasks;
 namespace System.Data.HashFunction
 {
     /// <summary>
-    /// Implementation of <see cref="IHashFunction"/> that wraps cryptographic hash functions known as <see cref="HashAlgorithm" />.
+    /// Implementation of <see cref="IHashFunction" /> that wraps cryptographic hash functions known as <see cref="HashAlgorithm" />.
     /// </summary>
     public class HashAlgorithmWrapper
         : IHashFunction, IDisposable
     {
         /// <inheritdoc/>
-        public virtual int HashSize
-        {
-            get { return _hashAlgorithm.HashSize; }
-            set { if (value != _hashAlgorithm.HashSize) throw new ArgumentOutOfRangeException("value"); }
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<int> ValidHashSizes { get { return new[] { _hashAlgorithm.HashSize }; } }
-
+        public virtual int HashSize { get { return _hashAlgorithm.HashSize; } }
 
         private readonly HashAlgorithm _hashAlgorithm;
         private readonly bool _ownsInstance;
@@ -33,21 +25,29 @@ namespace System.Data.HashFunction
         private bool _disposed = false;
 
 
+        /// <remarks>
+        /// Assumes ownership of the <see cref="HashAlgorithm" /> instance and disposes it when the <see cref="HashAlgorithmWrapper" /> is disposed.
+        /// </remarks>
+        /// <inheritdoc cref="HashAlgorithmWrapper(HashAlgorithm, bool)" />
+        public HashAlgorithmWrapper(HashAlgorithm hashAlgorithm)
+            : this(hashAlgorithm, true)
+        {
+        }
+
         /// <summary>
-        /// Constructs new <see cref="HashAlgorithmWrapper"/> instance.
+        /// Initializes a new instance of the <see cref="HashAlgorithmWrapper"/> class.
         /// </summary>
-        /// <param name="hashAlgorithm">Instance of <see cref="HashAlgorithm"/> to use for hashing.</param>
-        /// <param name="ownsInstance">
-        /// If true, the instance of <see cref="HashAlgorithm"/> passed will be disposed when the HashAlgorithmWrapper instance is disposed.
-        /// </param>
-        public HashAlgorithmWrapper(HashAlgorithm hashAlgorithm, bool ownsInstance = true)
+        /// <param name="hashAlgorithm">Instance of <see cref="HashAlgorithm" /> to use for hashing.</param>
+        /// <param name="ownsInstance">If true, the instance of <see cref="HashAlgorithm" /> passed will be disposed when the HashAlgorithmWrapper instance is disposed.</param>
+        public HashAlgorithmWrapper(HashAlgorithm hashAlgorithm, bool ownsInstance)
         {
             _hashAlgorithm = hashAlgorithm;
             _ownsInstance = ownsInstance;
         }
 
+
         /// <summary>
-        /// Disposes instance, specifying that this is not a direct dispose call.
+        /// Finalizes an instance of the <see cref="HashAlgorithmWrapper"/> class.
         /// </summary>
         ~HashAlgorithmWrapper()
         {
@@ -56,7 +56,7 @@ namespace System.Data.HashFunction
 
 
         /// <summary>
-        /// Disposes <see cref="HashAlgorithm"/> passed in constructor if it is owned by this <see cref="HashAlgorithmWrapper"/>.
+        /// Disposes <see cref="HashAlgorithm" /> passed in constructor if it is owned by this <see cref="HashAlgorithmWrapper" />.
         /// </summary>
         public void Dispose()
         {
@@ -64,7 +64,7 @@ namespace System.Data.HashFunction
         }
 
         /// <summary>
-        /// Disposes <see cref="HashAlgorithm"/> passed in constructor if it is owned by this <see cref="HashAlgorithmWrapper"/>.
+        /// Disposes <see cref="HashAlgorithm" /> passed in constructor if it is owned by this <see cref="HashAlgorithmWrapper" />.
         /// </summary>
         /// <param name="disposing">If false, call is assumed to be from the destructor.</param>
         protected virtual void Dispose(bool disposing)
@@ -79,45 +79,36 @@ namespace System.Data.HashFunction
         }
 
 
-        /// <inheritdoc/>
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
         public byte[] ComputeHash(byte[] data)
         {
             if (HashSize != _hashAlgorithm.HashSize)
-                throw new ArgumentOutOfRangeException("HashSize");
+                throw new InvalidOperationException("HashSize set to an invalid value.");
 
             lock (SyncRoot)
                 return _hashAlgorithm.ComputeHash(data.ToArray());
         }
 
-        /// <inheritdoc/>
-        public byte[] ComputeHash(Stream inputStream)
+        /// <inheritdoc />
+        public byte[] ComputeHash(Stream data)
         {
-            if (HashSize != _hashAlgorithm.HashSize)
-                throw new ArgumentOutOfRangeException("HashSize");
-
             lock (SyncRoot)
-                return _hashAlgorithm.ComputeHash(inputStream);
+                return _hashAlgorithm.ComputeHash(data);
         }
     }
 
 
     /// <summary>
-    /// Generic implementation of <see cref="IHashFunction"/> that wraps cryptographic hash functions known as <see cref="HashAlgorithm" />s.
+    /// Generic implementation of <see cref="IHashFunction" /> that wraps cryptographic hash functions known as <see cref="HashAlgorithm" />s.
     /// </summary>
     /// <typeparam name="HashAlgorithmT">HashAlgorithm type to wrap.</typeparam>
     public class HashAlgorithmWrapper<HashAlgorithmT>
         : IHashFunction, IDisposable
         where HashAlgorithmT : HashAlgorithm, new()
     {
-        /// <inheritdoc/>
-        public virtual int HashSize
-        {
-            get { return _hashAlgorithm.HashSize; }
-            set { if (value != _hashAlgorithm.HashSize) throw new ArgumentOutOfRangeException("value"); }
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<int> ValidHashSizes { get { return new[] { _hashAlgorithm.HashSize }; } }
+        /// <inheritdoc />
+        public virtual int HashSize { get { return _hashAlgorithm.HashSize; } }
 
 
         private readonly HashAlgorithmT _hashAlgorithm;
@@ -127,7 +118,7 @@ namespace System.Data.HashFunction
 
 
         /// <summary>
-        /// Constructs new <see cref="HashAlgorithmWrapper{HashAlgorithmT}"/> instance.
+        /// Initializes a new instance of the <see cref="HashAlgorithmWrapper{HashAlgorithmT}"/> class.
         /// </summary>
         public HashAlgorithmWrapper()
         {
@@ -144,7 +135,7 @@ namespace System.Data.HashFunction
 
 
         /// <summary>
-        /// Disposes <see cref="HashAlgorithm"/> created in constructor.
+        /// Disposes <see cref="HashAlgorithm" /> created in constructor.
         /// </summary>
         public void Dispose()
         {
@@ -152,7 +143,7 @@ namespace System.Data.HashFunction
         }
 
         /// <summary>
-        /// Disposes <see cref="HashAlgorithm"/> created in constructor.
+        /// Disposes <see cref="HashAlgorithm" /> created in constructor.
         /// </summary>
         /// <param name="disposing">If false, call is assumed to be from the destructor.</param>
         protected virtual void Dispose(bool disposing)
@@ -166,25 +157,23 @@ namespace System.Data.HashFunction
             }
         }
 
-        
-        /// <inheritdoc/>
+
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
         public byte[] ComputeHash(byte[] data)
         {
             if (HashSize != _hashAlgorithm.HashSize)
-                throw new ArgumentOutOfRangeException("HashSize");
+                throw new InvalidOperationException("HashSize set to an invalid value.");
 
             lock (SyncRoot)
                 return _hashAlgorithm.ComputeHash(data.ToArray());
         }
 
-        /// <inheritdoc/>
-        public byte[] ComputeHash(Stream inputStream)
+        /// <inheritdoc />
+        public byte[] ComputeHash(Stream data)
         {
-            if (HashSize != _hashAlgorithm.HashSize)
-                throw new ArgumentOutOfRangeException("HashSize");
-
             lock (SyncRoot)
-                return _hashAlgorithm.ComputeHash(inputStream);
+                return _hashAlgorithm.ComputeHash(data);
         }
     }
 }

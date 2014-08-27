@@ -17,45 +17,102 @@ namespace System.Data.HashFunction
     public class MurmurHash3
         : HashFunctionBase
     {
-        /// <inheritdoc/>
-        public override IEnumerable<int> ValidHashSizes
-        {
-            get { return new[] { 32, 128 }; }
-        }
-
         /// <summary>
         /// Seed value for hash calculation.
         /// </summary>
-        public UInt32 Seed { get; set; }
-
-
-        /// <summary>Constant c1 for 32-bit calculation as defined by MurmurHash3 specification.</summary>
-        protected const UInt32 c1_32 = 0xcc9e2d51;
-
-        /// <summary>Constant c2 for 32-bit calculation as defined by MurmurHash3 specification.</summary>
-        protected const UInt32 c2_32 = 0x1b873593;
-
-
-        /// <summary>Constant c1 for 128-bit calculation as defined by MurMurHash3 specification.</summary>
-        protected const UInt64 c1_128 = 0x87c37b91114253d5;
-
-        /// <summary>Constant c2 for 128-bit calculation as defined by MurMurHash3 specification.</summary>
-        protected const UInt64 c2_128 = 0x4cf5ad432745937f;
-
-
+        /// <value>
+        /// The seed value for hash calculation.
+        /// </value>
+        public UInt32 Seed { get { return _Seed; } }
 
 
         /// <summary>
-        /// Constructs new <see cref="MurmurHash3"/> instance.
+        /// The list of possible hash sizes that can be provided to the <see cref="MurmurHash3" /> constructor.
         /// </summary>
+        /// <value>
+        /// The list of valid hash sizes.
+        /// </value>
+        public static IEnumerable<int> ValidHashSizes { get { return _ValidHashSizes; } }
+
+
+        /// <summary>
+        /// Constant c1 for 32-bit calculation as defined by MurmurHash3 specification.
+        /// </summary>
+        protected const UInt32 c1_32 = 0xcc9e2d51;
+
+        /// <summary>
+        /// Constant c2 for 32-bit calculation as defined by MurmurHash3 specification.
+        /// </summary>
+        protected const UInt32 c2_32 = 0x1b873593;
+
+
+        /// <summary>
+        /// Constant c1 for 128-bit calculation as defined by MurMurHash3 specification.
+        /// </summary>
+        protected const UInt64 c1_128 = 0x87c37b91114253d5;
+
+        /// <summary>
+        /// Constant c2 for 128-bit calculation as defined by MurMurHash3 specification.
+        /// </summary>
+        protected const UInt64 c2_128 = 0x4cf5ad432745937f;
+
+
+        private readonly UInt32 _Seed;
+
+        private static readonly IEnumerable<int> _ValidHashSizes = new[] { 32, 128 };
+
+
+
+        /// <remarks>
+        /// Defaults <see cref="Seed" /> to 0. <inheritdoc cref="MurmurHash3(UInt32)" />
+        /// </remarks>
+        /// <inheritdoc cref="MurmurHash3(UInt32)" />
         public MurmurHash3()
-            : base(32)
+            : this(0U)
         {
-            Seed = 0;
+
+        }
+
+        /// <remarks>
+        /// Defaults <see cref="Seed" /> to 0.
+        /// </remarks>
+        /// <inheritdoc cref="MurmurHash3(int, UInt32)" />
+        public MurmurHash3(int hashSize)
+            : this(hashSize, 0U)
+        {
+
+        }
+
+        /// <remarks>
+        /// Defaults <see cref="HashFunctionBase.HashSize" /> to 32.
+        /// </remarks>
+        /// <inheritdoc cref="MurmurHash3(int, UInt32)" />
+        public MurmurHash3(UInt32 seed)
+            : this(32, seed)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MurmurHash3"/> class.
+        /// </summary>
+        /// <param name="hashSize"><inheritdoc cref="HashFunctionBase(int)" /></param>
+        /// <param name="seed"><inheritdoc cref="Seed" /></param>
+        /// <exception cref="System.ArgumentOutOfRangeException">hashSize;hashSize must be contained within MurmurHash3.ValidHashSizes.</exception>
+        /// <inheritdoc cref="HashFunctionBase(int)" />
+        public MurmurHash3(int hashSize, UInt32 seed)
+            : base(hashSize)
+        {
+            if (!ValidHashSizes.Contains(hashSize))
+                throw new ArgumentOutOfRangeException("hashSize", "hashSize must be contained within MurmurHash3.ValidHashSizes.");
+
+            _Seed = seed;
         }
 
 
-        /// <inheritdoc/>
+
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
         protected override byte[] ComputeHashInternal(Stream data)
         {
             switch (HashSize)
@@ -67,7 +124,7 @@ namespace System.Data.HashFunction
                     return ComputeHash128(data);
 
                 default:
-                    throw new ArgumentOutOfRangeException("HashSize");
+                    throw new InvalidOperationException("HashSize set to an invalid value.");
             }
         }
 
@@ -76,7 +133,9 @@ namespace System.Data.HashFunction
         /// Computes 32-bit hash value for given stream.
         /// </summary>
         /// <param name="data">Stream of data to hash.</param>
-        /// <returns>Hash value of the data.</returns>
+        /// <returns>
+        /// Hash value of the data.
+        /// </returns>
         protected byte[] ComputeHash32(Stream data)
         {
             UInt32 h1 = Seed;
@@ -130,7 +189,9 @@ namespace System.Data.HashFunction
         /// Computes 64-bit hash value for given byte stream.
         /// </summary>
         /// <param name="data">Stream of data to hash.</param>
-        /// <returns>Hash value of the data.</returns>
+        /// <returns>
+        /// Hash value of the data.
+        /// </returns>
         protected byte[] ComputeHash128(Stream data)
         {
             UInt64 h1 = (UInt64) Seed;

@@ -11,6 +11,7 @@
     <AssemblyName>System.Data.HashFunction.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TransformOnBuild>true</TransformOnBuild>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -21,6 +22,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,6 +39,16 @@
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>..\Data.HashFunction.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'NuGetDeploy|AnyCPU'">
+    <OutputPath>bin\NuGetDeploy\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AssemblyOriginatorKeyFile>..\Data.HashFunction.Production.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Moq">
@@ -59,6 +73,7 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="CityHash\UInt128Tests.cs" />
     <Compile Include="Core\HashFunctionBaseTests.cs" />
     <Compile Include="Core\Utilities\IntegerManipulation\ToBytesExtensionsTests.cs" />
     <Compile Include="Core\Utilities\IntegerManipulation\ReflectBitsExtensionsTests.cs" />
@@ -73,11 +88,19 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>IHashFunctionTests_CRC.tt</DependentUpon>
     </Compile>
+    <Compile Include="IHashFunctionTests_HashFunctionBase.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IHashFunctionTests_HashFunctionBase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Mocks\BuzHashBaseImpl.cs" />
+    <Compile Include="Mocks\CityHashBuffered.cs" />
     <Compile Include="Mocks\HashFunctionBaseImpl.cs" />
     <Compile Include="CRC\CRCTests.cs" />
     <Compile Include="CRC\CRCSettingsTests.cs" />
     <Compile Include="FNV\FNVTests.cs" />
     <Compile Include="Core\Utilities\IntegerManipulation\ExtendedMultiplyExtensionsTests.cs" />
+    <Compile Include="Pearson\PearsonBaseTests.cs" />
     <Compile Include="Test\UtilityExtensionTests.cs" />
     <Compile Include="HashAlgorithmWrapperTests.cs" />
     <Compile Include="IHashFunctionTests.cs" />
@@ -85,11 +108,17 @@
     <Compile Include="UtilityExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="IHashFunctionTests_HashFunctionBase.json" />
     <None Include="IHashFunctionTests_CRC.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>IHashFunctionTests_CRC.cs</LastGenOutput>
     </None>
+    <None Include="IHashFunctionTests_HashFunctionBase.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>IHashFunctionTests_HashFunctionBase.cs</LastGenOutput>
+    </None>
     <None Include="packages.config" />
+    <None Include="RunXUnitAfterBuild.targets" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BernsteinHash\Data.HashFunction.BernsteinHash.csproj">
@@ -108,9 +137,9 @@
       <Project>{d8268071-2147-4364-9803-ed0921246899}</Project>
       <Name>Data.HashFunction.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Crc\Data.HashFunction.Crc.csproj">
+    <ProjectReference Include="..\CRC\Data.HashFunction.CRC.csproj">
       <Project>{fc9c9416-a84d-4087-8f54-065dbc3d4c23}</Project>
-      <Name>Data.HashFunction.Crc</Name>
+      <Name>Data.HashFunction.CRC</Name>
     </ProjectReference>
     <ProjectReference Include="..\ELF64\Data.HashFunction.ELF64.csproj">
       <Project>{5644704b-272e-41ee-9a70-fed7c40205d1}</Project>
@@ -146,6 +175,8 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v12.0\TextTemplating\Microsoft.TextTemplating.targets" Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v12.0\TextTemplating\Microsoft.TextTemplating.targets')" />
+  <Import Project="RunXUnitAfterBuild.targets" Condition="'$(Configuration)' == 'NuGetDeploy' " />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

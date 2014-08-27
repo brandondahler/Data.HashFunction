@@ -16,42 +16,122 @@ namespace System.Data.HashFunction
     public class JenkinsLookup3
         : HashFunctionBase
     {
-        /// <inheritdoc/>
-        public override IEnumerable<int> ValidHashSizes { get { return new[] { 32, 64}; } }
 
         /// <summary>
         /// First seed value for hash calculation.
         /// </summary>
+        /// <value>
+        /// The first seed value for hash calculation.
+        /// </value>
         /// <remarks>
         /// Only seed value for 32-bit mode, first seed value for 64-bit mode.
         /// </remarks>
-        public UInt32 InitVal1 { get; set; }
+        public UInt32 InitVal1 { get { return _InitVal1; } }
 
         /// <summary>
         /// Second seed value for hash calculation.
         /// </summary>
+        /// <value>
+        /// The second seed value for hash calculation.
+        /// </value>
         /// <remarks>
         /// Not used for 32-bit mode, second seed value for 64-bit mode.
         /// </remarks>
-        public UInt32 InitVal2 { get; set; }
-
-
-        /// <inheritdoc/>
-        protected override bool RequiresSeekableStream { get { return true; } }
+        public UInt32 InitVal2 { get { return _InitVal2; } }
 
 
         /// <summary>
-        /// Constructs new <see cref="JenkinsLookup3"/> instance.
+        /// The list of possible hash sizes that can be provided to the <see cref="JenkinsLookup3" /> constructor.
         /// </summary>
+        /// <value>
+        /// The list of valid hash sizes.
+        /// </value>
+        public static IEnumerable<int> ValidHashSizes { get { return _ValidHashSizes; } }
+
+
+        /// <inheritdoc />
+        protected override bool RequiresSeekableStream { get { return true; } }
+
+
+        private readonly UInt32 _InitVal1;
+        private readonly UInt32 _InitVal2;
+
+        private static readonly IEnumerable<int> _ValidHashSizes = new[] { 32, 64 };
+
+
+
+        /// <remarks>
+        /// Defaults <see cref="InitVal1" /> to 0. <inheritdoc cref="JenkinsLookup3(UInt32)" />
+        /// </remarks>
+        /// <inheritdoc cref="JenkinsLookup3(UInt32)" />
         public JenkinsLookup3()
-            : base(64)
+            : this(0U)
         {
-            InitVal1 = 0;
-            InitVal2 = 0;
+            
+        }
+
+        /// <remarks>
+        /// Defaults <see cref="InitVal2" /> to 0. <inheritdoc cref="JenkinsLookup3(UInt32, UInt32)" />
+        /// </remarks>
+        /// <inheritdoc cref="JenkinsLookup3(UInt32, UInt32)" />
+        public JenkinsLookup3(UInt32 initVal1)
+            : this(initVal1, 0U)
+        {
+
+        }
+
+        /// <remarks>
+        /// Defaults <see cref="HashFunctionBase.HashSize" /> to 32.
+        /// </remarks>
+        /// <inheritdoc cref="JenkinsLookup3(int, UInt32, UInt32)" />
+        public JenkinsLookup3(UInt32 initVal1, UInt32 initVal2)
+            : this(32, initVal1, initVal2)
+        {
+
+        }
+
+        /// <remarks>
+        /// Defaults <see cref="InitVal1" /> to 0. <inheritdoc cref="JenkinsLookup3(int, UInt32)" />
+        /// </remarks>
+        /// <inheritdoc cref="JenkinsLookup3(int, UInt32)" />
+        public JenkinsLookup3(int hashSize)
+            : this(hashSize, 0U)
+        {
+
+        }
+
+        /// <remarks>
+        /// Defaults <see cref="InitVal2" /> to 0.
+        /// </remarks>
+        /// <inheritdoc cref="JenkinsLookup3(int, UInt32, UInt32)" />
+        public JenkinsLookup3(int hashSize, UInt32 initVal1)
+            : this(hashSize, initVal1, 0U)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JenkinsLookup3"/> class.
+        /// </summary>
+        /// <param name="hashSize"><inheritdoc cref="HashFunctionBase(int)"/></param>
+        /// <param name="initVal1"><inheritdoc cref="InitVal1"/></param>
+        /// <param name="initVal2"><inheritdoc cref="InitVal2"/></param>
+        /// <exception cref="System.ArgumentOutOfRangeException">hashSize;hashSize must be contained within SpookyHashV2.ValidHashSizes.</exception>
+        /// <inheritdoc cref="HashFunctionBase(int)"/>
+        public JenkinsLookup3(int hashSize, UInt32 initVal1, UInt32 initVal2)
+            : base(hashSize)
+        {
+            if (!ValidHashSizes.Contains(hashSize))
+                throw new ArgumentOutOfRangeException("hashSize", "hashSize must be contained within SpookyHashV2.ValidHashSizes.");
+
+            _InitVal1 = initVal1;
+            _InitVal2 = initVal2;
         }
 
 
-        /// <inheritdoc/>
+
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
         protected override byte[] ComputeHashInternal(Stream data)
         {
             UInt32 a = 0xdeadbeef + (UInt32) data.Length + InitVal1;
@@ -112,42 +192,35 @@ namespace System.Data.HashFunction
                 case 64:
                     return BitConverter.GetBytes((((UInt64) b) << 32) | c);
                 default:
-                    throw new ArgumentOutOfRangeException("HashSize");
+                    throw new InvalidOperationException("HashSize set to an invalid value.");
             }
         }
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Mix(ref UInt32 a, ref UInt32 b, ref UInt32 c)
+        private static void Mix(ref UInt32 a, ref UInt32 b, ref UInt32 c)
         {
-            a -= c; a ^= Rot(c,  4); c += b;
-            b -= a; b ^= Rot(a,  6); a += c;
-            c -= b; c ^= Rot(b,  8); b += a;
+            a -= c; a ^= c.RotateLeft( 4); c += b;
+            b -= a; b ^= a.RotateLeft( 6); a += c;
+            c -= b; c ^= b.RotateLeft( 8); b += a;
 
-            a -= c; a ^= Rot(c, 16); c += b;
-            b -= a; b ^= Rot(a, 19); a += c;
-            c -= b; c ^= Rot(b,  4); b += a;
+            a -= c; a ^= c.RotateLeft(16); c += b;
+            b -= a; b ^= a.RotateLeft(19); a += c;
+            c -= b; c ^= b.RotateLeft( 4); b += a;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Final(ref UInt32 a, ref UInt32 b, ref UInt32 c)
+        private static void Final(ref UInt32 a, ref UInt32 b, ref UInt32 c)
         {
-            c ^= b; c -= Rot(b, 14);
-            a ^= c; a -= Rot(c, 11);
-            b ^= a; b -= Rot(a, 25);
+            c ^= b; c -= b.RotateLeft(14);
+            a ^= c; a -= c.RotateLeft(11);
+            b ^= a; b -= a.RotateLeft(25);
 
-            c ^= b; c -= Rot(b, 16);
-            a ^= c; a -= Rot(c,  4);
-            b ^= a; b -= Rot(a, 14);
+            c ^= b; c -= b.RotateLeft(16);
+            a ^= c; a -= c.RotateLeft( 4);
+            b ^= a; b -= a.RotateLeft(14);
 
-            c ^= b; c -= Rot(b, 24);
+            c ^= b; c -= b.RotateLeft(24);
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private UInt32 Rot(UInt32 value, int positions)
-        {
-            return (value << positions) | (value >> (32 - positions));
-        }
-
     }
 }

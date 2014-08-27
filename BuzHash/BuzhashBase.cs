@@ -19,34 +19,21 @@ namespace System.Data.HashFunction
     public abstract class BuzHashBase
         : HashFunctionBase
     {
-        /// <summary>
-        /// Table of 256 (preferably random and distinct) UInt64 values.
-        /// </summary>
-        /// <remarks>
-        /// It is strongly recommended to return a reference to a static readonly private variable, otherwise each hashing will 
-        ///   construct the table again.
-        /// </remarks>
-        public abstract UInt64[] Rtab { get; }
+        /// <summary>Table of 256 (preferably random and distinct) UInt64 values.</summary>
+        public IReadOnlyList<UInt64> Rtab { get { return _Rtab; } }
 
-        /// <summary>
-        /// Direction that the circular shift step should use.
-        /// </summary>
-        public abstract CircularShiftDirection ShiftDirection { get; }
+        /// <summary>Direction that the circular shift step should use.</summary>
+        public CircularShiftDirection ShiftDirection { get { return _ShiftDirection; } }
 
-        /// <summary>
-        /// Initialization value to use for the hash.
-        /// </summary>
-        public virtual UInt64 InitVal { get { return 0; } }
+        /// <summary>Initialization value to use for the hash.</summary>
+        public UInt64 InitVal { get { return _InitVal; } }
 
-        /// <inheritdoc/>
-        public override IEnumerable<int> ValidHashSizes
-        {
-            get { return new[] { 8, 16, 32, 64 }; }
-        }
 
-        /// <summary>
-        /// Enumeration of possible directions a circular shift can be defined for.
-        /// </summary>
+        /// <summary>The list of possible hash sizes that can be provided to the <see cref="BuzHashBase"/> constructor.</summary>
+        public static IEnumerable<int> ValidHashSizes { get { return _ValidHashSizes; } }
+
+
+        /// <summary>Enumeration of possible directions a circular shift can be defined for.</summary>
         public enum CircularShiftDirection
         {
             /// <summary>Shift bits left.</summary>
@@ -56,18 +43,69 @@ namespace System.Data.HashFunction
         }
 
 
-        /// <summary>
-        /// Creates new instance of <see cref="BuzHashBase"/>.
-        /// </summary>
-        /// <param name="defaultHashSize">Hash size to pass down to <see cref="HashFunctionBase" />.</param>
-        protected BuzHashBase(int defaultHashSize = 64)
-            : base(defaultHashSize)
+        private readonly IReadOnlyList<UInt64> _Rtab;
+        private readonly CircularShiftDirection _ShiftDirection;
+        private readonly UInt64 _InitVal;
+
+        private static readonly IEnumerable<int> _ValidHashSizes = new[] { 8, 16, 32, 64 };
+
+
+
+        /// <remarks>
+        /// Defaults <see cref="HashFunctionBase.HashSize"/> to 64. <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, int)"/>
+        /// </remarks>
+        /// <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, int)"/>
+        protected BuzHashBase(IReadOnlyList<UInt64> rtab, CircularShiftDirection shiftDirection)
+            : this(rtab, shiftDirection, 64)
         {
 
         }
 
+        /// <remarks>
+        /// Defaults <see cref="InitVal"/> to 0. <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, UInt64, int)"/>
+        /// </remarks>
+        /// <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, UInt64, int)"/>
+        protected BuzHashBase(IReadOnlyList<UInt64> rtab, CircularShiftDirection shiftDirection, int hashSize)
+            : this(rtab, shiftDirection, 0U, hashSize)
+        {
 
-        /// <inheritdoc/>
+        }
+
+        /// <remarks>
+        /// Defaults <see cref="HashFunctionBase.HashSize"/> to 64.
+        /// </remarks>
+        /// <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, UInt64, int)"/>
+        protected BuzHashBase(IReadOnlyList<UInt64> rtab, CircularShiftDirection shiftDirection, UInt64 initVal)
+            : this(rtab, shiftDirection, initVal, 64)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BuzHashBase" /> class.
+        /// </summary>
+        /// <param name="rtab"><inheritdoc cref="Rtab" /></param>
+        /// <param name="shiftDirection"><inheritdoc cref="ShiftDirection" /></param>
+        /// <param name="initVal"><inheritdoc cref="InitVal" /></param>
+        /// <param name="hashSize"><inheritdoc cref="HashFunctionBase(int)" select="param[name=hashSize]" /></param>
+        /// <exception cref="System.ArgumentOutOfRangeException">hashSize;hashSize must be contained within <see cref="ValidHashSizes" />.</exception>
+        /// <inheritdoc cref="HashFunctionBase(int)" />
+        protected BuzHashBase(IReadOnlyList<UInt64> rtab, CircularShiftDirection shiftDirection, UInt64 initVal, int hashSize)
+            : base(hashSize)
+        {
+            if (!ValidHashSizes.Contains(hashSize))
+                throw new ArgumentOutOfRangeException("hashSize", "hashSize must be contained within BuzHashBase.ValidHashSizes.");
+
+            _Rtab = rtab;
+            _ShiftDirection = shiftDirection;
+
+            _InitVal = initVal;
+        }
+
+
+
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
         protected override byte[] ComputeHashInternal(Stream data)
         {
             switch (HashSize)
@@ -85,7 +123,7 @@ namespace System.Data.HashFunction
                     return ComputeHash64(data);
 
                 default:
-                    throw new ArgumentOutOfRangeException("HashSize");
+                    throw new InvalidOperationException("HashSize set to an invalid value.");
             }
         }
 
@@ -94,7 +132,9 @@ namespace System.Data.HashFunction
         /// 8-bit implementation of ComputeHash.
         /// </summary>
         /// <param name="data">Data to be hashed.</param>
-        /// <returns>1-byte array containing the hash value.</returns>
+        /// <returns>
+        /// 1-byte array containing the hash value.
+        /// </returns>
         protected byte[] ComputeHash8(Stream data)
         {
             byte h = (byte) InitVal;
@@ -110,7 +150,9 @@ namespace System.Data.HashFunction
         /// 16-bit implementation of ComputeHash.
         /// </summary>
         /// <param name="data">Data to be hashed.</param>
-        /// <returns>2-byte array containing the hash value.</returns>
+        /// <returns>
+        /// 2-byte array containing the hash value.
+        /// </returns>
         protected byte[] ComputeHash16(Stream data)
         {
             UInt16 h = (UInt16) InitVal;
@@ -125,7 +167,9 @@ namespace System.Data.HashFunction
         /// 32-bit implementation of ComputeHash.
         /// </summary>
         /// <param name="data">Data to be hashed.</param>
-        /// <returns>4-byte array containing the hash value.</returns>
+        /// <returns>
+        /// 4-byte array containing the hash value.
+        /// </returns>
         protected byte[] ComputeHash32(Stream data)
         {
             UInt32 h = (UInt32) InitVal;
@@ -140,7 +184,9 @@ namespace System.Data.HashFunction
         /// 64-bit implementation of ComputeHash.
         /// </summary>
         /// <param name="data">Data to be hashed.</param>
-        /// <returns>8-byte array containing the hash value.</returns>
+        /// <returns>
+        /// 8-byte array containing the hash value.
+        /// </returns>
         protected byte[] ComputeHash64(Stream data)
         {
             UInt64 h = InitVal;
@@ -157,7 +203,9 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="n">Byte value to shift.</param>
         /// <param name="shiftCount">Number of bits to shift the integer by.</param>
-        /// <returns>Byte value after rotating by the specified amount of bits.</returns>
+        /// <returns>
+        /// Byte value after rotating by the specified amount of bits.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected byte CShift(byte n, int shiftCount)
         {
@@ -172,7 +220,9 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="n">UInt16 value to shift.</param>
         /// <param name="shiftCount">Number of bits to shift the integer by.</param>
-        /// <returns>UInt16 value after rotating by the specified amount of bits.</returns>
+        /// <returns>
+        /// UInt16 value after rotating by the specified amount of bits.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected UInt16 CShift(UInt16 n, int shiftCount)
         {
@@ -187,7 +237,9 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="n">UInt32 value to shift.</param>
         /// <param name="shiftCount">Number of bits to shift the integer by.</param>
-        /// <returns>UInt32 value after rotating by the specified amount of bits.</returns>
+        /// <returns>
+        /// UInt32 value after rotating by the specified amount of bits.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected UInt32 CShift(UInt32 n, int shiftCount)
         {
@@ -202,7 +254,9 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="n">UInt64 value to shift.</param>
         /// <param name="shiftCount">Number of bits to shift the integer by.</param>
-        /// <returns>UInt64 value after rotating by the specified amount of bits.</returns>
+        /// <returns>
+        /// UInt64 value after rotating by the specified amount of bits.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected UInt64 CShift(UInt64 n, int shiftCount)
         {

@@ -17,16 +17,27 @@ namespace System.Data.HashFunction
         : FNV1Base
     {
         /// <summary>
-        /// Creates new <see cref="FNV1"/> instance.
+        /// Initializes a new instance of the <see cref="FNV1"/> class.
         /// </summary>
+        /// <inheritdoc cref="FNV1Base()" />
         public FNV1()
             : base()
         {
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FNV1"/> class.
+        /// </summary>
+        /// <inheritdoc cref="FNV1Base(int)" />
+        public FNV1(int hashSize)
+            : base(hashSize)
+        {
 
-        /// <inheritdoc/>
+        }
+
+
+        /// <inheritdoc />
         protected override IReadOnlyList<UInt32> ProcessBytes(
             IReadOnlyList<UInt32> prime, IReadOnlyList<UInt32> offset, Stream data)
         {
@@ -41,7 +52,7 @@ namespace System.Data.HashFunction
             return hash;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override UInt32 ProcessBytes32(UInt32 prime, UInt32 offset, Stream data)
         {
             var hash = offset;
@@ -55,7 +66,7 @@ namespace System.Data.HashFunction
             return hash;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override UInt64 ProcessBytes64(UInt64 prime, UInt64 offset, Stream data)
         {
             var hash = offset;

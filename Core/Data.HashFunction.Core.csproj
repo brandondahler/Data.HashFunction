@@ -21,6 +21,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\System.Data.HashFunction.Core.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,12 +32,27 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\System.Data.HashFunction.Core.XML</DocumentationFile>
+    <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
+    <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>..\Data.HashFunction.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'NuGetDeploy|AnyCPU'">
+    <OutputPath>bin\NuGetDeploy\</OutputPath>
+    <DefineConstants>TRACE;NuGetDeploy</DefineConstants>
+    <DocumentationFile>bin\NuGetDeploy\System.Data.HashFunction.Core.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
+    <AssemblyOriginatorKeyFile>..\Data.HashFunction.Production.pfx</AssemblyOriginatorKeyFile>
+    <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

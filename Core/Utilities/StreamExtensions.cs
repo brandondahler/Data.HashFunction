@@ -18,7 +18,12 @@ namespace System.Data.HashFunction.Utilities
         /// </summary>
         /// <param name="source">Stream to read data from.</param>
         /// <param name="bufferSize">Size of buffer array.</param>
-        /// <returns>Yields each byte in stream until the end of the stream is reached.</returns>
+        /// <returns>
+        /// Yields each byte in stream until the end of the stream is reached.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">source;source must be a non-null, readable Stream instance.</exception>
+        /// <exception cref="System.ArgumentException">source must be a readable Stream instance.;source</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">bufferSize;bufferSize must be greater than or equal to 1.</exception>
         public static IEnumerable<byte> AsEnumerable(this Stream source, int bufferSize = 4096)
         {
             if (source == null)
@@ -51,7 +56,12 @@ namespace System.Data.HashFunction.Utilities
         /// </summary>
         /// <param name="source">Stream to read data from.</param>
         /// <param name="groupSize">Size of grouped arrays.</param>
-        /// <returns>GroupedStremaData instance.</returns>
+        /// <returns>
+        /// GroupedStremaData instance.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">source;source must be a non-null, readable Stream instance.</exception>
+        /// <exception cref="System.ArgumentException">source must be a readable Stream instance.;source</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">groupSize;groupSize must be greater than or equal to 1.</exception>
         public static GroupedStreamData AsGroupedStreamData(this Stream source, int groupSize)
         {
             if (source == null)
@@ -77,8 +87,12 @@ namespace System.Data.HashFunction.Utilities
             /// <summary>
             /// Byte array containing partial data from the end of the stream or an empty array.
             /// </summary>
+            /// <value>
+            /// The remainder bytes.
+            /// </value>
+            /// <exception cref="System.InvalidOperationException">Remainder property is not valid until GroupedStreamData has been enumerated.</exception>
             /// <remarks>
-            /// Throws an InvalidOperationException if the <see cref="GroupedStreamData"/> has not yet been enumerated.
+            /// Throws an exception if the <see cref="GroupedStreamData" /> has not yet been enumerated.
             /// </remarks>
             public byte[] Remainder 
             { 
@@ -99,10 +113,13 @@ namespace System.Data.HashFunction.Utilities
 
 
             /// <summary>
-            /// Constructs new <see cref="GroupedStreamData"/> instance.
+            /// Initializes a new instance of the <see cref="GroupedStreamData"/> class.
             /// </summary>
             /// <param name="source">Stream to read data from.</param>
             /// <param name="groupSize">Size of grouped arrays.</param>
+            /// <exception cref="System.ArgumentNullException">source;source must be a non-null, readable Stream instance.</exception>
+            /// <exception cref="System.ArgumentException">source must be a readable Stream instance.;source</exception>
+            /// <exception cref="System.ArgumentOutOfRangeException">groupSize;groupSize must be greater than or equal to 1.</exception>
             public GroupedStreamData(Stream source, int groupSize)
             {
                 if (source == null)
@@ -121,13 +138,23 @@ namespace System.Data.HashFunction.Utilities
             }
 
 
-            /// <inheritdoc/>
+            /// <summary>
+            /// Returns an enumerator that iterates through the collection.
+            /// </summary>
+            /// <returns>
+            /// A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
+            /// </returns>
             public IEnumerator<byte[]> GetEnumerator()
             {
                 return EnumerateGroups().GetEnumerator();
             }
 
-            /// <inheritdoc/>
+            /// <summary>
+            /// Returns an enumerator that iterates through a collection.
+            /// </summary>
+            /// <returns>
+            /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+            /// </returns>
             IEnumerator IEnumerable.GetEnumerator()
             {
                 return GetEnumerator();

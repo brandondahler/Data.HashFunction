@@ -32,22 +32,26 @@ namespace System.Data.HashFunction
     public class BernsteinHash
         : HashFunctionBase
     {
-        /// <inheritdoc/>
-        public override IEnumerable<int> ValidHashSizes { get { return new[] { 32 }; } }
-
-        /// <summary>Constructs new <see cref="BernsteinHash"/> instance.</summary>
-        /// <remarks>HashSize defaults to 32 bits.</remarks>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BernsteinHash"/> class.
+        /// </summary>
+        /// <remarks>
+        /// HashSize defaults to 32 bits.
+        /// </remarks>
+        /// <inheritdoc cref="HashFunctionBase(int)" />
         public BernsteinHash()
             : base(32)
         {
 
         }
 
-        /// <inheritdoc/>
+
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
         protected override byte[] ComputeHashInternal(Stream data)
         {
             if (HashSize != 32)
-                throw new ArgumentOutOfRangeException("HashSize");
+                throw new InvalidOperationException("HashSize set to an invalid value.");
 
 
             UInt32 h = 0;
