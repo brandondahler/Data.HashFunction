@@ -26,7 +26,7 @@ namespace System.Data.HashFunction.Test.CRC_Tests
         [Fact]
         public void CRC_DefaultSettings_Works()
         {
-            var testSettings = CRCStandards.Standards[CRCStandards.Standard.CRC24];
+            var testSettings = CRC.Standards[CRC.Standard.CRC24];
 
             // Ensure we're actually testing something
             Assert.NotEqual(
@@ -66,7 +66,7 @@ namespace System.Data.HashFunction.Test.CRC_Tests
             var mockCRC = new Mock<CRC>() { CallBase = true };
 
             mockCRC.SetupGet(c => c.Settings)
-                .Returns((CRCSettings) null);
+                .Returns((CRC.Setting) null);
 
 
             var crc = mockCRC.Object;

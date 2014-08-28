@@ -2,16 +2,16 @@
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Web.Script.Serialization" #>
 <#+
-    public CRCStandard[] ReadDefinedStandards(string fileLocation)
+    public Standard[] ReadDefinedStandards(string fileLocation)
     {
         var jsonSerializer = new JavaScriptSerializer();
      
         using (var fs = File.OpenRead(Path.ChangeExtension(fileLocation, "json")))
         using (var sr = new StreamReader(fs))
-            return jsonSerializer.Deserialize<CRCStandard[]>(sr.ReadToEnd());
+            return jsonSerializer.Deserialize<Standard[]>(sr.ReadToEnd());
     }
 
-    public struct CRCStandard
+    public struct Standard
     {
         public string Name { get; set; }
         public int    Bits { get; set; }

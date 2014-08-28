@@ -13,7 +13,7 @@ namespace System.Data.HashFunction
     /// Implementation of the cyclic redundancy check error-detecting code as defined at http://en.wikipedia.org/wiki/Cyclic_redundancy_check.
     /// This implementation is generalized to encompass all possible CRC parameters from 1 to 64 bits.
     /// </summary>
-    public class CRC
+    public partial class CRC
         : HashFunctionBase
     {
         /// <summary>
@@ -22,7 +22,7 @@ namespace System.Data.HashFunction
         /// <value>
         /// The CRC parameters that will be used to calculate hash values.
         /// </value>
-        public virtual CRCSettings Settings
+        public virtual Setting Settings
         {
             get { return _Settings; }
         }
@@ -36,9 +36,9 @@ namespace System.Data.HashFunction
         /// </value>
         /// <exception cref="System.ArgumentNullException">value</exception>
         /// <remarks>
-        /// Defaults to the settings for <see cref="CRCStandards.Standard.CRC32" />.
+        /// Defaults to the settings for <see cref="CRCStandards.CRC32" />.
         /// </remarks>
-        public static CRCSettings DefaultSettings 
+        public static Setting DefaultSettings 
         {
             get { return _DefaultSettings; }
             set 
@@ -51,13 +51,13 @@ namespace System.Data.HashFunction
         }
         
         
-        private readonly CRCSettings _Settings;
+        private readonly Setting _Settings;
 
-        private static CRCSettings _DefaultSettings = CRCStandards.Standards[CRCStandards.Standard.CRC32];
+        private static Setting _DefaultSettings;
 
 
         /// <remarks>Uses CRC settings set at <see cref="CRC.DefaultSettings"/>.</remarks>
-        /// <inheritdoc cref="CRC(CRCSettings)" />
+        /// <inheritdoc cref="CRC(Setting)" />
         public CRC()
             : this(DefaultSettings)
         {
@@ -70,13 +70,22 @@ namespace System.Data.HashFunction
         /// <param name="settings"><inheritdoc cref="Settings" /></param>
         /// <exception cref="System.ArgumentNullException">settings</exception>
         /// <inheritdoc cref="HashFunctionBase(int)" />
-        public CRC(CRCSettings settings)
+        public CRC(Setting settings)
             : base(settings != null ? settings.Bits : -1)
         {
             if (settings == null)
                 throw new ArgumentNullException("settings");
 
             _Settings = settings;
+        }
+
+
+        /// <summary>
+        /// Initializes static, dependent fields of the <see cref="CRC"/> class.
+        /// </summary>
+        static CRC()
+        {
+            _DefaultSettings = Standards[Standard.CRC32];
         }
 
 
@@ -161,7 +170,7 @@ namespace System.Data.HashFunction
         /// The table accounts for reflecting the index bits to fix the input endianness,
         /// but it is not possible completely account for the output endianness if the CRC is mixed-endianness.
         /// </remarks>
-        internal static UInt64[] CalculateTable(CRCSettings settings)
+        internal static UInt64[] CalculateTable(Setting settings)
         {
             var perBitCount = 8;
 

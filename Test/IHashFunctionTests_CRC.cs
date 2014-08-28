@@ -4,6 +4,7 @@
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.CRCStandards;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;

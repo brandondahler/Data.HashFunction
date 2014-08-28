@@ -93,7 +93,7 @@
     <Compile Include="Mocks\CityHashBuffered.cs" />
     <Compile Include="Mocks\HashFunctionBaseImpl.cs" />
     <Compile Include="CRC\CRCTests.cs" />
-    <Compile Include="CRC\CRCSettingsTests.cs" />
+    <Compile Include="CRC\SettingTests.cs" />
     <Compile Include="FNV\FNVTests.cs" />
     <Compile Include="Core\Utilities\IntegerManipulation\ExtendedMultiplyExtensionsTests.cs" />
     <Compile Include="Pearson\PearsonBaseTests.cs" />

@@ -8,7 +8,7 @@ using Xunit;
 
 namespace System.Data.HashFunction.Test.CRC_Tests
 {
-    public class CRCSettingsTests
+    public class SettingTests
     {
 
         #region Constructor
@@ -16,30 +16,30 @@ namespace System.Data.HashFunction.Test.CRC_Tests
         #region Parameters
 
         [Fact]
-        public void CRCSettings_Constructor_ValidBits_Works()
+        public void CRC_Setting_Constructor_ValidBits_Works()
         {
             foreach (var validBits in Enumerable.Range(1, 64))
             {
                 Assert.DoesNotThrow(() =>
-                    new CRCSettings(validBits, 0, 0, false, false, 0));
+                    new CRC.Setting(validBits, 0, 0, false, false, 0));
             }
         }
 
         [Fact]
-        public void CRCSettings_Constructor_InvalidBits_Throws()
+        public void CRC_Setting_Constructor_InvalidBits_Throws()
         {
             foreach (var invalidBits in new[] { int.MinValue, short.MinValue, -1, 0, 65, short.MaxValue, int.MaxValue })
             {
                 Assert.Equal("bits",
                     Assert.Throws<ArgumentOutOfRangeException>(() =>
-                        new CRCSettings(invalidBits, 0, 0, false, false, 0))
+                        new CRC.Setting(invalidBits, 0, 0, false, false, 0))
                     .ParamName);
             }
         }
 
 
         [Fact]
-        public void CRCSettings_Constructor_ValidPolynomial_Works()
+        public void CRC_Setting_Constructor_ValidPolynomial_Works()
         {
             foreach (var validBits in Enumerable.Range(1, 64))
             {
@@ -48,13 +48,13 @@ namespace System.Data.HashFunction.Test.CRC_Tests
                     var validPolynomial = UInt64.MaxValue >> (64 - x);
 
                     Assert.DoesNotThrow(() =>
-                        new CRCSettings(validBits, validPolynomial, 0, false, false, 0));
+                        new CRC.Setting(validBits, validPolynomial, 0, false, false, 0));
                 }
             }
         }
 
         [Fact]
-        public void CRCSettings_Constructor_InvalidPolynomial_Throws()
+        public void CRC_Setting_Constructor_InvalidPolynomial_Throws()
         {
             foreach (var validBits in Enumerable.Range(1, 64))
             {
@@ -64,7 +64,7 @@ namespace System.Data.HashFunction.Test.CRC_Tests
 
                     Assert.Equal("polynomial",
                         Assert.Throws<ArgumentOutOfRangeException>(() =>
-                            new CRCSettings(validBits, invalidPolynomial, 0, false, false, 0))
+                            new CRC.Setting(validBits, invalidPolynomial, 0, false, false, 0))
                         .ParamName);
                 }
             }
@@ -72,7 +72,7 @@ namespace System.Data.HashFunction.Test.CRC_Tests
 
 
         [Fact]
-        public void CRCSettings_Constructor_ValidInitialValue_Works()
+        public void CRC_Setting_Constructor_ValidInitialValue_Works()
         {
             foreach (var validBits in Enumerable.Range(1, 64))
             {
@@ -81,13 +81,13 @@ namespace System.Data.HashFunction.Test.CRC_Tests
                     var validInitialValue = UInt64.MaxValue >> (64 - x);
 
                     Assert.DoesNotThrow(() =>
-                        new CRCSettings(validBits, 0, validInitialValue, false, false, 0));
+                        new CRC.Setting(validBits, 0, validInitialValue, false, false, 0));
                 }
             }
         }
 
         [Fact]
-        public void CRCSettings_Constructor_InvalidInitialValue_Throws()
+        public void CRC_Setting_Constructor_InvalidInitialValue_Throws()
         {
             foreach (var validBits in Enumerable.Range(1, 64))
             {
@@ -97,7 +97,7 @@ namespace System.Data.HashFunction.Test.CRC_Tests
 
                     Assert.Equal("initialValue",
                         Assert.Throws<ArgumentOutOfRangeException>(() =>
-                            new CRCSettings(validBits, 0, invalidInitialValue, false, false, 0))
+                            new CRC.Setting(validBits, 0, invalidInitialValue, false, false, 0))
                         .ParamName);
                 }
             }
@@ -105,7 +105,7 @@ namespace System.Data.HashFunction.Test.CRC_Tests
 
 
         [Fact]
-        public void CRCSettings_Constructor_ValidXOrOut_Works()
+        public void CRC_Setting_Constructor_ValidXOrOut_Works()
         {
             foreach (var validBits in Enumerable.Range(1, 64))
             {
@@ -114,13 +114,13 @@ namespace System.Data.HashFunction.Test.CRC_Tests
                     var validXOrOut = UInt64.MaxValue >> (64 - x);
 
                     Assert.DoesNotThrow(() =>
-                        new CRCSettings(validBits, 0, 0, false, false, validXOrOut));
+                        new CRC.Setting(validBits, 0, 0, false, false, validXOrOut));
                 }
             }
         }
 
         [Fact]
-        public void CRCSettings_Constructor_InvalidXOrOut_Throws()
+        public void CRC_Setting_Constructor_InvalidXOrOut_Throws()
         {
             foreach (var validBits in Enumerable.Range(1, 64))
             {
@@ -130,7 +130,7 @@ namespace System.Data.HashFunction.Test.CRC_Tests
 
                     Assert.Equal("xOrOut",
                         Assert.Throws<ArgumentOutOfRangeException>(() =>
-                            new CRCSettings(validBits, 0, 0, false, false, invalidXOrOut))
+                            new CRC.Setting(validBits, 0, 0, false, false, invalidXOrOut))
                         .ParamName);
                 }
             }
@@ -139,7 +139,7 @@ namespace System.Data.HashFunction.Test.CRC_Tests
         #endregion
 
         [Fact]
-        public void CRCSettings_Constructor_SetsParameters()
+        public void CRC_Setting_Constructor_SetsParameters()
         {
             var r = new Random();
 
@@ -160,7 +160,7 @@ namespace System.Data.HashFunction.Test.CRC_Tests
 
 
                     var settings = 
-                        new CRCSettings(bits, polynomial, initialValue, reflectIn, reflectOut, xOrOut);
+                        new CRC.Setting(bits, polynomial, initialValue, reflectIn, reflectOut, xOrOut);
 
                     Assert.Equal(bits,       settings.Bits);
                     Assert.Equal(polynomial, settings.Polynomial);
@@ -174,9 +174,9 @@ namespace System.Data.HashFunction.Test.CRC_Tests
         #endregion
 
         [Fact]
-        public void CRCSettings_PreCalculateTable_Works()
+        public void CRC_Setting_PreCalculateTable_Works()
         {
-            var settings = new CRCSettings(1, 0, 0, false, false, 0);
+            var settings = new CRC.Setting(1, 0, 0, false, false, 0);
 
             Assert.True(settings.PreCalculateTable());
             Assert.False(settings.PreCalculateTable());
