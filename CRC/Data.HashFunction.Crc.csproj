@@ -63,20 +63,21 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="CRC.cs" />
-    <Compile Include="CRCSettings.cs" />
-    <Compile Include="CRCStandards.cs">
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Standards.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>CRCStandards.tt</DependentUpon>
+      <DependentUpon>Standards.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="CRCStandards.json" />
-    <None Include="CRCStandards.t4" />
-    <None Include="CRCStandards.tt">
+    <None Include="Standards.json" />
+    <None Include="Standards.t4" />
+    <None Include="Standards.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>CRCStandards.cs</LastGenOutput>
+      <LastGenOutput>Standards.cs</LastGenOutput>
     </None>
     <None Include="Data.HashFunction.CRC.nuspec" />
   </ItemGroup>

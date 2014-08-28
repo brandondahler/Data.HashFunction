@@ -4,7 +4,7 @@
 <#@ import namespace="System.Text" #>
 <#@ output extension=".cs" #>
 <#
-    var standards = ReadDefinedStandards(Host.ResolvePath("CRCStandards.json"));
+    var standards = ReadDefinedStandards(Host.ResolvePath("Standards.json"));
 #>
 //! Automatically generated from CRCStandards.tt
 //! Direct modifications to this file will be lost.
@@ -20,10 +20,7 @@ using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
-    /// <summary>
-    /// Static class containing enumeration and a dictionary of CRC standards and their <see cref="CRCSettings" />.
-    /// </summary>
-    public static class CRCStandards
+    public partial class CRC
     {
         /// <summary>
         /// Enumeration of all defined and implemented CRC standards.
@@ -41,13 +38,13 @@ namespace System.Data.HashFunction
         }
 
         /// <summary>
-        /// Dictionary of CRCSettings for each of the defined and implemented CRC standards.
+        /// Dictionary of Settings for each of the defined and implemented CRC standards.
         /// </summary>
-        public static readonly IReadOnlyDictionary<Standard, CRCSettings> Standards = 
-            new Dictionary<Standard, CRCSettings>() {
+        public static readonly IReadOnlyDictionary<Standard, Setting> Standards = 
+            new Dictionary<Standard, Setting>() {
 <# foreach (var standard in standards) { 
         var settingsLine = string.Format(
-            "{{ Standard.{0, -18} new CRCSettings({1, 2}, {2, 18}, {3, 18}, {4, 5}, {5, 5}, {6, 18} ) }},",
+            "{{ Standard.{0, -18} new Setting({1, 2}, {2, 18}, {3, 18}, {4, 5}, {5, 5}, {6, 18} ) }},",
             standard.Name + ",",
             standard.Bits,
             standard.Polynomial,
@@ -62,25 +59,35 @@ namespace System.Data.HashFunction
             };
     }
 
-
-<# foreach (var standard in standards) { #>
-    /// <summary>
-    /// Automatically generated implementation of <#= standard.Name #> CRC standard, based on the <see cref="CRC" /> class.
-    /// </summary>
-    public class <#= standard.Name #>
-        : CRC
+    namespace CRCStandards
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="<#= standard.Name #>"/> class.
+        /// Namespace containing all implemented CRC standards.
         /// </summary>
-        public <#= standard.Name #>()
-            : base(CRCStandards.Standards[CRCStandards.Standard.<#= standard.Name #>])
+        internal static class NamespaceDoc
         {
             
         }
-    }
+
+<# foreach (var standard in standards) { #>
+        /// <summary>
+        /// Automatically generated implementation of <#= standard.Name #> CRC standard, based on the <see cref="CRC" /> class.
+        /// </summary>
+        public class <#= standard.Name #>
+            : CRC
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="<#= standard.Name #>"/> class.
+            /// </summary>
+            public <#= standard.Name #>()
+                : base(CRC.Standards[CRC.Standard.<#= standard.Name #>])
+            {
+            
+            }
+        }
 
 <# } #>
+    }
 }
 
-<#@ include file="CRCStandards.t4" #>
+<#@ include file="Standards.t4" #>
