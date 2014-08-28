@@ -33,12 +33,6 @@
     <DocumentationFile>bin\Release\System.Data.HashFunction.xxHash.XML</DocumentationFile>
     <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\Data.HashFunction.pfx</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'NuGetDeploy|AnyCPU'">
     <OutputPath>bin\NuGetDeploy\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -47,8 +41,9 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
+    <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Data.HashFunction.Production.pfx</AssemblyOriginatorKeyFile>
+    <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
@@ -68,9 +63,6 @@
     <Compile Include="xxHash.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Data.HashFunction.pfx">
-      <Link>Properties\Data.HashFunction.pfx</Link>
-    </None>
     <None Include="Data.HashFunction.xxHash.nuspec" />
   </ItemGroup>
   <ItemGroup>

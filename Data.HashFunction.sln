@@ -15,10 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.CityHash"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D0A9A68F-2401-42E4-A6E7-D9FF9F080197}"
 	ProjectSection(SolutionItems) = preProject
-		Data.HashFunction.pfx = Data.HashFunction.pfx
 		Data.HashFunction.Production.pfx = Data.HashFunction.Production.pfx
 		NuGetPackAll.ps1 = NuGetPackAll.ps1
-		Readme_PFX.txt = Readme_PFX.txt
 		SolutionInfo.cs = SolutionInfo.cs
 	EndProjectSection
 EndProject
