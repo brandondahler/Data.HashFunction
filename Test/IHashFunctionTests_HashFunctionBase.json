@@ -1492,11 +1492,50 @@
         "Tests": [
             {
                 "IHashFunctionT": "xxHash",
+                "ConstructionParameters": [ "hashSize" ],
+                "KnownValues":  [
+                    { "Bits": 32, "TestValue": "TestConstants.Empty",      "ExpectedValue": "0x02cc5d05" },
+                    { "Bits": 32, "TestValue": "TestConstants.FooBar",     "ExpectedValue": "0xeda34aaf" },
+                    { "Bits": 32, "TestValue": "TestConstants.LoremIpsum", "ExpectedValue": "0x92ea46ac" },
+                    { "Bits": 64, "TestValue": "TestConstants.Empty",      "ExpectedValue": "0xef46db3751d8e999" },
+                    { "Bits": 64, "TestValue": "TestConstants.FooBar",     "ExpectedValue": "0xa2aa05ed9085aaf9" },
+                    { "Bits": 64, "TestValue": "TestConstants.LoremIpsum", "ExpectedValue": "0xaf35642971419cbe" }
+                ]
+            },
+
+            {
+                "IHashFunctionT": "xxHash",
+                "NamePostfix": "DefaultConstructor",
                 "ConstructionParameters": [ "" ],
                 "KnownValues":  [
                     { "Bits": 32, "TestValue": "TestConstants.Empty",      "ExpectedValue": "0x02cc5d05" },
                     { "Bits": 32, "TestValue": "TestConstants.FooBar",     "ExpectedValue": "0xeda34aaf" },
                     { "Bits": 32, "TestValue": "TestConstants.LoremIpsum", "ExpectedValue": "0x92ea46ac" }
+                ]
+            },
+
+            {
+                "IHashFunctionT": "xxHash",
+                "NamePostfix": "WithInitVal",
+                "ConstructionParameters": [ "hashSize, 0x78fef705b7c769faU" ],
+                "KnownValues":  [
+                    { "Bits": 32, "TestValue": "TestConstants.Empty",      "ExpectedValue": "0xff52b36b" },
+                    { "Bits": 32, "TestValue": "TestConstants.FooBar",     "ExpectedValue": "0x294f6b05" },
+                    { "Bits": 32, "TestValue": "TestConstants.LoremIpsum", "ExpectedValue": "0x01f950ab" },
+                    { "Bits": 64, "TestValue": "TestConstants.Empty",      "ExpectedValue": "0x985e09f666271418" },
+                    { "Bits": 64, "TestValue": "TestConstants.FooBar",     "ExpectedValue": "0x947ebc3ef380d35d" },
+                    { "Bits": 64, "TestValue": "TestConstants.LoremIpsum", "ExpectedValue": "0xf6b6e74f681d3e5b" }
+                ]
+            },
+
+            {
+                "IHashFunctionT": "xxHash",
+                "NamePostfix": "WithInitVal_DefaultHashSize",
+                "ConstructionParameters": [ "0x78fef705b7c769faU" ],
+                "KnownValues":  [
+                    { "Bits": 32, "TestValue": "TestConstants.Empty",      "ExpectedValue": "0xff52b36b" },
+                    { "Bits": 32, "TestValue": "TestConstants.FooBar",     "ExpectedValue": "0x294f6b05" },
+                    { "Bits": 32, "TestValue": "TestConstants.LoremIpsum", "ExpectedValue": "0x01f950ab" }
                 ]
             }
         ]

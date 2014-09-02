@@ -2259,6 +2259,35 @@ namespace System.Data.HashFunction.Test
                     new KnownValue(32, TestConstants.Empty, 0x02cc5d05),
                     new KnownValue(32, TestConstants.FooBar, 0xeda34aaf),
                     new KnownValue(32, TestConstants.LoremIpsum, 0x92ea46ac),
+                    new KnownValue(64, TestConstants.Empty, 0xef46db3751d8e999),
+                    new KnownValue(64, TestConstants.FooBar, 0xa2aa05ed9085aaf9),
+                    new KnownValue(64, TestConstants.LoremIpsum, 0xaf35642971419cbe),
+                };
+            }
+        }
+
+        protected override xxHash CreateHashFunction(int hashSize)
+        {
+            return new xxHash(hashSize);
+        }
+
+        protected override Mock<xxHash> CreateHashFunctionMock(int hashSize)
+        {
+            return new Mock<xxHash>(hashSize);
+        }
+    }
+
+    public class IHashFunctionTests_xxHash_DefaultConstructor
+        : IHashFunctionTests<xxHash>
+    {
+        protected override IEnumerable<KnownValue> KnownValues
+        {
+            get
+            {
+                return new KnownValue[] {
+                    new KnownValue(32, TestConstants.Empty, 0x02cc5d05),
+                    new KnownValue(32, TestConstants.FooBar, 0xeda34aaf),
+                    new KnownValue(32, TestConstants.LoremIpsum, 0x92ea46ac),
                 };
             }
         }
@@ -2271,6 +2300,61 @@ namespace System.Data.HashFunction.Test
         protected override Mock<xxHash> CreateHashFunctionMock(int hashSize)
         {
             return new Mock<xxHash>();
+        }
+    }
+
+    public class IHashFunctionTests_xxHash_WithInitVal
+        : IHashFunctionTests<xxHash>
+    {
+        protected override IEnumerable<KnownValue> KnownValues
+        {
+            get
+            {
+                return new KnownValue[] {
+                    new KnownValue(32, TestConstants.Empty, 0xff52b36b),
+                    new KnownValue(32, TestConstants.FooBar, 0x294f6b05),
+                    new KnownValue(32, TestConstants.LoremIpsum, 0x01f950ab),
+                    new KnownValue(64, TestConstants.Empty, 0x985e09f666271418),
+                    new KnownValue(64, TestConstants.FooBar, 0x947ebc3ef380d35d),
+                    new KnownValue(64, TestConstants.LoremIpsum, 0xf6b6e74f681d3e5b),
+                };
+            }
+        }
+
+        protected override xxHash CreateHashFunction(int hashSize)
+        {
+            return new xxHash(hashSize, 0x78fef705b7c769faU);
+        }
+
+        protected override Mock<xxHash> CreateHashFunctionMock(int hashSize)
+        {
+            return new Mock<xxHash>(hashSize, 0x78fef705b7c769faU);
+        }
+    }
+
+    public class IHashFunctionTests_xxHash_WithInitVal_DefaultHashSize
+        : IHashFunctionTests<xxHash>
+    {
+        protected override IEnumerable<KnownValue> KnownValues
+        {
+            get
+            {
+                return new KnownValue[] {
+                    new KnownValue(32, TestConstants.Empty, 0xff52b36b),
+                    new KnownValue(32, TestConstants.FooBar, 0x294f6b05),
+                    new KnownValue(32, TestConstants.LoremIpsum, 0x01f950ab),
+                };
+            }
+        }
+
+        protected override xxHash CreateHashFunction(int hashSize)
+        {
+            return new xxHash(0x78fef705b7c769faU);
+        }
+
+        protected override Mock<xxHash> CreateHashFunctionMock(int hashSize)
+        {
+            return new Mock<xxHash>(0x78fef705b7c769faU);
         }
     }
 
