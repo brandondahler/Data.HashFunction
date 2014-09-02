@@ -49,6 +49,7 @@ The following hash functions have been implemented from the most reliable refere
   * SpookyHashV1 - Original
   * SpookyHashV2 - Improvement upon SpookyHashV1, fixes bug in original specification
 * [xxHash](https://code.google.com/p/xxhash/)
+  * xxHash - Original and 64-bit version.
 
 
 Each family of hash functions is contained within its own project and NuGet package.
