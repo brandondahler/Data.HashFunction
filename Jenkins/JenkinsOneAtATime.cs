@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.HashFunction.Utilities;
 using System.Data.HashFunction.Utilities.IntegerManipulation;
+using System.Data.HashFunction.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,7 @@ namespace System.Data.HashFunction
     /// This hash function has been superseded by JenkinsLookup2 and JenkinsLookup3.
     /// </summary>
     public class JenkinsOneAtATime
-        : HashFunctionBase
+        : HashFunctionAsyncBase
     {
 
         /// <summary>
@@ -31,7 +32,7 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(Stream data)
+        protected override byte[] ComputeHashInternal(UnifiedData data)
         {
             if (HashSize != 32)
                 throw new InvalidOperationException("HashSize set to an invalid value.");
@@ -39,18 +40,49 @@ namespace System.Data.HashFunction
 
             UInt32 hash = 0;
             
-            foreach (var dataByte in data.AsEnumerable())
-            {
-                hash += dataByte;
-                hash += (hash << 10);
-                hash ^= (hash >> 6);
-            }
+            data.ForEachRead(dataBytes => {
+                hash = ProcessBytes(hash, dataBytes);
+            });
             
             hash += hash << 3;
             hash ^= hash >> 11;
             hash += hash << 15;
 
             return BitConverter.GetBytes(hash);
+        }
+
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
+        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        {
+            if (HashSize != 32)
+                throw new InvalidOperationException("HashSize set to an invalid value.");
+
+
+            UInt32 hash = 0;
+
+            await data.ForEachReadAsync(dataBytes => {
+                hash = ProcessBytes(hash, dataBytes);
+            }).ConfigureAwait(false);
+
+            hash += hash << 3;
+            hash ^= hash >> 11;
+            hash += hash << 15;
+
+            return BitConverter.GetBytes(hash);
+        }
+
+
+        private static UInt32 ProcessBytes(UInt32 hash, byte[] dataBytes)
+        {
+            foreach (var dataByte in dataBytes)
+            {
+                hash += dataByte;
+                hash += (hash << 10);
+                hash ^= (hash >> 6);
+            }
+
+            return hash;
         }
     }
 }

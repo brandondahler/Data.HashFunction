@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.HashFunction.Utilities;
 using System.Data.HashFunction.Utilities.IntegerManipulation;
+using System.Data.HashFunction.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -17,7 +18,7 @@ namespace System.Data.HashFunction
     /// Also can be set to use left or right rotation when running the rotate step.
     /// </summary>
     public abstract class BuzHashBase
-        : HashFunctionBase
+        : HashFunctionAsyncBase
     {
         /// <summary>Table of 256 (preferably random and distinct) UInt64 values.</summary>
         public IReadOnlyList<UInt64> Rtab { get { return _Rtab; } }
@@ -106,21 +107,108 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(Stream data)
+        protected override byte[] ComputeHashInternal(UnifiedData data)
         {
             switch (HashSize)
             {
                 case 8:
-                    return ComputeHash8(data);
+                {
+                    byte h = (byte) InitVal;
+            
+                    data.ForEachRead(dataBytes => {
+                        h = ProcessBytes(h, dataBytes);
+                    });
+            
+                    return new byte[] { h };
+                }
 
                 case 16:
-                    return ComputeHash16(data);
+                { 
+                    UInt16 h = (UInt16) InitVal;
+            
+                    data.ForEachRead(dataBytes => {
+                        h = ProcessBytes(h, dataBytes);
+                    });
+
+                    return BitConverter.GetBytes(h);
+                }
 
                 case 32:
-                    return ComputeHash32(data);
+                {
+                    UInt32 h = (UInt32) InitVal;
+            
+                    data.ForEachRead(dataBytes => {
+                        h = ProcessBytes(h, dataBytes);
+                    });
+            
+                    return BitConverter.GetBytes(h);
+                }
                 
                 case 64:
-                    return ComputeHash64(data);
+                {
+                    UInt64 h = InitVal;
+            
+                    data.ForEachRead(dataBytes => {
+                        h = ProcessBytes(h, dataBytes);
+                    });
+            
+                    return BitConverter.GetBytes(h);
+                }
+
+                default:
+                    throw new InvalidOperationException("HashSize set to an invalid value.");
+            }
+        }
+
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
+        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        {
+            switch (HashSize)
+            {
+                case 8:
+                {
+                    byte h = (byte) InitVal;
+            
+                    await data.ForEachReadAsync(dataBytes => {
+                        h = ProcessBytes(h, dataBytes);
+                    }).ConfigureAwait(false);
+            
+                    return new byte[] { h };
+                }
+
+                case 16:
+                { 
+                    UInt16 h = (UInt16) InitVal;
+            
+                    await data.ForEachReadAsync(dataBytes => {
+                        h = ProcessBytes(h, dataBytes);
+                    }).ConfigureAwait(false);
+
+                    return BitConverter.GetBytes(h);
+                }
+
+                case 32:
+                {
+                    UInt32 h = (UInt32) InitVal;
+            
+                    await data.ForEachReadAsync(dataBytes => {
+                        h = ProcessBytes(h, dataBytes);
+                    }).ConfigureAwait(false);
+            
+                    return BitConverter.GetBytes(h);
+                }
+                
+                case 64:
+                {
+                    UInt64 h = InitVal;
+            
+                    await data.ForEachReadAsync(dataBytes => {
+                        h = ProcessBytes(h, dataBytes);
+                    }).ConfigureAwait(false);
+            
+                    return BitConverter.GetBytes(h);
+                }
 
                 default:
                     throw new InvalidOperationException("HashSize set to an invalid value.");
@@ -128,73 +216,37 @@ namespace System.Data.HashFunction
         }
 
 
-        /// <summary>
-        /// 8-bit implementation of ComputeHash.
-        /// </summary>
-        /// <param name="data">Data to be hashed.</param>
-        /// <returns>
-        /// 1-byte array containing the hash value.
-        /// </returns>
-        protected byte[] ComputeHash8(Stream data)
+
+        private byte ProcessBytes(byte h, byte[] dataBytes)
         {
-            byte h = (byte) InitVal;
-            
-            
-            foreach (byte dataByte in data.AsEnumerable())
+            foreach (var dataByte in dataBytes)
                 h = (byte) (CShift(h, 1) ^ (byte) Rtab[dataByte]);
-            
-            return new byte[] { h };
+
+            return h;
         }
 
-        /// <summary>
-        /// 16-bit implementation of ComputeHash.
-        /// </summary>
-        /// <param name="data">Data to be hashed.</param>
-        /// <returns>
-        /// 2-byte array containing the hash value.
-        /// </returns>
-        protected byte[] ComputeHash16(Stream data)
+        private UInt16 ProcessBytes(UInt16 h, byte[] dataBytes)
         {
-            UInt16 h = (UInt16) InitVal;
-            
-            foreach (byte dataByte in data.AsEnumerable())
+            foreach (var dataByte in dataBytes)
                 h = (UInt16) (CShift(h, 1) ^ (UInt16) Rtab[dataByte]);
 
-            return BitConverter.GetBytes(h);
+            return h;
         }
 
-        /// <summary>
-        /// 32-bit implementation of ComputeHash.
-        /// </summary>
-        /// <param name="data">Data to be hashed.</param>
-        /// <returns>
-        /// 4-byte array containing the hash value.
-        /// </returns>
-        protected byte[] ComputeHash32(Stream data)
+        private UInt32 ProcessBytes(UInt32 h, byte[] dataBytes)
         {
-            UInt32 h = (UInt32) InitVal;
-            
-            foreach (byte dataByte in data.AsEnumerable())
+            foreach (var dataByte in dataBytes)
                 h = CShift(h, 1) ^ (UInt32) Rtab[dataByte];
-            
-            return BitConverter.GetBytes(h);
+
+            return h;
         }
 
-        /// <summary>
-        /// 64-bit implementation of ComputeHash.
-        /// </summary>
-        /// <param name="data">Data to be hashed.</param>
-        /// <returns>
-        /// 8-byte array containing the hash value.
-        /// </returns>
-        protected byte[] ComputeHash64(Stream data)
+        private UInt64 ProcessBytes(UInt64 h, byte[] dataBytes)
         {
-            UInt64 h = InitVal;
-            
-            foreach (byte dataByte in data.AsEnumerable())
+            foreach (var dataByte in dataBytes)
                 h = CShift(h, 1) ^ Rtab[dataByte];
-            
-            return BitConverter.GetBytes(h);
+
+            return h;
         }
 
 
@@ -207,7 +259,7 @@ namespace System.Data.HashFunction
         /// Byte value after rotating by the specified amount of bits.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected byte CShift(byte n, int shiftCount)
+        private byte CShift(byte n, int shiftCount)
         {
             if (ShiftDirection == CircularShiftDirection.Right)
                 return n.RotateRight(shiftCount);
@@ -224,7 +276,7 @@ namespace System.Data.HashFunction
         /// UInt16 value after rotating by the specified amount of bits.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected UInt16 CShift(UInt16 n, int shiftCount)
+        private UInt16 CShift(UInt16 n, int shiftCount)
         {
             if (ShiftDirection == CircularShiftDirection.Right)
                 return n.RotateRight(shiftCount);
@@ -241,7 +293,7 @@ namespace System.Data.HashFunction
         /// UInt32 value after rotating by the specified amount of bits.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected UInt32 CShift(UInt32 n, int shiftCount)
+        private UInt32 CShift(UInt32 n, int shiftCount)
         {
             if (ShiftDirection == CircularShiftDirection.Right)
                 return n.RotateRight(shiftCount);
@@ -258,7 +310,7 @@ namespace System.Data.HashFunction
         /// UInt64 value after rotating by the specified amount of bits.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected UInt64 CShift(UInt64 n, int shiftCount)
+        private UInt64 CShift(UInt64 n, int shiftCount)
         {
             if (ShiftDirection == CircularShiftDirection.Right)
                 return n.RotateRight(shiftCount);

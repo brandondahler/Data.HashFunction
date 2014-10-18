@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.HashFunction.Utilities;
 using System.Data.HashFunction.Utilities.IntegerManipulation;
+using System.Data.HashFunction.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -19,7 +20,7 @@ namespace System.Data.HashFunction
     /// </summary>
     [Obsolete("SpookyHashV1 has known issues, use SpookyHashV2.")]
     public class SpookyHashV1
-        : HashFunctionBase
+        : HashFunctionAsyncBase
     {
         /// <summary>
         /// First seed value for hash calculation.
@@ -131,7 +132,7 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(Stream data)
+        protected override byte[] ComputeHashInternal(UnifiedData data)
         {
             UInt64[] h = new UInt64[12];
             
@@ -140,23 +141,63 @@ namespace System.Data.HashFunction
             h[2]=h[5]=h[8]=h[11] = 0XDEADBEEFDEADBEEF;
 
 
-            var dataGroups = data.AsGroupedStreamData(96);
-
-
-            foreach (var dataGroup in dataGroups)
-                Mix(dataGroup, 0, h);
-
-
-            var remainder = dataGroups.Remainder;
             var remainderData = new byte[96];
 
-            Array.Copy(remainder, remainderData, remainder.Length);
-            remainderData[95] = (byte) remainder.Length;
-
+            data.ForEachGroup(96, 
+                dataGroup => {
+                    Mix(dataGroup, 0, h);
+                },
+                remainder => {
+                    remainder.CopyTo(remainderData, 0);
+                    remainderData[95] = (byte) remainder.Length;
+                });
 
             Mix(remainderData, 0, h);
             End(h);
 
+            switch (HashSize)
+            {
+                case 32:
+                    return BitConverter.GetBytes((UInt32) h[0]);
+                case 64:
+                    return BitConverter.GetBytes(h[0]);
+
+                case 128:
+                    var results = new byte[16];
+                    BitConverter.GetBytes(h[0]).CopyTo(results, 0);
+                    BitConverter.GetBytes(h[1]).CopyTo(results, 8);
+
+                    return results;
+
+                default:
+                    throw new InvalidOperationException("HashSize set to an invalid value.");
+            }
+        }
+
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
+        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        {
+            UInt64[] h = new UInt64[12];
+            
+            h[0]=h[3]=h[6]=h[9]  = InitVal1;
+            h[1]=h[4]=h[7]=h[10] = (HashSize == 128 ? InitVal2 : InitVal1);
+            h[2]=h[5]=h[8]=h[11] = 0XDEADBEEFDEADBEEF;
+
+
+            var remainderData = new byte[96];
+
+            await data.ForEachGroupAsync(96, 
+                dataGroup => {
+                    Mix(dataGroup, 0, h);
+                },
+                remainder => {
+                    remainder.CopyTo(remainderData, 0);
+                    remainderData[95] = (byte) remainder.Length;
+                }).ConfigureAwait(false);
+
+            Mix(remainderData, 0, h);
+            End(h);
 
             switch (HashSize)
             {
