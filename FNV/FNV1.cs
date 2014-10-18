@@ -38,12 +38,10 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc />
-        protected override IReadOnlyList<UInt32> ProcessBytes(
-            IReadOnlyList<UInt32> prime, IReadOnlyList<UInt32> offset, Stream data)
+        protected override UInt32[] ProcessBytes(
+            UInt32[] hash, IReadOnlyList<UInt32> prime, byte[] data)
         {
-            var hash = offset.ToArray();
-            
-            foreach (var dataByte in data.AsEnumerable())
+            foreach (var dataByte in data)
             {
                 hash = hash.ExtendedMultiply(prime);
                 hash[0] ^= dataByte;
@@ -53,25 +51,21 @@ namespace System.Data.HashFunction
         }
 
         /// <inheritdoc />
-        protected override UInt32 ProcessBytes32(UInt32 prime, UInt32 offset, Stream data)
+        protected override UInt32 ProcessBytes32(UInt32 hash, UInt32 prime, byte[] data)
         {
-            var hash = offset;
-            
-            foreach (var dataByte in data.AsEnumerable())
+            foreach (var dataByte in data)
             {
                 hash *= prime;
                 hash ^= dataByte;
-             }
+            }
 
             return hash;
         }
 
         /// <inheritdoc />
-        protected override UInt64 ProcessBytes64(UInt64 prime, UInt64 offset, Stream data)
+        protected override UInt64 ProcessBytes64(UInt64 hash, UInt64 prime, byte[] data)
         {
-            var hash = offset;
-
-            foreach (var dataByte in data.AsEnumerable())
+            foreach (var dataByte in data)
             {
                 hash *= prime;
                 hash ^= dataByte;

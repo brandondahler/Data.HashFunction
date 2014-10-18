@@ -87,12 +87,15 @@ namespace System.Data.HashFunction
                 throw new InvalidOperationException("HashSize set to an invalid value.");
 
             lock (SyncRoot)
-                return _hashAlgorithm.ComputeHash(data.ToArray());
+                return _hashAlgorithm.ComputeHash(data);
         }
 
         /// <inheritdoc />
         public byte[] ComputeHash(Stream data)
         {
+            if (HashSize != _hashAlgorithm.HashSize)
+                throw new InvalidOperationException("HashSize set to an invalid value.");
+
             lock (SyncRoot)
                 return _hashAlgorithm.ComputeHash(data);
         }
@@ -166,12 +169,15 @@ namespace System.Data.HashFunction
                 throw new InvalidOperationException("HashSize set to an invalid value.");
 
             lock (SyncRoot)
-                return _hashAlgorithm.ComputeHash(data.ToArray());
+                return _hashAlgorithm.ComputeHash(data);
         }
 
         /// <inheritdoc />
         public byte[] ComputeHash(Stream data)
         {
+            if (HashSize != _hashAlgorithm.HashSize)
+                throw new InvalidOperationException("HashSize set to an invalid value.");
+
             lock (SyncRoot)
                 return _hashAlgorithm.ComputeHash(data);
         }

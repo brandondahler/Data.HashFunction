@@ -79,5 +79,32 @@ namespace System.Data.HashFunction.Test.CRC_Tests
                     .Message);
             }
         }
+
+        [Fact]
+        public void CRC_ComputeHashAsyncInternal_InvalidSettings()
+        {
+            var mockCRC = new Mock<CRC>() { CallBase = true };
+
+            mockCRC.SetupGet(c => c.Settings)
+                .Returns((CRC.Setting) null);
+
+
+            var crc = mockCRC.Object;
+
+            using (var ms = new MemoryStream())
+            {
+                var aggregateException =
+                        Assert.Throws<AggregateException>(() =>
+                            crc.ComputeHashAsync(ms).Wait());
+
+                var resultingException = 
+                    Assert.Single(aggregateException.InnerExceptions);
+
+                Assert.Contains("Settings",
+                    Assert.IsType<InvalidOperationException>(
+                        resultingException)
+                    .Message);
+            }
+        }
     }
 }

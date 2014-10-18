@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.Utilities;
+using System.Data.HashFunction.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,7 +25,7 @@ namespace System.Data.HashFunction
 
         /// <summary>
         /// Flag to determine if a hash function needs a seekable stream in order to calculate the hash.
-        /// Override to true to make <see cref="ComputeHash(Stream)" /> pass a seekable stream to <see cref="ComputeHashInternal(Stream)" />.
+        /// Override to true to make <see cref="ComputeHash(Stream)" /> pass a seekable stream to <see cref="ComputeHashInternal(UnifiedData)" />.
         /// </summary>
         /// <value>
         /// <c>true</c> if a seekable stream; otherwise, <c>false</c>.
@@ -45,9 +47,10 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc />
-        public virtual byte[] ComputeHash(byte[] data)
+        public byte[] ComputeHash(byte[] data)
         {
-            return ComputeHash(new MemoryStream(data));
+            return ComputeHashInternal(
+                new ArrayData(data));
         }
 
         /// <exception cref="System.ArgumentException">Stream \data\ must be readable.;data</exception>
@@ -57,20 +60,35 @@ namespace System.Data.HashFunction
             if (!data.CanRead)
                 throw new ArgumentException("Stream \"data\" must be readable.", "data");
 
-            if (!RequiresSeekableStream || data.CanSeek)
-                return ComputeHashInternal(data);
-
-            using (var ms = new MemoryStream())
+            if (!data.CanSeek && RequiresSeekableStream)
             {
-                data.CopyTo(ms);
+                byte[] dataArray;
+                using (var ms = new MemoryStream())
+                {
+                    data.CopyTo(ms);
 
-                ms.Seek(0, SeekOrigin.Begin);
+                    ms.Seek(0, SeekOrigin.Begin);
 
-                return ComputeHashInternal(ms);
+                    dataArray = ms.ToArray();
+                }
+
+                return ComputeHashInternal(
+                    new ArrayData(dataArray));
             }
+
+            return ComputeHashInternal(
+                new StreamData(data));
         }
 
-        /// <inheritdoc cref="ComputeHash(Stream)" />
-        protected abstract byte[] ComputeHashInternal(Stream data);
+
+
+        /// <summary>
+        /// Computes hash value for given stream.
+        /// </summary>
+        /// <param name="data">Data to hash.</param>
+        /// <returns>
+        /// Hash value of data as byte array.
+        /// </returns>
+        protected abstract byte[] ComputeHashInternal(UnifiedData data);
     }
 }

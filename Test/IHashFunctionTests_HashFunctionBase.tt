@@ -2,6 +2,7 @@
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Web.Extensions" #>
 <#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Web.Script.Serialization" #>
 <#@ output extension=".cs" #>
@@ -26,13 +27,15 @@ namespace System.Data.HashFunction.Test
 
     #pragma warning disable 0618 // Disable ObsoleteAttribute warnings
 
+    #region IHashFunctionTests
+
 <# foreach (var testGroup in testGroups) { #>
     #region <#= testGroup.Name #>
 
 <# foreach (var test in testGroup.Tests) { #>
 <# for (var x = 0; x < test.ConstructionParameters.Length; ++x) { #>
-    public class IHashFunctionTests_<#= test.IHashFunctionT.Replace("<", "_").Replace(">", "") #><#= test.NamePostfix == null ? "" : string.Format("_{0}", test.NamePostfix) #><#= x > 1 ? string.Format("_{0}", x) : "" #>
-        : IHashFunctionTests<<#= test.IHashFunctionT #>>
+    public class IHashFunction<#= (test.Async ? "Async" : "" )#>Tests_<#= test.IHashFunctionT.Replace("<", "_").Replace(">", "") #><#= test.NamePostfix == null ? "" : string.Format("_{0}", test.NamePostfix) #><#= x > 1 ? string.Format("_{0}", x) : "" #>
+        : IHashFunction<#= (test.Async ? "Async" : "" )#>Tests<<#= test.IHashFunctionT #>>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -56,12 +59,53 @@ namespace System.Data.HashFunction.Test
             return new Mock<<#= test.IHashFunctionT #>>(<#= test.ConstructionParameters[x] #>);
         }
     }
+    
 
 <# } #>
 <# } #>
     #endregion
 
 <# } #>
+
+    #endregion
+
+    #region IHashFunction_SpeedTest
+
+    public class IHashFunction_SpeedTests_HashFunctionBase
+        : IHashFunction_SpeedTest
+    {
+        protected override IReadOnlyDictionary<string, IHashFunction> TestHashFunctions { get { return _TestHashFunctions; } }
+
+        private readonly IReadOnlyDictionary<string, IHashFunction> _TestHashFunctions = new Dictionary<string, IHashFunction>() {
+<# 
+foreach (var testGroup in testGroups) {
+    foreach (var test in testGroup.Tests) { 
+        for (var x = 0; x < test.ConstructionParameters.Length; ++x) { 
+            if(test.ConstructionParameters[x].Contains("hashSize")) {
+                foreach (var hashSize in test.KnownValues.Select(kv => kv.Bits).Distinct()) {
+#>
+                { 
+                    @"<#=test.IHashFunctionT #>(<#= test.ConstructionParameters[x].Replace("\"", "\"\"").Replace("hashSize", hashSize.ToString()) #>)", 
+                    new <#= test.IHashFunctionT #>(<#= test.ConstructionParameters[x].Replace("hashSize", hashSize.ToString()) #>) 
+                },
+<# 
+                } 
+            } else {
+#>
+                { 
+                    @"<#=test.IHashFunctionT #>(<#= test.ConstructionParameters[x].Replace("\"", "\"\"") #>)", 
+                    new <#= test.IHashFunctionT #>(<#= test.ConstructionParameters[x] #>) 
+                },
+<#
+            }
+        }
+    }
+}
+#>
+        };
+    }
+
+    #endregion
 
     #pragma warning restore 0618 // Restore ObsoleteAttribute warnings
 
@@ -86,6 +130,7 @@ namespace System.Data.HashFunction.Test
     public class Test
     {
         public string       IHashFunctionT { get; set; }
+        public bool         Async { get; set; }
         public string       NamePostfix { get; set; }
         public string[]     ConstructionParameters { get; set; }
         public KnownValue[] KnownValues { get; set; }

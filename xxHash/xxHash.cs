@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.HashFunction.Utilities;
 using System.Data.HashFunction.Utilities.IntegerManipulation;
+using System.Data.HashFunction.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -15,7 +16,7 @@ namespace System.Data.HashFunction
     ///   https://code.google.com/p/xxhash/.
     /// </summary>
     public class xxHash
-        : HashFunctionBase
+        : HashFunctionAsyncBase
     {
         /// <summary>
         /// Seed value for hash calculation.
@@ -105,17 +106,162 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(Stream data)
+        protected override byte[] ComputeHashInternal(UnifiedData data)
         {
             switch (HashSize)
             {
                 case 32:
+                {
+                    var h = ((UInt32) InitVal) + _primes32[4];
+
+                    int dataCount = 0;
+                    byte[] remainder = null;
+
+
+                    var initValues = new[] {
+                        ((UInt32) InitVal) + _primes32[0] + _primes32[1],
+                        ((UInt32) InitVal) + _primes32[1],
+                        ((UInt32) InitVal),
+                        ((UInt32) InitVal) - _primes32[0]
+                    };
+
+                    data.ForEachGroup(16, 
+                        dataGroup => {
+                            for (var x = 0; x < 4; ++x)
+                            {
+                                initValues[x] += BitConverter.ToUInt32(dataGroup, x * 4) * _primes32[1];
+                                initValues[x]  = initValues[x].RotateLeft(13);
+                                initValues[x] *= _primes32[0];
+                            }
+
+                            dataCount += dataGroup.Length;
+                        },
+                        remainderData => {
+                            remainder = remainderData;
+                            dataCount += remainder.Length;
+                        });
+
                     return BitConverter.GetBytes(
-                        ComputeHash32(data));
+                        PostProcess(h, initValues, dataCount, remainder));
+                }
 
                 case 64:
+                {
+                     var h = InitVal + _primes64[4];
+
+                    int dataCount = 0;
+                    byte[] remainder = null;
+
+                    var initValues = new[] {
+                        InitVal + _primes64[0] + _primes64[1],
+                        InitVal + _primes64[1],
+                        InitVal,
+                        InitVal - _primes64[0]
+                    };
+
+
+                    data.ForEachGroup(32, 
+                        dataGroup => {
+                        
+                            for (var x = 0; x < 4; ++x)
+                            {
+                                initValues[x] += BitConverter.ToUInt64(dataGroup, x * 8) * _primes64[1];
+                                initValues[x]  = initValues[x].RotateLeft(31);
+                                initValues[x] *= _primes64[0];
+                            }
+
+                            dataCount += dataGroup.Length;
+                        },
+                        remainderData => {
+                            remainder = remainderData;
+                            dataCount += remainder.Length;
+                        });
+            
                     return BitConverter.GetBytes(
-                        ComputeHash64(data));
+                        PostProcess(h, initValues, dataCount, remainder));
+                }
+
+                default:
+                    throw new InvalidOperationException("HashSize set to an invalid value.");
+            }
+        }
+
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
+        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        {
+            switch (HashSize)
+            {
+                case 32:
+                {
+                    var h = ((UInt32) InitVal) + _primes32[4];
+
+                    int dataCount = 0;
+                    byte[] remainder = null;
+
+
+                    var initValues = new[] {
+                        ((UInt32) InitVal) + _primes32[0] + _primes32[1],
+                        ((UInt32) InitVal) + _primes32[1],
+                        ((UInt32) InitVal),
+                        ((UInt32) InitVal) - _primes32[0]
+                    };
+
+                    await data.ForEachGroupAsync(16, 
+                        dataGroup => {
+                            for (var x = 0; x < 4; ++x)
+                            {
+                                initValues[x] += BitConverter.ToUInt32(dataGroup, x * 4) * _primes32[1];
+                                initValues[x]  = initValues[x].RotateLeft(13);
+                                initValues[x] *= _primes32[0];
+                            }
+
+                            dataCount += dataGroup.Length;
+                        },
+                        remainderData => {
+                            remainder = remainderData;
+                            dataCount += remainder.Length;
+                        }).ConfigureAwait(false);
+
+                    return BitConverter.GetBytes(
+                        PostProcess(h, initValues, dataCount, remainder));
+                }
+
+                case 64:
+                {
+                     var h = InitVal + _primes64[4];
+
+                    int dataCount = 0;
+                    byte[] remainder = null;
+
+                    var initValues = new[] {
+                        InitVal + _primes64[0] + _primes64[1],
+                        InitVal + _primes64[1],
+                        InitVal,
+                        InitVal - _primes64[0]
+                    };
+
+
+                    await data.ForEachGroupAsync(32, 
+                        dataGroup => {
+                        
+                            for (var x = 0; x < 4; ++x)
+                            {
+                                initValues[x] += BitConverter.ToUInt64(dataGroup, x * 8) * _primes64[1];
+                                initValues[x]  = initValues[x].RotateLeft(31);
+                                initValues[x] *= _primes64[0];
+                            }
+
+                            dataCount += dataGroup.Length;
+                        },
+                        remainderData => {
+                            remainder = remainderData;
+                            dataCount += remainder.Length;
+                        }).ConfigureAwait(false);
+            
+                    return BitConverter.GetBytes(
+                        PostProcess(h, initValues, dataCount, remainder));
+                }
 
                 default:
                     throw new InvalidOperationException("HashSize set to an invalid value.");
@@ -123,77 +269,36 @@ namespace System.Data.HashFunction
         }
 
 
-        /// <summary>
-        /// Computes 32-bit hash value for given stream.
-        /// </summary>
-        /// <param name="data">Stream of data to hash.</param>
-        /// <returns>
-        /// Hash value of the data.
-        /// </returns>
-        protected UInt32 ComputeHash32(Stream data)
+        private static UInt32 PostProcess(UInt32 h, UInt32[] initValues, int dataCount, byte[] remainder)
         {
-            var h = ((UInt32) InitVal) + _primes32[4];
-
-            var dataGroups = data.AsGroupedStreamData(16);
-            int dataCount = 0;
-
-
+            if (dataCount >= 16)
             {
-                bool fullBlockRead = false;
-
-                var initValues = new[] {
-                    ((UInt32) InitVal) + _primes32[0] + _primes32[1],
-                    ((UInt32) InitVal) + _primes32[1],
-                    ((UInt32) InitVal),
-                    ((UInt32) InitVal) - _primes32[0]
-                };
-
-
-                foreach (var dataGroup in dataGroups)
-                {
-                    for (var x = 0; x < 4; ++x)
-                    {
-                        initValues[x] += BitConverter.ToUInt32(dataGroup, x * 4) * _primes32[1];
-                        initValues[x]  = initValues[x].RotateLeft(13);
-                        initValues[x] *= _primes32[0];
-                    }
-
-                    dataCount += dataGroup.Length;
-                    fullBlockRead = true;
-                }
-
-
-                if (fullBlockRead)
-                {
-                    h = initValues[0].RotateLeft(1) + 
-                        initValues[1].RotateLeft(7) + 
-                        initValues[2].RotateLeft(12) + 
-                        initValues[3].RotateLeft(18);
-                }
+                h = initValues[0].RotateLeft(1) + 
+                    initValues[1].RotateLeft(7) + 
+                    initValues[2].RotateLeft(12) + 
+                    initValues[3].RotateLeft(18);
             }
 
 
-            var remainder = dataGroups.Remainder;
-
-            dataCount += remainder.Length;
             h += (UInt32) dataCount;
 
-
-            // In 4-byte chunks, process all process all full chunks
-            for (int x = 0; x < remainder.Length / 4; ++x)
+            if (remainder != null)
             {
-                h += BitConverter.ToUInt32(remainder, x * 4) * _primes32[2];
-                h = h.RotateLeft(17) * _primes32[3];
+                // In 4-byte chunks, process all process all full chunks
+                for (int x = 0; x < remainder.Length / 4; ++x)
+                {
+                    h += BitConverter.ToUInt32(remainder, x * 4) * _primes32[2];
+                    h = h.RotateLeft(17) * _primes32[3];
+                }
+
+
+                // Process last 4 bytes in 1-byte chunks (only runs if data.Length % 4 != 0)
+                for (int x = remainder.Length - (remainder.Length % 4); x < remainder.Length; ++x)
+                {
+                    h += (UInt32)remainder[x] * _primes32[4];
+                    h = h.RotateLeft(11) * _primes32[0];
+                }
             }
-
-
-            // Process last 4 bytes in 1-byte chunks (only runs if data.Length % 4 != 0)
-            for (int x = remainder.Length - (remainder.Length % 4); x < remainder.Length; ++x)
-            {
-                h += (UInt32)remainder[x] * _primes32[4];
-                h = h.RotateLeft(11) * _primes32[0];
-            }
-
 
             h ^= h >> 15;
             h *= _primes32[1];
@@ -204,93 +309,52 @@ namespace System.Data.HashFunction
             return h;
         }
 
-        /// <summary>
-        /// Computes 64-bit hash value for given stream.
-        /// </summary>
-        /// <param name="data">Stream of data to hash.</param>
-        /// <returns>
-        /// Hash value of the data.
-        /// </returns>
-        protected UInt64 ComputeHash64(Stream data)
+        private static UInt64 PostProcess(UInt64 h, UInt64[] initValues, int dataCount, byte[] remainder)
         {
-            var h = InitVal + _primes64[4];
-
-            var dataGroups = data.AsGroupedStreamData(32);
-            int dataCount = 0;
-
-
+            if (dataCount >= 32)
             {
-                bool fullBlockRead = false;
-
-                var initValues = new[] {
-                    InitVal + _primes64[0] + _primes64[1],
-                    InitVal + _primes64[1],
-                    InitVal,
-                    InitVal - _primes64[0]
-                };
+                h = initValues[0].RotateLeft(1) +
+                    initValues[1].RotateLeft(7) +
+                    initValues[2].RotateLeft(12) +
+                    initValues[3].RotateLeft(18);
 
 
-                foreach (var dataGroup in dataGroups)
+                for (var x = 0; x < initValues.Length; ++x)
                 {
-                    for (var x = 0; x < 4; ++x)
-                    {
-                        initValues[x] += BitConverter.ToUInt64(dataGroup, x * 8) * _primes64[1];
-                        initValues[x]  = initValues[x].RotateLeft(31);
-                        initValues[x] *= _primes64[0];
-                    }
+                    initValues[x] *= _primes64[1];
+                    initValues[x] = initValues[x].RotateLeft(31);
+                    initValues[x] *= _primes64[0];
 
-                    dataCount += dataGroup.Length;
-                    fullBlockRead = true;
-                }
-
-
-                if (fullBlockRead)
-                {
-                    h = initValues[0].RotateLeft(1) +
-                        initValues[1].RotateLeft(7) +
-                        initValues[2].RotateLeft(12) +
-                        initValues[3].RotateLeft(18);
-
-
-                    for (var x = 0; x < initValues.Length; ++x)
-                    {
-                        initValues[x] *= _primes64[1];
-                        initValues[x]  = initValues[x].RotateLeft(31);
-                        initValues[x] *= _primes64[0];
-                        
-                        h ^= initValues[x];
-                        h  = (h * _primes64[0]) + _primes64[3];
-                    }
+                    h ^= initValues[x];
+                    h = (h * _primes64[0]) + _primes64[3];
                 }
             }
 
-
-            var remainder = dataGroups.Remainder;
-
-            dataCount += remainder.Length;
             h += (UInt64) dataCount;
 
+            if (remainder != null)
+            { 
+                // In 8-byte chunks, process all full chunks
+                for (int x = 0; x < remainder.Length / 8; ++x)
+                {
+                    h ^= (BitConverter.ToUInt64(remainder, x * 8) * _primes64[1]).RotateLeft(31) * _primes64[0];
+                    h  = (h.RotateLeft(27) * _primes64[0]) + _primes64[3];
+                }
 
-            // In 8-byte chunks, process all full chunks
-            for (int x = 0; x < remainder.Length / 8; ++x)
-            {
-                h ^= (BitConverter.ToUInt64(remainder, x * 8) * _primes64[1]).RotateLeft(31) * _primes64[0];
-                h  = (h.RotateLeft(27) * _primes64[0]) + _primes64[3];
-            }
 
+                // Process a 4-byte chunk if it exists
+                if ((remainder.Length % 8) > 4)
+                {
+                    h ^= ((UInt64) BitConverter.ToUInt32(remainder, remainder.Length - (remainder.Length % 8))) * _primes64[0];
+                    h  = (h.RotateLeft(23) * _primes64[1]) + _primes64[2];
+                }
 
-            // Process a 4-byte chunk if it exists
-            if ((remainder.Length % 8) > 4)
-            {
-                h ^= ((UInt64) BitConverter.ToUInt32(remainder, remainder.Length - (remainder.Length % 8))) * _primes64[0];
-                h  = (h.RotateLeft(23) * _primes64[1]) + _primes64[2];
-            }
-
-            // Process last 4 bytes in 1-byte chunks (only runs if data.Length % 4 != 0)
-            for (int x = remainder.Length - (remainder.Length % 4); x < remainder.Length; ++x)
-            {
-                h ^= (UInt64) remainder[x] * _primes64[4];
-                h  = h.RotateLeft(11) * _primes64[0];
+                // Process last 4 bytes in 1-byte chunks (only runs if data.Length % 4 != 0)
+                for (int x = remainder.Length - (remainder.Length % 4); x < remainder.Length; ++x)
+                {
+                    h ^= (UInt64) remainder[x] * _primes64[4];
+                    h  = h.RotateLeft(11) * _primes64[0];
+                }
             }
 
 

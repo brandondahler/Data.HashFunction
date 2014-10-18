@@ -14,15 +14,7 @@ namespace System.Data.HashFunction.Test.FNV
     public class FNVBaseTests
     {
         [Fact]
-        public void FNVBase_Constructor_HashParameters_DoesNotContain()
-        {
-            var fnvMock = new Mock<FNV1>(2048);
-
-
-        }
-
-        [Fact]
-        public void FNVBase_ComputeHash_InvalidPrimeSize_Throws()
+        public void FNVBase_Constructor_InvalidPrimeSize_Throws()
         {
             var fnvPrimeOffsetMock = new Mock<FNVPrimeOffset>(224, new BigInteger(0), new BigInteger(0)) {
                 CallBase = true
@@ -43,7 +35,7 @@ namespace System.Data.HashFunction.Test.FNV
         }
 
         [Fact]
-        public void FNVBase_ComputeHash_InvalidOffsetSize_Throws()
+        public void FNVBase_Constructor_InvalidOffsetSize_Throws()
         {
             var fnvPrimeOffsetMock = new Mock<FNVPrimeOffset>(224, new BigInteger(0), new BigInteger(0))
             { 

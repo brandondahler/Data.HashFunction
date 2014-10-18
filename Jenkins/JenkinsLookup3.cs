@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.HashFunction.Utilities;
 using System.Data.HashFunction.Utilities.IntegerManipulation;
+using System.Data.HashFunction.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -14,7 +15,7 @@ namespace System.Data.HashFunction
     /// Implementation of Bob Jenkins' Lookup3 hash function as specified at http://burtleburtle.net/bob/c/lookup3.c.
     /// </summary>
     public class JenkinsLookup3
-        : HashFunctionBase
+        : HashFunctionAsyncBase
     {
 
         /// <summary>
@@ -132,7 +133,7 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(Stream data)
+        protected override byte[] ComputeHashInternal(UnifiedData data)
         {
             UInt32 a = 0xdeadbeef + (UInt32) data.Length + InitVal1;
             UInt32 b = 0xdeadbeef + (UInt32) data.Length + InitVal1;
@@ -142,47 +143,17 @@ namespace System.Data.HashFunction
                 c += InitVal2;
 
 
-            var dataGroups = data.AsGroupedStreamData(12);
             int dataCount = 0;
-            
-            foreach (var dataGroup in dataGroups)
-            {
-                a += BitConverter.ToUInt32(dataGroup, 0);
-                b += BitConverter.ToUInt32(dataGroup, 4);
-                c += BitConverter.ToUInt32(dataGroup, 8);
 
-                Mix(ref a, ref b, ref c);
-
-                dataCount += dataGroup.Length;
-            }
-
-
-            var remainder = dataGroups.Remainder;
-
-            switch (remainder.Length)
-            {
-                case 11: c += (UInt32) remainder[10] << 16;    goto case 10;
-                case 10: c += (UInt32) remainder[ 9] << 8;     goto case  9;
-                case  9: c += (UInt32) remainder[ 8];           goto case 8;   
-
-                case 8:
-                    b += BitConverter.ToUInt32(remainder, 4);
-                    goto case 4;
-
-                case 7: b += (UInt32) remainder[6] << 16;  goto case 6;
-                case 6: b += (UInt32) remainder[5] <<  8;  goto case 5;
-                case 5: b += (UInt32) remainder[4];        goto case 4;
-
-                case 4:
-                    a += BitConverter.ToUInt32(remainder, 0);
-                    break;
-                    
-                case 3: a += (UInt32) remainder[2] << 16;  goto case 2;
-                case 2: a += (UInt32) remainder[1] <<  8;  goto case 1;
-                case 1: a += (UInt32) remainder[0];        break;
-            }
-
-            if (remainder.Length != 0 || dataCount == 12)
+            data.ForEachGroup(12, 
+                dataGroup => {
+                    dataCount = ProcessGroup(ref a, ref b, ref c, dataCount, dataGroup);
+                },
+                remainder => {
+                    dataCount = ProcessRemainder(ref a, ref b, ref c, dataCount, remainder);
+                });
+    
+            if (dataCount > 0)
                 Final(ref a, ref b, ref c);
 
             switch (HashSize)
@@ -194,6 +165,88 @@ namespace System.Data.HashFunction
                 default:
                     throw new InvalidOperationException("HashSize set to an invalid value.");
             }
+        }
+
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
+        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        {
+            UInt32 a = 0xdeadbeef + (UInt32) data.Length + InitVal1;
+            UInt32 b = 0xdeadbeef + (UInt32) data.Length + InitVal1;
+            UInt32 c = 0xdeadbeef + (UInt32) data.Length + InitVal1;
+
+            if (HashSize == 64)
+                c += InitVal2;
+
+
+            int dataCount = 0;
+
+            await data.ForEachGroupAsync(12, 
+                dataGroup => {
+                    dataCount = ProcessGroup(ref a, ref b, ref c, dataCount, dataGroup);
+                },
+                remainder => {
+                    dataCount = ProcessRemainder(ref a, ref b, ref c, dataCount, remainder);
+                }).ConfigureAwait(false);
+    
+            if (dataCount > 0)
+                Final(ref a, ref b, ref c);
+
+            switch (HashSize)
+            {
+                case 32:
+                    return BitConverter.GetBytes(c);
+                case 64:
+                    return BitConverter.GetBytes((((UInt64) b) << 32) | c);
+                default:
+                    throw new InvalidOperationException("HashSize set to an invalid value.");
+            }
+        }
+
+
+        private static int ProcessGroup(ref UInt32 a, ref UInt32 b, ref UInt32 c, int dataCount, byte[] dataGroup)
+        {
+            // Mix at beginning of subsequent group to handle special case of length <= 12
+            if (dataCount > 0)
+                Mix(ref a, ref b, ref c);
+
+            a += BitConverter.ToUInt32(dataGroup, 0);
+            b += BitConverter.ToUInt32(dataGroup, 4);
+            c += BitConverter.ToUInt32(dataGroup, 8);
+
+            return dataCount + dataGroup.Length;
+        }
+
+        private static int ProcessRemainder(ref UInt32 a, ref UInt32 b, ref UInt32 c, int dataCount, byte[] remainder)
+        {
+            // Mix at beginning of subsequent group to handle special case of length <= 12
+            if (dataCount > 0)
+                Mix(ref a, ref b, ref c);
+
+            switch (remainder.Length)
+            {
+                case 11: c += (UInt32)remainder[10] << 16; goto case 10;
+                case 10: c += (UInt32)remainder[9] << 8; goto case 9;
+                case 9: c += (UInt32)remainder[8]; goto case 8;
+
+                case 8:
+                    b += BitConverter.ToUInt32(remainder, 4);
+                    goto case 4;
+
+                case 7: b += (UInt32)remainder[6] << 16; goto case 6;
+                case 6: b += (UInt32)remainder[5] << 8; goto case 5;
+                case 5: b += (UInt32)remainder[4]; goto case 4;
+
+                case 4:
+                    a += BitConverter.ToUInt32(remainder, 0);
+                    break;
+
+                case 3: a += (UInt32)remainder[2] << 16; goto case 2;
+                case 2: a += (UInt32)remainder[1] << 8; goto case 1;
+                case 1: a += (UInt32)remainder[0]; break;
+            }
+
+            return dataCount + remainder.Length;
         }
 
 

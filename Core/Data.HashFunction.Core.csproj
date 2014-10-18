@@ -64,7 +64,9 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="HashAlgorithmWrapper.cs" />
+    <Compile Include="HashFunctionAsyncBase.cs" />
     <Compile Include="HashFunctionBase.cs" />
+    <Compile Include="IHashFunctionAsync.cs" />
     <Compile Include="IHashFunction.cs" />
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -80,6 +82,10 @@
     <Compile Include="Utilities\IntegerManipulation\ReverseByteOrderExtensions.cs" />
     <Compile Include="Utilities\UInt32Extensions.cs" />
     <Compile Include="Utilities\BigIntegerExtensions.cs" />
+    <Compile Include="Utilities\UnifiedData\ArrayData.cs" />
+    <Compile Include="Utilities\UnifiedData\NamespaceDoc.cs" />
+    <Compile Include="Utilities\UnifiedData\UnifiedData.cs" />
+    <Compile Include="Utilities\UnifiedData\StreamData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data.HashFunction.Core.nuspec" />

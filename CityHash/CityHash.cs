@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.Utilities;
+using System.Data.HashFunction.Utilities.IntegerManipulation;
+using System.Data.HashFunction.Utilities.UnifiedData;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.HashFunction.Utilities.IntegerManipulation;
-using System.IO;
 
 namespace System.Data.HashFunction
 {
@@ -22,7 +24,8 @@ namespace System.Data.HashFunction
     /// It's slower than necessary on shorter strings, but we expect that case to be relatively unimportant.
     /// "
     /// </summary>
-    public class CityHash : HashFunctionBase
+    public class CityHash 
+        : HashFunctionAsyncBase
     {
         /// <summary>
         /// The list of possible hash sizes that can be provided to the <see cref="CityHash" /> constructor.
@@ -32,6 +35,9 @@ namespace System.Data.HashFunction
         /// </value>
         public static IEnumerable<int> ValidHashSizes { get { return _ValidHashSizes; } }
 
+
+        /// <inheritdoc />
+        protected override bool RequiresSeekableStream { get { return true; } }
 
         /// <summary>
         /// Constant k0 as defined by CityHash specification.
@@ -87,21 +93,26 @@ namespace System.Data.HashFunction
                 throw new ArgumentOutOfRangeException("hashSize", "hashSize must be contained within CityHash.ValidHashSizes.");
         }
 
-
-        /// <inheritdoc/>
-        public override byte[] ComputeHash(byte[] data)
+        
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
+        protected override byte[] ComputeHashInternal(UnifiedData data)
         {
+            var dataArray = data.ToArray();
+
             switch (HashSize)
             {
                 case 32:
-                    return BitConverter.GetBytes(ComputeHash32(data));
+                    return BitConverter.GetBytes(
+                        ComputeHash32(dataArray));
 
                 case 64:
-                    return BitConverter.GetBytes(ComputeHash64(data));
+                    return BitConverter.GetBytes(
+                        ComputeHash64(dataArray));
 
                 case 128:
-                    var hash = ComputeHash128(data);
                     var resultArray = new byte[16];
+                    var hash = ComputeHash128(dataArray);
 
                     BitConverter.GetBytes(hash.Low)
                         .CopyTo(resultArray, 0);
@@ -116,19 +127,37 @@ namespace System.Data.HashFunction
             }
         }
 
-        /// <inheritdoc/>
-        protected override byte[] ComputeHashInternal(Stream data)
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
+        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
-            var ms = data as MemoryStream;
+            var dataArray = await data.ToArrayAsync()
+                .ConfigureAwait(false);
 
-            if (ms != null)
-                return ComputeHash(ms.ToArray());
-            
-            using (ms = new MemoryStream())
+            switch (HashSize)
             {
-                data.CopyTo(ms);
-                
-                return ComputeHash(ms.ToArray());
+                case 32:
+                    return BitConverter.GetBytes(
+                        ComputeHash32(dataArray));
+
+                case 64:
+                    return BitConverter.GetBytes(
+                        ComputeHash64(dataArray));
+
+                case 128:
+                    var resultArray = new byte[16];
+                    var hash = ComputeHash128(dataArray);
+
+                    BitConverter.GetBytes(hash.Low)
+                        .CopyTo(resultArray, 0);
+
+                    BitConverter.GetBytes(hash.High)
+                        .CopyTo(resultArray, 8);
+
+                    return resultArray;
+
+                default:
+                    throw new InvalidOperationException("HashSize set to an invalid value.");
             }
         }
 

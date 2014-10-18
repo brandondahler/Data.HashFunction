@@ -1,4 +1,4 @@
-﻿//! Automatically generated from CRCStandards.tt
+﻿//! Automatically generated from IHashFunctionTests_CRC.tt
 //! Direct modifications to this file will be lost.
 
 using Moq;
@@ -14,7 +14,7 @@ namespace System.Data.HashFunction.Test
 {
 
     public class IHashFunctionTests_CRC3_ROHC
-        : IHashFunctionTests<CRC3_ROHC>
+        : IHashFunctionAsyncTests<CRC3_ROHC>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -38,7 +38,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC4_ITU
-        : IHashFunctionTests<CRC4_ITU>
+        : IHashFunctionAsyncTests<CRC4_ITU>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -62,7 +62,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC5_EPC
-        : IHashFunctionTests<CRC5_EPC>
+        : IHashFunctionAsyncTests<CRC5_EPC>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -86,7 +86,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC5_ITU
-        : IHashFunctionTests<CRC5_ITU>
+        : IHashFunctionAsyncTests<CRC5_ITU>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -110,7 +110,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC5_USB
-        : IHashFunctionTests<CRC5_USB>
+        : IHashFunctionAsyncTests<CRC5_USB>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -134,7 +134,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC6_CDMA2000A
-        : IHashFunctionTests<CRC6_CDMA2000A>
+        : IHashFunctionAsyncTests<CRC6_CDMA2000A>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -158,7 +158,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC6_CDMA2000B
-        : IHashFunctionTests<CRC6_CDMA2000B>
+        : IHashFunctionAsyncTests<CRC6_CDMA2000B>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -182,7 +182,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC6_DARC
-        : IHashFunctionTests<CRC6_DARC>
+        : IHashFunctionAsyncTests<CRC6_DARC>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -206,7 +206,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC6_ITU
-        : IHashFunctionTests<CRC6_ITU>
+        : IHashFunctionAsyncTests<CRC6_ITU>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -230,7 +230,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC7
-        : IHashFunctionTests<CRC7>
+        : IHashFunctionAsyncTests<CRC7>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -254,7 +254,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC7_ROHC
-        : IHashFunctionTests<CRC7_ROHC>
+        : IHashFunctionAsyncTests<CRC7_ROHC>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -278,7 +278,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC8
-        : IHashFunctionTests<CRC8>
+        : IHashFunctionAsyncTests<CRC8>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -302,7 +302,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC8_CDMA2000
-        : IHashFunctionTests<CRC8_CDMA2000>
+        : IHashFunctionAsyncTests<CRC8_CDMA2000>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -326,7 +326,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC8_DARC
-        : IHashFunctionTests<CRC8_DARC>
+        : IHashFunctionAsyncTests<CRC8_DARC>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -350,7 +350,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC8_DVBS2
-        : IHashFunctionTests<CRC8_DVBS2>
+        : IHashFunctionAsyncTests<CRC8_DVBS2>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -374,7 +374,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC8_EBU
-        : IHashFunctionTests<CRC8_EBU>
+        : IHashFunctionAsyncTests<CRC8_EBU>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -398,7 +398,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC8_ICODE
-        : IHashFunctionTests<CRC8_ICODE>
+        : IHashFunctionAsyncTests<CRC8_ICODE>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -422,7 +422,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC8_ITU
-        : IHashFunctionTests<CRC8_ITU>
+        : IHashFunctionAsyncTests<CRC8_ITU>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -446,7 +446,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC8_MAXIM
-        : IHashFunctionTests<CRC8_MAXIM>
+        : IHashFunctionAsyncTests<CRC8_MAXIM>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -470,7 +470,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC8_ROHC
-        : IHashFunctionTests<CRC8_ROHC>
+        : IHashFunctionAsyncTests<CRC8_ROHC>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -494,7 +494,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC8_WCDMA
-        : IHashFunctionTests<CRC8_WCDMA>
+        : IHashFunctionAsyncTests<CRC8_WCDMA>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -518,7 +518,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC10
-        : IHashFunctionTests<CRC10>
+        : IHashFunctionAsyncTests<CRC10>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -542,7 +542,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC10_CDMA2000
-        : IHashFunctionTests<CRC10_CDMA2000>
+        : IHashFunctionAsyncTests<CRC10_CDMA2000>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -566,7 +566,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC11
-        : IHashFunctionTests<CRC11>
+        : IHashFunctionAsyncTests<CRC11>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -590,7 +590,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC12_3GPP
-        : IHashFunctionTests<CRC12_3GPP>
+        : IHashFunctionAsyncTests<CRC12_3GPP>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -614,7 +614,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC12_CDMA2000
-        : IHashFunctionTests<CRC12_CDMA2000>
+        : IHashFunctionAsyncTests<CRC12_CDMA2000>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -638,7 +638,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC12_DECT
-        : IHashFunctionTests<CRC12_DECT>
+        : IHashFunctionAsyncTests<CRC12_DECT>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -662,7 +662,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC13_BBC
-        : IHashFunctionTests<CRC13_BBC>
+        : IHashFunctionAsyncTests<CRC13_BBC>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -686,7 +686,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC14_DARC
-        : IHashFunctionTests<CRC14_DARC>
+        : IHashFunctionAsyncTests<CRC14_DARC>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -710,7 +710,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC15
-        : IHashFunctionTests<CRC15>
+        : IHashFunctionAsyncTests<CRC15>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -734,7 +734,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC15_MPT1327
-        : IHashFunctionTests<CRC15_MPT1327>
+        : IHashFunctionAsyncTests<CRC15_MPT1327>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -758,7 +758,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_ARC
-        : IHashFunctionTests<ARC>
+        : IHashFunctionAsyncTests<ARC>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -782,7 +782,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC16_AUGCCITT
-        : IHashFunctionTests<CRC16_AUGCCITT>
+        : IHashFunctionAsyncTests<CRC16_AUGCCITT>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -806,7 +806,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC16_BUYPASS
-        : IHashFunctionTests<CRC16_BUYPASS>
+        : IHashFunctionAsyncTests<CRC16_BUYPASS>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -830,7 +830,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC16_CCITTFALSE
-        : IHashFunctionTests<CRC16_CCITTFALSE>
+        : IHashFunctionAsyncTests<CRC16_CCITTFALSE>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -854,7 +854,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC16_CDMA2000
-        : IHashFunctionTests<CRC16_CDMA2000>
+        : IHashFunctionAsyncTests<CRC16_CDMA2000>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -878,7 +878,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC16_DDS110
-        : IHashFunctionTests<CRC16_DDS110>
+        : IHashFunctionAsyncTests<CRC16_DDS110>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -902,7 +902,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC16_DECTR
-        : IHashFunctionTests<CRC16_DECTR>
+        : IHashFunctionAsyncTests<CRC16_DECTR>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -926,7 +926,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC16_DECTX
-        : IHashFunctionTests<CRC16_DECTX>
+        : IHashFunctionAsyncTests<CRC16_DECTX>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -950,7 +950,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC16_DNP
-        : IHashFunctionTests<CRC16_DNP>
+        : IHashFunctionAsyncTests<CRC16_DNP>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -974,7 +974,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC16_EN13757
-        : IHashFunctionTests<CRC16_EN13757>
+        : IHashFunctionAsyncTests<CRC16_EN13757>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -998,7 +998,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC16_GENIBUS
-        : IHashFunctionTests<CRC16_GENIBUS>
+        : IHashFunctionAsyncTests<CRC16_GENIBUS>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1022,7 +1022,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC16_MAXIM
-        : IHashFunctionTests<CRC16_MAXIM>
+        : IHashFunctionAsyncTests<CRC16_MAXIM>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1046,7 +1046,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC16_MCRF4XX
-        : IHashFunctionTests<CRC16_MCRF4XX>
+        : IHashFunctionAsyncTests<CRC16_MCRF4XX>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1070,7 +1070,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC16_RIELLO
-        : IHashFunctionTests<CRC16_RIELLO>
+        : IHashFunctionAsyncTests<CRC16_RIELLO>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1094,7 +1094,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC16_T10DIF
-        : IHashFunctionTests<CRC16_T10DIF>
+        : IHashFunctionAsyncTests<CRC16_T10DIF>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1118,7 +1118,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC16_TELEDISK
-        : IHashFunctionTests<CRC16_TELEDISK>
+        : IHashFunctionAsyncTests<CRC16_TELEDISK>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1142,7 +1142,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC16_TMS37157
-        : IHashFunctionTests<CRC16_TMS37157>
+        : IHashFunctionAsyncTests<CRC16_TMS37157>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1166,7 +1166,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC16_USB
-        : IHashFunctionTests<CRC16_USB>
+        : IHashFunctionAsyncTests<CRC16_USB>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1190,7 +1190,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRCA
-        : IHashFunctionTests<CRCA>
+        : IHashFunctionAsyncTests<CRCA>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1214,7 +1214,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_KERMIT
-        : IHashFunctionTests<KERMIT>
+        : IHashFunctionAsyncTests<KERMIT>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1238,7 +1238,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_MODBUS
-        : IHashFunctionTests<MODBUS>
+        : IHashFunctionAsyncTests<MODBUS>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1262,7 +1262,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_X25
-        : IHashFunctionTests<X25>
+        : IHashFunctionAsyncTests<X25>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1286,7 +1286,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_XMODEM
-        : IHashFunctionTests<XMODEM>
+        : IHashFunctionAsyncTests<XMODEM>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1310,7 +1310,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC24
-        : IHashFunctionTests<CRC24>
+        : IHashFunctionAsyncTests<CRC24>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1334,7 +1334,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC24_FLEXRAYA
-        : IHashFunctionTests<CRC24_FLEXRAYA>
+        : IHashFunctionAsyncTests<CRC24_FLEXRAYA>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1358,7 +1358,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC24_FLEXRAYB
-        : IHashFunctionTests<CRC24_FLEXRAYB>
+        : IHashFunctionAsyncTests<CRC24_FLEXRAYB>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1382,7 +1382,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC31_PHILIPS
-        : IHashFunctionTests<CRC31_PHILIPS>
+        : IHashFunctionAsyncTests<CRC31_PHILIPS>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1406,7 +1406,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC32
-        : IHashFunctionTests<CRC32>
+        : IHashFunctionAsyncTests<CRC32>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1430,7 +1430,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC32_BZIP2
-        : IHashFunctionTests<CRC32_BZIP2>
+        : IHashFunctionAsyncTests<CRC32_BZIP2>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1454,7 +1454,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC32C
-        : IHashFunctionTests<CRC32C>
+        : IHashFunctionAsyncTests<CRC32C>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1478,7 +1478,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC32D
-        : IHashFunctionTests<CRC32D>
+        : IHashFunctionAsyncTests<CRC32D>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1502,7 +1502,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC32_MPEG2
-        : IHashFunctionTests<CRC32_MPEG2>
+        : IHashFunctionAsyncTests<CRC32_MPEG2>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1526,7 +1526,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC32_POSIX
-        : IHashFunctionTests<CRC32_POSIX>
+        : IHashFunctionAsyncTests<CRC32_POSIX>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1550,7 +1550,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC32Q
-        : IHashFunctionTests<CRC32Q>
+        : IHashFunctionAsyncTests<CRC32Q>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1574,7 +1574,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_JAMCRC
-        : IHashFunctionTests<JAMCRC>
+        : IHashFunctionAsyncTests<JAMCRC>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1598,7 +1598,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_XFER
-        : IHashFunctionTests<XFER>
+        : IHashFunctionAsyncTests<XFER>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1622,7 +1622,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC40_GSM
-        : IHashFunctionTests<CRC40_GSM>
+        : IHashFunctionAsyncTests<CRC40_GSM>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1646,7 +1646,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC64
-        : IHashFunctionTests<CRC64>
+        : IHashFunctionAsyncTests<CRC64>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1670,7 +1670,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC64_WE
-        : IHashFunctionTests<CRC64_WE>
+        : IHashFunctionAsyncTests<CRC64_WE>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {
@@ -1694,7 +1694,7 @@ namespace System.Data.HashFunction.Test
     }
 
     public class IHashFunctionTests_CRC64_XZ
-        : IHashFunctionTests<CRC64_XZ>
+        : IHashFunctionAsyncTests<CRC64_XZ>
     {
         protected override IEnumerable<KnownValue> KnownValues
         {

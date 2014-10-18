@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.HashFunction.Utilities;
 using System.Data.HashFunction.Utilities.IntegerManipulation;
+using System.Data.HashFunction.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace System.Data.HashFunction
     /// This hash function has been superseded by MurmurHash3.
     /// </summary>
     public class MurmurHash2
-        : HashFunctionBase
+        : HashFunctionAsyncBase
     {
         /// <summary>
         /// Seed value for hash calculation.
@@ -96,109 +97,166 @@ namespace System.Data.HashFunction
             _Seed = seed;
         }
 
+
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(Stream data)
+        protected override byte[] ComputeHashInternal(UnifiedData data)
         {
             switch (HashSize)
             {
                 case 32:
-                    return ComputeHash32(data);
+                {        
+                    const UInt32 m = unchecked((UInt32) MixConstant);
+
+                    UInt32 h = (UInt32) Seed ^ (UInt32) data.Length;
+
+                    data.ForEachGroup(4, 
+                        dataGroup => {
+                            h = ProcessGroup(h, m, dataGroup);
+                        }, 
+                        remainder => {
+                            h = ProcessRemainder(h, m, remainder);
+                        });
+
+                    // Do a few final mixes of the hash to ensure the last few
+                    // bytes are well-incorporated.
+
+                    h ^= h >> 13;
+                    h *= m;
+                    h ^= h >> 15;
+
+                    return BitConverter.GetBytes(h);
+                }
 
                 case 64:
-                    return ComputeHash64(data);
+                { 
+                    const UInt64 m = MixConstant;
+
+                    UInt64 h = Seed ^ ((UInt64) data.Length * m);
+            
+                    data.ForEachGroup(8, 
+                        dataGroup => {
+                            h = ProcessGroup(h, m, dataGroup);
+                        },
+                        remainder => {
+                            h = ProcessRemainder(h, m, remainder);
+                        });
+ 
+                    h ^= h >> 47;
+                    h *= m;
+                    h ^= h >> 47;
+
+                    return BitConverter.GetBytes(h);
+                }
 
                 default:
                     throw new InvalidOperationException("HashSize set to an invalid value.");
             }
+        }
 
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
+        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        {
+            switch (HashSize)
+            {
+                case 32:
+                {        
+                    const UInt32 m = unchecked((UInt32) MixConstant);
+
+                    UInt32 h = (UInt32) Seed ^ (UInt32) data.Length;
+
+                    await data.ForEachGroupAsync(4, 
+                        dataGroup => {
+                            h = ProcessGroup(h, m, dataGroup);
+                        }, 
+                        remainder => {
+                            h = ProcessRemainder(h, m, remainder);
+                        }).ConfigureAwait(false);
+
+                    // Do a few final mixes of the hash to ensure the last few
+                    // bytes are well-incorporated.
+
+                    h ^= h >> 13;
+                    h *= m;
+                    h ^= h >> 15;
+
+                    return BitConverter.GetBytes(h);
+                }
+
+                case 64:
+                { 
+                    const UInt64 m = MixConstant;
+
+                    UInt64 h = Seed ^ ((UInt64) data.Length * m);
+            
+                    await data.ForEachGroupAsync(8, 
+                        dataGroup => {
+                            h = ProcessGroup(h, m, dataGroup);
+                        },
+                        remainder => {
+                            h = ProcessRemainder(h, m, remainder);
+                        }).ConfigureAwait(false);
+ 
+                    h ^= h >> 47;
+                    h *= m;
+                    h ^= h >> 47;
+
+                    return BitConverter.GetBytes(h);
+                }
+
+                default:
+                    throw new InvalidOperationException("HashSize set to an invalid value.");
+            }
         }
 
 
-        /// <summary>
-        /// Computes 32-bit hash value for given stream.
-        /// </summary>
-        /// <param name="data">Stream of data to hash.</param>
-        /// <returns>
-        /// Hash value of the data.
-        /// </returns>
-        protected byte[] ComputeHash32(Stream data)
+        private static UInt32 ProcessGroup(UInt32 h, UInt32 m, byte[] dataGroup)
         {
-            const UInt32 m = unchecked((UInt32) MixConstant);
+            UInt32 k = BitConverter.ToUInt32(dataGroup, 0);
 
-            // Initialize the hash to a 'random' value
+            k *= m;
+            k ^= k >> 24;
+            k *= m;
 
-            UInt32 h = (UInt32) Seed ^ (UInt32) data.Length;
-            var dataGroups = data.AsGroupedStreamData(4);
+            h *= m;
+            h ^= k;
 
+            return h;
+        }
 
-            // Mix 4 bytes at a time into the hash
-            foreach (var dataGroup in dataGroups)
+        private static UInt64 ProcessGroup(UInt64 h, UInt64 m, byte[] dataGroup)
+        {
+            UInt64 k = BitConverter.ToUInt64(dataGroup, 0);
+
+            k *= m;
+            k ^= k >> 47;
+            k *= m;
+
+            h ^= k;
+            h *= m;
+
+            return h;
+        }
+
+        private static UInt32 ProcessRemainder(UInt32 h, UInt32 m, byte[] remainder)
+        {
+            switch (remainder.Length)
             {
-                UInt32 k = BitConverter.ToUInt32(dataGroup, 0);
-
-                k *= m;
-                k ^= k >> 24;
-                k *= m;
-
-                h *= m;
-                h ^= k;
-            }
-            
-
-            // Handle the last few bytes of the input array
-            var remainder = dataGroups.Remainder;
-
-            switch(remainder.Length)
-            {
-                case 3: h ^= (UInt32) remainder[2] << 16; goto case 2;
-                case 2: h ^= (UInt32) remainder[1] << 8; goto case 1;
+                case 3: h ^= (UInt32) remainder[2] << 16;   goto case 2;
+                case 2: h ^= (UInt32) remainder[1] <<  8;   goto case 1;
                 case 1:
                     h ^= remainder[0];
                     h *= m;
                     break;
             };
 
-            // Do a few final mixes of the hash to ensure the last few
-            // bytes are well-incorporated.
-
-            h ^= h >> 13;
-            h *= m;
-            h ^= h >> 15;
-
-            return BitConverter.GetBytes(h);
+            return h;
         }
 
-        /// <summary>
-        /// Computes 64-bit hash value for given stream.
-        /// </summary>
-        /// <param name="data">Stream of data to hash.</param>
-        /// <returns>
-        /// Hash value of the data.
-        /// </returns>
-        protected byte[] ComputeHash64(Stream data)
+
+        private static UInt64 ProcessRemainder(UInt64 h, UInt64 m, byte[] remainder)
         {
-            const UInt64 m = MixConstant;
-
-            UInt64 h = Seed ^ ((UInt64) data.Length * m);
-            var dataGroups = data.AsGroupedStreamData(8);
-
-
-            foreach (var dataGroup in dataGroups)
-            {
-                UInt64 k = BitConverter.ToUInt64(dataGroup, 0);
-
-                k *= m;
-                k ^= k >> 47;
-                k *= m;
-   
-                h ^= k;
-                h *= m;
-            }
-
-
-            var remainder = dataGroups.Remainder;
-
             switch (remainder.Length)
             {
                 case 7: h ^= (UInt64) remainder[6] << 48;  goto case 6;
@@ -212,12 +270,8 @@ namespace System.Data.HashFunction
                     h *= m;
                     break;
             };
- 
-            h ^= h >> 47;
-            h *= m;
-            h ^= h >> 47;
 
-            return BitConverter.GetBytes(h);
+            return h;
         }
     }
 }

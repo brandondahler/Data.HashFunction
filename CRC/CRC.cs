@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.HashFunction.Utilities;
 using System.Data.HashFunction.Utilities.IntegerManipulation;
+using System.Data.HashFunction.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace System.Data.HashFunction
     /// This implementation is generalized to encompass all possible CRC parameters from 1 to 64 bits.
     /// </summary>
     public partial class CRC
-        : HashFunctionBase
+        : HashFunctionAsyncBase
     {
         /// <summary>
         /// The CRC parameters to use when calculating the hash value.
@@ -96,7 +97,7 @@ namespace System.Data.HashFunction
         /// HashSize set to an invalid value.
         /// </exception>
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(Stream data)
+        protected override byte[] ComputeHashInternal(UnifiedData data)
         {
             if (Settings == null)
                 throw new InvalidOperationException("Settings set to an invalid value.");
@@ -124,27 +125,9 @@ namespace System.Data.HashFunction
                 mostSignificantShift = HashSize - 1;
 
 
-            foreach (var dataByte in data.AsEnumerable())
-            {
-                if (HashSize >= 8)
-                {
-                    // Process per byte, treating hash differently based on input endianness
-                    if (Settings.ReflectIn)
-                        hash = (hash >> 8) ^ crcTable[(byte) hash ^ dataByte];
-                    else
-                        hash = (hash << 8) ^ crcTable[((byte) (hash >> mostSignificantShift)) ^ dataByte];
-                
-                } else {
-                    // Process per bit, treating hash differently based on input endianness
-                    for (int x = 0; x < 8; ++x)
-                    {
-                        if (Settings.ReflectIn)
-                            hash = (hash >> 1) ^ crcTable[(byte) (hash & 1) ^ ((byte) (dataByte >> x) & 1)];
-                        else
-                            hash = (hash << 1) ^ crcTable[(byte) ((hash >> mostSignificantShift) & 1) ^ ((byte) (dataByte >> (7 - x)) & 1)];
-                    }
-                }
-            }
+            data.ForEachRead(dataBytes => {
+                hash = ProcessBytes(hash, crcTable, mostSignificantShift, dataBytes);
+            });
 
 
             // Account for mixed-endianness
@@ -155,6 +138,83 @@ namespace System.Data.HashFunction
             hash ^= Settings.XOrOut;
 
             return hash.ToBytes(HashSize);
+        }
+
+        /// <exception cref="System.InvalidOperationException">
+        /// Settings set to an invalid value.
+        /// or
+        /// HashSize set to an invalid value.
+        /// </exception>
+        /// <inheritdoc />
+        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        {
+            if (Settings == null)
+                throw new InvalidOperationException("Settings set to an invalid value.");
+
+            if (HashSize != Settings.Bits)
+                throw new InvalidOperationException("HashSize set to an invalid value.");
+
+
+            // Use 64-bit variable regardless of CRC bit length
+            UInt64 hash = Settings.InitialValue;
+
+            // Reflect InitialValue if processing as big endian
+            if (Settings.ReflectIn)
+                hash = hash.ReflectBits(HashSize);
+
+
+            // Store table reference in local variable to lower overhead.
+            var crcTable = Settings.DataDivisionTable;
+
+
+            // How much hash must be right-shifted to get the most significant byte (HashSize >= 8) or bit (HashSize < 8)
+            int mostSignificantShift = HashSize - 8;
+
+            if (HashSize < 8)
+                mostSignificantShift = HashSize - 1;
+
+
+            await data.ForEachReadAsync(dataBytes => {
+                hash = ProcessBytes(hash, crcTable, mostSignificantShift, dataBytes);
+            }).ConfigureAwait(false);
+
+
+            // Account for mixed-endianness
+            if (Settings.ReflectIn ^ Settings.ReflectOut)
+               hash = hash.ReflectBits(HashSize);
+
+
+            hash ^= Settings.XOrOut;
+
+            return hash.ToBytes(HashSize);
+        }
+
+        private UInt64 ProcessBytes(UInt64 hash, IReadOnlyList<UInt64> crcTable, int mostSignificantShift, byte[] dataBytes)
+        {
+            foreach (var dataByte in dataBytes)
+            {
+                if (HashSize >= 8)
+                {
+                    // Process per byte, treating hash differently based on input endianness
+                    if (Settings.ReflectIn)
+                        hash = (hash >> 8) ^ crcTable[(byte) hash ^ dataByte];
+                    else
+                        hash = (hash << 8) ^ crcTable[((byte) (hash >> mostSignificantShift)) ^ dataByte];
+
+                } else {
+                    // Process per bit, treating hash differently based on input endianness
+                    for (int x = 0; x < 8; ++x)
+                    {
+                        if (Settings.ReflectIn)
+                            hash = (hash >> 1) ^ crcTable[(byte) (hash & 1) ^ ((byte) (dataByte >> x) & 1)];
+                        else
+                            hash =  (hash << 1) ^ crcTable[(byte) ((hash >> mostSignificantShift) & 1) ^ ((byte) (dataByte >> (7 - x)) & 1)];
+                    }
+
+                }
+            }
+
+            return hash;
         }
 
         /// <summary>

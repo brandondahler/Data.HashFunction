@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.HashFunction.Utilities;
+using System.Data.HashFunction.Utilities.UnifiedData;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace System.Data.HashFunction
     [SuppressMessage("Microsoft.Design", "CA1012:AbstractTypesShouldNotHaveConstructors", 
         Justification = "Constructor required to validate implementer's parameters.")]
     public abstract class PearsonBase
-        : HashFunctionBase
+        : HashFunctionAsyncBase
     {
         /// <summary>
         /// 256-item read only collection of bytes.  Must be a permutation of [0, 255].
@@ -72,7 +73,7 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(Stream data)
+        protected override byte[] ComputeHashInternal(UnifiedData data)
         {
             if (HashSize <= 0 || HashSize % 8 != 0)
                 throw new InvalidOperationException("HashSize set to an invalid value.");
@@ -81,7 +82,35 @@ namespace System.Data.HashFunction
             var h = new byte[HashSize / 8];
             bool firstByte = true;
 
-            foreach (var dataByte in data.AsEnumerable())
+            data.ForEachRead(dataBytes => {
+                ProcessBytes(ref h, ref firstByte, dataBytes);
+            });
+
+            return h;
+        }
+
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
+        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        {
+            if (HashSize <= 0 || HashSize % 8 != 0)
+                throw new InvalidOperationException("HashSize set to an invalid value.");
+
+
+            var h = new byte[HashSize / 8];
+            bool firstByte = true;
+
+            await data.ForEachReadAsync(dataBytes => {
+                ProcessBytes(ref h, ref firstByte, dataBytes);
+            }).ConfigureAwait(false);
+
+            return h;
+        }
+
+
+        private void ProcessBytes(ref byte[] h, ref bool firstByte, byte[] dataBytes)
+        {
+            foreach (var dataByte in dataBytes)
             {
                 for (int x = 0; x < HashSize / 8; ++x)
                 {
@@ -93,8 +122,6 @@ namespace System.Data.HashFunction
 
                 firstByte = false;
             }
-
-            return h;
         }
     }
 }

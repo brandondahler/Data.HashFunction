@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.HashFunction.Utilities;
 using System.Data.HashFunction.Utilities.IntegerManipulation;
+using System.Data.HashFunction.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -30,7 +31,7 @@ namespace System.Data.HashFunction
     /// "
     /// </summary>
     public class BernsteinHash
-        : HashFunctionBase
+        : HashFunctionAsyncBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="BernsteinHash"/> class.
@@ -48,7 +49,7 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(Stream data)
+        protected override byte[] ComputeHashInternal(UnifiedData data)
         {
             if (HashSize != 32)
                 throw new InvalidOperationException("HashSize set to an invalid value.");
@@ -56,10 +57,37 @@ namespace System.Data.HashFunction
 
             UInt32 h = 0;
 
-            foreach (var dataByte in data.AsEnumerable())
-                h = (33 * h) + dataByte;
+            data.ForEachRead((dataBytes) => {
+                h = ProcessBytes(h, dataBytes);
+            });
             
             return BitConverter.GetBytes(h);
+        }
+
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
+        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        {
+            if (HashSize != 32)
+                throw new InvalidOperationException("HashSize set to an invalid value.");
+
+
+            UInt32 h = 0;
+
+            await data.ForEachReadAsync((dataBytes) => {
+                h = ProcessBytes(h, dataBytes);
+            }).ConfigureAwait(false);
+
+            return BitConverter.GetBytes(h);
+        }
+
+
+        private static UInt32 ProcessBytes(UInt32 h, byte[] dataBytes)
+        {
+            foreach (var dataByte in dataBytes)
+                h = (33 * h) + dataByte;
+
+            return h;
         }
     }
 }

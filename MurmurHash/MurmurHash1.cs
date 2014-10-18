@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.HashFunction.Utilities;
 using System.Data.HashFunction.Utilities.IntegerManipulation;
+using System.Data.HashFunction.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace System.Data.HashFunction
     /// This hash function has been superseded by MurmurHash2 and MurmurHash3.
     /// </summary>
     public class MurmurHash1
-        : HashFunctionBase
+        : HashFunctionAsyncBase
     {
         /// <summary>
         /// Seed value for hash calculation.
@@ -60,35 +61,21 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(Stream data)
+        protected override byte[] ComputeHashInternal(UnifiedData data)
         {
             if (HashSize != 32)
                 throw new InvalidOperationException("HashSize set to an invalid value.");
 
+
             UInt32 h = Seed ^ ((UInt32) data.Length * m);
-            var dataGroups = data.AsGroupedStreamData(4);
 
-            
-            foreach (var dataGroup in dataGroups)
-            {
-                h += BitConverter.ToUInt32(dataGroup, 0);
-                h *= m;
-                h ^= h >> 16;
-            }
-            
-
-            var remainder = dataGroups.Remainder;
-
-            switch(remainder.Length)
-            {
-                case 3: h += (UInt32) remainder[2] << 16;  goto case 2;
-                case 2: h += (UInt32) remainder[1] <<  8;  goto case 1;
-                case 1:
-                    h += (UInt32) remainder[0];
-                    h *= m;
-                    h ^= h >> 16;
-                    break;
-            };
+            data.ForEachGroup(4, 
+                dataGroup => {
+                    h = ProcessGroup(h, dataGroup);
+                },
+                remainder => {
+                    h = ProcessRemainder(h, remainder);
+                });
  
             h *= m;
             h ^= h >> 10;
@@ -96,6 +83,58 @@ namespace System.Data.HashFunction
             h ^= h >> 17;
 
             return BitConverter.GetBytes(h);
+        }
+
+        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
+        /// <inheritdoc />
+        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        {
+            if (HashSize != 32)
+                throw new InvalidOperationException("HashSize set to an invalid value.");
+
+
+            UInt32 h = Seed ^ ((UInt32) data.Length * m);
+
+            await data.ForEachGroupAsync(4,
+                dataGroup => {
+                    h = ProcessGroup(h, dataGroup);
+                },
+                remainder => {
+                    h = ProcessRemainder(h, remainder);
+                }).ConfigureAwait(false);
+
+            h *= m;
+            h ^= h >> 10;
+            h *= m;
+            h ^= h >> 17;
+
+            return BitConverter.GetBytes(h);
+        }
+
+        
+        private static UInt32 ProcessGroup(UInt32 h, byte[] dataGroup)
+        {
+            h += BitConverter.ToUInt32(dataGroup, 0);
+            h *= m;
+            h ^= h >> 16;
+
+            return h;
+        }
+
+        private static UInt32 ProcessRemainder(UInt32 h, byte[] remainder)
+        {
+            switch (remainder.Length)
+            {
+                case 3: h += (UInt32)remainder[2] << 16; goto case 2;
+                case 2: h += (UInt32)remainder[1] << 8; goto case 1;
+                case 1:
+                    h += (UInt32)remainder[0];
+                    h *= m;
+                    h ^= h >> 16;
+                    break;
+            };
+
+            return h;
         }
     }
 }
