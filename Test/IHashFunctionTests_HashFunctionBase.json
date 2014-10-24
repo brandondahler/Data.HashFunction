@@ -536,9 +536,11 @@
                     { "Bits": 32, "TestValue": "TestConstants.FooBar", "ExpectedValue": "0x6715a92e" },
                     { "Bits": 64, "TestValue": "TestConstants.FooBar", "ExpectedValue": "0xd49f461720d7a196" },
 
-                    
+
                     { "Bits": 32, "TestValue": "TestConstants.LoremIpsum.Take(15)", "ExpectedValue": "0x384025b5" },
-                    { "Bits": 64, "TestValue": "TestConstants.LoremIpsum.Take(15)", "ExpectedValue": "0xfa38fed50a3dc771" }
+                    { "Bits": 64, "TestValue": "TestConstants.LoremIpsum.Take(11)", "ExpectedValue": "0xa4d1d1c83f3125d2" },
+                    { "Bits": 64, "TestValue": "TestConstants.LoremIpsum.Take(15)", "ExpectedValue": "0xfa38fed50a3dc771" },
+                    { "Bits": 64, "TestValue": "TestConstants.LoremIpsum.Take(23)", "ExpectedValue": "0x82d0eccc1172c984" }
                 ]
             },
 

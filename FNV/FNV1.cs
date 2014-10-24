@@ -38,40 +38,35 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc />
-        protected override UInt32[] ProcessBytes(
-            UInt32[] hash, IReadOnlyList<UInt32> prime, byte[] data)
+        protected override void ProcessBytes(
+            ref UInt32[] hash, IReadOnlyList<UInt32> prime, byte[] data, int position, int length)
         {
-            foreach (var dataByte in data)
+            for (var x = position; x < position + length; ++x)
             {
                 hash = hash.ExtendedMultiply(prime);
-                hash[0] ^= dataByte;
+                hash[0] ^= data[x];
             }
 
-            return hash;
         }
 
         /// <inheritdoc />
-        protected override UInt32 ProcessBytes32(UInt32 hash, UInt32 prime, byte[] data)
+        protected override void ProcessBytes32(ref UInt32 hash, UInt32 prime, byte[] data, int position, int length)
         {
-            foreach (var dataByte in data)
+            for (var x = position; x < position + length; ++x)
             {
                 hash *= prime;
-                hash ^= dataByte;
+                hash ^= data[x];
             }
-
-            return hash;
         }
 
         /// <inheritdoc />
-        protected override UInt64 ProcessBytes64(UInt64 hash, UInt64 prime, byte[] data)
+        protected override void ProcessBytes64(ref UInt64 hash, UInt64 prime, byte[] data, int position, int length)
         {
-            foreach (var dataByte in data)
+            for (var x = position; x < position + length; ++x)
             {
                 hash *= prime;
-                hash ^= dataByte;
+                hash ^= data[x];
             }
-
-            return hash;
         }
 
     }

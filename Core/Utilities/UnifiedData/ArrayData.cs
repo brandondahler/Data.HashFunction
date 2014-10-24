@@ -12,7 +12,7 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
         /// <inheritdoc />
         public override long Length { get { return _Data.LongLength; } }
 
-
+        
         protected readonly byte[] _Data;
 
 
@@ -23,29 +23,30 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
         public ArrayData(byte[] data)
         {
             _Data = data;
+            BufferSize = (
+                _Data.Length > 0 ?
+                _Data.Length :
+                1);
         }
 
 
 
         /// <inheritdoc />
-        public override void ForEachRead(Action<byte[]> action, int bufferSize)
+        public override void ForEachRead(Action<byte[], int, int> action)
         {
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            if (bufferSize <= 0)
-                throw new ArgumentOutOfRangeException("bufferSize", "bufferSize must be greater than 0.");
 
-
-            action(_Data);
+            action(_Data, 0, _Data.Length);
         }
 
         /// <inheritdoc />
-        public override Task ForEachReadAsync(Action<byte[]> action, int bufferSize = 4096)
+        public override Task ForEachReadAsync(Action<byte[], int, int> action)
         {
             try
             {
-                ForEachRead(action, bufferSize);
+                ForEachRead(action);
 
                 return Task.FromResult(true);
 
@@ -58,7 +59,7 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
 
 
         /// <inheritdoc />
-        public override void ForEachGroup(int groupSize, Action<byte[]> action, Action<byte[]> remainderAction)
+        public override void ForEachGroup(int groupSize, Action<byte[], int, int> action, Action<byte[], int, int> remainderAction)
         {
             if (groupSize <= 0)
                 throw new ArgumentOutOfRangeException("groupSize", "bufferSize must be greater than 0.");
@@ -67,30 +68,20 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
                 throw new ArgumentNullException("action");
 
 
-            for (var x = 0; x <= (_Data.Length - groupSize); x += groupSize)
-            {
-                var dataBytes = new byte[groupSize];
-                Array.Copy(_Data, x, dataBytes, 0, groupSize);
+            var remainderLength = _Data.Length % groupSize;
 
-                action(dataBytes);
-            }
+            if (_Data.Length - remainderLength > 0)
+                action(_Data, 0, _Data.Length - remainderLength);
 
             if (remainderAction != null)
             {
-                var remainingBytes = _Data.Length % groupSize;
-
-                if (remainingBytes > 0)
-                {
-                    var dataBytes = new byte[remainingBytes];
-                    Array.Copy(_Data, _Data.Length - remainingBytes, dataBytes, 0, remainingBytes);
-
-                    remainderAction(dataBytes);
-                }
+                if (remainderLength > 0)
+                    remainderAction(_Data, _Data.Length - remainderLength, remainderLength);
             }
         }
 
         /// <inheritdoc />
-        public override Task ForEachGroupAsync(int groupSize, Action<byte[]> action, Action<byte[]> remainderAction)
+        public override Task ForEachGroupAsync(int groupSize, Action<byte[], int, int> action, Action<byte[], int, int> remainderAction)
         {
             try
             {
@@ -114,8 +105,14 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
         /// <inheritdoc />
         public override Task<byte[]> ToArrayAsync()
         {
-            return Task.FromResult(
-                ToArray());
+            try
+            {
+                return Task.FromResult(
+                    ToArray());
+
+            } catch (Exception ex) {
+                throw new AggregateException(new[] { ex });
+            }
         }
 
         

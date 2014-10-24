@@ -146,11 +146,11 @@ namespace System.Data.HashFunction
             int dataCount = 0;
 
             data.ForEachGroup(12, 
-                dataGroup => {
-                    dataCount = ProcessGroup(ref a, ref b, ref c, dataCount, dataGroup);
+                (dataGroup, position, length) => {
+                    ProcessGroup(ref a, ref b, ref c, ref dataCount, dataGroup, position, length);
                 },
-                remainder => {
-                    dataCount = ProcessRemainder(ref a, ref b, ref c, dataCount, remainder);
+                (remainder, position, length) => {
+                    ProcessRemainder(ref a, ref b, ref c, ref dataCount, remainder, position, length);
                 });
     
             if (dataCount > 0)
@@ -182,11 +182,11 @@ namespace System.Data.HashFunction
             int dataCount = 0;
 
             await data.ForEachGroupAsync(12, 
-                dataGroup => {
-                    dataCount = ProcessGroup(ref a, ref b, ref c, dataCount, dataGroup);
+                (dataGroup, position, length) => {
+                    ProcessGroup(ref a, ref b, ref c, ref dataCount, dataGroup, position, length);
                 },
-                remainder => {
-                    dataCount = ProcessRemainder(ref a, ref b, ref c, dataCount, remainder);
+                (remainder, position, length) => {
+                    ProcessRemainder(ref a, ref b, ref c, ref dataCount, remainder, position, length);
                 }).ConfigureAwait(false);
     
             if (dataCount > 0)
@@ -204,49 +204,56 @@ namespace System.Data.HashFunction
         }
 
 
-        private static int ProcessGroup(ref UInt32 a, ref UInt32 b, ref UInt32 c, int dataCount, byte[] dataGroup)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void ProcessGroup(ref UInt32 a, ref UInt32 b, ref UInt32 c, ref int dataCount, byte[] dataGroup, int position, int length)
         {
-            // Mix at beginning of subsequent group to handle special case of length <= 12
-            if (dataCount > 0)
-                Mix(ref a, ref b, ref c);
-
-            a += BitConverter.ToUInt32(dataGroup, 0);
-            b += BitConverter.ToUInt32(dataGroup, 4);
-            c += BitConverter.ToUInt32(dataGroup, 8);
-
-            return dataCount + dataGroup.Length;
-        }
-
-        private static int ProcessRemainder(ref UInt32 a, ref UInt32 b, ref UInt32 c, int dataCount, byte[] remainder)
-        {
-            // Mix at beginning of subsequent group to handle special case of length <= 12
-            if (dataCount > 0)
-                Mix(ref a, ref b, ref c);
-
-            switch (remainder.Length)
+            for (int x = position; x < position + length; x += 12)
             {
-                case 11: c += (UInt32)remainder[10] << 16; goto case 10;
-                case 10: c += (UInt32)remainder[9] << 8; goto case 9;
-                case 9: c += (UInt32)remainder[8]; goto case 8;
+                // Mix at beginning of subsequent group to handle special case of length <= 12
+                if (dataCount > 0 || x > position)
+                    Mix(ref a, ref b, ref c);
 
-                case 8:
-                    b += BitConverter.ToUInt32(remainder, 4);
-                    goto case 4;
-
-                case 7: b += (UInt32)remainder[6] << 16; goto case 6;
-                case 6: b += (UInt32)remainder[5] << 8; goto case 5;
-                case 5: b += (UInt32)remainder[4]; goto case 4;
-
-                case 4:
-                    a += BitConverter.ToUInt32(remainder, 0);
-                    break;
-
-                case 3: a += (UInt32)remainder[2] << 16; goto case 2;
-                case 2: a += (UInt32)remainder[1] << 8; goto case 1;
-                case 1: a += (UInt32)remainder[0]; break;
+                a += BitConverter.ToUInt32(dataGroup, x + 0);
+                b += BitConverter.ToUInt32(dataGroup, x + 4);
+                c += BitConverter.ToUInt32(dataGroup, x + 8);
             }
 
-            return dataCount + remainder.Length;
+            dataCount += length;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void ProcessRemainder(ref UInt32 a, ref UInt32 b, ref UInt32 c, ref int dataCount, byte[] remainder, int position, int length)
+        {
+            // Mix at beginning of subsequent group to handle special case of length <= 12
+            if (dataCount > 0)
+                Mix(ref a, ref b, ref c);
+
+            switch (length)
+            {
+                case 11: c += (UInt32) remainder[position + 10] << 16;  goto case 10;
+                case 10: c += (UInt32) remainder[position +  9] <<  8;  goto case 9;
+                case  9: c += (UInt32) remainder[position +  8];        goto case 8;
+
+                case 8:
+                    b += BitConverter.ToUInt32(remainder, position + 4);
+                    goto case 4;
+
+                case 7: b += (UInt32) remainder[position + 6] << 16;    goto case 6;
+                case 6: b += (UInt32) remainder[position + 5] <<  8;    goto case 5;
+                case 5: b += (UInt32) remainder[position + 4];          goto case 4;
+
+                case 4:
+                    a += BitConverter.ToUInt32(remainder, position);
+                    break;
+
+                case 3: a += (UInt32) remainder[position + 2] << 16;    goto case 2;
+                case 2: a += (UInt32) remainder[position + 1] << 8;     goto case 1;
+                case 1: 
+                    a += (UInt32) remainder[position]; 
+                    break;
+            }
+
+            dataCount += length;
         }
 
 

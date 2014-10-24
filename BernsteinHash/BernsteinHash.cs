@@ -5,6 +5,7 @@ using System.Data.HashFunction.Utilities.IntegerManipulation;
 using System.Data.HashFunction.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -57,8 +58,8 @@ namespace System.Data.HashFunction
 
             UInt32 h = 0;
 
-            data.ForEachRead((dataBytes) => {
-                h = ProcessBytes(h, dataBytes);
+            data.ForEachRead((dataBytes, position, length) => {
+                ProcessBytes(ref h, dataBytes, position, length);
             });
             
             return BitConverter.GetBytes(h);
@@ -74,20 +75,19 @@ namespace System.Data.HashFunction
 
             UInt32 h = 0;
 
-            await data.ForEachReadAsync((dataBytes) => {
-                h = ProcessBytes(h, dataBytes);
+            await data.ForEachReadAsync((dataBytes, position, length) => {
+                ProcessBytes(ref h, dataBytes, position, length);
             }).ConfigureAwait(false);
 
             return BitConverter.GetBytes(h);
         }
 
 
-        private static UInt32 ProcessBytes(UInt32 h, byte[] dataBytes)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void ProcessBytes(ref UInt32 h, byte[] dataBytes, int position, int length)
         {
-            foreach (var dataByte in dataBytes)
-                h = (33 * h) + dataByte;
-
-            return h;
+            for (var x = position; x < position + length; ++x)
+                h = (33 * h) + dataBytes[x];
         }
     }
 }
