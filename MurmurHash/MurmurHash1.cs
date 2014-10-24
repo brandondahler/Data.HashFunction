@@ -5,6 +5,7 @@ using System.Data.HashFunction.Utilities.IntegerManipulation;
 using System.Data.HashFunction.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -70,11 +71,11 @@ namespace System.Data.HashFunction
             UInt32 h = Seed ^ ((UInt32) data.Length * m);
 
             data.ForEachGroup(4, 
-                dataGroup => {
-                    h = ProcessGroup(h, dataGroup);
+                (dataGroup, position, length) => {
+                    ProcessGroup(ref h, dataGroup, position, length);
                 },
-                remainder => {
-                    h = ProcessRemainder(h, remainder);
+                (remainder, position, length) => {
+                    ProcessRemainder(ref h, remainder, position, length);
                 });
  
             h *= m;
@@ -96,11 +97,11 @@ namespace System.Data.HashFunction
             UInt32 h = Seed ^ ((UInt32) data.Length * m);
 
             await data.ForEachGroupAsync(4,
-                dataGroup => {
-                    h = ProcessGroup(h, dataGroup);
+                (dataGroup, position, length) => {
+                    ProcessGroup(ref h, dataGroup, position, length);
                 },
-                remainder => {
-                    h = ProcessRemainder(h, remainder);
+                (remainder, position, length) => {
+                    ProcessRemainder(ref h, remainder, position, length);
                 }).ConfigureAwait(false);
 
             h *= m;
@@ -111,30 +112,32 @@ namespace System.Data.HashFunction
             return BitConverter.GetBytes(h);
         }
 
-        
-        private static UInt32 ProcessGroup(UInt32 h, byte[] dataGroup)
-        {
-            h += BitConverter.ToUInt32(dataGroup, 0);
-            h *= m;
-            h ^= h >> 16;
 
-            return h;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void ProcessGroup(ref UInt32 h, byte[] dataGroup, int position, int length)
+        {
+            for (var x = position; x < position + length; x += 4)
+            {
+                h += BitConverter.ToUInt32(dataGroup, x);
+                h *= m;
+                h ^= h >> 16;
+            }
         }
 
-        private static UInt32 ProcessRemainder(UInt32 h, byte[] remainder)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void ProcessRemainder(ref UInt32 h, byte[] remainder, int position, int length)
         {
-            switch (remainder.Length)
+            switch (length)
             {
-                case 3: h += (UInt32)remainder[2] << 16; goto case 2;
-                case 2: h += (UInt32)remainder[1] << 8; goto case 1;
+                case 3: h += (UInt32) remainder[position + 2] << 16; goto case 2;
+                case 2: h += (UInt32) remainder[position + 1] <<  8; goto case 1;
                 case 1:
-                    h += (UInt32)remainder[0];
-                    h *= m;
-                    h ^= h >> 16;
+                    h += (UInt32) remainder[position];
                     break;
             };
 
-            return h;
+            h *= m;
+            h ^= h >> 16;
         }
     }
 }

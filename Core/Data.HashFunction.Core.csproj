@@ -75,7 +75,6 @@
     <Compile Include="Utilities\IntegerManipulation\NamespaceDoc.cs" />
     <Compile Include="Utilities\IntegerManipulation\ToBytesExtensions.cs" />
     <Compile Include="Utilities\NamespaceDoc.cs" />
-    <Compile Include="Utilities\StreamExtensions.cs" />
     <Compile Include="Utilities\IntegerManipulation\ExtendedMultiplyExtensions.cs" />
     <Compile Include="Utilities\IntegerManipulation\RotateRightExtensions.cs" />
     <Compile Include="Utilities\IntegerManipulation\RotateLeftExtensions.cs" />

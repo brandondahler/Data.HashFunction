@@ -62,18 +62,17 @@ namespace System.Data.HashFunction
 
             if (!data.CanSeek && RequiresSeekableStream)
             {
-                byte[] dataArray;
+                byte[] buffer;
+
                 using (var ms = new MemoryStream())
                 {
                     data.CopyTo(ms);
 
-                    ms.Seek(0, SeekOrigin.Begin);
-
-                    dataArray = ms.ToArray();
+                    buffer = ms.ToArray();
                 }
 
                 return ComputeHashInternal(
-                    new ArrayData(dataArray));
+                    new ArrayData(buffer));
             }
 
             return ComputeHashInternal(

@@ -126,23 +126,30 @@ namespace System.Data.HashFunction
                     };
 
                     data.ForEachGroup(16, 
-                        dataGroup => {
-                            for (var x = 0; x < 4; ++x)
+                        (dataGroup, position, length) => {
+                            for (int x = position; x < position + length; x += 16)
                             {
-                                initValues[x] += BitConverter.ToUInt32(dataGroup, x * 4) * _primes32[1];
-                                initValues[x]  = initValues[x].RotateLeft(13);
-                                initValues[x] *= _primes32[0];
+                                for (var y = 0; y < 4; ++y)
+                                {
+                                    initValues[y] += BitConverter.ToUInt32(dataGroup, x + (y * 4)) * _primes32[1];
+                                    initValues[y] = initValues[y].RotateLeft(13);
+                                    initValues[y] *= _primes32[0];
+                                }
                             }
 
-                            dataCount += dataGroup.Length;
+                            dataCount += length;
                         },
-                        remainderData => {
-                            remainder = remainderData;
-                            dataCount += remainder.Length;
+                        (remainderData, position, length) => {
+                            remainder = new byte[length];
+                            Array.Copy(remainderData, position, remainder, 0, length);
+
+                            dataCount += length;
                         });
 
-                    return BitConverter.GetBytes(
-                        PostProcess(h, initValues, dataCount, remainder));
+
+                    PostProcess(ref h, initValues, dataCount, remainder);
+
+                    return BitConverter.GetBytes(h);
                 }
 
                 case 64:
@@ -161,24 +168,31 @@ namespace System.Data.HashFunction
 
 
                     data.ForEachGroup(32, 
-                        dataGroup => {
-                        
-                            for (var x = 0; x < 4; ++x)
+                        (dataGroup, position, length) => {
+
+                            for (var x = position; x < position + length; x += 32)
                             {
-                                initValues[x] += BitConverter.ToUInt64(dataGroup, x * 8) * _primes64[1];
-                                initValues[x]  = initValues[x].RotateLeft(31);
-                                initValues[x] *= _primes64[0];
+                                for (var y = 0; y < 4; ++y)
+                                {
+                                    initValues[y] += BitConverter.ToUInt64(dataGroup, x + (y * 8)) * _primes64[1];
+                                    initValues[y] = initValues[y].RotateLeft(31);
+                                    initValues[y] *= _primes64[0];
+                                }
                             }
 
-                            dataCount += dataGroup.Length;
+                            dataCount += length;
                         },
-                        remainderData => {
-                            remainder = remainderData;
-                            dataCount += remainder.Length;
+                        (remainderData, position, length) => {
+                            remainder = new byte[length];
+                            Array.Copy(remainderData, position, remainder, 0, length);
+
+                            dataCount += length;
                         });
-            
-                    return BitConverter.GetBytes(
-                        PostProcess(h, initValues, dataCount, remainder));
+
+
+                    PostProcess(ref h, initValues, dataCount, remainder);
+
+                    return BitConverter.GetBytes(h);
                 }
 
                 default:
@@ -208,23 +222,29 @@ namespace System.Data.HashFunction
                     };
 
                     await data.ForEachGroupAsync(16, 
-                        dataGroup => {
-                            for (var x = 0; x < 4; ++x)
+                        (dataGroup, position, length) => {
+                            for (var x = position; x < position + length; x += 16)
                             {
-                                initValues[x] += BitConverter.ToUInt32(dataGroup, x * 4) * _primes32[1];
-                                initValues[x]  = initValues[x].RotateLeft(13);
-                                initValues[x] *= _primes32[0];
+                                for (var y = 0; y < 4; ++y)
+                                {
+                                    initValues[y] += BitConverter.ToUInt32(dataGroup, x + (y * 4)) * _primes32[1];
+                                    initValues[y] = initValues[y].RotateLeft(13);
+                                    initValues[y] *= _primes32[0];
+                                }
                             }
 
-                            dataCount += dataGroup.Length;
+                            dataCount += length;
                         },
-                        remainderData => {
-                            remainder = remainderData;
-                            dataCount += remainder.Length;
+                        (remainderData, position, length) => {
+                            remainder = new byte[length];
+                            Array.Copy(remainderData, position, remainder, 0, length);
+
+                            dataCount += length;
                         }).ConfigureAwait(false);
 
-                    return BitConverter.GetBytes(
-                        PostProcess(h, initValues, dataCount, remainder));
+                    PostProcess(ref h, initValues, dataCount, remainder);
+
+                    return BitConverter.GetBytes(h);
                 }
 
                 case 64:
@@ -243,24 +263,30 @@ namespace System.Data.HashFunction
 
 
                     await data.ForEachGroupAsync(32, 
-                        dataGroup => {
-                        
-                            for (var x = 0; x < 4; ++x)
+                        (dataGroup, position, length) => {
+                            for (var x = position; x < position + length; x += 32)
                             {
-                                initValues[x] += BitConverter.ToUInt64(dataGroup, x * 8) * _primes64[1];
-                                initValues[x]  = initValues[x].RotateLeft(31);
-                                initValues[x] *= _primes64[0];
+                                for (var y = 0; y < 4; ++y)
+                                {
+                                    initValues[y] += BitConverter.ToUInt64(dataGroup, x + (y * 8)) * _primes64[1];
+                                    initValues[y] = initValues[y].RotateLeft(31);
+                                    initValues[y] *= _primes64[0];
+                                }
                             }
 
-                            dataCount += dataGroup.Length;
+                            dataCount += length;
                         },
-                        remainderData => {
-                            remainder = remainderData;
+                        (remainderData, position, length) => {
+                            remainder = new byte[length];
+                            Array.Copy(remainderData, position, remainder, 0, length);
+
                             dataCount += remainder.Length;
                         }).ConfigureAwait(false);
-            
-                    return BitConverter.GetBytes(
-                        PostProcess(h, initValues, dataCount, remainder));
+
+
+                    PostProcess(ref h, initValues, dataCount, remainder);
+
+                    return BitConverter.GetBytes(h);
                 }
 
                 default:
@@ -269,7 +295,8 @@ namespace System.Data.HashFunction
         }
 
 
-        private static UInt32 PostProcess(UInt32 h, UInt32[] initValues, int dataCount, byte[] remainder)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void PostProcess(ref UInt32 h, UInt32[] initValues, int dataCount, byte[] remainder)
         {
             if (dataCount >= 16)
             {
@@ -288,15 +315,15 @@ namespace System.Data.HashFunction
                 for (int x = 0; x < remainder.Length / 4; ++x)
                 {
                     h += BitConverter.ToUInt32(remainder, x * 4) * _primes32[2];
-                    h = h.RotateLeft(17) * _primes32[3];
+                    h  = h.RotateLeft(17) * _primes32[3];
                 }
 
 
                 // Process last 4 bytes in 1-byte chunks (only runs if data.Length % 4 != 0)
                 for (int x = remainder.Length - (remainder.Length % 4); x < remainder.Length; ++x)
                 {
-                    h += (UInt32)remainder[x] * _primes32[4];
-                    h = h.RotateLeft(11) * _primes32[0];
+                    h += (UInt32) remainder[x] * _primes32[4];
+                    h  = h.RotateLeft(11) * _primes32[0];
                 }
             }
 
@@ -305,11 +332,10 @@ namespace System.Data.HashFunction
             h ^= h >> 13;
             h *= _primes32[2];
             h ^= h >> 16;
-
-            return h;
         }
 
-        private static UInt64 PostProcess(UInt64 h, UInt64[] initValues, int dataCount, byte[] remainder)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void PostProcess(ref UInt64 h, UInt64[] initValues, int dataCount, byte[] remainder)
         {
             if (dataCount >= 32)
             {
@@ -363,8 +389,6 @@ namespace System.Data.HashFunction
             h ^= h >> 29;
             h *= _primes64[2];
             h ^= h >> 32;
-
-            return h;
         }
     }
 }

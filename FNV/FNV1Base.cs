@@ -149,8 +149,8 @@ namespace System.Data.HashFunction
             {
                 var hash = offset[0];
 
-                data.ForEachRead(dataBytes => {
-                    hash = ProcessBytes32(hash, prime[0], dataBytes);
+                data.ForEachRead((dataBytes, position, length) => {
+                    ProcessBytes32(ref hash, prime[0], dataBytes, position, length);
                 });
 
                 return BitConverter.GetBytes(hash);
@@ -160,8 +160,8 @@ namespace System.Data.HashFunction
                 var prime64 = ((UInt64) prime[1] << 32) | prime[0];
 
 
-                data.ForEachRead(dataBytes => {
-                    hash = ProcessBytes64(hash, prime64, dataBytes);
+                data.ForEachRead((dataBytes, position, length) => {
+                    ProcessBytes64(ref hash, prime64, dataBytes, position, length);
                 });
 
                 return BitConverter.GetBytes(hash);
@@ -173,8 +173,8 @@ namespace System.Data.HashFunction
                 var hash = offset.ToArray();
 
 
-                data.ForEachRead(dataBytes => {
-                    hash = ProcessBytes(hash, prime, dataBytes);
+                data.ForEachRead((dataBytes, position, length) => {
+                    ProcessBytes(ref hash, prime, dataBytes, position, length);
                 });
 
                 return hash.ToBytes()
@@ -199,8 +199,8 @@ namespace System.Data.HashFunction
                 var hash = offset[0];
 
                 await data.ForEachReadAsync(
-                    (dataBytes) => {
-                        hash = ProcessBytes32(hash, prime[0], dataBytes);
+                    (dataBytes, position, length) => {
+                        ProcessBytes32(ref hash, prime[0], dataBytes, position, length);
                     }).ConfigureAwait(false);
 
                 return BitConverter.GetBytes(hash);
@@ -211,8 +211,8 @@ namespace System.Data.HashFunction
 
 
                 await data.ForEachReadAsync(
-                    (dataBytes) => {
-                        hash = ProcessBytes64(hash, prime64, dataBytes);
+                    (dataBytes, position, length) => {
+                        ProcessBytes64(ref hash, prime64, dataBytes, position, length);
                     }).ConfigureAwait(false);
 
                 return BitConverter.GetBytes(hash);
@@ -225,8 +225,8 @@ namespace System.Data.HashFunction
 
 
                 await data.ForEachReadAsync(
-                    (dataBytes) => {
-                        hash = ProcessBytes(hash, prime, dataBytes);
+                    (dataBytes, position, length) => {
+                        ProcessBytes(ref hash, prime, dataBytes, position, length);
                     }).ConfigureAwait(false);
 
                 return hash.ToBytes()
@@ -242,10 +242,9 @@ namespace System.Data.HashFunction
         /// <param name="hash">Hash value before calculations.</param>
         /// <param name="prime">FNV prime to use for calculations.</param>
         /// <param name="data">Data to process.</param>
-        /// <returns>
-        /// A UInt32 value representing the resulting hash value.
-        /// </returns>
-        protected abstract UInt32 ProcessBytes32(UInt32 hash, UInt32 prime, byte[] data);
+        /// <param name="position">The starting index of the data array.</param>
+        /// <param name="length">The length of the data in the data array, starting from the position parameter.</param>
+        protected abstract void ProcessBytes32(ref UInt32 hash, UInt32 prime, byte[] data, int position, int length);
 
         /// <summary>
         /// Apply 64-bit FNV algorithm on all data supplied.
@@ -253,10 +252,9 @@ namespace System.Data.HashFunction
         /// <param name="hash">Hash value before calculations.</param>
         /// <param name="prime">FNV prime to use for calculations.</param>
         /// <param name="data">Data to process.</param>
-        /// <returns>
-        /// A UInt64 value representing the resulting hash value.
-        /// </returns>
-        protected abstract UInt64 ProcessBytes64(UInt64 hash, UInt64 prime, byte[] data);
+        /// <param name="position">The starting index of the data array.</param>
+        /// <param name="length">The length of the data in the data array, starting from the position parameter.</param>
+        protected abstract void ProcessBytes64(ref UInt64 hash, UInt64 prime, byte[] data, int position, int length);
 
         /// <summary>
         /// Apply FNV algorithm on all data supplied.
@@ -264,9 +262,8 @@ namespace System.Data.HashFunction
         /// <param name="hash">Hash value before calculations.</param>
         /// <param name="prime">FNV prime to use for calculations.</param>
         /// <param name="data">Data to process.</param>
-        /// <returns>
-        /// A list of UInt32 values representing the resulting hash value.
-        /// </returns>
-        protected abstract UInt32[] ProcessBytes(UInt32[] hash, IReadOnlyList<UInt32> prime, byte[] data);
+        /// <param name="position">The starting index of the data array.</param>
+        /// <param name="length">The length of the data in the data array, starting from the position parameter.</param>
+        protected abstract void ProcessBytes(ref UInt32[] hash, IReadOnlyList<UInt32> prime, byte[] data, int position, int length);
     }
 }

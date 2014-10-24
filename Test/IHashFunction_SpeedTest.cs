@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -15,7 +16,7 @@ namespace System.Data.HashFunction.Test
     {
         protected abstract IReadOnlyDictionary<string, IHashFunction> TestHashFunctions { get; }
 
-        private const int SINGLE_BLOCK_SIZE = 0x200000; // 32 MB
+        private const int SINGLE_BLOCK_SIZE = 12000000; // 32 MB
 
         private const int MULTIPLE_ITEMS_SIZE = 0x80; // 128 B
         private const int MULTIPLE_ITEMS_COUNT = 0x10000; // 64 K
@@ -157,14 +158,30 @@ namespace System.Data.HashFunction.Test
 
                 sw.Reset();
 
+
+                Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
+                Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
+
                 // Real test
-                computeHash(sw, testHashFunction.Value, testBytes);
+                var computeCount = 0;
+                while (sw.Elapsed < new TimeSpan(0, 0, 0, 1, 0) || computeCount < 3)
+                {
+                    computeHash(sw, testHashFunction.Value, testBytes);
+                    ++computeCount;
+                }
+
+
+                Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
+                Thread.CurrentThread.Priority = ThreadPriority.Normal;
+
+
+                var totalBytesComputedAgainst = ((long) testBytes.Length) * computeCount;
 
                 Console.WriteLine("{0, -40} {1:F2} MB/s ({2} B in {3:F3} ms)",
                     testHashFunction.Key + ":",
-                    testBytes.Length / (1048510.0d) / ((double)sw.ElapsedTicks / TimeSpan.TicksPerSecond),
-                    testBytes.Length,
-                    ((double)sw.ElapsedTicks / TimeSpan.TicksPerMillisecond));
+                    totalBytesComputedAgainst / 1048576.0d / sw.Elapsed.TotalSeconds,
+                    totalBytesComputedAgainst,
+                    sw.ElapsedMilliseconds);
                 
                 sw.Reset();
             }
@@ -229,7 +246,7 @@ namespace System.Data.HashFunction.Test
                     {
                         testHashFunction.ComputeHash(ms);
 
-                        ms.Seek(0, SeekOrigin.Begin);
+                        ms.Real_Seek(0, SeekOrigin.Begin);
                     }
                     
                     sw.Stop();

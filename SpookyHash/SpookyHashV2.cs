@@ -139,16 +139,16 @@ namespace System.Data.HashFunction
             var remainderData = new byte[96];
 
             data.ForEachGroup(96, 
-                dataGroup => {
-                    Mix(dataGroup, 0, h);
+                (dataGroup, position, length) => {
+                    Mix(h, dataGroup, position, length);
                 },
-                remainder => {
-                    remainder.CopyTo(remainderData, 0);
-                    remainderData[95] = (byte) remainder.Length;
+                (remainder, position, length) => {
+                    Array.Copy(remainder, position, remainderData, 0, length);
+                    remainderData[95] = (byte) length;
                 });
 
 
-            End(remainderData, 0, h);
+            End(h, remainderData, 0);
 
             switch (HashSize)
             {
@@ -183,16 +183,16 @@ namespace System.Data.HashFunction
             var remainderData = new byte[96];
 
             await data.ForEachGroupAsync(96, 
-                dataGroup => {
-                    Mix(dataGroup, 0, h);
+                (dataGroup, position, length) => {
+                    Mix(h, dataGroup, position, length);
                 },
-                remainder => {
-                    remainder.CopyTo(remainderData, 0);
-                    remainderData[95] = (byte) remainder.Length;
+                (remainder, position, length) => {
+                    Array.Copy(remainder, position, remainderData, 0, length);
+                    remainderData[95] = (byte) length;
                 }).ConfigureAwait(false);
 
 
-            End(remainderData, 0, h);
+            End(h, remainderData, 0);
 
             switch (HashSize)
             {
@@ -214,56 +214,49 @@ namespace System.Data.HashFunction
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Mix(byte[] data, int startIndex, UInt64[] s)
-        {
+        private static readonly IReadOnlyList<int> _MixRotationParameters = new[] {
+            11, 32, 43, 31, 17,28, 39, 57, 55, 54, 22, 46
+        };
 
-            s[0]  += BitConverter.ToUInt64(data, startIndex + ( 0 * 8));     s[2] ^= s[10];   s[11] ^= s[0];      s[0] =  s[0].RotateLeft(11);     s[11] += s[1];
-            s[1]  += BitConverter.ToUInt64(data, startIndex + ( 1 * 8));     s[3] ^= s[11];    s[0] ^=  s[1];     s[1] =  s[1].RotateLeft(32);     s[0] +=  s[2];
-            s[2]  += BitConverter.ToUInt64(data, startIndex + ( 2 * 8));     s[4] ^=  s[0];    s[1] ^=  s[2];     s[2] =  s[2].RotateLeft(43);     s[1] +=  s[3];
-            s[3]  += BitConverter.ToUInt64(data, startIndex + ( 3 * 8));     s[5] ^=  s[1];    s[2] ^=  s[3];     s[3] =  s[3].RotateLeft(31);     s[2] +=  s[4];
-            s[4]  += BitConverter.ToUInt64(data, startIndex + ( 4 * 8));     s[6] ^=  s[2];    s[3] ^=  s[4];     s[4] =  s[4].RotateLeft(17);     s[3] +=  s[5];
-            s[5]  += BitConverter.ToUInt64(data, startIndex + ( 5 * 8));     s[7] ^=  s[3];    s[4] ^=  s[5];     s[5] =  s[5].RotateLeft(28);     s[4] +=  s[6];
-            s[6]  += BitConverter.ToUInt64(data, startIndex + ( 6 * 8));     s[8] ^=  s[4];    s[5] ^=  s[6];     s[6] =  s[6].RotateLeft(39);     s[5] +=  s[7];
-            s[7]  += BitConverter.ToUInt64(data, startIndex + ( 7 * 8));     s[9] ^=  s[5];    s[6] ^=  s[7];     s[7] =  s[7].RotateLeft(57);     s[6] +=  s[8];
-            s[8]  += BitConverter.ToUInt64(data, startIndex + ( 8 * 8));    s[10] ^=  s[6];    s[7] ^=  s[8];     s[8] =  s[8].RotateLeft(55);     s[7] +=  s[9];
-            s[9]  += BitConverter.ToUInt64(data, startIndex + ( 9 * 8));    s[11] ^=  s[7];    s[8] ^=  s[9];     s[9] =  s[9].RotateLeft(54);     s[8] += s[10];
-            s[10] += BitConverter.ToUInt64(data, startIndex + (10 * 8));     s[0] ^=  s[8];    s[9] ^= s[10];    s[10] = s[10].RotateLeft(22);     s[9] += s[11];
-            s[11] += BitConverter.ToUInt64(data, startIndex + (11 * 8));     s[1] ^=  s[9];   s[10] ^= s[11];    s[11] = s[11].RotateLeft(46);    s[10] +=  s[0];
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void Mix(UInt64[] h, byte[] data, int position, int length)
+        {
+            for (int x = position; x < position + length; x += 96)
+            {
+                for (var i = 0; i < 12; ++i)
+                {
+                    h[i]             += BitConverter.ToUInt64(data, x + (i * 8)); 
+                    h[(i +  2) % 12] ^= h[(i + 10) % 12]; 
+                    h[(i + 11) % 12] ^= h[i];
+                    h[i]              = h[i].RotateLeft(_MixRotationParameters[i]); 
+                    h[(i + 11) % 12] += h[(i + 1) % 12];
+                }
+            }
         }
+
+
+        private static readonly IReadOnlyList<int> _EndPartialRotationParameters = new[] {
+            44, 15, 34, 21, 38, 33, 10, 13, 38, 53, 42, 54
+        };
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void EndPartial(UInt64[] h)
         {
-            h[11] +=  h[1];     h[2] ^= h[11];     h[1] =  h[1].RotateLeft(44);
-            h[0]  +=  h[2];     h[3] ^=  h[0];     h[2] =  h[2].RotateLeft(15);
-            h[1]  +=  h[3];     h[4] ^=  h[1];     h[3] =  h[3].RotateLeft(34);
-            h[2]  +=  h[4];     h[5] ^=  h[2];     h[4] =  h[4].RotateLeft(21);
-            h[3]  +=  h[5];     h[6] ^=  h[3];     h[5] =  h[5].RotateLeft(38);
-            h[4]  +=  h[6];     h[7] ^=  h[4];     h[6] =  h[6].RotateLeft(33);
-            h[5]  +=  h[7];     h[8] ^=  h[5];     h[7] =  h[7].RotateLeft(10);
-            h[6]  +=  h[8];     h[9] ^=  h[6];     h[8] =  h[8].RotateLeft(13);
-            h[7]  +=  h[9];    h[10] ^=  h[7];     h[9] =  h[9].RotateLeft(38);
-            h[8]  += h[10];    h[11] ^=  h[8];    h[10] = h[10].RotateLeft(53);
-            h[9]  += h[11];     h[0] ^=  h[9];    h[11] = h[11].RotateLeft(42);
-            h[10] +=  h[0];     h[1] ^= h[10];     h[0] =  h[0].RotateLeft(54);
+            for (int i = 0; i < 12; ++i)
+            {
+                h[(i + 11) % 12] += h[(i + 1) % 12]; 
+                h[(i +  2) % 12] ^= h[(i + 11) % 12]; 
+                h[(i +  1) % 12] = h[(i + 1) % 12].RotateLeft(_EndPartialRotationParameters[i]);
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void End(byte[] data, int startIndex, UInt64[] h)
+        private static void End(UInt64[] h, byte[] data, int position)
         {
-            h[0]  += BitConverter.ToUInt64(data, startIndex + (0  * 8));
-            h[1]  += BitConverter.ToUInt64(data, startIndex + (1  * 8));
-            h[2]  += BitConverter.ToUInt64(data, startIndex + (2  * 8));
-            h[3]  += BitConverter.ToUInt64(data, startIndex + (3  * 8));
-            h[4]  += BitConverter.ToUInt64(data, startIndex + (4  * 8));
-            h[5]  += BitConverter.ToUInt64(data, startIndex + (5  * 8));
-            h[6]  += BitConverter.ToUInt64(data, startIndex + (6  * 8));
-            h[7]  += BitConverter.ToUInt64(data, startIndex + (7  * 8));
-            h[8]  += BitConverter.ToUInt64(data, startIndex + (8  * 8));
-            h[9]  += BitConverter.ToUInt64(data, startIndex + (9  * 8));
-            h[10] += BitConverter.ToUInt64(data, startIndex + (10 * 8));
-            h[11] += BitConverter.ToUInt64(data, startIndex + (11 * 8));
+            for (int i = 0; i < 12; ++i)
+            {
+                h[i] += BitConverter.ToUInt64(data, position + (i * 8));
+            }
              
             EndPartial(h);
             EndPartial(h);

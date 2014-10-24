@@ -82,8 +82,8 @@ namespace System.Data.HashFunction
             var h = new byte[HashSize / 8];
             bool firstByte = true;
 
-            data.ForEachRead(dataBytes => {
-                ProcessBytes(ref h, ref firstByte, dataBytes);
+            data.ForEachRead((dataBytes, position, length) => {
+                ProcessBytes(ref h, ref firstByte, dataBytes, position, length);
             });
 
             return h;
@@ -100,24 +100,24 @@ namespace System.Data.HashFunction
             var h = new byte[HashSize / 8];
             bool firstByte = true;
 
-            await data.ForEachReadAsync(dataBytes => {
-                ProcessBytes(ref h, ref firstByte, dataBytes);
+            await data.ForEachReadAsync((dataBytes, position, length) => {
+                ProcessBytes(ref h, ref firstByte, dataBytes, position, length);
             }).ConfigureAwait(false);
 
             return h;
         }
 
 
-        private void ProcessBytes(ref byte[] h, ref bool firstByte, byte[] dataBytes)
+        private void ProcessBytes(ref byte[] h, ref bool firstByte, byte[] dataBytes, int position, int length)
         {
-            foreach (var dataByte in dataBytes)
+            for (var x = position; x < position + length; ++x)
             {
-                for (int x = 0; x < HashSize / 8; ++x)
+                for (int y = 0; y < HashSize / 8; ++y)
                 {
                     if (!firstByte)
-                        h[x] = T[h[x] ^ dataByte];
+                        h[y] = T[h[y] ^ dataBytes[x]];
                     else
-                        h[x] = T[(dataByte + x) & 0xff];
+                        h[y] = T[(dataBytes[x] + y) & 0xff];
                 }
 
                 firstByte = false;

@@ -20,49 +20,55 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
         /// </remarks>
         public abstract long Length { get; }
 
-
-
-        /// <inheritdoc cref="ForEachRead(Action{byte[]}, int)" />
-        public void ForEachRead(Action<byte[]> action)
+        /// <summary>
+        /// Length of temporary buffers used, if they are needed.
+        /// </summary>
+        /// <remarks>
+        /// Implementors are not required to use this value.
+        /// </remarks>
+        public virtual int BufferSize 
         {
-            ForEachRead(action, 4096);
+            get { return _BufferSize; }
+            set
+            {
+                if (value <= 0)
+                    throw new ArgumentOutOfRangeException("value", "value must be greater than 0");
+
+                _BufferSize = value;
+            }
         }
-        
+
+
+        private int _BufferSize = 4096;
+
+
+
         /// <summary>
         /// Executes an action each time a chunk is read.
         /// </summary>
         /// <param name="action">Function to execute.</param>
-        /// <param name="bufferSize">Suggested size of buffer reads.</param>
-        /// <remarks>bufferSize is only a suggestion, there are no guarantees for the length of the array passed to the action.</remarks>
-        public abstract void ForEachRead(Action<byte[]> action, int bufferSize);
+        public abstract void ForEachRead(Action<byte[], int, int> action);
 
 
-
-        /// <inheritdoc cref="ForEachReadAsync(Action{byte[]}, int)" />
+        /// <inheritdoc cref="ForEachRead(Action{byte[], int, int})" />
         /// <returns>Task representing the asynchronous operation.</returns>
-        public Task ForEachReadAsync(Action<byte[]> action)
-        {
-            return ForEachReadAsync(action, 4096);
-        }
-
-        /// <inheritdoc cref="ForEachRead(Action{byte[]}, int)" />
-        /// <returns>Task representing the asynchronous operation.</returns>
-        public abstract Task ForEachReadAsync(Action<byte[]> action, int bufferSize);
+        public abstract Task ForEachReadAsync(Action<byte[], int, int> action);
 
 
 
         /// <summary>
-        /// Executes an action for each group of data that is read.
+        /// Executes an action one or more times, providing the data read as an array whose length is a multiple of groupSize.  
+        /// Optionally runs an action on the final remainder group.
         /// </summary>
-        /// <param name="groupSize">Length of the data passed to the action.</param>
+        /// <param name="groupSize">Length of the groups passed to the action.</param>
         /// <param name="action">Action to execute for each full group read.</param>
         /// <param name="remainderAction">Action to execute if the final group is less than groupSize.  Null values are allowed.</param>
         /// <remarks>remainderAction will not be run if the length of the data is a multiple of groupSize.</remarks>
-        public abstract void ForEachGroup(int groupSize, Action<byte[]> action, Action<byte[]> remainderAction);
+        public abstract void ForEachGroup(int groupSize, Action<byte[], int, int> action, Action<byte[], int, int> remainderAction);
         
-        /// <inheritdoc cref="ForEachGroup(int, Action{byte[]}, Action{byte[]})" />
+        /// <inheritdoc cref="ForEachGroup(int, Action{byte[], int, int}, Action{byte[], int, int})" />
         /// <returns>Task representing the asynchronous operation.</returns>
-        public abstract Task ForEachGroupAsync(int groupSize, Action<byte[]> action, Action<byte[]> remainderAction);
+        public abstract Task ForEachGroupAsync(int groupSize, Action<byte[], int, int> action, Action<byte[], int, int> remainderAction);
 
 
 

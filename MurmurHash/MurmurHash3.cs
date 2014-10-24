@@ -125,18 +125,20 @@ namespace System.Data.HashFunction
 
 
                     data.ForEachGroup(4, 
-                        dataGroup => {
-                            h1 = ProcessGroup(h1, dataGroup);
-                            dataCount += dataGroup.Length;
+                        (dataGroup, position, length) => {
+                            ProcessGroup(ref h1, dataGroup, position, length);
+
+                            dataCount += length;
                         },
-                        remainder => {
-                            h1 = ProcessRemainder(h1, remainder);
-                            dataCount += remainder.Length;
+                        (remainder, position, length) => {
+                            ProcessRemainder(ref h1, remainder, position, length);
+
+                            dataCount += length;
                         });
             
 
                     h1 ^= (UInt32) dataCount;
-                    h1  = Mix(h1);
+                    Mix(ref h1);
 
                     return BitConverter.GetBytes(h1);
                 }
@@ -150,13 +152,15 @@ namespace System.Data.HashFunction
 
             
                     data.ForEachGroup(16, 
-                        dataGroup => {
-                            ProcessGroup(ref h1, ref h2, dataGroup);
-                            dataCount += dataGroup.Length;
+                        (dataGroup, position, length) => {
+                            ProcessGroup(ref h1, ref h2, dataGroup, position, length);
+
+                            dataCount += length;
                         },
-                        remainder => {
-                            ProcessRemainder(ref h1, ref h2, remainder);
-                            dataCount += remainder.Length;
+                        (remainder, position, length) => {
+                            ProcessRemainder(ref h1, ref h2, remainder, position, length);
+
+                            dataCount += length;
                         });
 
 
@@ -166,8 +170,8 @@ namespace System.Data.HashFunction
                     h1 += h2;
                     h2 += h1;
 
-                    h1 = Mix(h1);
-                    h2 = Mix(h2);
+                    Mix(ref h1);
+                    Mix(ref h2);
 
                     h1 += h2;
                     h2 += h1;
@@ -202,18 +206,20 @@ namespace System.Data.HashFunction
 
 
                     await data.ForEachGroupAsync(4, 
-                        dataGroup => {
-                            h1 = ProcessGroup(h1, dataGroup);
-                            dataCount += dataGroup.Length;
+                        (dataGroup, position, length) => {
+                            ProcessGroup(ref h1, dataGroup, position, length);
+
+                            dataCount += length;
                         },
-                        remainder => {
-                            h1 = ProcessRemainder(h1, remainder);
-                            dataCount += remainder.Length;
+                        (remainder, position, length) => {
+                            ProcessRemainder(ref h1, remainder, position, length);
+
+                            dataCount += length;
                         }).ConfigureAwait(false);
             
 
                     h1 ^= (UInt32) dataCount;
-                    h1  = Mix(h1);
+                    Mix(ref h1);
 
                     return BitConverter.GetBytes(h1);
                 }
@@ -227,13 +233,15 @@ namespace System.Data.HashFunction
 
             
                     await data.ForEachGroupAsync(16, 
-                        dataGroup => {
-                            ProcessGroup(ref h1, ref h2, dataGroup);
-                            dataCount += dataGroup.Length;
+                        (dataGroup, position, length) => {
+                            ProcessGroup(ref h1, ref h2, dataGroup, position, length);
+
+                            dataCount += length;
                         },
-                        remainder => {
-                            ProcessRemainder(ref h1, ref h2, remainder);
-                            dataCount += remainder.Length;
+                        (remainder, position, length) => {
+                            ProcessRemainder(ref h1, ref h2, remainder, position, length);
+
+                            dataCount += length;
                         }).ConfigureAwait(false);
 
 
@@ -243,8 +251,8 @@ namespace System.Data.HashFunction
                     h1 += h2;
                     h2 += h1;
 
-                    h1 = Mix(h1);
-                    h2 = Mix(h2);
+                    Mix(ref h1);
+                    Mix(ref h2);
 
                     h1 += h2;
                     h2 += h1;
@@ -267,81 +275,88 @@ namespace System.Data.HashFunction
         }
 
 
-        private static UInt32 ProcessGroup(UInt32 h1, byte[] dataGroup)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void ProcessGroup(ref UInt32 h1, byte[] dataGroup, int position, int length)
         {
-            UInt32 k1 = BitConverter.ToUInt32(dataGroup, 0);
+            for (var x = position; x < position + length; x += 4)
+            {
+                UInt32 k1 = BitConverter.ToUInt32(dataGroup, x);
 
-            k1 *= c1_32;
-            k1 = k1.RotateLeft(15);
-            k1 *= c2_32;
+                k1 *= c1_32;
+                k1 = k1.RotateLeft(15);
+                k1 *= c2_32;
 
-            h1 ^= k1;
-            h1 = h1.RotateLeft(13);
-            h1 = (h1 * 5) + 0xe6546b64;
-
-            return h1;
+                h1 ^= k1;
+                h1 = h1.RotateLeft(13);
+                h1 = (h1 * 5) + 0xe6546b64;
+            }
         }
 
-        private static void ProcessGroup(ref UInt64 h1, ref UInt64 h2, byte[] dataGroup)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void ProcessGroup(ref UInt64 h1, ref UInt64 h2, byte[] dataGroup, int position, int length)
         {
-            UInt64 k1 = BitConverter.ToUInt64(dataGroup, 0);
-            UInt64 k2 = BitConverter.ToUInt64(dataGroup, 8);
+            for (var x = position; x < position + length; x += 16)
+            {
+                UInt64 k1 = BitConverter.ToUInt64(dataGroup, 0);
+                UInt64 k2 = BitConverter.ToUInt64(dataGroup, 8);
 
-            k1 *= c1_128;
-            k1  = k1.RotateLeft(31);
-            k1 *= c2_128;
-            h1 ^= k1;
+                k1 *= c1_128;
+                k1 = k1.RotateLeft(31);
+                k1 *= c2_128;
+                h1 ^= k1;
 
-            h1  = h1.RotateLeft(27);
-            h1 += h2;
-            h1  = (h1 * 5) + 0x52dce729;
+                h1 = h1.RotateLeft(27);
+                h1 += h2;
+                h1 = (h1 * 5) + 0x52dce729;
 
-            k2 *= c2_128;
-            k2  = k2.RotateLeft(33);
-            k2 *= c1_128;
-            h2 ^= k2;
+                k2 *= c2_128;
+                k2 = k2.RotateLeft(33);
+                k2 *= c1_128;
+                h2 ^= k2;
 
-            h2  = h2.RotateLeft(31);
-            h2 += h1;
-            h2  = (h2 * 5) + 0x38495ab5;
+                h2 = h2.RotateLeft(31);
+                h2 += h1;
+                h2 = (h2 * 5) + 0x38495ab5;
+            }
         }
 
 
-        private static UInt32 ProcessRemainder(UInt32 h1, byte[] remainder)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void ProcessRemainder(ref UInt32 h1, byte[] remainder, int position, int length)
         {
             UInt32 k2 = 0;
 
-            switch (remainder.Length)
+            switch (length)
             {
-                case 3: k2 ^= (UInt32) remainder[2] << 16; goto case 2;
-                case 2: k2 ^= (UInt32) remainder[1] <<  8; goto case 1;
+                case 3: k2 ^= (UInt32) remainder[position + 2] << 16; goto case 2;
+                case 2: k2 ^= (UInt32) remainder[position + 1] <<  8; goto case 1;
                 case 1:
-                    k2 ^= (UInt32) remainder[0];
-                    k2 *= c1_32;
-                    k2  = k2.RotateLeft(15);
-                    k2 *= c2_32;
-                    h1 ^= k2;
+                    k2 ^= (UInt32) remainder[position];        
                     break;
             }
 
-            return h1;
+            k2 *= c1_32;
+            k2 = k2.RotateLeft(15);
+            k2 *= c2_32;
+            h1 ^= k2;
         }
 
-        private static void ProcessRemainder(ref UInt64 h1, ref UInt64 h2, byte[] remainder)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void ProcessRemainder(ref UInt64 h1, ref UInt64 h2, byte[] remainder, int position, int length)
         {
             UInt64 k1 = 0;
             UInt64 k2 = 0;
 
-            switch(remainder.Length)
+            switch(length)
             {
-                case 15: k2 ^= (UInt64) remainder[14] << 48;   goto case 14;
-                case 14: k2 ^= (UInt64) remainder[13] << 40;   goto case 13;
-                case 13: k2 ^= (UInt64) remainder[12] << 32;   goto case 12;
-                case 12: k2 ^= (UInt64) remainder[11] << 24;   goto case 11;
-                case 11: k2 ^= (UInt64) remainder[10] << 16;   goto case 10;
-                case 10: k2 ^= (UInt64) remainder[ 9] <<  8;   goto case 9;
+                case 15: k2 ^= (UInt64) remainder[position + 14] << 48;   goto case 14;
+                case 14: k2 ^= (UInt64) remainder[position + 13] << 40;   goto case 13;
+                case 13: k2 ^= (UInt64) remainder[position + 12] << 32;   goto case 12;
+                case 12: k2 ^= (UInt64) remainder[position + 11] << 24;   goto case 11;
+                case 11: k2 ^= (UInt64) remainder[position + 10] << 16;   goto case 10;
+                case 10: k2 ^= (UInt64) remainder[position +  9] <<  8;   goto case 9;
                 case  9: 
-                    k2 ^= ((UInt64) remainder[8]) <<  0;
+                    k2 ^= ((UInt64) remainder[position + 8]) <<  0;
                     k2 *= c2_128; 
                     k2  = k2.RotateLeft(33); 
                     k2 *= c1_128; h2 ^= k2;
@@ -349,17 +364,17 @@ namespace System.Data.HashFunction
                     goto case 8;
 
                 case  8:
-                    k1 = BitConverter.ToUInt64(remainder, 0);
+                    k1 ^= BitConverter.ToUInt64(remainder, position);
                     break;
 
-                case  7: k1 ^= (UInt64) remainder[6] << 48;    goto case 6;
-                case  6: k1 ^= (UInt64) remainder[5] << 40;    goto case 5;
-                case  5: k1 ^= (UInt64) remainder[4] << 32;    goto case 4;
-                case  4: k1 ^= (UInt64) remainder[3] << 24;    goto case 3;
-                case  3: k1 ^= (UInt64) remainder[2] << 16;    goto case 2;
-                case  2: k1 ^= (UInt64) remainder[1] <<  8;    goto case 1;
+                case  7: k1 ^= (UInt64) remainder[position + 6] << 48;    goto case 6;
+                case  6: k1 ^= (UInt64) remainder[position + 5] << 40;    goto case 5;
+                case  5: k1 ^= (UInt64) remainder[position + 4] << 32;    goto case 4;
+                case  4: k1 ^= (UInt64) remainder[position + 3] << 24;    goto case 3;
+                case  3: k1 ^= (UInt64) remainder[position + 2] << 16;    goto case 2;
+                case  2: k1 ^= (UInt64) remainder[position + 1] <<  8;    goto case 1;
                 case  1: 
-                    k1 ^= (UInt64) remainder[0] << 0;
+                    k1 ^= (UInt64) remainder[position] << 0;
                     break;
             }
 
@@ -371,27 +386,23 @@ namespace System.Data.HashFunction
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static UInt32 Mix(UInt32 h)
+        private static void Mix(ref UInt32 h)
         {
             h ^= h >> 16;
             h *= 0x85ebca6b;
             h ^= h >> 13;
             h *= 0xc2b2ae35;
             h ^= h >> 16;
-
-            return h;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static UInt64 Mix(UInt64 k)
+        private static void Mix(ref UInt64 k)
         {
             k ^= k >> 33;
             k *= 0xff51afd7ed558ccd;
             k ^= k >> 33;
             k *= 0xc4ceb9fe1a85ec53;
             k ^= k >> 33;
-
-            return k;
         }
     }
 }

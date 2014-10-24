@@ -115,8 +115,8 @@ namespace System.Data.HashFunction
                 {
                     byte h = (byte) InitVal;
             
-                    data.ForEachRead(dataBytes => {
-                        h = ProcessBytes(h, dataBytes);
+                    data.ForEachRead((dataBytes, position, length) => {
+                        ProcessBytes(ref h, dataBytes, position, length);
                     });
             
                     return new byte[] { h };
@@ -126,8 +126,8 @@ namespace System.Data.HashFunction
                 { 
                     UInt16 h = (UInt16) InitVal;
             
-                    data.ForEachRead(dataBytes => {
-                        h = ProcessBytes(h, dataBytes);
+                    data.ForEachRead((dataBytes, position, length) => {
+                        ProcessBytes(ref h, dataBytes, position, length);
                     });
 
                     return BitConverter.GetBytes(h);
@@ -137,8 +137,8 @@ namespace System.Data.HashFunction
                 {
                     UInt32 h = (UInt32) InitVal;
             
-                    data.ForEachRead(dataBytes => {
-                        h = ProcessBytes(h, dataBytes);
+                    data.ForEachRead((dataBytes, position, length) => {
+                        ProcessBytes(ref h, dataBytes, position, length);
                     });
             
                     return BitConverter.GetBytes(h);
@@ -148,8 +148,8 @@ namespace System.Data.HashFunction
                 {
                     UInt64 h = InitVal;
             
-                    data.ForEachRead(dataBytes => {
-                        h = ProcessBytes(h, dataBytes);
+                    data.ForEachRead((dataBytes, position, length) => {
+                        ProcessBytes(ref h, dataBytes, position, length);
                     });
             
                     return BitConverter.GetBytes(h);
@@ -170,8 +170,8 @@ namespace System.Data.HashFunction
                 {
                     byte h = (byte) InitVal;
             
-                    await data.ForEachReadAsync(dataBytes => {
-                        h = ProcessBytes(h, dataBytes);
+                    await data.ForEachReadAsync((dataBytes, position, length) => {
+                        ProcessBytes(ref h, dataBytes, position, length);
                     }).ConfigureAwait(false);
             
                     return new byte[] { h };
@@ -181,8 +181,8 @@ namespace System.Data.HashFunction
                 { 
                     UInt16 h = (UInt16) InitVal;
             
-                    await data.ForEachReadAsync(dataBytes => {
-                        h = ProcessBytes(h, dataBytes);
+                    await data.ForEachReadAsync((dataBytes, position, length) => {
+                        ProcessBytes(ref h, dataBytes, position, length);
                     }).ConfigureAwait(false);
 
                     return BitConverter.GetBytes(h);
@@ -192,8 +192,8 @@ namespace System.Data.HashFunction
                 {
                     UInt32 h = (UInt32) InitVal;
             
-                    await data.ForEachReadAsync(dataBytes => {
-                        h = ProcessBytes(h, dataBytes);
+                    await data.ForEachReadAsync((dataBytes, position, length) => {
+                        ProcessBytes(ref h, dataBytes, position, length);
                     }).ConfigureAwait(false);
             
                     return BitConverter.GetBytes(h);
@@ -203,8 +203,8 @@ namespace System.Data.HashFunction
                 {
                     UInt64 h = InitVal;
             
-                    await data.ForEachReadAsync(dataBytes => {
-                        h = ProcessBytes(h, dataBytes);
+                    await data.ForEachReadAsync((dataBytes, position, length) => {
+                        ProcessBytes(ref h, dataBytes, position, length);
                     }).ConfigureAwait(false);
             
                     return BitConverter.GetBytes(h);
@@ -217,36 +217,28 @@ namespace System.Data.HashFunction
 
 
 
-        private byte ProcessBytes(byte h, byte[] dataBytes)
+        private void ProcessBytes(ref byte h, byte[] dataBytes, int position, int length)
         {
-            foreach (var dataByte in dataBytes)
-                h = (byte) (CShift(h, 1) ^ (byte) Rtab[dataByte]);
-
-            return h;
+            for (var x = position; x < position + length; ++x)
+                h = (byte) (CShift(h, 1) ^ (byte) Rtab[dataBytes[x]]);
         }
 
-        private UInt16 ProcessBytes(UInt16 h, byte[] dataBytes)
+        private void ProcessBytes(ref UInt16 h, byte[] dataBytes, int position, int length)
         {
-            foreach (var dataByte in dataBytes)
-                h = (UInt16) (CShift(h, 1) ^ (UInt16) Rtab[dataByte]);
-
-            return h;
+            for (var x = position; x < position + length; ++x)
+                h = (UInt16) (CShift(h, 1) ^ (UInt16) Rtab[dataBytes[x]]);
         }
 
-        private UInt32 ProcessBytes(UInt32 h, byte[] dataBytes)
+        private void ProcessBytes(ref UInt32 h, byte[] dataBytes, int position, int length)
         {
-            foreach (var dataByte in dataBytes)
-                h = CShift(h, 1) ^ (UInt32) Rtab[dataByte];
-
-            return h;
+            for (var x = position; x < position + length; ++x)
+                h = CShift(h, 1) ^ (UInt32) Rtab[dataBytes[x]];
         }
 
-        private UInt64 ProcessBytes(UInt64 h, byte[] dataBytes)
+        private void ProcessBytes(ref UInt64 h, byte[] dataBytes, int position, int length)
         {
-            foreach (var dataByte in dataBytes)
-                h = CShift(h, 1) ^ Rtab[dataByte];
-
-            return h;
+            for (var x = position; x < position + length; ++x)
+                h = CShift(h, 1) ^ Rtab[dataBytes[x]];
         }
 
 

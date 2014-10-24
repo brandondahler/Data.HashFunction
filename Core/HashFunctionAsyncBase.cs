@@ -36,17 +36,19 @@ namespace System.Data.HashFunction
 
             if (!data.CanSeek && RequiresSeekableStream)
             {
+                byte[] buffer;
 
                 using (var ms = new MemoryStream())
                 {
                     await data.CopyToAsync(ms)
                         .ConfigureAwait(false);
 
-                    ms.Seek(0, SeekOrigin.Begin);
-
-                    // Use non-async version since the stream is always in-memory
-                    return ComputeHashInternal(new StreamData(ms));
+                    buffer = ms.ToArray();
                 }
+
+                // Use non-async because all of the data is in-memory
+                return ComputeHashInternal(
+                    new ArrayData(buffer));
             }
 
 

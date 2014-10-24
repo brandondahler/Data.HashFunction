@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <TransformOnBuild>true</TransformOnBuild>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'NuGetDeploy|AnyCPU'">
     <OutputPath>bin\NuGetDeploy\</OutputPath>
@@ -47,11 +49,13 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Moq">
-      <HintPath>..\packages\Moq.4.2.1402.2112\lib\net40\Moq.dll</HintPath>
+    <Reference Include="Moq, Version=4.2.1409.1722, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Moq.4.2.1409.1722\lib\net40\Moq.dll</HintPath>
     </Reference>
-    <Reference Include="MoreLinq">
-      <HintPath>..\packages\morelinq.1.0.16006\lib\net35\MoreLinq.dll</HintPath>
+    <Reference Include="MoreLinq, Version=1.1.17511.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\morelinq.1.1.0\lib\net35\MoreLinq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -77,10 +81,13 @@
     <Compile Include="Core\Utilities\IntegerManipulation\ReverseByteOrderExtensionsTests.cs" />
     <Compile Include="Core\Utilities\IntegerManipulation\RotateLeftExtensionsTests.cs" />
     <Compile Include="Core\Utilities\IntegerManipulation\RotateRightExtensionsTests.cs" />
+    <Compile Include="Core\Utilities\UnifiedData\ArrayDataTests.cs" />
+    <Compile Include="Core\Utilities\UnifiedData\StreamDataTests.cs" />
     <Compile Include="Core\Utilities\UnifiedData\UnifiedDataTests.cs" />
     <Compile Include="Core\Utilities\StreamExtensionsTests.cs" />
     <Compile Include="Core\Utilities\UInt32ExtensionsTests.cs" />
     <Compile Include="Core\Utilities\BigIntegerExtensionsTests.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IHashFunctionAsyncTests.cs" />
     <Compile Include="IHashFunctionTests_CRC.cs">
       <AutoGen>True</AutoGen>
@@ -93,6 +100,7 @@
       <DependentUpon>IHashFunctionTests_HashFunctionBase.tt</DependentUpon>
     </Compile>
     <Compile Include="IHashFunction_SpeedTest.cs" />
+    <Compile Include="Mocks\ArrayData_ThrowNonAsync.cs" />
     <Compile Include="Mocks\BuzHashBaseImpl.cs" />
     <Compile Include="Mocks\HashFunctionImpl.cs" />
     <Compile Include="CRC\CRCTests.cs" />
@@ -101,7 +109,9 @@
     <Compile Include="Core\Utilities\IntegerManipulation\ExtendedMultiplyExtensionsTests.cs" />
     <Compile Include="Mocks\NonSeekableMemoryStream.cs" />
     <Compile Include="Mocks\SlowAsyncStream.cs" />
+    <Compile Include="Jenkins\JenkinsLookup3Tests.cs" />
     <Compile Include="Pearson\PearsonBaseTests.cs" />
+    <Compile Include="SingleSpeedTest.cs" />
     <Compile Include="TestConstants.cs" />
     <Compile Include="Test\UtilityExtensionTests.cs" />
     <Compile Include="HashAlgorithmWrapperTests.cs" />

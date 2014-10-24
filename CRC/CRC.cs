@@ -125,8 +125,8 @@ namespace System.Data.HashFunction
                 mostSignificantShift = HashSize - 1;
 
 
-            data.ForEachRead(dataBytes => {
-                hash = ProcessBytes(hash, crcTable, mostSignificantShift, dataBytes);
+            data.ForEachRead((dataBytes, position, length) => {
+                ProcessBytes(ref hash, crcTable, mostSignificantShift, dataBytes, position, length);
             });
 
 
@@ -174,8 +174,8 @@ namespace System.Data.HashFunction
                 mostSignificantShift = HashSize - 1;
 
 
-            await data.ForEachReadAsync(dataBytes => {
-                hash = ProcessBytes(hash, crcTable, mostSignificantShift, dataBytes);
+            await data.ForEachReadAsync((dataBytes, position, length) => {
+                ProcessBytes(ref hash, crcTable, mostSignificantShift, dataBytes, position, length);
             }).ConfigureAwait(false);
 
 
@@ -189,32 +189,30 @@ namespace System.Data.HashFunction
             return hash.ToBytes(HashSize);
         }
 
-        private UInt64 ProcessBytes(UInt64 hash, IReadOnlyList<UInt64> crcTable, int mostSignificantShift, byte[] dataBytes)
+        private void ProcessBytes(ref UInt64 hash, IReadOnlyList<UInt64> crcTable, int mostSignificantShift, byte[] dataBytes, int position, int length)
         {
-            foreach (var dataByte in dataBytes)
+            for (var x = position; x < position + length; ++x)
             {
                 if (HashSize >= 8)
                 {
                     // Process per byte, treating hash differently based on input endianness
                     if (Settings.ReflectIn)
-                        hash = (hash >> 8) ^ crcTable[(byte) hash ^ dataByte];
+                        hash = (hash >> 8) ^ crcTable[(byte) hash ^ dataBytes[x]];
                     else
-                        hash = (hash << 8) ^ crcTable[((byte) (hash >> mostSignificantShift)) ^ dataByte];
+                        hash = (hash << 8) ^ crcTable[((byte) (hash >> mostSignificantShift)) ^ dataBytes[x]];
 
                 } else {
                     // Process per bit, treating hash differently based on input endianness
-                    for (int x = 0; x < 8; ++x)
+                    for (int y = 0; y < 8; ++y)
                     {
                         if (Settings.ReflectIn)
-                            hash = (hash >> 1) ^ crcTable[(byte) (hash & 1) ^ ((byte) (dataByte >> x) & 1)];
+                            hash = (hash >> 1) ^ crcTable[(byte) (hash & 1) ^ ((byte) (dataBytes[x] >> y) & 1)];
                         else
-                            hash =  (hash << 1) ^ crcTable[(byte) ((hash >> mostSignificantShift) & 1) ^ ((byte) (dataByte >> (7 - x)) & 1)];
+                            hash =  (hash << 1) ^ crcTable[(byte) ((hash >> mostSignificantShift) & 1) ^ ((byte) (dataBytes[x] >> (7 - y)) & 1)];
                     }
 
                 }
             }
-
-            return hash;
         }
 
         /// <summary>
