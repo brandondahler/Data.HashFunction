@@ -28,7 +28,7 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.ArgumentException">Stream \data\ must be readable.;data</exception>
         /// <inheritdoc />
-        public async Task<byte[]> ComputeHashAsync(Stream data)
+        public virtual async Task<byte[]> ComputeHashAsync(Stream data)
         {
             if (!data.CanRead)
                 throw new ArgumentException("Stream \"data\" must be readable.", "data");

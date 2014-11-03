@@ -99,7 +99,7 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
         /// <inheritdoc />
         public override byte[] ToArray()
         {
-            return _Data;
+            return _Data.ToArray();
         }
 
         /// <inheritdoc />

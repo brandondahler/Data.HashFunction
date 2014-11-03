@@ -47,7 +47,7 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc />
-        public byte[] ComputeHash(byte[] data)
+        public virtual byte[] ComputeHash(byte[] data)
         {
             return ComputeHashInternal(
                 new ArrayData(data));
@@ -55,7 +55,7 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.ArgumentException">Stream \data\ must be readable.;data</exception>
         /// <inheritdoc />
-        public byte[] ComputeHash(Stream data)
+        public virtual byte[] ComputeHash(Stream data)
         {
             if (!data.CanRead)
                 throw new ArgumentException("Stream \"data\" must be readable.", "data");
