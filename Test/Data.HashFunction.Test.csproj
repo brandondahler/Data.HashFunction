@@ -99,6 +99,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>IHashFunctionTests_HashFunctionBase.tt</DependentUpon>
     </Compile>
+    <Compile Include="IHashFunction_Extensions_Tests.cs" />
     <Compile Include="IHashFunction_SpeedTest.cs" />
     <Compile Include="Mocks\ArrayData_ThrowNonAsync.cs" />
     <Compile Include="Mocks\BuzHashBaseImpl.cs" />
