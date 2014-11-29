@@ -12,7 +12,7 @@
     <description>$description$</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2014</copyright>
-    <tags>Jenkins hash function</tags>
+    <tags>Jenkins hash function lookup one-at-a-time</tags>
   </metadata>
   <files>
     <file src="bin\$configuration$\v4.0\$id$.dll" target="lib\net40\" />

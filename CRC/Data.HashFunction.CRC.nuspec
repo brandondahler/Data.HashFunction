@@ -12,7 +12,7 @@
     <description>$description$</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2014</copyright>
-    <tags>ELF hash function elf64</tags>
+    <tags>CRC hash function crc32</tags>
   </metadata>
   <files>
     <file src="bin\$configuration$\v4.0\$id$.dll" target="lib\net40\" />
