@@ -150,7 +150,6 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="hashFunction">Hash function to use.</param>
         /// <param name="data">Data to be hashed.</param>
-        /// <param name="desizedHashSize">Desired size of resulting hash, in bits.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>

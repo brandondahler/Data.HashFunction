@@ -2,8 +2,8 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Data.HashFunction.Crc")]
-[assembly: AssemblyProduct("Data.HashFunction.Crc")]
+[assembly: AssemblyTitle("Data.HashFunction.CRC")]
+[assembly: AssemblyProduct("Data.HashFunction.CRC")]
 [assembly: AssemblyDescription("Data.HashFunction implementation of the cyclic redundancy check (CRC) error-detecting code (http://en.wikipedia.org/wiki/Cyclic_redundancy_check).  Implementation is generalized to encompass all possible CRC parameters from 1 to 64 bits.")]
 
 [assembly: ComVisible(false)]

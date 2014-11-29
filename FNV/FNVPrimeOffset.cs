@@ -16,6 +16,7 @@ namespace System.Data.HashFunction
     /// </summary>
     public class FNVPrimeOffset
     {
+#if NET45
         /// <summary>
         /// FNV prime number as an <see cref="IReadOnlyList{UInt32}" />.
         /// </summary>
@@ -23,7 +24,17 @@ namespace System.Data.HashFunction
         /// The prime number as an <see cref="IReadOnlyList{UInt32}" />.
         /// </value>
         public virtual IReadOnlyList<UInt32> Prime { get; private set; }
+#else
+        /// <summary>
+        /// FNV prime number as an <see cref="IList{UInt32}" />.
+        /// </summary>
+        /// <value>
+        /// The prime number as an <see cref="IList{UInt32}" />.
+        /// </value>
+        public virtual IList<UInt32> Prime { get; private set; }
+#endif
 
+#if NET45
         /// <summary>
         /// FNV offset as an <see cref="IReadOnlyList{UInt32}" />.
         /// </summary>
@@ -31,6 +42,15 @@ namespace System.Data.HashFunction
         /// The offset as an <see cref="IReadOnlyList{UInt32}" />.
         /// </value>
         public virtual IReadOnlyList<UInt32> Offset { get; private set; }
+#else
+        /// <summary>
+        /// FNV offset as an <see cref="IList{UInt32}" />.
+        /// </summary>
+        /// <value>
+        /// The offset as an <see cref="IList{UInt32}" />.
+        /// </value>
+        public virtual IList<UInt32> Offset { get; private set; }
+#endif
 
 
         /// <summary>

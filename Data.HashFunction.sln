@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Test", "Test\Data.HashFunction.Test.csproj", "{FFCE0E36-1B66-4C8D-803E-A28754A7D4E4}"
 EndProject
@@ -15,7 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.CityHash"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D0A9A68F-2401-42E4-A6E7-D9FF9F080197}"
 	ProjectSection(SolutionItems) = preProject
+		BuildMultipleFrameworks.props = BuildMultipleFrameworks.props
+		BuildMultipleFrameworks.targets = BuildMultipleFrameworks.targets
 		Data.HashFunction.Production.pfx = Data.HashFunction.Production.pfx
+		Invoke-MsBuild.psm1 = Invoke-MsBuild.psm1
 		NuGetPackAll.ps1 = NuGetPackAll.ps1
 		SolutionInfo.cs = SolutionInfo.cs
 	EndProjectSection

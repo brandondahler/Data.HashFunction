@@ -18,10 +18,18 @@ namespace System.Data.HashFunction
     /// Also can be set to use left or right rotation when running the rotate step.
     /// </summary>
     public abstract class BuzHashBase
+#if NET45
         : HashFunctionAsyncBase
+#else
+        : HashFunctionBase
+#endif
     {
         /// <summary>Table of 256 (preferably random and distinct) UInt64 values.</summary>
+#if NET45
         public IReadOnlyList<UInt64> Rtab { get { return _Rtab; } }
+#else
+        public IList<UInt64> Rtab { get { return _Rtab; } }
+#endif
 
         /// <summary>Direction that the circular shift step should use.</summary>
         public CircularShiftDirection ShiftDirection { get { return _ShiftDirection; } }
@@ -44,7 +52,11 @@ namespace System.Data.HashFunction
         }
 
 
+#if NET45
         private readonly IReadOnlyList<UInt64> _Rtab;
+#else
+        private readonly IList<UInt64> _Rtab;
+#endif
         private readonly CircularShiftDirection _ShiftDirection;
         private readonly UInt64 _InitVal;
 
@@ -52,31 +64,55 @@ namespace System.Data.HashFunction
 
 
 
+#if NET45
         /// <remarks>
         /// Defaults <see cref="HashFunctionBase.HashSize"/> to 64. <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, int)"/>
         /// </remarks>
         /// <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, int)"/>
         protected BuzHashBase(IReadOnlyList<UInt64> rtab, CircularShiftDirection shiftDirection)
+#else
+        /// <remarks>
+        /// Defaults <see cref="HashFunctionBase.HashSize"/> to 64. <inheritdoc cref="BuzHashBase(IList{UInt64}, CircularShiftDirection, int)"/>
+        /// </remarks>
+        /// <inheritdoc cref="BuzHashBase(IList{UInt64}, CircularShiftDirection, int)"/>
+        protected BuzHashBase(IList<UInt64> rtab, CircularShiftDirection shiftDirection)
+#endif
             : this(rtab, shiftDirection, 64)
         {
 
         }
 
+#if NET45
         /// <remarks>
         /// Defaults <see cref="InitVal"/> to 0. <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, UInt64, int)"/>
         /// </remarks>
         /// <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, UInt64, int)"/>
         protected BuzHashBase(IReadOnlyList<UInt64> rtab, CircularShiftDirection shiftDirection, int hashSize)
+#else
+        /// <remarks>
+        /// Defaults <see cref="InitVal"/> to 0. <inheritdoc cref="BuzHashBase(IList{UInt64}, CircularShiftDirection, UInt64, int)"/>
+        /// </remarks>
+        /// <inheritdoc cref="BuzHashBase(IList{UInt64}, CircularShiftDirection, UInt64, int)"/>
+        protected BuzHashBase(IList<UInt64> rtab, CircularShiftDirection shiftDirection, int hashSize)
+#endif
             : this(rtab, shiftDirection, 0U, hashSize)
         {
 
         }
 
+#if NET45
         /// <remarks>
         /// Defaults <see cref="HashFunctionBase.HashSize"/> to 64.
         /// </remarks>
         /// <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, UInt64, int)"/>
         protected BuzHashBase(IReadOnlyList<UInt64> rtab, CircularShiftDirection shiftDirection, UInt64 initVal)
+#else
+        /// <remarks>
+        /// Defaults <see cref="HashFunctionBase.HashSize"/> to 64.
+        /// </remarks>
+        /// <inheritdoc cref="BuzHashBase(IList{UInt64}, CircularShiftDirection, UInt64, int)"/>
+        protected BuzHashBase(IList<UInt64> rtab, CircularShiftDirection shiftDirection, UInt64 initVal)
+#endif
             : this(rtab, shiftDirection, initVal, 64)
         {
 
@@ -91,7 +127,11 @@ namespace System.Data.HashFunction
         /// <param name="hashSize"><inheritdoc cref="HashFunctionBase(int)" select="param[name=hashSize]" /></param>
         /// <exception cref="System.ArgumentOutOfRangeException">hashSize;hashSize must be contained within <see cref="ValidHashSizes" />.</exception>
         /// <inheritdoc cref="HashFunctionBase(int)" />
+#if NET45
         protected BuzHashBase(IReadOnlyList<UInt64> rtab, CircularShiftDirection shiftDirection, UInt64 initVal, int hashSize)
+#else
+        protected BuzHashBase(IList<UInt64> rtab, CircularShiftDirection shiftDirection, UInt64 initVal, int hashSize)
+#endif
             : base(hashSize)
         {
             if (!ValidHashSizes.Contains(hashSize))
@@ -159,7 +199,8 @@ namespace System.Data.HashFunction
                     throw new InvalidOperationException("HashSize set to an invalid value.");
             }
         }
-
+        
+#if NET45
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
@@ -214,6 +255,7 @@ namespace System.Data.HashFunction
                     throw new InvalidOperationException("HashSize set to an invalid value.");
             }
         }
+#endif
 
 
 
@@ -250,7 +292,9 @@ namespace System.Data.HashFunction
         /// <returns>
         /// Byte value after rotating by the specified amount of bits.
         /// </returns>
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private byte CShift(byte n, int shiftCount)
         {
             if (ShiftDirection == CircularShiftDirection.Right)
@@ -267,7 +311,9 @@ namespace System.Data.HashFunction
         /// <returns>
         /// UInt16 value after rotating by the specified amount of bits.
         /// </returns>
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private UInt16 CShift(UInt16 n, int shiftCount)
         {
             if (ShiftDirection == CircularShiftDirection.Right)
@@ -284,7 +330,9 @@ namespace System.Data.HashFunction
         /// <returns>
         /// UInt32 value after rotating by the specified amount of bits.
         /// </returns>
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private UInt32 CShift(UInt32 n, int shiftCount)
         {
             if (ShiftDirection == CircularShiftDirection.Right)
@@ -301,7 +349,9 @@ namespace System.Data.HashFunction
         /// <returns>
         /// UInt64 value after rotating by the specified amount of bits.
         /// </returns>
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private UInt64 CShift(UInt64 n, int shiftCount)
         {
             if (ShiftDirection == CircularShiftDirection.Right)

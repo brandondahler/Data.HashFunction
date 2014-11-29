@@ -15,7 +15,11 @@ namespace System.Data.HashFunction
     /// This implementation is generalized to encompass all possible CRC parameters from 1 to 64 bits.
     /// </summary>
     public partial class CRC
+#if NET45
         : HashFunctionAsyncBase
+#else
+        : HashFunctionBase
+#endif
     {
         /// <summary>
         /// The CRC parameters to use when calculating the hash value.
@@ -139,7 +143,8 @@ namespace System.Data.HashFunction
 
             return hash.ToBytes(HashSize);
         }
-
+        
+#if NET45
         /// <exception cref="System.InvalidOperationException">
         /// Settings set to an invalid value.
         /// or
@@ -188,8 +193,13 @@ namespace System.Data.HashFunction
 
             return hash.ToBytes(HashSize);
         }
+#endif
 
+#if NET45
         private void ProcessBytes(ref UInt64 hash, IReadOnlyList<UInt64> crcTable, int mostSignificantShift, byte[] dataBytes, int position, int length)
+#else
+        private void ProcessBytes(ref UInt64 hash, IList<UInt64> crcTable, int mostSignificantShift, byte[] dataBytes, int position, int length)
+#endif
         {
             for (var x = position; x < position + length; ++x)
             {

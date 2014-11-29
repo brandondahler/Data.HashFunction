@@ -16,7 +16,11 @@ namespace System.Data.HashFunction
     ///   https://code.google.com/p/xxhash/.
     /// </summary>
     public class xxHash
+#if NET45
         : HashFunctionAsyncBase
+#else
+        : HashFunctionBase
+#endif
     {
         /// <summary>
         /// Seed value for hash calculation.
@@ -35,21 +39,31 @@ namespace System.Data.HashFunction
         public static IEnumerable<int> ValidHashSizes { get { return _validHashSizes; } }
 
 
-        private static readonly IReadOnlyList<UInt32> _primes32 = new[] {
-            2654435761U,
-            2246822519U,
-            3266489917U,
-             668265263U,
-             374761393U
-        };
+#if NET45
+        private static readonly IReadOnlyList<UInt32> _primes32 = 
+#else
+        private static readonly IList<UInt32> _primes32 = 
+#endif
+            new[] {
+                2654435761U,
+                2246822519U,
+                3266489917U,
+                 668265263U,
+                 374761393U
+            };
 
-        private static readonly IReadOnlyList<UInt64> _primes64 = new[] {
-            11400714785074694791UL,
-            14029467366897019727UL,
-             1609587929392839161UL,
-             9650029242287828579UL,
-             2870177450012600261UL
-        };
+#if NET45
+        private static readonly IReadOnlyList<UInt64> _primes64 = 
+#else
+        private static readonly IList<UInt64> _primes64 = 
+#endif
+            new[] {
+                11400714785074694791UL,
+                14029467366897019727UL,
+                 1609587929392839161UL,
+                 9650029242287828579UL,
+                 2870177450012600261UL
+            };
 
         private static readonly IEnumerable<int> _validHashSizes = new[] { 32, 64 };
 
@@ -200,6 +214,7 @@ namespace System.Data.HashFunction
             }
         }
 
+#if NET45
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
@@ -293,9 +308,12 @@ namespace System.Data.HashFunction
                     throw new InvalidOperationException("HashSize set to an invalid value.");
             }
         }
+#endif
 
 
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private static void PostProcess(ref UInt32 h, UInt32[] initValues, int dataCount, byte[] remainder)
         {
             if (dataCount >= 16)
@@ -334,7 +352,9 @@ namespace System.Data.HashFunction
             h ^= h >> 16;
         }
 
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private static void PostProcess(ref UInt64 h, UInt64[] initValues, int dataCount, byte[] remainder)
         {
             if (dataCount >= 32)

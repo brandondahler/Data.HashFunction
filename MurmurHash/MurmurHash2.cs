@@ -18,7 +18,11 @@ namespace System.Data.HashFunction
     /// This hash function has been superseded by MurmurHash3.
     /// </summary>
     public class MurmurHash2
+#if NET45
         : HashFunctionAsyncBase
+#else
+        : HashFunctionBase
+#endif
     {
         /// <summary>
         /// Seed value for hash calculation.
@@ -154,7 +158,8 @@ namespace System.Data.HashFunction
                     throw new InvalidOperationException("HashSize set to an invalid value.");
             }
         }
-
+        
+#if NET45
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
@@ -210,9 +215,12 @@ namespace System.Data.HashFunction
                     throw new InvalidOperationException("HashSize set to an invalid value.");
             }
         }
+#endif
 
 
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private static void ProcessGroup(ref UInt32 h, UInt32 m, byte[] dataGroup, int position, int length)
         {
             for (var x = position; x < position + length; x += 4)
@@ -228,7 +236,9 @@ namespace System.Data.HashFunction
             }
         }
 
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private static void ProcessGroup(ref UInt64 h, UInt64 m, byte[] dataGroup, int position, int length)
         {
             for (var x = position; x < position + length; x += 8)
@@ -244,7 +254,9 @@ namespace System.Data.HashFunction
             }
         }
 
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private static void ProcessRemainder(ref UInt32 h, UInt32 m, byte[] remainder, int position, int length)
         {
             switch (length)
@@ -260,7 +272,9 @@ namespace System.Data.HashFunction
         }
 
 
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private static void ProcessRemainder(ref UInt64 h, UInt64 m, byte[] remainder, int position, int length)
         {
             switch (length)
