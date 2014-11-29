@@ -1,8 +1,8 @@
-﻿
-
+﻿#if NET45
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+
 namespace System.Data.HashFunction
 {
     /// <summary>
@@ -24,3 +24,4 @@ namespace System.Data.HashFunction
         Task<byte[]> ComputeHashAsync(Stream data);
     }
 }
+#endif

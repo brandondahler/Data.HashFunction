@@ -380,7 +380,11 @@ namespace System.Data.HashFunction
         /// <summary>
         /// Dictionary of Settings for each of the defined and implemented CRC standards.
         /// </summary>
+#if NET45
         public static readonly IReadOnlyDictionary<Standard, Setting> Standards = 
+#else
+        public static readonly IDictionary<Standard, Setting> Standards = 
+#endif
             new Dictionary<Standard, Setting>() {
                 { Standard.CRC3_ROHC,         new Setting( 3,                0x3,                0x7,  true,  true,                0x0 ) },
                 { Standard.CRC4_ITU,          new Setting( 4,                0x3,                0x0,  true,  true,                0x0 ) },

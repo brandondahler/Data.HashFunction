@@ -20,7 +20,11 @@ namespace System.Data.HashFunction
     /// </summary>
     [Obsolete("SpookyHashV1 has known issues, use SpookyHashV2.")]
     public class SpookyHashV1
+#if NET45
         : HashFunctionAsyncBase
+#else
+        : HashFunctionBase
+#endif
     {
         /// <summary>
         /// First seed value for hash calculation.
@@ -173,7 +177,8 @@ namespace System.Data.HashFunction
                     throw new InvalidOperationException("HashSize set to an invalid value.");
             }
         }
-
+        
+#if NET45
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
@@ -217,13 +222,21 @@ namespace System.Data.HashFunction
                     throw new InvalidOperationException("HashSize set to an invalid value.");
             }
         }
+#endif
 
 
-        private static readonly IReadOnlyList<int> _MixRotationParameters = new[] {
-            11, 32, 43, 31, 17, 28, 39, 57, 55, 54, 22, 46
-        };
+#if NET45
+        private static readonly IReadOnlyList<int> _MixRotationParameters = 
+#else
+        private static readonly IList<int> _MixRotationParameters = 
+#endif
+            new[] {
+                11, 32, 43, 31, 17, 28, 39, 57, 55, 54, 22, 46
+            };
 
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private static void Mix(UInt64[] h, byte[] data, int position, int length)
         {
             for (int x = position; x < position + length; x += 96)
@@ -240,11 +253,18 @@ namespace System.Data.HashFunction
         }
 
 
-        private static readonly IReadOnlyList<int> _EndPartialRotationParameters = new[] {
-            44, 15, 34, 21, 38, 33, 10, 13, 38, 53, 42, 54
-        };
+#if NET45
+        private static readonly IReadOnlyList<int> _EndPartialRotationParameters = 
+#else
+        private static readonly IList<int> _EndPartialRotationParameters = 
+#endif
+            new[] {
+                44, 15, 34, 21, 38, 33, 10, 13, 38, 53, 42, 54
+            };
 
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private static void EndPartial(UInt64[] h)
         {
             for (int i = 0; i < 12; ++i)
@@ -255,7 +275,9 @@ namespace System.Data.HashFunction
             }
         }
 
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private static void End(UInt64[] h)
         {
             EndPartial(h);

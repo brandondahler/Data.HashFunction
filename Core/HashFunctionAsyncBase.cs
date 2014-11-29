@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+#if NET45
 namespace System.Data.HashFunction
 {
     /// <summary>
@@ -56,7 +57,6 @@ namespace System.Data.HashFunction
                 .ConfigureAwait(false);
         }
 
-
         /// <summary>
         /// Computes hash value for given stream asynchronously.
         /// </summary>
@@ -67,3 +67,4 @@ namespace System.Data.HashFunction
         protected abstract Task<byte[]> ComputeHashAsyncInternal(UnifiedData data);
     }
 }
+#endif

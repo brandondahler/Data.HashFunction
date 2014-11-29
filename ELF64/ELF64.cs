@@ -18,7 +18,11 @@ namespace System.Data.HashFunction
     /// Contrary to the name, the hash algorithm is only designed for 32-bit output hash sizes.
     /// </summary>
     public class ELF64
+#if NET45
         : HashFunctionAsyncBase
+#else
+        : HashFunctionBase
+#endif
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ELF64"/> class.
@@ -46,7 +50,8 @@ namespace System.Data.HashFunction
 
             return BitConverter.GetBytes(hash);
         }
-
+        
+#if NET45
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
@@ -62,9 +67,12 @@ namespace System.Data.HashFunction
 
             return BitConverter.GetBytes(hash);
         }
+#endif
 
 
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private static void ProcessBytes(ref UInt32 hash, byte[] dataBytes, int position, int length)
         {
             for (var x = position; x < position + length; ++x )

@@ -16,7 +16,11 @@ namespace System.Data.HashFunction
     ///   and https://code.google.com/p/smhasher/wiki/MurmurHash3.
     /// </summary>
     public class MurmurHash3
+#if NET45
         : HashFunctionAsyncBase
+#else
+        : HashFunctionBase
+#endif
     {
         /// <summary>
         /// Seed value for hash calculation.
@@ -192,7 +196,8 @@ namespace System.Data.HashFunction
                     throw new InvalidOperationException("HashSize set to an invalid value.");
             }
         }
-
+        
+#if NET45
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
@@ -273,9 +278,12 @@ namespace System.Data.HashFunction
                     throw new InvalidOperationException("HashSize set to an invalid value.");
             }
         }
+#endif
 
 
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private static void ProcessGroup(ref UInt32 h1, byte[] dataGroup, int position, int length)
         {
             for (var x = position; x < position + length; x += 4)
@@ -292,7 +300,9 @@ namespace System.Data.HashFunction
             }
         }
 
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private static void ProcessGroup(ref UInt64 h1, ref UInt64 h2, byte[] dataGroup, int position, int length)
         {
             for (var x = position; x < position + length; x += 16)
@@ -321,7 +331,9 @@ namespace System.Data.HashFunction
         }
 
 
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private static void ProcessRemainder(ref UInt32 h1, byte[] remainder, int position, int length)
         {
             UInt32 k2 = 0;
@@ -341,7 +353,9 @@ namespace System.Data.HashFunction
             h1 ^= k2;
         }
 
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private static void ProcessRemainder(ref UInt64 h1, ref UInt64 h2, byte[] remainder, int position, int length)
         {
             UInt64 k1 = 0;
@@ -385,7 +399,9 @@ namespace System.Data.HashFunction
         }
 
 
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private static void Mix(ref UInt32 h)
         {
             h ^= h >> 16;
@@ -395,7 +411,9 @@ namespace System.Data.HashFunction
             h ^= h >> 16;
         }
 
+#if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private static void Mix(ref UInt64 k)
         {
             k ^= k >> 33;

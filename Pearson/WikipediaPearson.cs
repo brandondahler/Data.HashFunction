@@ -38,14 +38,22 @@ namespace System.Data.HashFunction
              43, 119, 224,  71, 122, 142,  42, 160, 104,  48, 247, 103,  15,  11, 138, 239  // 16
         };
 
+#if NET45
         /// <inheritdoc cref="PearsonBase(IReadOnlyList{byte})" />
+#else
+        /// <inheritdoc cref="PearsonBase(IList{byte})" />
+#endif
         public WikipediaPearson()
             : base(_T)
         {
 
         }
 
+#if NET45
         /// <inheritdoc cref="PearsonBase(IReadOnlyList{byte}, int)" />
+#else
+        /// <inheritdoc cref="PearsonBase(IList{byte}, int)" />
+#endif
         public WikipediaPearson(int hashSize)
             : base(_T, hashSize)
         { 
