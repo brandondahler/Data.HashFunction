@@ -75,9 +75,9 @@
       <Name>Data.HashFunction.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(SolutionDir)\BuildMultipleFrameworks.props" />
+  <Import Project="..\BuildMultipleFrameworks.props" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\BuildMultipleFrameworks.targets" />
+  <Import Project="..\BuildMultipleFrameworks.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
