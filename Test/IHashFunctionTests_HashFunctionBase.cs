@@ -76,6 +76,127 @@ namespace System.Data.HashFunction.Test
 
     #endregion
 
+    #region Data.HashFunction.Blake2B
+
+    public class IHashFunctionAsyncTests_Blake2B_DefaultConstructor
+        : IHashFunctionAsyncTests<Blake2B>
+    {
+        protected override IEnumerable<KnownValue> KnownValues
+        {
+            get
+            {
+                return new KnownValue[] {
+                    new KnownValue(512, TestConstants.Empty, "786A02F742015903C6C6FD852552D272912F4740E15847618A86E217F71F5419D25E1031AFEE585313896444934EB04B903A685B1448B755D56F701AFE9BE2CE"),
+                    new KnownValue(512, TestConstants.FooBar, "8DF31F60D6AEABD01B7DC83F277D0E24CBE104F7290FF89077A7EB58646068EDFE1A83022866C46F65FB91612E516E0ECFA5CB25FC16B37D2C8D73732FE74CB2"),
+                    new KnownValue(512, TestConstants.LoremIpsum, "F90D2E28E3A7E834FE6C3D27886D0E3E070586D1B6E5128FC260A909AB0176A17FB7D4AAF8396A6329C39B786BAF49E8393FDD986A08F6E5BC263F0CA4BF625A"),
+                };
+            }
+        }
+
+        protected override Blake2B CreateHashFunction(int hashSize)
+        {
+            return new Blake2B();
+        }
+
+        protected override Mock<Blake2B> CreateHashFunctionMock(int hashSize)
+        {
+            return new Mock<Blake2B>();
+        }
+    }
+    
+
+    public class IHashFunctionAsyncTests_Blake2B_HashSizeConstructor
+        : IHashFunctionAsyncTests<Blake2B>
+    {
+        protected override IEnumerable<KnownValue> KnownValues
+        {
+            get
+            {
+                return new KnownValue[] {
+                    new KnownValue(8, TestConstants.Empty, 0x2E),
+                    new KnownValue(16, TestConstants.Empty, 0xFEB1),
+                    new KnownValue(32, TestConstants.Empty, 0x25CF7112),
+                    new KnownValue(64, TestConstants.Empty, 0xB4B2797457A0A6E4L),
+                    new KnownValue(128, TestConstants.Empty, "CAE66941D9EFBD404E4D88758EA67670"),
+                    new KnownValue(256, TestConstants.Empty, "0E5751C026E543B2E8AB2EB06099DAA1D1E5DF47778F7787FAAB45CDF12FE3A8"),
+                    new KnownValue(512, TestConstants.Empty, "786A02F742015903C6C6FD852552D272912F4740E15847618A86E217F71F5419D25E1031AFEE585313896444934EB04B903A685B1448B755D56F701AFE9BE2CE"),
+                    new KnownValue(8, TestConstants.FooBar, 0x13),
+                    new KnownValue(16, TestConstants.FooBar, 0xDF5F),
+                    new KnownValue(32, TestConstants.FooBar, 0xD839266A),
+                    new KnownValue(64, TestConstants.FooBar, 0xF9514A257F2F219DL),
+                    new KnownValue(128, TestConstants.FooBar, "13B16EEC2597E4D5616A70B1ABD318B0"),
+                    new KnownValue(256, TestConstants.FooBar, "93A0E84A8CDD4166267DBE1263E937F08087723AC24E7DCC35B3D5941775EF47"),
+                    new KnownValue(512, TestConstants.FooBar, "8DF31F60D6AEABD01B7DC83F277D0E24CBE104F7290FF89077A7EB58646068EDFE1A83022866C46F65FB91612E516E0ECFA5CB25FC16B37D2C8D73732FE74CB2"),
+                    new KnownValue(8, TestConstants.LoremIpsum, 0xC8),
+                    new KnownValue(16, TestConstants.LoremIpsum, 0xA0A7),
+                    new KnownValue(32, TestConstants.LoremIpsum, 0xE8C02DA7),
+                    new KnownValue(64, TestConstants.LoremIpsum, 0x3BEDA4F6319326A0L),
+                    new KnownValue(128, TestConstants.LoremIpsum, "FAF29FE101A0014E917BB8CA6F6F42B1"),
+                    new KnownValue(256, TestConstants.LoremIpsum, "07DEFAFE398706F9FBD5FABBE63F38D2177D5FE10710B633A1B2A1EF585DBD41"),
+                    new KnownValue(512, TestConstants.LoremIpsum, "F90D2E28E3A7E834FE6C3D27886D0E3E070586D1B6E5128FC260A909AB0176A17FB7D4AAF8396A6329C39B786BAF49E8393FDD986A08F6E5BC263F0CA4BF625A"),
+                };
+            }
+        }
+
+        protected override Blake2B CreateHashFunction(int hashSize)
+        {
+            return new Blake2B(hashSize);
+        }
+
+        protected override Mock<Blake2B> CreateHashFunctionMock(int hashSize)
+        {
+            return new Mock<Blake2B>(hashSize);
+        }
+    }
+    
+
+    public class IHashFunctionAsyncTests_Blake2B_FoobarAsKeyWithHashSizeConstructor
+        : IHashFunctionAsyncTests<Blake2B>
+    {
+        protected override IEnumerable<KnownValue> KnownValues
+        {
+            get
+            {
+                return new KnownValue[] {
+                    new KnownValue(8, TestConstants.Empty, 0x1D),
+                    new KnownValue(16, TestConstants.Empty, 0x73DC),
+                    new KnownValue(32, TestConstants.Empty, 0x9A87498C),
+                    new KnownValue(64, TestConstants.Empty, 0x9BFBF5F924B0A10DL),
+                    new KnownValue(128, TestConstants.Empty, "1071A42316E10C29AE052635FDBB14F2"),
+                    new KnownValue(256, TestConstants.Empty, "1DADAC7EA5D7F4122A26ABFD4171283EAD456C812ABA8BF089CC4C314F1BF9F2"),
+                    new KnownValue(512, TestConstants.Empty, "B757DDC6AE9629278C5EF7747EA2FBB3324B88398F45C057CE5E3B23732CF35C627C948E07EA70CED77E77528F30A6F178FF59777C05D8D12F341A10A5AB2430"),
+                    new KnownValue(8, TestConstants.FooBar, 0x42),
+                    new KnownValue(16, TestConstants.FooBar, 0x891E),
+                    new KnownValue(32, TestConstants.FooBar, 0x3B616D45),
+                    new KnownValue(64, TestConstants.FooBar, 0x6F9D9A4C9AFD3F5EL),
+                    new KnownValue(128, TestConstants.FooBar, "3D1760C86A25EB9C924ECCBB13076ECE"),
+                    new KnownValue(256, TestConstants.FooBar, "73A66C48D128055BB22BCFF0D6316D3D5E829A2A1D9CB261581A7672803A6454"),
+                    new KnownValue(512, TestConstants.FooBar, "47DC3AC6E0B7BFD83C653A92C8CBD9FF16A758DE82690483D90A6A905C917DF39691D54F3AF919A717379A87DEDF716192160BCE2EB5C02C775819ABD4066A12"),
+                    new KnownValue(8, TestConstants.LoremIpsum, 0xB8),
+                    new KnownValue(16, TestConstants.LoremIpsum, 0x80B6),
+                    new KnownValue(32, TestConstants.LoremIpsum, 0x936D150E),
+                    new KnownValue(64, TestConstants.LoremIpsum, 0xB630C582812A78FDL),
+                    new KnownValue(128, TestConstants.LoremIpsum, "0E50AA3684C8B28871073DC540B8A36B"),
+                    new KnownValue(256, TestConstants.LoremIpsum, "C065D225BD499FE9E7D2BEFD7588679AE9697EB3F0E43B63A474145720F33F74"),
+                    new KnownValue(512, TestConstants.LoremIpsum, "B38035457007274B9BE1AAE5628744763E5D52F48CEF583A0FF24327630CDCE2D951C421E7350585782A92D0EA5C3F8DA20ECB1A04E6C25C5E8395C76589BCF2"),
+                };
+            }
+        }
+
+        protected override Blake2B CreateHashFunction(int hashSize)
+        {
+            return new Blake2B(TestConstants.FooBar, null, null, hashSize);
+        }
+
+        protected override Mock<Blake2B> CreateHashFunctionMock(int hashSize)
+        {
+            return new Mock<Blake2B>(TestConstants.FooBar, null, null, hashSize);
+        }
+    }
+    
+
+    #endregion
+
     #region Data.HashFunction.BuzHash
 
     public class IHashFunctionAsyncTests_DefaultBuzHash
@@ -1638,6 +1759,66 @@ namespace System.Data.HashFunction.Test
                 { 
                     @"ModifiedBernsteinHash()", 
                     new ModifiedBernsteinHash() 
+                },
+                { 
+                    @"Blake2B()", 
+                    new Blake2B() 
+                },
+                { 
+                    @"Blake2B(8)", 
+                    new Blake2B(8) 
+                },
+                { 
+                    @"Blake2B(16)", 
+                    new Blake2B(16) 
+                },
+                { 
+                    @"Blake2B(32)", 
+                    new Blake2B(32) 
+                },
+                { 
+                    @"Blake2B(64)", 
+                    new Blake2B(64) 
+                },
+                { 
+                    @"Blake2B(128)", 
+                    new Blake2B(128) 
+                },
+                { 
+                    @"Blake2B(256)", 
+                    new Blake2B(256) 
+                },
+                { 
+                    @"Blake2B(512)", 
+                    new Blake2B(512) 
+                },
+                { 
+                    @"Blake2B(TestConstants.FooBar, null, null, 8)", 
+                    new Blake2B(TestConstants.FooBar, null, null, 8) 
+                },
+                { 
+                    @"Blake2B(TestConstants.FooBar, null, null, 16)", 
+                    new Blake2B(TestConstants.FooBar, null, null, 16) 
+                },
+                { 
+                    @"Blake2B(TestConstants.FooBar, null, null, 32)", 
+                    new Blake2B(TestConstants.FooBar, null, null, 32) 
+                },
+                { 
+                    @"Blake2B(TestConstants.FooBar, null, null, 64)", 
+                    new Blake2B(TestConstants.FooBar, null, null, 64) 
+                },
+                { 
+                    @"Blake2B(TestConstants.FooBar, null, null, 128)", 
+                    new Blake2B(TestConstants.FooBar, null, null, 128) 
+                },
+                { 
+                    @"Blake2B(TestConstants.FooBar, null, null, 256)", 
+                    new Blake2B(TestConstants.FooBar, null, null, 256) 
+                },
+                { 
+                    @"Blake2B(TestConstants.FooBar, null, null, 512)", 
+                    new Blake2B(TestConstants.FooBar, null, null, 512) 
                 },
                 { 
                     @"DefaultBuzHash(8)", 

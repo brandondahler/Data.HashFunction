@@ -28,7 +28,7 @@ using System;
 using System.Linq;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.Blake2B
+namespace System.Data.HashFunction.Test.Blake2BTests
 {
 	class SequentialTests
 	{

@@ -28,6 +28,7 @@ using System;
 using System.Data.HashFunction;
 using System.Data.HashFunction.Utilities.UnifiedData;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
@@ -49,18 +50,20 @@ namespace System.Data.HashFunction
 		private ulong _finalizationFlag1;
 
 		private ulong[] _config;
-
 		private byte[] _key;
+		private byte[] _salt;
+		private byte[] _personalization;
 
-		private const int MinHashSize = 1;
-		private const int MaxHashSize = 64;
-		private const int DefaultHashSize = 64;
-		private const int MaxKeySize = 64;
-		private const int SaltSize = 16;
-		private const int PersonalizationSize = 16;
+		private const int MinHashSizeBits = 8;
+		private const int MaxHashSizeBits = 512;
+		private const int DefaultHashSizeBits = 512;
+
+		private const int MaxKeySizeBytes = 64;
+		private const int SaltSizeBytes = 16;
+		private const int PersonalizationSizeBytes = 16;
 
 		private const int NumberOfRounds = 12;
-		private const int BlockSizeInBytes = 128;
+		private const int BlockSizeBytes = 128;
 
 		private const ulong IV0 = 0x6A09E667F3BCC908UL;
 		private const ulong IV1 = 0xBB67AE8584CAA73BUL;
@@ -112,36 +115,61 @@ namespace System.Data.HashFunction
 			buf[offset] = (byte)value;
 		}
 
+		public Blake2B()
+			: this(null, null, null, DefaultHashSizeBits)
+		{
+		}
+
 		public Blake2B(int hashSize)
 			: this(null, null, null, hashSize)
 		{
 		}
 
 		public Blake2B(byte[] key = null, byte[] salt = null, byte[] personalization = null,
-			int hashSize = DefaultHashSize)
+			int hashSize = DefaultHashSizeBits)
 			: base(hashSize)
 		{
-			if (hashSize < MinHashSize || hashSize > MaxHashSize)
-				throw new ArgumentOutOfRangeException("hashSize", hashSize, String.Format("Expected: {0} >= hashSize <= {1}", MinHashSize, MaxHashSize));
+			_key = key;
+			_salt = salt;
+			_personalization = personalization;
 
-			if (key != null && key.Length > MaxKeySize)
-				throw new ArgumentOutOfRangeException("key.Length", key.Length, String.Format("Expected: key.Length <= {1}", MaxKeySize));
+			if (hashSize % 8 != 0)
+				throw new ArgumentOutOfRangeException("hashSize", hashSize, "The hash size must be a multiple of 8");
 
-			if (salt != null && salt.Length != SaltSize)
-				throw new ArgumentOutOfRangeException("salt.Length", salt.Length, String.Format("Expected: salt.Length == {1}", SaltSize));
+			if (hashSize < MinHashSizeBits || hashSize > MaxHashSizeBits)
+				throw new ArgumentOutOfRangeException("hashSize", hashSize, String.Format("Expected: {0} >= hashSize <= {1}", MinHashSizeBits, MaxHashSizeBits));
+		}
 
-			if (personalization != null && personalization.Length != PersonalizationSize)
-				throw new ArgumentOutOfRangeException("personalization.Length", personalization.Length, String.Format("Expected: personalization.Length == {1}", PersonalizationSize));
+		private void Configure()
+		{
+			if (this.HashSize % 8 != 0)
+				throw new InvalidOperationException("The HashSize must be a multiple of 8");
+
+			if (this.HashSize < MinHashSizeBits || this.HashSize > MaxHashSizeBits)
+				throw new InvalidOperationException(String.Format("Expected: {0} >= HashSize <= {1}", MinHashSizeBits, MaxHashSizeBits));
+
+			if (_key != null && _key.Length > MaxKeySizeBytes)
+				throw new ArgumentOutOfRangeException(String.Format("Expected: key.Length <= {1}", MaxKeySizeBytes));
+
+			if (_salt != null && _salt.Length != SaltSizeBytes)
+				throw new ArgumentOutOfRangeException(String.Format("Expected: salt.Length == {1}", SaltSizeBytes));
+
+			if (_personalization != null && _personalization.Length != PersonalizationSizeBytes)
+				throw new ArgumentOutOfRangeException(String.Format("Expected: personalization.Length == {1}", PersonalizationSizeBytes));
 
 			_config = new ulong[8];
 
-			_config[0] |= (ulong)(uint)hashSize;
+			_config[0] |= (ulong)(uint)(HashSize / 8);
 
-			if (key != null)
+			if (_key != null)
 			{
-				_config[0] |= (ulong)((uint)key.Length << 8);
-				_key = new byte[128];
-				Array.Copy(key, _key, key.Length);
+				_config[0] |= (ulong)((uint)_key.Length << 8);
+				if (_key.Length != 128)
+				{
+					byte[] newKey = new byte[128];
+					Array.Copy(_key, newKey, _key.Length);
+					_key = newKey;
+				}
 			}
 
 			_config[0] |= (uint)1 << 16;
@@ -149,16 +177,16 @@ namespace System.Data.HashFunction
 			_config[0] |= ((ulong)(uint)0) << 32;
 			_config[2] |= (uint)0 << 8;
 
-			if (salt != null)
+			if (_salt != null)
 			{
-				_config[4] = BytesToUInt64(salt, 0);
-				_config[5] = BytesToUInt64(salt, 8);
+				_config[4] = BytesToUInt64(_salt, 0);
+				_config[5] = BytesToUInt64(_salt, 8);
 			}
 
-			if (personalization != null)
+			if (_personalization != null)
 			{
-				_config[6] = BytesToUInt64(salt, 0);
-				_config[6] = BytesToUInt64(salt, 8);
+				_config[6] = BytesToUInt64(_salt, 0);
+				_config[6] = BytesToUInt64(_salt, 8);
 			}
 		}
 
@@ -188,24 +216,26 @@ namespace System.Data.HashFunction
 
 		protected override byte[] ComputeHashInternal(UnifiedData data)
 		{
+			this.Configure();
 			this.Initialize();
 			if (_key != null)
 			{
 				this.HashCore(_key, 0, _key.Length);
 			}
-			data.ForEachGroup(BlockSizeInBytes, HashCore, HashCore);
+			data.ForEachGroup(BlockSizeBytes, HashCore, HashCore);
 			return this.Final();
 		}
 
 #if NET45
-		protected override Task<byte[]> ComputeHashInternal(UnifiedData data)
+		protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
 		{
+			this.Configure();
 			this.Initialize();
 			if (_key != null)
 			{
 				this.HashCore(_key, 0, _key.Length);
 			}
-			await data.ForEachGroupAsync(BlockSizeInBytes, HashCore, HashCore);
+			await data.ForEachGroupAsync(BlockSizeBytes, HashCore, HashCore);
 			return this.Final();
 		}
 #endif
@@ -222,12 +252,12 @@ namespace System.Data.HashFunction
 				throw new ArgumentOutOfRangeException("start+count");
 
 			int offset = start;
-			int bufferRemaining = BlockSizeInBytes - _bufferFilled;
+			int bufferRemaining = BlockSizeBytes - _bufferFilled;
 
 			if ((_bufferFilled > 0) && (count > bufferRemaining))
 			{
 				Array.Copy(array, offset, _buffer, _bufferFilled, bufferRemaining);
-				_counter0 += BlockSizeInBytes;
+				_counter0 += BlockSizeBytes;
 				if (_counter0 == 0)
 					_counter1++;
 				Compress(_buffer, 0);
@@ -236,14 +266,14 @@ namespace System.Data.HashFunction
 				_bufferFilled = 0;
 			}
 
-			while (count > BlockSizeInBytes)
+			while (count > BlockSizeBytes)
 			{
-				_counter0 += BlockSizeInBytes;
+				_counter0 += BlockSizeBytes;
 				if (_counter0 == 0)
 					_counter1++;
 				Compress(array, offset);
-				offset += BlockSizeInBytes;
-				count -= BlockSizeInBytes;
+				offset += BlockSizeBytes;
+				count -= BlockSizeBytes;
 			}
 
 			if (count > 0)
@@ -274,9 +304,9 @@ namespace System.Data.HashFunction
 			for (int i = 0; i < 8; ++i)
 				UInt64ToBytes(_h[i], hash, i << 3);
 
-			if (hash.Length != this.HashSize)
+			if (hash.Length != HashSize / 8)
 			{
-				var result = new byte[this.HashSize];
+				var result = new byte[HashSize / 8];
 				Array.Copy(hash, result, result.Length);
 				return result;
 			}
@@ -291,30 +321,13 @@ namespace System.Data.HashFunction
 
 			if (BitConverter.IsLittleEndian)
 			{
-				Buffer.BlockCopy(block, start, m, 0, BlockSizeInBytes);
+				Buffer.BlockCopy(block, start, m, 0, BlockSizeBytes);
 			}
 			else
 			{
 				for (int i = 0; i < 16; ++i)
 					m[i] = BytesToUInt64(block, start + (i << 3));
 			}
-
-			/*var m0 = m[0];
-			var m1 = m[1];
-			var m2 = m[2];
-			var m3 = m[3];
-			var m4 = m[4];
-			var m5 = m[5];
-			var m6 = m[6];
-			var m7 = m[7];
-			var m8 = m[8];
-			var m9 = m[9];
-			var m10 = m[10];
-			var m11 = m[11];
-			var m12 = m[12];
-			var m13 = m[13];
-			var m14 = m[14];
-			var m15 = m[15];*/
 
 			var v0 = h[0];
 			var v1 = h[1];
