@@ -73,6 +73,8 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="Blake2B\SequentialTests.cs" />
+    <Compile Include="Blake2B\TestVectors.cs" />
     <Compile Include="CityHash\UInt128Tests.cs" />
     <Compile Include="Core\HashFunctionAsyncBaseTests.cs" />
     <Compile Include="Core\HashFunctionBaseTests.cs" />
@@ -153,6 +155,10 @@
     <ProjectReference Include="..\CRC\Data.HashFunction.CRC.csproj">
       <Project>{fc9c9416-a84d-4087-8f54-065dbc3d4c23}</Project>
       <Name>Data.HashFunction.CRC</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Blake2B\Data.HashFunction.Blake2B.csproj">
+      <Project>{5fbb51f5-3def-4946-bfa4-bff721434fca}</Project>
+      <Name>Data.HashFunction.Blake2B</Name>
     </ProjectReference>
     <ProjectReference Include="..\ELF64\Data.HashFunction.ELF64.csproj">
       <Project>{5644704b-272e-41ee-9a70-fed7c40205d1}</Project>

@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.ELF64", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.CRC", "CRC\Data.HashFunction.CRC.csproj", "{FC9C9416-A84D-4087-8F54-065DBC3D4C23}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Blake2B", "Blake2B\Data.HashFunction.Blake2B.csproj", "{5FBB51F5-3DEF-4946-BFA4-BFF721434FCA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -124,6 +126,12 @@ Global
 		{FC9C9416-A84D-4087-8F54-065DBC3D4C23}.NuGetDeploy|Any CPU.Build.0 = NuGetDeploy|Any CPU
 		{FC9C9416-A84D-4087-8F54-065DBC3D4C23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC9C9416-A84D-4087-8F54-065DBC3D4C23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FBB51F5-3DEF-4946-BFA4-BFF721434FCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FBB51F5-3DEF-4946-BFA4-BFF721434FCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FBB51F5-3DEF-4946-BFA4-BFF721434FCA}.NuGetDeploy|Any CPU.ActiveCfg = Release|Any CPU
+		{5FBB51F5-3DEF-4946-BFA4-BFF721434FCA}.NuGetDeploy|Any CPU.Build.0 = Release|Any CPU
+		{5FBB51F5-3DEF-4946-BFA4-BFF721434FCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FBB51F5-3DEF-4946-BFA4-BFF721434FCA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
