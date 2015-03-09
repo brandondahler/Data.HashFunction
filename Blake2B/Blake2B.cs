@@ -1,5 +1,5 @@
 ﻿/// <summary>
-/// BLAKE2
+/// BLAKE2b
 /// 
 /// BLAKE2 comes in two flavors:
 ///		- BLAKE2b (or just BLAKE2) is optimized for 64-bit platforms—including NEON-enabled ARMs—and
@@ -32,6 +32,11 @@ using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
+	/// <summary>
+	/// Implementation of the BLAKE2b algorithm (https://blake2.net/). It supports a hash output
+	/// size of 8 to 512 bits, and allows seeding with a key and/or salt and/or personalization
+	/// sequence.
+	/// </summary>
 	public class Blake2B
 #if NET45
 		: HashFunctionAsyncBase
@@ -115,29 +120,74 @@ namespace System.Data.HashFunction
 			buf[offset] = (byte)value;
 		}
 
+		/// <summary>
+		/// Initializes an instance of the <see cref="Blake2B"/> class with the default settings
+		/// (no key, no salt, no personalization, and 512 output length).
+		/// </summary>
 		public Blake2B()
 			: this(null, null, null, DefaultHashSizeBits)
 		{
 		}
 
+		/// <summary>
+		/// Initializes an instance of the <see cref="Blake2B"/> class with the provided
+		/// <paramref name="hashSize"/> (no key, no salt, no personalization). 
+		/// 
+		/// The <paramref name="hashSize"/> must be 8 bits at the least and 512 bits at most, and 
+		/// the size in bits must be a multiple of 8.
+		/// </summary>
+		/// <param name="hashSize">Hash size to use for the output</param>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The provided <paramref name="hashSize"/> is invalid.
+		/// </exception>
 		public Blake2B(int hashSize)
 			: this(null, null, null, hashSize)
 		{
 		}
 
+		/// <summary>
+		/// Initializes an instance of the <see cref="Blake2B"/> class with the provided
+		/// <paramref name="hashSize"/>. If not null, the <paramref name="key"/>, 
+		/// <paramref name="salt"/>, and <paramref name="personalization"/> arguments will be 
+		/// applied to the hashing algorithm. 
+		/// 
+		/// The <paramref name="hashSize"/> must be 8 bits at the least and 512 bits at most, and 
+		/// the size in bits must be a multiple of 8.
+		/// The <paramref name="key"/> parameter must be a byte sequence of at most 64 bytes.
+		/// The <paramref name="salt"/> parameter must be a byte sequence of exactly 16 bytes.
+		/// The <paramref name="personalization"/> parameter must be a byte sequence of exactly 16 
+		/// bytes.
+		/// </summary>
+		/// <param name="key">Key to seed the hash with</param>
+		/// <param name="salt">Salt to seed the hash with</param>
+		/// <param name="personalization">Personalization to seed the hash with</param>
+		/// <param name="hashSize">Hash size to use for the output</param>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// Either the provided <paramref name="hashSize"/>, <paramref name="key"/> length, 
+		/// <paramref name="salt"/> length, or <paramref name="personalization"/> length is invalid.
+		/// </exception>
 		public Blake2B(byte[] key = null, byte[] salt = null, byte[] personalization = null,
 			int hashSize = DefaultHashSizeBits)
 			: base(hashSize)
 		{
-			_key = key;
-			_salt = salt;
-			_personalization = personalization;
-
 			if (hashSize % 8 != 0)
 				throw new ArgumentOutOfRangeException("hashSize", hashSize, "The hash size must be a multiple of 8");
 
 			if (hashSize < MinHashSizeBits || hashSize > MaxHashSizeBits)
 				throw new ArgumentOutOfRangeException("hashSize", hashSize, String.Format("Expected: {0} >= hashSize <= {1}", MinHashSizeBits, MaxHashSizeBits));
+
+			if (key != null && key.Length > MaxKeySizeBytes)
+				throw new ArgumentOutOfRangeException("key.Length", key.Length, String.Format("Expected: key.Length <= {1}", MaxKeySizeBytes));
+
+			if (salt != null && salt.Length != SaltSizeBytes)
+				throw new ArgumentOutOfRangeException("salt.Length", salt.Length, String.Format("Expected: salt.Length == {1}", SaltSizeBytes));
+
+			if (personalization != null && personalization.Length != PersonalizationSizeBytes)
+				throw new ArgumentOutOfRangeException("personalization.Length", personalization.Length, String.Format("Expected: personalization.Length == {1}", PersonalizationSizeBytes));
+
+			_key = key;
+			_salt = salt;
+			_personalization = personalization;
 		}
 
 		private void Configure()
@@ -148,14 +198,6 @@ namespace System.Data.HashFunction
 			if (this.HashSize < MinHashSizeBits || this.HashSize > MaxHashSizeBits)
 				throw new InvalidOperationException(String.Format("Expected: {0} >= HashSize <= {1}", MinHashSizeBits, MaxHashSizeBits));
 
-			if (_key != null && _key.Length > MaxKeySizeBytes)
-				throw new ArgumentOutOfRangeException(String.Format("Expected: key.Length <= {1}", MaxKeySizeBytes));
-
-			if (_salt != null && _salt.Length != SaltSizeBytes)
-				throw new ArgumentOutOfRangeException(String.Format("Expected: salt.Length == {1}", SaltSizeBytes));
-
-			if (_personalization != null && _personalization.Length != PersonalizationSizeBytes)
-				throw new ArgumentOutOfRangeException(String.Format("Expected: personalization.Length == {1}", PersonalizationSizeBytes));
 
 			_config = new ulong[8];
 
@@ -214,6 +256,10 @@ namespace System.Data.HashFunction
 				_h[i] ^= _config[i];
 		}
 
+		/// <inheritdoc />
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The configured <paramref name="HashSize"/> is invalid.
+		/// </exception>
 		protected override byte[] ComputeHashInternal(UnifiedData data)
 		{
 			this.Configure();
@@ -227,16 +273,26 @@ namespace System.Data.HashFunction
 		}
 
 #if NET45
+		/// <inheritdoc />
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The configured <paramref name="HashSize"/> is invalid.
+		/// </exception>
 		protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
 		{
-			this.Configure();
-			this.Initialize();
-			if (_key != null)
+			return await Task.Run(() =>
 			{
-				this.HashCore(_key, 0, _key.Length);
-			}
-			await data.ForEachGroupAsync(BlockSizeBytes, HashCore, HashCore);
-			return this.Final();
+				this.Configure();
+				this.Initialize();
+				if (_key != null)
+				{
+					this.HashCore(_key, 0, _key.Length);
+				}
+				// BLAKE2b does not support parallelism. BLAKE2bp is a parallel variant of the 
+				// BLAKE2b algorithm, using a tree-hashing approach. The resulting hashes, however,
+				// are not compatible.
+				data.ForEachGroup(BlockSizeBytes, HashCore, HashCore);
+				return this.Final();
+			});
 		}
 #endif
 
