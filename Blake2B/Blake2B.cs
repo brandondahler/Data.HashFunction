@@ -25,10 +25,10 @@
 /// this software. If not, see <http:///creativecommons.org/publicdomain/zero/1.0/>.
 /// </summary>
 using System;
-using System.Data.HashFunction;
-using System.Data.HashFunction.Utilities.UnifiedData;
 using System.IO;
 using System.Threading.Tasks;
+using System.Data.HashFunction;
+using System.Data.HashFunction.Utilities.UnifiedData;
 
 namespace System.Data.HashFunction
 {
@@ -279,20 +279,15 @@ namespace System.Data.HashFunction
 		/// </exception>
 		protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
 		{
-			return await Task.Run(() =>
+			this.Configure();
+			this.Initialize();
+			if (_key != null)
 			{
-				this.Configure();
-				this.Initialize();
-				if (_key != null)
-				{
-					this.HashCore(_key, 0, _key.Length);
-				}
-				// BLAKE2b does not support parallelism. BLAKE2bp is a parallel variant of the 
-				// BLAKE2b algorithm, using a tree-hashing approach. The resulting hashes, however,
-				// are not compatible.
-				data.ForEachGroup(BlockSizeBytes, HashCore, HashCore);
-				return this.Final();
-			});
+				this.HashCore(_key, 0, _key.Length);
+			}
+
+			await data.ForEachGroupAsync(BlockSizeBytes, HashCore, HashCore);
+			return this.Final();
 		}
 #endif
 
