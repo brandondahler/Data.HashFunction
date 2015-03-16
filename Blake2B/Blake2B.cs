@@ -26,9 +26,12 @@
 /// </summary>
 using System;
 using System.IO;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Data.HashFunction;
 using System.Data.HashFunction.Utilities.UnifiedData;
+#if NET45
+using System.Threading.Tasks;
+#endif
 
 namespace System.Data.HashFunction
 {
@@ -46,7 +49,11 @@ namespace System.Data.HashFunction
 	{
 		private int _bufferFilled;
 		private byte[] _buffer = new byte[128];
-
+#if NET45
+		private SemaphoreSlim _syncRoot = new SemaphoreSlim(1, 1);
+#else
+		private object _syncRoot = new object();
+#endif
 		private ulong[] _m = new ulong[16];
 		private ulong[] _h = new ulong[8];
 		private ulong _counter0;
@@ -258,36 +265,62 @@ namespace System.Data.HashFunction
 
 		/// <inheritdoc />
 		/// <exception cref="ArgumentOutOfRangeException">
-		/// The configured <paramref name="HashSize"/> is invalid.
+		/// The configured <paramref name="Blake2B.HashSize"/> is invalid.
 		/// </exception>
 		protected override byte[] ComputeHashInternal(UnifiedData data)
 		{
-			this.Configure();
-			this.Initialize();
-			if (_key != null)
+#if NET45
+			_syncRoot.Wait();
+			try
 			{
-				this.HashCore(_key, 0, _key.Length);
+#else
+			lock (_syncRoot)
+			{
+#endif
+				this.Configure();
+				this.Initialize();
+				if (_key != null)
+				{
+					this.HashCore(_key, 0, _key.Length);
+				}
+				data.ForEachGroup(BlockSizeBytes, HashCore, HashCore);
+				return this.Final();
+#if NET45
 			}
-			data.ForEachGroup(BlockSizeBytes, HashCore, HashCore);
-			return this.Final();
+			finally
+			{
+				_syncRoot.Release();
+			}
+#else
+			}
+#endif
 		}
 
 #if NET45
 		/// <inheritdoc />
 		/// <exception cref="ArgumentOutOfRangeException">
-		/// The configured <paramref name="HashSize"/> is invalid.
+		/// The configured <paramref name="Blake2B.HashSize"/> is invalid.
 		/// </exception>
 		protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
 		{
-			this.Configure();
-			this.Initialize();
-			if (_key != null)
-			{
-				this.HashCore(_key, 0, _key.Length);
-			}
+			await _syncRoot.WaitAsync();
 
-			await data.ForEachGroupAsync(BlockSizeBytes, HashCore, HashCore);
-			return this.Final();
+			try
+			{
+				this.Configure();
+				this.Initialize();
+				if (_key != null)
+				{
+					this.HashCore(_key, 0, _key.Length);
+				}
+
+				await data.ForEachGroupAsync(BlockSizeBytes, HashCore, HashCore);
+				return this.Final();
+			}
+			finally
+			{
+				_syncRoot.Release();
+			}
 		}
 #endif
 
