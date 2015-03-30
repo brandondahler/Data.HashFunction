@@ -39,7 +39,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.ELF64", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.CRC", "CRC\Data.HashFunction.CRC.csproj", "{FC9C9416-A84D-4087-8F54-065DBC3D4C23}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Blake2", "Blake2B\Data.HashFunction.Blake2.csproj", "{5FBB51F5-3DEF-4946-BFA4-BFF721434FCA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Blake2", "Blake2\Data.HashFunction.Blake2.csproj", "{5FBB51F5-3DEF-4946-BFA4-BFF721434FCA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
