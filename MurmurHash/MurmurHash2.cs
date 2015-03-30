@@ -107,6 +107,8 @@ namespace System.Data.HashFunction
         /// <inheritdoc />
         protected override byte[] ComputeHashInternal(UnifiedData data)
         {
+            byte[] hash = null;
+
             switch (HashSize)
             {
                 case 32:
@@ -130,7 +132,8 @@ namespace System.Data.HashFunction
                     h *= m;
                     h ^= h >> 15;
 
-                    return BitConverter.GetBytes(h);
+                    hash = BitConverter.GetBytes(h);
+                    break;
                 }
 
                 case 64:
@@ -151,12 +154,12 @@ namespace System.Data.HashFunction
                     h *= m;
                     h ^= h >> 47;
 
-                    return BitConverter.GetBytes(h);
+                    hash = BitConverter.GetBytes(h);
+                    break;
                 }
-
-                default:
-                    throw new InvalidOperationException("HashSize set to an invalid value.");
             }
+
+            return hash;
         }
         
 #if NET45
@@ -164,6 +167,8 @@ namespace System.Data.HashFunction
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
+            byte[] hash = null;
+
             switch (HashSize)
             {
                 case 32:
@@ -187,7 +192,8 @@ namespace System.Data.HashFunction
                     h *= m;
                     h ^= h >> 15;
 
-                    return BitConverter.GetBytes(h);
+                    hash = BitConverter.GetBytes(h);
+                    break;
                 }
 
                 case 64:
@@ -208,12 +214,12 @@ namespace System.Data.HashFunction
                     h *= m;
                     h ^= h >> 47;
 
-                    return BitConverter.GetBytes(h);
+                    hash = BitConverter.GetBytes(h);
+                    break;
                 }
-
-                default:
-                    throw new InvalidOperationException("HashSize set to an invalid value.");
             }
+
+            return hash;
         }
 #endif
 

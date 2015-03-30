@@ -45,16 +45,9 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
         /// <inheritdoc />
         public override Task ForEachReadAsync(Action<byte[], int, int> action)
         {
-            try
-            {
-                ForEachRead(action);
+            ForEachRead(action);
 
-                return Task.FromResult(true);
-
-            } catch (Exception ex) {
-                throw new AggregateException(new[] { ex });
-            }
-
+            return Task.FromResult(true);
         }
 #endif
 
@@ -86,15 +79,9 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
         /// <inheritdoc />
         public override Task ForEachGroupAsync(int groupSize, Action<byte[], int, int> action, Action<byte[], int, int> remainderAction)
         {
-            try
-            {
-                ForEachGroup(groupSize, action, remainderAction);
+            ForEachGroup(groupSize, action, remainderAction);
 
-                return Task.FromResult(true);   
-
-            } catch (Exception ex) {
-                throw new AggregateException(new[] { ex });
-            }
+            return Task.FromResult(true);   
         }
 #endif
 
@@ -110,14 +97,8 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
         /// <inheritdoc />
         public override Task<byte[]> ToArrayAsync()
         {
-            try
-            {
-                return Task.FromResult(
-                    ToArray());
-
-            } catch (Exception ex) {
-                throw new AggregateException(new[] { ex });
-            }
+            return Task.FromResult(
+                ToArray());
         }
 #endif
         

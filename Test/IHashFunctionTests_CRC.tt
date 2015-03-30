@@ -41,11 +41,6 @@ namespace System.Data.HashFunction.Test
         {
             return new <#= standard.Name #>();
         }
-
-        protected override Mock<<#= standard.Name #>> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<<#= standard.Name #>>();
-        }
     }
 <# } #>
 

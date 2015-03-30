@@ -120,6 +120,8 @@ namespace System.Data.HashFunction
         /// <inheritdoc />
         protected override byte[] ComputeHashInternal(UnifiedData data)
         {
+            byte[] hash = null;
+
             switch (HashSize)
             {
                 case 32:
@@ -144,7 +146,8 @@ namespace System.Data.HashFunction
                     h1 ^= (UInt32) dataCount;
                     Mix(ref h1);
 
-                    return BitConverter.GetBytes(h1);
+                    hash = BitConverter.GetBytes(h1);
+                    break;
                 }
 
                 case 128:
@@ -189,12 +192,12 @@ namespace System.Data.HashFunction
                     BitConverter.GetBytes(h2)
                         .CopyTo(hashBytes, 8);
 
-                    return hashBytes;
+                    hash = hashBytes;
+                    break;
                 }
-
-                default:
-                    throw new InvalidOperationException("HashSize set to an invalid value.");
             }
+
+            return hash;
         }
         
 #if NET45
@@ -202,6 +205,8 @@ namespace System.Data.HashFunction
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
+            byte[] hash = null;
+
             switch (HashSize)
             {
                 case 32:
@@ -226,7 +231,8 @@ namespace System.Data.HashFunction
                     h1 ^= (UInt32) dataCount;
                     Mix(ref h1);
 
-                    return BitConverter.GetBytes(h1);
+                    hash = BitConverter.GetBytes(h1);
+                    break;
                 }
 
                 case 128:
@@ -263,20 +269,19 @@ namespace System.Data.HashFunction
                     h2 += h1;
 
 
-                    var hashBytes = new byte[16];
+                    hash = new byte[16];
 
                     BitConverter.GetBytes(h1)
-                        .CopyTo(hashBytes, 0);
+                        .CopyTo(hash, 0);
 
                     BitConverter.GetBytes(h2)
-                        .CopyTo(hashBytes, 8);
+                        .CopyTo(hash, 8);
 
-                    return hashBytes;
+                    break;
                 }
-
-                default:
-                    throw new InvalidOperationException("HashSize set to an invalid value.");
             }
+
+            return hash;
         }
 #endif
 

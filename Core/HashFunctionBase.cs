@@ -18,7 +18,7 @@ namespace System.Data.HashFunction
     {
 
         /// <inheritdoc />
-        public virtual int HashSize 
+        public int HashSize 
         { 
             get { return _HashSize; }
         }

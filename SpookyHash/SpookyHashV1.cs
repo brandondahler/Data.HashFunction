@@ -159,23 +159,32 @@ namespace System.Data.HashFunction
             Mix(h, remainderData, 0, remainderData.Length);
             End(h);
 
+
+            byte[] hash = null;
+
             switch (HashSize)
             {
                 case 32:
-                    return BitConverter.GetBytes((UInt32) h[0]);
+                    hash = BitConverter.GetBytes((UInt32) h[0]);
+                    break;
+
                 case 64:
-                    return BitConverter.GetBytes(h[0]);
+                    hash = BitConverter.GetBytes(h[0]);
+                    break;
 
                 case 128:
-                    var results = new byte[16];
-                    BitConverter.GetBytes(h[0]).CopyTo(results, 0);
-                    BitConverter.GetBytes(h[1]).CopyTo(results, 8);
+                    hash = new byte[16];
+                    
+                    BitConverter.GetBytes(h[0])
+                        .CopyTo(hash, 0);
 
-                    return results;
+                    BitConverter.GetBytes(h[1])
+                        .CopyTo(hash, 8);
 
-                default:
-                    throw new InvalidOperationException("HashSize set to an invalid value.");
+                    break;
             }
+
+            return hash;
         }
         
 #if NET45
@@ -204,23 +213,32 @@ namespace System.Data.HashFunction
             Mix(h, remainderData, 0, remainderData.Length);
             End(h);
 
+
+            byte[] hash = null;
+
             switch (HashSize)
             {
                 case 32:
-                    return BitConverter.GetBytes((UInt32) h[0]);
+                    hash = BitConverter.GetBytes((UInt32) h[0]);
+                    break;
+
                 case 64:
-                    return BitConverter.GetBytes(h[0]);
+                    hash = BitConverter.GetBytes(h[0]);
+                    break;
 
                 case 128:
-                    var results = new byte[16];
-                    BitConverter.GetBytes(h[0]).CopyTo(results, 0);
-                    BitConverter.GetBytes(h[1]).CopyTo(results, 8);
+                    hash = new byte[16];
 
-                    return results;
+                    BitConverter.GetBytes(h[0])
+                        .CopyTo(hash, 0);
 
-                default:
-                    throw new InvalidOperationException("HashSize set to an invalid value.");
+                    BitConverter.GetBytes(h[1])
+                        .CopyTo(hash, 8);
+
+                    break;
             }
+
+            return hash;
         }
 #endif
 

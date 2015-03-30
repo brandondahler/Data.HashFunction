@@ -95,14 +95,9 @@ namespace System.Data.HashFunction
 
 
 
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override byte[] ComputeHashInternal(UnifiedData data)
         {
-            if (HashSize <= 0 || HashSize % 8 != 0)
-                throw new InvalidOperationException("HashSize set to an invalid value.");
-
-
             var h = new byte[HashSize / 8];
             bool firstByte = true;
 
@@ -114,14 +109,9 @@ namespace System.Data.HashFunction
         }
         
 #if NET45
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
-            if (HashSize <= 0 || HashSize % 8 != 0)
-                throw new InvalidOperationException("HashSize set to an invalid value.");
-
-
             var h = new byte[HashSize / 8];
             bool firstByte = true;
 

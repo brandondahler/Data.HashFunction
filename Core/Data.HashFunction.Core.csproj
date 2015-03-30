@@ -80,6 +80,7 @@
     <Compile Include="Utilities\IntegerManipulation\RotateRightExtensions.cs" />
     <Compile Include="Utilities\IntegerManipulation\RotateLeftExtensions.cs" />
     <Compile Include="Utilities\IntegerManipulation\ReverseByteOrderExtensions.cs" />
+    <Compile Include="Utilities\UInt128.cs" />
     <Compile Include="Utilities\UInt32Extensions.cs" />
     <Compile Include="Utilities\BigIntegerExtensions.cs" />
     <Compile Include="Utilities\UnifiedData\ArrayData.cs" />

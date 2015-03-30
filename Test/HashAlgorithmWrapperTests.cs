@@ -20,8 +20,7 @@ namespace System.Data.HashFunction.Test
             var haw = new HashAlgorithmWrapper(new SHA1Managed(), true);
 
 
-            Assert.DoesNotThrow(() =>
-                haw.Dispose());
+            haw.Dispose();
         }
 
         [Fact]
@@ -31,8 +30,7 @@ namespace System.Data.HashFunction.Test
             var haw = new HashAlgorithmWrapper(ha, true);
 
 
-            Assert.DoesNotThrow(() =>
-                haw.Dispose());
+            haw.Dispose();
 
 
             // HashAlgorithm shouldn't be usable anymore.
@@ -58,8 +56,7 @@ namespace System.Data.HashFunction.Test
             var haw = new HashAlgorithmWrapper(new SHA1Managed(), false);
 
 
-            Assert.DoesNotThrow(() =>
-                haw.Dispose());
+            haw.Dispose();
         }
 
         [Fact]
@@ -69,16 +66,12 @@ namespace System.Data.HashFunction.Test
             var haw = new HashAlgorithmWrapper(ha, false);
 
 
-            Assert.DoesNotThrow(() =>
-                haw.Dispose());
+            haw.Dispose();
 
 
-            // HashAlgorithm should no longer be usable.
-            Assert.DoesNotThrow(() =>
-                ha.ComputeHash(new byte[0]));
-
-            Assert.DoesNotThrow(() =>
-                ha.ComputeHash(new MemoryStream()));
+            // HashAlgorithm should still be usable.
+            ha.ComputeHash(new byte[0]);
+            ha.ComputeHash(new MemoryStream());
 
 
             // HashAlgorithmWrapper's usability afterwards is an implementation detail 
@@ -92,8 +85,7 @@ namespace System.Data.HashFunction.Test
         {
             var haw = new HashAlgorithmWrapper<SHA1Managed>();
 
-            Assert.DoesNotThrow(() =>
-                haw.Dispose());
+            haw.Dispose();
         }
 
         [Fact]
@@ -101,8 +93,7 @@ namespace System.Data.HashFunction.Test
         {
             var haw = new HashAlgorithmWrapper<SHA1Managed>();
 
-            Assert.DoesNotThrow(() =>
-                haw.Dispose());
+            haw.Dispose();
 
 
             // HashAlgorithmWrapper should no longer be usable.

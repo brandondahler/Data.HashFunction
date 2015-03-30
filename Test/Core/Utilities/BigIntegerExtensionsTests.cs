@@ -51,8 +51,7 @@ namespace System.Data.HashFunction.Test.Core.Utilities
             {
                 UInt32[] resultArray = null;
 
-                Assert.DoesNotThrow(() =>
-                    resultArray = testValue.ToUInt32Array(uint32Count * 32));
+                resultArray = testValue.ToUInt32Array(uint32Count * 32);
 
                 Assert.Equal(uint32Count, resultArray.Length);
             }

@@ -20,8 +20,7 @@ namespace System.Data.HashFunction.Test.CRC_Tests
         {
             foreach (var validBits in Enumerable.Range(1, 64))
             {
-                Assert.DoesNotThrow(() =>
-                    new CRC.Setting(validBits, 0, 0, false, false, 0));
+                new CRC.Setting(validBits, 0, 0, false, false, 0);
             }
         }
 
@@ -47,8 +46,7 @@ namespace System.Data.HashFunction.Test.CRC_Tests
                 {
                     var validPolynomial = UInt64.MaxValue >> (64 - x);
 
-                    Assert.DoesNotThrow(() =>
-                        new CRC.Setting(validBits, validPolynomial, 0, false, false, 0));
+                    new CRC.Setting(validBits, validPolynomial, 0, false, false, 0);
                 }
             }
         }
@@ -80,8 +78,7 @@ namespace System.Data.HashFunction.Test.CRC_Tests
                 {
                     var validInitialValue = UInt64.MaxValue >> (64 - x);
 
-                    Assert.DoesNotThrow(() =>
-                        new CRC.Setting(validBits, 0, validInitialValue, false, false, 0));
+                    new CRC.Setting(validBits, 0, validInitialValue, false, false, 0);
                 }
             }
         }
@@ -113,8 +110,7 @@ namespace System.Data.HashFunction.Test.CRC_Tests
                 {
                     var validXOrOut = UInt64.MaxValue >> (64 - x);
 
-                    Assert.DoesNotThrow(() =>
-                        new CRC.Setting(validBits, 0, 0, false, false, validXOrOut));
+                    new CRC.Setting(validBits, 0, 0, false, false, validXOrOut);
                 }
             }
         }

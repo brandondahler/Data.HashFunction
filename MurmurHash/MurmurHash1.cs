@@ -64,14 +64,9 @@ namespace System.Data.HashFunction
         }
 
 
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override byte[] ComputeHashInternal(UnifiedData data)
         {
-            if (HashSize != 32)
-                throw new InvalidOperationException("HashSize set to an invalid value.");
-
-
             UInt32 h = Seed ^ ((UInt32) data.Length * m);
 
             data.ForEachGroup(4, 
@@ -91,14 +86,9 @@ namespace System.Data.HashFunction
         }
         
 #if NET45
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
-            if (HashSize != 32)
-                throw new InvalidOperationException("HashSize set to an invalid value.");
-
-
             UInt32 h = Seed ^ ((UInt32) data.Length * m);
 
             await data.ForEachGroupAsync(4,

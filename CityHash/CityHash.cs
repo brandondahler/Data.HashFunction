@@ -102,33 +102,39 @@ namespace System.Data.HashFunction
         /// <inheritdoc />
         protected override byte[] ComputeHashInternal(UnifiedData data)
         {
+            byte[] hash = null;
             var dataArray = data.ToArray();
-
+            
             switch (HashSize)
             {
                 case 32:
-                    return BitConverter.GetBytes(
+                    hash = BitConverter.GetBytes(
                         ComputeHash32(dataArray));
 
+                    break;
+
                 case 64:
-                    return BitConverter.GetBytes(
+                    hash = BitConverter.GetBytes(
                         ComputeHash64(dataArray));
 
+                    break;
+
                 case 128:
-                    var resultArray = new byte[16];
-                    var hash = ComputeHash128(dataArray);
+                    var result = ComputeHash128(dataArray);
 
-                    BitConverter.GetBytes(hash.Low)
-                        .CopyTo(resultArray, 0);
 
-                    BitConverter.GetBytes(hash.High)
-                        .CopyTo(resultArray, 8);
+                    hash = new byte[16];
 
-                    return resultArray;
+                    BitConverter.GetBytes(result.Low)
+                        .CopyTo(hash, 0);
 
-                default:
-                    throw new InvalidOperationException("HashSize set to an invalid value.");
+                    BitConverter.GetBytes(result.High)
+                        .CopyTo(hash, 8);
+
+                    break;
             }
+
+            return hash;
         }
         
 #if NET45
@@ -136,34 +142,40 @@ namespace System.Data.HashFunction
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
+            byte[] hash = null;
             var dataArray = await data.ToArrayAsync()
                 .ConfigureAwait(false);
 
             switch (HashSize)
             {
                 case 32:
-                    return BitConverter.GetBytes(
+                    hash = BitConverter.GetBytes(
                         ComputeHash32(dataArray));
 
+                    break;
+
                 case 64:
-                    return BitConverter.GetBytes(
+                    hash = BitConverter.GetBytes(
                         ComputeHash64(dataArray));
 
+                    break;
+
                 case 128:
-                    var resultArray = new byte[16];
-                    var hash = ComputeHash128(dataArray);
+                    var result = ComputeHash128(dataArray);
 
-                    BitConverter.GetBytes(hash.Low)
-                        .CopyTo(resultArray, 0);
 
-                    BitConverter.GetBytes(hash.High)
-                        .CopyTo(resultArray, 8);
+                    hash = new byte[16];
+                    
+                    BitConverter.GetBytes(result.Low)
+                        .CopyTo(hash, 0);
 
-                    return resultArray;
+                    BitConverter.GetBytes(result.High)
+                        .CopyTo(hash, 8);
 
-                default:
-                    throw new InvalidOperationException("HashSize set to an invalid value.");
+                    break;
             }
+
+            return hash;
         }
 #endif
 
@@ -667,55 +679,6 @@ namespace System.Data.HashFunction
         #endregion
 
         #region Shared Utilities
-
-        /// <summary>Structure to store 128-bit integer as two 64-bit integers.</summary>
-        protected struct UInt128
-        {
-            /// <summary>Low-order 64-bits.</summary>
-            public UInt64 Low { get; set; }
-
-            /// <summary>High-order 64-bits.</summary>
-            public UInt64 High { get; set; }
-
-
-            #region Object overrides
-
-            /// <summary>Determines whether the specified <see cref="UInt128"/> is equal to the current <see cref="UInt128"/>.</summary>
-            /// <param name="obj">The value to compare with the current value.</param>
-            /// <returns>true if the specified value is equal to the current value; otherwise, false.</returns>
-            public override bool Equals(object obj)
-            {
-                if (!(obj is UInt128))
-                    return false;
-
-
-                var other = (UInt128) obj;
-
-                return (Low == other.Low && 
-                    High == other.High);
-            }
-
-            /// <inheritdoc/>
-            public override int GetHashCode()
-            {
-                return (32190 + 
-                    Low.GetHashCode() ^ High.GetHashCode());
-            }
-
-            /// <summary>Determines whether the second <see cref="UInt128"/> is equal to the first <see cref="UInt128"/>.</summary>
-            /// <param name="a">The first value to compare.</param>
-            /// <param name="b">The second value to compare.</param>
-            /// <returns>true if the specified value is equal to the current value; otherwise, false.</returns>
-            public static bool operator==(UInt128 a, UInt128 b) { return a.Equals(b); }
-
-            /// <summary>Determines whether the second <see cref="UInt128"/> is not equal to the first <see cref="UInt128"/>.</summary>
-            /// <param name="a">The first object to compare.</param>
-            /// <param name="b">The second object to compare.</param>
-            /// <returns>true if the specified value is not equal to the current value; otherwise, false.</returns>
-            public static bool operator!=(UInt128 a, UInt128 b) { return !a.Equals(b); }
-
-            #endregion
-        }
 
 #if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

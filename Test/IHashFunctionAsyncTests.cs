@@ -20,47 +20,8 @@ namespace System.Data.HashFunction.Test
         : IHashFunctionTests<IHashFunctionAsyncT>
         where IHashFunctionAsyncT : class, IHashFunctionAsync
     {
-
-
         [Fact]
-        public void IHashFunction_ComputeHashAsync_Stream_InvalidHashSize_Throws()
-        {
-            var hashSizes = KnownValues.Select(kv => kv.HashSize)
-                .Distinct();
-
-            // Ignore if hash function does not seem to have a configurable hashSize constructor.
-            foreach (var hashSize in hashSizes)
-            {
-                Mock<IHashFunctionAsyncT> hashFunctionMock = CreateHashFunctionMock(hashSize);
-                hashFunctionMock.CallBase = true;
-
-                hashFunctionMock
-                    .SetupGet(hf => hf.HashSize)
-                    .Returns(-1);
-
-
-                var hashFunction = hashFunctionMock.Object;
-
-                using (var ms = new SlowAsyncStream(new MemoryStream()))
-                {
-                    var aggregateException = 
-                        Assert.Throws<AggregateException>(() =>
-                            hashFunction.ComputeHashAsync(ms).Wait());
-
-                    var resultingException = 
-                        Assert.Single(aggregateException.InnerExceptions);
-
-                    Assert.Contains("HashSize",
-                        Assert.IsType<InvalidOperationException>(
-                            resultingException)
-                        .Message);
-                }
-            }
-        }
-
-
-        [Fact]
-        public void IHashFunctionAsync_ComputeHashAsync_Stream_Seekable_MatchesKnownValues()
+        public async void IHashFunctionAsync_ComputeHashAsync_Stream_Seekable_MatchesKnownValues()
         {
             foreach (var knownValue in KnownValues)
             {
@@ -68,7 +29,7 @@ namespace System.Data.HashFunction.Test
 
                 using (var ms = new SlowAsyncStream(new MemoryStream(knownValue.TestValue)))
                 {
-                    var hashResults = hf.ComputeHashAsync(ms).Result;
+                    var hashResults = await hf.ComputeHashAsync(ms);
 
                     Assert.Equal(
                         knownValue.ExpectedValue.Take((hf.HashSize + 7) / 8),
@@ -78,26 +39,29 @@ namespace System.Data.HashFunction.Test
         }
 
         [Fact]
-        public void IHashFunctionAsync_ComputeHashAsync_Stream_NonSeekable_MatchesKnownValues()
+        public async void IHashFunctionAsync_ComputeHashAsync_Stream_NonSeekable_MatchesKnownValues()
         {
-            foreach (var knownValue in KnownValues)
+            foreach (var knownValueGroup in KnownValues.GroupBy(kv => kv.HashSize))
             {
-                var hf = CreateHashFunction(knownValue.HashSize);
+                var hf = CreateHashFunction(knownValueGroup.Key);
 
-                using (var ms = new SlowAsyncStream(new NonSeekableMemoryStream(knownValue.TestValue)))
+                foreach (var knownValue in knownValueGroup)
                 {
-                    var hashResults = hf.ComputeHashAsync(ms).Result;
+                    using (var ms = new SlowAsyncStream(new NonSeekableMemoryStream(knownValue.TestValue)))
+                    {
+                        var hashResults = await hf.ComputeHashAsync(ms);
 
-                    Assert.Equal(
-                        knownValue.ExpectedValue.Take((hf.HashSize + 7) / 8),
-                        hashResults);
+                        Assert.Equal(
+                            knownValue.ExpectedValue.Take((hf.HashSize + 7) / 8),
+                            hashResults);
+                    }
                 }
             }
         }
 
 
         [Fact]
-        public void IHashFunctionAsync_ComputeHashAsync_Stream_Seekable_MatchesKnownValues_SlowStream()
+        public async void IHashFunctionAsync_ComputeHashAsync_Stream_Seekable_MatchesKnownValues_SlowStream()
         {
             foreach (var knownValue in KnownValues)
             {
@@ -106,7 +70,7 @@ namespace System.Data.HashFunction.Test
 
                 using (var ms = new SlowAsyncStream(new MemoryStream(knownValue.TestValue)))
                 {
-                    var hashResults = hf.ComputeHashAsync(ms).Result;
+                    var hashResults = await hf.ComputeHashAsync(ms);
 
                     Assert.Equal(
                         knownValue.ExpectedValue.Take((hf.HashSize + 7) / 8),

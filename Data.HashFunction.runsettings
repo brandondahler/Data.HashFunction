@@ -8,6 +8,7 @@
             <ModulePaths>
               <Exclude>
                <ModulePath>.*System\.Data\.HashFunction\.Test\.dll</ModulePath>
+               <ModulePath>.*xunit\.[^.]*\.dll</ModulePath>
               </Exclude>
             </ModulePaths>
           </CodeCoverage>

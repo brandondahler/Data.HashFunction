@@ -169,14 +169,14 @@ namespace System.Data.HashFunction.Test
 
             private void AssertSugar(Action<IHashFunction> action, byte[] data)
             {
-                var hashFunctionMock = new Mock<HashFunctionImpl>();
+                var hashFunctionMock = new Mock<HashFunctionImpl>(32) { CallBase = true }; ;
 
                 hashFunctionMock.Setup(hf => hf.ComputeHash(It.Is<byte[]>(d => data.SequenceEqual(d))))
                     .Verifiable();
 
                 action(hashFunctionMock.Object);
 
-                Assert.DoesNotThrow(() => hashFunctionMock.Verify());
+                hashFunctionMock.Verify();
             }
         }
 
@@ -336,10 +336,7 @@ namespace System.Data.HashFunction.Test
 
             private void AssertSugar(Action<IHashFunction, int> action, byte[] data)
             {
-                var hashFunctionMock = new Mock<HashFunctionImpl>();
-
-                hashFunctionMock.SetupGet(hf => hf.HashSize)
-                    .Returns(32);
+                var hashFunctionMock = new Mock<HashFunctionImpl>(32) { CallBase = true };
 
                 hashFunctionMock.Setup(hf => hf.ComputeHash(It.Is<byte[]>(d => data.SequenceEqual(d))))
                     .Returns(new byte[4])
@@ -351,7 +348,7 @@ namespace System.Data.HashFunction.Test
                 action(hashFunction, hashFunction.HashSize);
 
 
-                Assert.DoesNotThrow(() => hashFunctionMock.Verify());
+                hashFunctionMock.Verify();
             }
 
         }

@@ -13,16 +13,13 @@ namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
     public class ArrayDataTests
     {
         [Fact]
-        public void ArrayData_ToArrayAsync_ThrowsAggregateExceptions()
+        public async void ArrayData_ToArrayAsync_ThrowsAggregateExceptions()
         {
             var testData = new ArrayData_ThrowNonAsync(new byte[0]);
 
             Assert.Equal("Mock Exception", 
-                Assert.IsType<InvalidOperationException>(
-                    Assert.Single(
-                        Assert.Throws<AggregateException>(() => 
-                            testData.ToArrayAsync().Result)
-                        .InnerExceptions))
+                (await Assert.ThrowsAsync<InvalidOperationException>(async () => 
+                    await testData.ToArrayAsync()))
                 .Message);       
         }
 

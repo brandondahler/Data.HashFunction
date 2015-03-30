@@ -12,7 +12,7 @@
     <description>$description$</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2015</copyright>
-    <tags>BLAKE2b hash function</tags>
+    <tags>BLAKE2 BLAKE2b hash function</tags>
   </metadata>
   <files>
     <file src="bin\$configuration$\v4.0\$id$.dll" target="lib\net40\" />

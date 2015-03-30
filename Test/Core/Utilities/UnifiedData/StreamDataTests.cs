@@ -20,8 +20,7 @@ namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
 
             Assert.True(memoryStream.CanRead);
 
-            Assert.DoesNotThrow(() => 
-                streamData.Dispose());
+            streamData.Dispose();
 
             Assert.False(memoryStream.CanRead);
         }

@@ -60,51 +60,5 @@ namespace System.Data.HashFunction.Test.CRC_Tests
                 .ParamName);
         }
 
-        [Fact]
-        public void CRC_ComputeHashInternal_InvalidSettings()
-        {
-            var mockCRC = new Mock<CRC>() { CallBase = true };
-
-            mockCRC.SetupGet(c => c.Settings)
-                .Returns((CRC.Setting) null);
-
-
-            var crc = mockCRC.Object;
-
-            using (var ms = new MemoryStream())
-            {
-                Assert.Contains("Settings",
-                    Assert.Throws<InvalidOperationException>(() =>
-                        crc.ComputeHash(ms))
-                    .Message);
-            }
-        }
-
-        [Fact]
-        public void CRC_ComputeHashAsyncInternal_InvalidSettings()
-        {
-            var mockCRC = new Mock<CRC>() { CallBase = true };
-
-            mockCRC.SetupGet(c => c.Settings)
-                .Returns((CRC.Setting) null);
-
-
-            var crc = mockCRC.Object;
-
-            using (var ms = new MemoryStream())
-            {
-                var aggregateException =
-                        Assert.Throws<AggregateException>(() =>
-                            crc.ComputeHashAsync(ms).Wait());
-
-                var resultingException = 
-                    Assert.Single(aggregateException.InnerExceptions);
-
-                Assert.Contains("Settings",
-                    Assert.IsType<InvalidOperationException>(
-                        resultingException)
-                    .Message);
-            }
-        }
     }
 }

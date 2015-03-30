@@ -60,13 +60,9 @@ namespace System.Data.HashFunction
 
 
 
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override byte[] ComputeHashInternal(UnifiedData data)
         {
-            if (HashSize != 32)
-                throw new InvalidOperationException("HashSize set to an invalid value.");
-
             UInt32 a = 0x9e3779b9;
             UInt32 b = 0x9e3779b9;
             UInt32 c = InitVal;
@@ -94,13 +90,9 @@ namespace System.Data.HashFunction
         }
         
 #if NET45
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
-            if (HashSize != 32)
-                throw new InvalidOperationException("HashSize set to an invalid value.");
-
             UInt32 a = 0x9e3779b9;
             UInt32 b = 0x9e3779b9;
             UInt32 c = InitVal;

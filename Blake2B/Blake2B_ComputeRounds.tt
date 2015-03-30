@@ -1,0 +1,77 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#
+string StateParameterFormat = "v[{0,2}]";
+
+int[][] StateParameters = new[] {
+	new[] {  0,  4,  8, 12 },
+	new[] {  1,  5,  9, 13 },
+	new[] {  2,  6, 10, 14 },
+	new[] {  3,  7, 11, 15 },
+	new[] {  0,  5, 10, 15 },
+	new[] {  1,  6, 11, 12 },
+	new[] {  2,  7,  8, 13 },
+	new[] {  3,  4,  9, 14 },
+};
+
+int[][] Sigma = new[] {
+	new[] {  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, },
+	new[] { 14, 10,  4,  8,  9, 15, 13,  6,  1, 12,  0,  2, 11,  7,  5,  3, },
+	new[] { 11,  8, 12,  0,  5,  2, 15, 13, 10, 14,  3,  6,  7,  1,  9,  4, },
+	new[] {  7,  9,  3,  1, 13, 12, 11, 14,  2,  6,  5, 10,  4,  0, 15,  8, },
+	new[] {  9,  0,  5,  7,  2,  4, 10, 15, 14,  1, 11, 12,  6,  8,  3, 13, },
+	new[] {  2, 12,  6, 10,  0, 11,  8,  3,  4, 13,  7,  5, 15, 14,  1,  9, },
+	new[] { 12,  5,  1, 15, 14, 13,  4, 10,  0,  7,  6,  3,  9,  2,  8, 11, },
+	new[] { 13, 11,  7, 14, 12,  1,  3,  9,  5,  0, 15,  4,  8,  6,  2, 10, },
+	new[] {  6, 15, 14,  9, 11,  3,  0,  8, 12,  2, 13,  7,  1,  4, 10,  5, },
+	new[] { 10,  2,  8,  4,  7,  6,  1,  5, 15, 11,  9, 14,  3,  12, 13, 0, },
+	new[] {  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, },
+	new[] { 14, 10,  4,  8,  9, 15, 13,  6,  1, 12,  0,  2, 11,  7,  5,  3, },
+};
+#>
+using System;
+using System.IO;
+
+namespace System.Data.HashFunction
+{
+	public partial class Blake2B
+	{
+		private static void ComputeRounds(UInt64[] v, UInt64[] m)
+		{
+			// Rounds
+<# for (int round = 0; round < 12; ++round) { #>
+
+			#region Round(<#= round #>)
+
+<# 
+for (int iteration = 0; iteration < 8; ++iteration) { 
+	var a = string.Format(StateParameterFormat, StateParameters[iteration][0]);
+	var b = string.Format(StateParameterFormat, StateParameters[iteration][1]);
+	var c = string.Format(StateParameterFormat, StateParameters[iteration][2]);
+	var d = string.Format(StateParameterFormat, StateParameters[iteration][3]);
+#>
+			// G(<#= round #>, <#= iteration #>, <#= a #>, <#= b #>, <#= c #>, <#= d #>)
+			<#= a #>  =  <#= a #> + <#= b #> + m[<#= Sigma[round][2 * iteration] #>];
+			<#= d #> ^=  <#= a #>;
+			<#= d #>  = (<#= d #> >> 32) | (<#= d #> << <#= 64 - 32 #>);
+			<#= c #>  =  <#= c #> + <#= d #>;
+			<#= b #> ^=  <#= c #>;
+			<#= b #>  = (<#= b #> >> 24) | (<#= b #> << <#= 64 - 24 #>);
+			<#= a #>  =  <#= a #> + <#= b #> + m[<#= Sigma[round][(2 * iteration) + 1] #>];
+			<#= d #> ^=  <#= a #>;
+			<#= d #>  = (<#= d #> >> 16) | (<#= d #> << <#= 64 - 16 #>);
+			<#= c #>  =  <#= c #> + <#= d #>;
+			<#= b #> ^=  <#= c #>;
+			<#= b #>  = (<#= b #> >> 63) | (<#= b #> << <#= 64 - 63 #>);
+
+<# } #>
+			#endregion
+<# } #>
+
+		}
+	}	
+}

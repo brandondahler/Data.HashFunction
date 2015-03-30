@@ -160,15 +160,21 @@ namespace System.Data.HashFunction
             if (dataCount > 0)
                 Final(ref a, ref b, ref c);
 
+
+            byte[] hash = null;
+
             switch (HashSize)
             {
                 case 32:
-                    return BitConverter.GetBytes(c);
+                    hash = BitConverter.GetBytes(c);
+                    break;
+
                 case 64:
-                    return BitConverter.GetBytes((((UInt64) b) << 32) | c);
-                default:
-                    throw new InvalidOperationException("HashSize set to an invalid value.");
+                    hash = BitConverter.GetBytes((((UInt64) b) << 32) | c);
+                    break;
             }
+
+            return hash;
         }
         
 #if NET45
@@ -197,15 +203,21 @@ namespace System.Data.HashFunction
             if (dataCount > 0)
                 Final(ref a, ref b, ref c);
 
+
+            byte[] hash = null;
+
             switch (HashSize)
             {
                 case 32:
-                    return BitConverter.GetBytes(c);
+                    hash = BitConverter.GetBytes(c);
+                    break;
+
                 case 64:
-                    return BitConverter.GetBytes((((UInt64) b) << 32) | c);
-                default:
-                    throw new InvalidOperationException("HashSize set to an invalid value.");
+                    hash = BitConverter.GetBytes((((UInt64) b) << 32) | c);
+                    break;
             }
+
+            return hash;
         }
 #endif
 

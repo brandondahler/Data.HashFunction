@@ -1,12 +1,8 @@
 ﻿<Project
     xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <UsingTask
-    AssemblyFile="$(MSBuildProjectDirectory)\..\packages\xunit.1.9.2\lib\net20\xunit.runner.msbuild.dll"
-    TaskName="Xunit.Runner.MSBuild.xunit"/>
-
   <Target Name="RunXunitTests">
-    <xunit Assembly="$(TargetPath)" />
+    <Xunit.Runner.MSBuild.xunit Assemblies="$(TargetPath)" />
     
     <OnError ExecuteTargets="XunitTestsFailed"/>
   </Target>

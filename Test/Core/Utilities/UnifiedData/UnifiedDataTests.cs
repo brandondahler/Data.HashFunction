@@ -64,8 +64,7 @@ namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
 
             foreach (var validBufferSize in validBufferSizes)
             {
-                Assert.DoesNotThrow(() =>
-                    testData.BufferSize = validBufferSize);
+                testData.BufferSize = validBufferSize;
 
                 Assert.Equal(validBufferSize, testData.BufferSize);
             }
@@ -118,22 +117,18 @@ namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
         #region ForEachReadAsync
 
         [Fact]
-        public void UnifiedData_ForEachReadAsync_NullAction_Throws()
+        public async void UnifiedData_ForEachReadAsync_NullAction_Throws()
         {
             var testData = CreateTestData(0);
 
             Assert.Equal("action",
-                Assert.IsType<ArgumentNullException>(
-                    Assert.Single(
-                        Assert.Throws<AggregateException>(() =>
-                            testData.ForEachReadAsync(null)
-                                .Wait())
-                        .InnerExceptions))
+                (await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                    await testData.ForEachReadAsync(null)))
                 .ParamName);
         }
 
         [Fact]
-        public void UnifiedData_ForEachReadAsync_Works()
+        public async void UnifiedData_ForEachReadAsync_Works()
         {
             var validBufferSizes = new[] {
                 1, 2, 4, 8, 9, 16, 32, 64, 128, 4096,
@@ -149,11 +144,10 @@ namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
 
                 testData.BufferSize = validBufferSize;
 
-                testData.ForEachReadAsync(
-                        (a, b, c) => {
-                            lengthRead += c;
-                        })
-                    .Wait();
+                await testData.ForEachReadAsync(
+                    (a, b, c) => {
+                        lengthRead += c;
+                    });
 
                 Assert.Equal(validBufferSize, lengthRead);
             }
@@ -200,8 +194,7 @@ namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
             var testData = CreateTestData(0);
 
 
-            Assert.DoesNotThrow(() =>
-                testData.ForEachGroup(1, (a, b, c) => { }, null));
+            testData.ForEachGroup(1, (a, b, c) => { }, null);
         }
 
         [Fact]
@@ -272,7 +265,7 @@ namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
         #region ForEachGroupAsync
 
         [Fact]
-        public void UnifiedData_ForEachGroupAsync_InvalidGroupSize_Throws()
+        public async void UnifiedData_ForEachGroupAsync_InvalidGroupSize_Throws()
         {
             var testData = CreateTestData(0);
 
@@ -284,44 +277,34 @@ namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
             foreach (var invalidGroupSize in invalidGroupSizes)
             {
                 Assert.Equal("groupSize",
-                    Assert.IsType<ArgumentOutOfRangeException>(
-                        Assert.Single(
-                            Assert.Throws<AggregateException>(() =>
-                                testData.ForEachGroupAsync(invalidGroupSize, (a, b, c) => { }, (a, b, c) => { })
-                                    .Wait())
-                            .InnerExceptions))
+                    (await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+                        await testData.ForEachGroupAsync(invalidGroupSize, (a, b, c) => { }, (a, b, c) => { })))
                     .ParamName);
             }
         }
 
         [Fact]
-        public void UnifiedData_ForEachGroupAsync_NullAction_Throws()
+        public async void UnifiedData_ForEachGroupAsync_NullAction_Throws()
         {
             var testData = CreateTestData(0);
 
             Assert.Equal("action",
-                Assert.IsType<ArgumentNullException>(
-                    Assert.Single(
-                        Assert.Throws<AggregateException>(() =>
-                            testData.ForEachGroupAsync(1, null, (a, b, c) => { })
-                                .Wait())
-                        .InnerExceptions))
+                (await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                    await testData.ForEachGroupAsync(1, null, (a, b, c) => { })))
                 .ParamName);            
         }
 
         [Fact]
-        public void UnifiedData_ForEachGroupAsync_NullRemainder_DoesNotThrow()
+        public async void UnifiedData_ForEachGroupAsync_NullRemainder_DoesNotThrow()
         {
             var testData = CreateTestData(0);
 
 
-            Assert.DoesNotThrow(() =>
-                testData.ForEachGroupAsync(1, (a, b, c) => { }, null)
-                    .Wait());
+            await testData.ForEachGroupAsync(1, (a, b, c) => { }, null);
         }
 
         [Fact]
-        public void UnifiedData_ForEachGroupAsync_Works()
+        public async void UnifiedData_ForEachGroupAsync_Works()
         {
             var r = new Random();
 
@@ -340,15 +323,14 @@ namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
                     var testData = CreateTestData(dataLength);
 
 
-                    testData.ForEachGroupAsync(validGroupSize, 
-                            (dataBytes, position, length) => {
-                                dataLength -= length;
-                            },
-                            (remainder, position, length) => {
-                                // Since it is a multiple, it should never be called.
-                                Assert.True(false);
-                            })
-                        .Wait();
+                    await testData.ForEachGroupAsync(validGroupSize, 
+                        (dataBytes, position, length) => {
+                            dataLength -= length;
+                        },
+                        (remainder, position, length) => {
+                            // Since it is a multiple, it should never be called.
+                            Assert.True(false);
+                        });
 
                     Assert.Equal(0, dataLength);
                 }
@@ -366,15 +348,14 @@ namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
 
                         var remainderCalls = 0;
 
-                        testData.ForEachGroupAsync(validGroupSize, 
-                                (dataBytes, position, length) => {
-                                    groupLength -= length;
-                                },
-                                (remainder, position, length) => {
-                                    remainderLength -= length;
-                                    ++remainderCalls;
-                                })
-                            .Wait();
+                        await testData.ForEachGroupAsync(validGroupSize, 
+                            (dataBytes, position, length) => {
+                                groupLength -= length;
+                            },
+                            (remainder, position, length) => {
+                                remainderLength -= length;
+                                ++remainderCalls;
+                            });
 
                         Assert.Equal(0, groupLength);
                         Assert.Equal(0, remainderLength);
@@ -414,7 +395,7 @@ namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
         #region ToArrayAsync
 
         [Fact]
-        public void UnifiedData_ToArrayAsync_Works()
+        public async void UnifiedData_ToArrayAsync_Works()
         {
             var testLengths = new[] {
                 0, 1, 2, 4, 8, 16, 32, 64,
@@ -427,7 +408,7 @@ namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
                 var testData = CreateTestData(testLength);
 
                 Assert.Equal(testLength,
-                    testData.ToArrayAsync().Result
+                    (await testData.ToArrayAsync())
                         .Length);
             }
         }

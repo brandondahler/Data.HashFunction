@@ -137,14 +137,9 @@ namespace System.Data.HashFunction
         }
 
 
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override byte[] ComputeHashInternal(UnifiedData data)
         {
-            if (!HashParameters.ContainsKey(HashSize))
-                throw new InvalidOperationException("HashSize set to an invalid value.");
-
-
             var prime = HashParameters[HashSize].Prime;
             var offset = HashParameters[HashSize].Offset;
 
@@ -187,14 +182,9 @@ namespace System.Data.HashFunction
         }
         
 #if NET45
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
-            if (!HashParameters.ContainsKey(HashSize))
-                throw new InvalidOperationException("HashSize set to an invalid value.");
-
-            
             var prime = HashParameters[HashSize].Prime;
             var offset = HashParameters[HashSize].Offset;
 

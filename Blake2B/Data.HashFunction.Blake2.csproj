@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>System.Data.HashFunction</RootNamespace>
-    <AssemblyName>System.Data.HashFunction.Blake2B</AssemblyName>
+    <AssemblyName>System.Data.HashFunction.Blake2</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\System.Data.HashFunction.Blake2B.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\System.Data.HashFunction.Blake2.XML</DocumentationFile>
     <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -30,13 +30,13 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\System.Data.HashFunction.Blake2B.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\System.Data.HashFunction.Blake2.XML</DocumentationFile>
     <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'NuGetDeploy|AnyCPU'">
     <OutputPath>bin\NuGetDeploy\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>bin\NuGetDeploy\System.Data.HashFunction.Blake2B.XML</DocumentationFile>
+    <DocumentationFile>bin\NuGetDeploy\System.Data.HashFunction.Blake2.XML</DocumentationFile>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -55,10 +55,19 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Blake2B.cs" />
+    <Compile Include="Blake2B_ComputeRounds.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Blake2B_ComputeRounds.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data.HashFunction.Blake2B.nuspec">
+    <None Include="Blake2B_ComputeRounds.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Blake2B_ComputeRounds.cs</LastGenOutput>
+    </None>
+    <None Include="Data.HashFunction.Blake2.nuspec">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
@@ -67,6 +76,9 @@
       <Project>{d8268071-2147-4364-9803-ed0921246899}</Project>
       <Name>Data.HashFunction.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="..\BuildMultipleFrameworks.props" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

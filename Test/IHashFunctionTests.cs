@@ -55,61 +55,6 @@ namespace System.Data.HashFunction.Test
         }
 
         [Fact]
-        public void IHashFunction_ComputeHash_ByteArray_InvalidHashSize_Throws()
-        {
-            var hashSizes = KnownValues.Select(kv => kv.HashSize)
-                .Distinct();
-
-            // Ignore if hash function does not seem to have a configurable hashSize constructor.
-            foreach (var hashSize in hashSizes)
-            {
-                Mock<IHashFunctionT> hashFunctionMock = CreateHashFunctionMock(hashSize);
-                hashFunctionMock.CallBase = true;
-
-                hashFunctionMock
-                    .SetupGet(hf => hf.HashSize)
-                    .Returns(-1);
-
-
-                var hashFunction = hashFunctionMock.Object;
-
-                Assert.Contains("HashSize",
-                    Assert.Throws<InvalidOperationException>(() =>
-                        hashFunction.ComputeHash(new byte[0]))
-                    .Message);
-            }
-        }
-
-        [Fact]
-        public void IHashFunction_ComputeHash_Stream_InvalidHashSize_Throws()
-        {
-            var hashSizes = KnownValues.Select(kv => kv.HashSize)
-                .Distinct();
-
-            // Ignore if hash function does not seem to have a configurable hashSize constructor.
-            foreach (var hashSize in hashSizes)
-            {
-                Mock<IHashFunctionT> hashFunctionMock = CreateHashFunctionMock(hashSize);
-                hashFunctionMock.CallBase = true;
-
-                hashFunctionMock
-                    .SetupGet(hf => hf.HashSize)
-                    .Returns(-1);
-
-
-                var hashFunction = hashFunctionMock.Object;
-
-                using (var ms = new MemoryStream())
-                {
-                    Assert.Contains("HashSize",
-                        Assert.Throws<InvalidOperationException>(() =>
-                            hashFunction.ComputeHash(ms))
-                        .Message);
-                }
-            }
-        }
-
-        [Fact]
         public void IHashFunction_ComputeHash_ByteArray_MatchesKnownValues()
         {
 
@@ -199,7 +144,5 @@ namespace System.Data.HashFunction.Test
 
 
         protected abstract IHashFunctionT CreateHashFunction(int hashSize);
-
-        protected abstract Mock<IHashFunctionT> CreateHashFunctionMock(int hashSize);
     }
 }

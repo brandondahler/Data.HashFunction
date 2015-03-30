@@ -13,27 +13,19 @@ namespace System.Data.HashFunction.Test.Core
     public class HashFunctionAsyncBaseTests
     {
         [Fact]
-        public void HashFunctionAsyncBase_ComputeHash_Stream_NotReadable_Throws()
+        public async void HashFunctionAsyncBase_ComputeHash_Stream_NotReadable_Throws()
         {
             var msMock = new Mock<MemoryStream>();
 
             msMock.SetupGet(ms => ms.CanRead)
                 .Returns(false);
 
-            var hf = new HashFunctionImpl();
-
-
-            var aggregateException =
-                Assert.Throws<AggregateException>(() =>
-                    hf.ComputeHashAsync(msMock.Object).Wait());
-
-            var resultingException =
-                Assert.Single(aggregateException.InnerExceptions);
+            var hf = new HashFunctionImpl(0);
 
 
             Assert.Equal("data",
-                Assert.IsType<ArgumentException>(
-                    resultingException)
+                (await Assert.ThrowsAsync<ArgumentException>(async () =>
+                    await hf.ComputeHashAsync(msMock.Object)))
                 .ParamName);
         }
     }

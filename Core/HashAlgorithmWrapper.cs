@@ -79,13 +79,9 @@ namespace System.Data.HashFunction
         }
 
 
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         public byte[] ComputeHash(byte[] data)
         {
-            if (HashSize != _hashAlgorithm.HashSize)
-                throw new InvalidOperationException("HashSize set to an invalid value.");
-
             lock (SyncRoot)
                 return _hashAlgorithm.ComputeHash(data);
         }
@@ -93,9 +89,6 @@ namespace System.Data.HashFunction
         /// <inheritdoc />
         public byte[] ComputeHash(Stream data)
         {
-            if (HashSize != _hashAlgorithm.HashSize)
-                throw new InvalidOperationException("HashSize set to an invalid value.");
-
             lock (SyncRoot)
                 return _hashAlgorithm.ComputeHash(data);
         }
@@ -161,13 +154,9 @@ namespace System.Data.HashFunction
         }
 
 
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         public byte[] ComputeHash(byte[] data)
         {
-            if (HashSize != _hashAlgorithm.HashSize)
-                throw new InvalidOperationException("HashSize set to an invalid value.");
-
             lock (SyncRoot)
                 return _hashAlgorithm.ComputeHash(data);
         }
@@ -175,9 +164,6 @@ namespace System.Data.HashFunction
         /// <inheritdoc />
         public byte[] ComputeHash(Stream data)
         {
-            if (HashSize != _hashAlgorithm.HashSize)
-                throw new InvalidOperationException("HashSize set to an invalid value.");
-
             lock (SyncRoot)
                 return _hashAlgorithm.ComputeHash(data);
         }

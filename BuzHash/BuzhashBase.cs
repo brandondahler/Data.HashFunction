@@ -149,6 +149,8 @@ namespace System.Data.HashFunction
         /// <inheritdoc />
         protected override byte[] ComputeHashInternal(UnifiedData data)
         {
+            byte[] hash = null;
+
             switch (HashSize)
             {
                 case 8:
@@ -159,7 +161,8 @@ namespace System.Data.HashFunction
                         ProcessBytes(ref h, dataBytes, position, length);
                     });
             
-                    return new byte[] { h };
+                    hash = new byte[] { h };
+                    break;
                 }
 
                 case 16:
@@ -170,7 +173,8 @@ namespace System.Data.HashFunction
                         ProcessBytes(ref h, dataBytes, position, length);
                     });
 
-                    return BitConverter.GetBytes(h);
+                    hash = BitConverter.GetBytes(h);
+                    break;
                 }
 
                 case 32:
@@ -181,7 +185,8 @@ namespace System.Data.HashFunction
                         ProcessBytes(ref h, dataBytes, position, length);
                     });
             
-                    return BitConverter.GetBytes(h);
+                    hash = BitConverter.GetBytes(h);
+                    break;
                 }
                 
                 case 64:
@@ -192,12 +197,12 @@ namespace System.Data.HashFunction
                         ProcessBytes(ref h, dataBytes, position, length);
                     });
             
-                    return BitConverter.GetBytes(h);
+                    hash = BitConverter.GetBytes(h);
+                    break;
                 }
-
-                default:
-                    throw new InvalidOperationException("HashSize set to an invalid value.");
             }
+
+            return hash;
         }
         
 #if NET45
@@ -205,6 +210,8 @@ namespace System.Data.HashFunction
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
+            byte[] hash = null;
+
             switch (HashSize)
             {
                 case 8:
@@ -214,8 +221,9 @@ namespace System.Data.HashFunction
                     await data.ForEachReadAsync((dataBytes, position, length) => {
                         ProcessBytes(ref h, dataBytes, position, length);
                     }).ConfigureAwait(false);
-            
-                    return new byte[] { h };
+
+                    hash = new byte[] { h };
+                    break;
                 }
 
                 case 16:
@@ -226,7 +234,8 @@ namespace System.Data.HashFunction
                         ProcessBytes(ref h, dataBytes, position, length);
                     }).ConfigureAwait(false);
 
-                    return BitConverter.GetBytes(h);
+                    hash = BitConverter.GetBytes(h);
+                    break;
                 }
 
                 case 32:
@@ -236,8 +245,9 @@ namespace System.Data.HashFunction
                     await data.ForEachReadAsync((dataBytes, position, length) => {
                         ProcessBytes(ref h, dataBytes, position, length);
                     }).ConfigureAwait(false);
-            
-                    return BitConverter.GetBytes(h);
+
+                    hash = BitConverter.GetBytes(h);
+                    break;
                 }
                 
                 case 64:
@@ -248,12 +258,12 @@ namespace System.Data.HashFunction
                         ProcessBytes(ref h, dataBytes, position, length);
                     }).ConfigureAwait(false);
             
-                    return BitConverter.GetBytes(h);
+                    hash = BitConverter.GetBytes(h);
+                    break;
                 }
-
-                default:
-                    throw new InvalidOperationException("HashSize set to an invalid value.");
             }
+
+            return hash;
         }
 #endif
 

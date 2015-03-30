@@ -30,11 +30,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC3_ROHC();
         }
-
-        protected override Mock<CRC3_ROHC> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC3_ROHC>();
-        }
     }
 
     public class IHashFunctionTests_CRC4_ITU
@@ -53,11 +48,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC4_ITU CreateHashFunction(int hashSize)
         {
             return new CRC4_ITU();
-        }
-
-        protected override Mock<CRC4_ITU> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC4_ITU>();
         }
     }
 
@@ -78,11 +68,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC5_EPC();
         }
-
-        protected override Mock<CRC5_EPC> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC5_EPC>();
-        }
     }
 
     public class IHashFunctionTests_CRC5_ITU
@@ -101,11 +86,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC5_ITU CreateHashFunction(int hashSize)
         {
             return new CRC5_ITU();
-        }
-
-        protected override Mock<CRC5_ITU> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC5_ITU>();
         }
     }
 
@@ -126,11 +106,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC5_USB();
         }
-
-        protected override Mock<CRC5_USB> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC5_USB>();
-        }
     }
 
     public class IHashFunctionTests_CRC6_CDMA2000A
@@ -149,11 +124,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC6_CDMA2000A CreateHashFunction(int hashSize)
         {
             return new CRC6_CDMA2000A();
-        }
-
-        protected override Mock<CRC6_CDMA2000A> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC6_CDMA2000A>();
         }
     }
 
@@ -174,11 +144,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC6_CDMA2000B();
         }
-
-        protected override Mock<CRC6_CDMA2000B> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC6_CDMA2000B>();
-        }
     }
 
     public class IHashFunctionTests_CRC6_DARC
@@ -197,11 +162,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC6_DARC CreateHashFunction(int hashSize)
         {
             return new CRC6_DARC();
-        }
-
-        protected override Mock<CRC6_DARC> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC6_DARC>();
         }
     }
 
@@ -222,11 +182,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC6_ITU();
         }
-
-        protected override Mock<CRC6_ITU> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC6_ITU>();
-        }
     }
 
     public class IHashFunctionTests_CRC7
@@ -245,11 +200,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC7 CreateHashFunction(int hashSize)
         {
             return new CRC7();
-        }
-
-        protected override Mock<CRC7> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC7>();
         }
     }
 
@@ -270,11 +220,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC7_ROHC();
         }
-
-        protected override Mock<CRC7_ROHC> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC7_ROHC>();
-        }
     }
 
     public class IHashFunctionTests_CRC8
@@ -293,11 +238,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC8 CreateHashFunction(int hashSize)
         {
             return new CRC8();
-        }
-
-        protected override Mock<CRC8> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC8>();
         }
     }
 
@@ -318,11 +258,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC8_CDMA2000();
         }
-
-        protected override Mock<CRC8_CDMA2000> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC8_CDMA2000>();
-        }
     }
 
     public class IHashFunctionTests_CRC8_DARC
@@ -341,11 +276,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC8_DARC CreateHashFunction(int hashSize)
         {
             return new CRC8_DARC();
-        }
-
-        protected override Mock<CRC8_DARC> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC8_DARC>();
         }
     }
 
@@ -366,11 +296,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC8_DVBS2();
         }
-
-        protected override Mock<CRC8_DVBS2> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC8_DVBS2>();
-        }
     }
 
     public class IHashFunctionTests_CRC8_EBU
@@ -389,11 +314,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC8_EBU CreateHashFunction(int hashSize)
         {
             return new CRC8_EBU();
-        }
-
-        protected override Mock<CRC8_EBU> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC8_EBU>();
         }
     }
 
@@ -414,11 +334,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC8_ICODE();
         }
-
-        protected override Mock<CRC8_ICODE> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC8_ICODE>();
-        }
     }
 
     public class IHashFunctionTests_CRC8_ITU
@@ -437,11 +352,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC8_ITU CreateHashFunction(int hashSize)
         {
             return new CRC8_ITU();
-        }
-
-        protected override Mock<CRC8_ITU> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC8_ITU>();
         }
     }
 
@@ -462,11 +372,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC8_MAXIM();
         }
-
-        protected override Mock<CRC8_MAXIM> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC8_MAXIM>();
-        }
     }
 
     public class IHashFunctionTests_CRC8_ROHC
@@ -485,11 +390,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC8_ROHC CreateHashFunction(int hashSize)
         {
             return new CRC8_ROHC();
-        }
-
-        protected override Mock<CRC8_ROHC> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC8_ROHC>();
         }
     }
 
@@ -510,11 +410,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC8_WCDMA();
         }
-
-        protected override Mock<CRC8_WCDMA> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC8_WCDMA>();
-        }
     }
 
     public class IHashFunctionTests_CRC10
@@ -533,11 +428,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC10 CreateHashFunction(int hashSize)
         {
             return new CRC10();
-        }
-
-        protected override Mock<CRC10> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC10>();
         }
     }
 
@@ -558,11 +448,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC10_CDMA2000();
         }
-
-        protected override Mock<CRC10_CDMA2000> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC10_CDMA2000>();
-        }
     }
 
     public class IHashFunctionTests_CRC11
@@ -581,11 +466,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC11 CreateHashFunction(int hashSize)
         {
             return new CRC11();
-        }
-
-        protected override Mock<CRC11> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC11>();
         }
     }
 
@@ -606,11 +486,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC12_3GPP();
         }
-
-        protected override Mock<CRC12_3GPP> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC12_3GPP>();
-        }
     }
 
     public class IHashFunctionTests_CRC12_CDMA2000
@@ -629,11 +504,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC12_CDMA2000 CreateHashFunction(int hashSize)
         {
             return new CRC12_CDMA2000();
-        }
-
-        protected override Mock<CRC12_CDMA2000> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC12_CDMA2000>();
         }
     }
 
@@ -654,11 +524,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC12_DECT();
         }
-
-        protected override Mock<CRC12_DECT> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC12_DECT>();
-        }
     }
 
     public class IHashFunctionTests_CRC13_BBC
@@ -677,11 +542,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC13_BBC CreateHashFunction(int hashSize)
         {
             return new CRC13_BBC();
-        }
-
-        protected override Mock<CRC13_BBC> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC13_BBC>();
         }
     }
 
@@ -702,11 +562,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC14_DARC();
         }
-
-        protected override Mock<CRC14_DARC> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC14_DARC>();
-        }
     }
 
     public class IHashFunctionTests_CRC15
@@ -725,11 +580,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC15 CreateHashFunction(int hashSize)
         {
             return new CRC15();
-        }
-
-        protected override Mock<CRC15> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC15>();
         }
     }
 
@@ -750,11 +600,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC15_MPT1327();
         }
-
-        protected override Mock<CRC15_MPT1327> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC15_MPT1327>();
-        }
     }
 
     public class IHashFunctionTests_ARC
@@ -773,11 +618,6 @@ namespace System.Data.HashFunction.Test
         protected override ARC CreateHashFunction(int hashSize)
         {
             return new ARC();
-        }
-
-        protected override Mock<ARC> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<ARC>();
         }
     }
 
@@ -798,11 +638,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC16_AUGCCITT();
         }
-
-        protected override Mock<CRC16_AUGCCITT> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC16_AUGCCITT>();
-        }
     }
 
     public class IHashFunctionTests_CRC16_BUYPASS
@@ -821,11 +656,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC16_BUYPASS CreateHashFunction(int hashSize)
         {
             return new CRC16_BUYPASS();
-        }
-
-        protected override Mock<CRC16_BUYPASS> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC16_BUYPASS>();
         }
     }
 
@@ -846,11 +676,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC16_CCITTFALSE();
         }
-
-        protected override Mock<CRC16_CCITTFALSE> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC16_CCITTFALSE>();
-        }
     }
 
     public class IHashFunctionTests_CRC16_CDMA2000
@@ -869,11 +694,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC16_CDMA2000 CreateHashFunction(int hashSize)
         {
             return new CRC16_CDMA2000();
-        }
-
-        protected override Mock<CRC16_CDMA2000> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC16_CDMA2000>();
         }
     }
 
@@ -894,11 +714,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC16_DDS110();
         }
-
-        protected override Mock<CRC16_DDS110> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC16_DDS110>();
-        }
     }
 
     public class IHashFunctionTests_CRC16_DECTR
@@ -917,11 +732,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC16_DECTR CreateHashFunction(int hashSize)
         {
             return new CRC16_DECTR();
-        }
-
-        protected override Mock<CRC16_DECTR> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC16_DECTR>();
         }
     }
 
@@ -942,11 +752,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC16_DECTX();
         }
-
-        protected override Mock<CRC16_DECTX> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC16_DECTX>();
-        }
     }
 
     public class IHashFunctionTests_CRC16_DNP
@@ -965,11 +770,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC16_DNP CreateHashFunction(int hashSize)
         {
             return new CRC16_DNP();
-        }
-
-        protected override Mock<CRC16_DNP> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC16_DNP>();
         }
     }
 
@@ -990,11 +790,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC16_EN13757();
         }
-
-        protected override Mock<CRC16_EN13757> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC16_EN13757>();
-        }
     }
 
     public class IHashFunctionTests_CRC16_GENIBUS
@@ -1013,11 +808,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC16_GENIBUS CreateHashFunction(int hashSize)
         {
             return new CRC16_GENIBUS();
-        }
-
-        protected override Mock<CRC16_GENIBUS> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC16_GENIBUS>();
         }
     }
 
@@ -1038,11 +828,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC16_MAXIM();
         }
-
-        protected override Mock<CRC16_MAXIM> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC16_MAXIM>();
-        }
     }
 
     public class IHashFunctionTests_CRC16_MCRF4XX
@@ -1061,11 +846,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC16_MCRF4XX CreateHashFunction(int hashSize)
         {
             return new CRC16_MCRF4XX();
-        }
-
-        protected override Mock<CRC16_MCRF4XX> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC16_MCRF4XX>();
         }
     }
 
@@ -1086,11 +866,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC16_RIELLO();
         }
-
-        protected override Mock<CRC16_RIELLO> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC16_RIELLO>();
-        }
     }
 
     public class IHashFunctionTests_CRC16_T10DIF
@@ -1109,11 +884,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC16_T10DIF CreateHashFunction(int hashSize)
         {
             return new CRC16_T10DIF();
-        }
-
-        protected override Mock<CRC16_T10DIF> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC16_T10DIF>();
         }
     }
 
@@ -1134,11 +904,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC16_TELEDISK();
         }
-
-        protected override Mock<CRC16_TELEDISK> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC16_TELEDISK>();
-        }
     }
 
     public class IHashFunctionTests_CRC16_TMS37157
@@ -1157,11 +922,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC16_TMS37157 CreateHashFunction(int hashSize)
         {
             return new CRC16_TMS37157();
-        }
-
-        protected override Mock<CRC16_TMS37157> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC16_TMS37157>();
         }
     }
 
@@ -1182,11 +942,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC16_USB();
         }
-
-        protected override Mock<CRC16_USB> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC16_USB>();
-        }
     }
 
     public class IHashFunctionTests_CRCA
@@ -1205,11 +960,6 @@ namespace System.Data.HashFunction.Test
         protected override CRCA CreateHashFunction(int hashSize)
         {
             return new CRCA();
-        }
-
-        protected override Mock<CRCA> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRCA>();
         }
     }
 
@@ -1230,11 +980,6 @@ namespace System.Data.HashFunction.Test
         {
             return new KERMIT();
         }
-
-        protected override Mock<KERMIT> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<KERMIT>();
-        }
     }
 
     public class IHashFunctionTests_MODBUS
@@ -1253,11 +998,6 @@ namespace System.Data.HashFunction.Test
         protected override MODBUS CreateHashFunction(int hashSize)
         {
             return new MODBUS();
-        }
-
-        protected override Mock<MODBUS> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<MODBUS>();
         }
     }
 
@@ -1278,11 +1018,6 @@ namespace System.Data.HashFunction.Test
         {
             return new X25();
         }
-
-        protected override Mock<X25> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<X25>();
-        }
     }
 
     public class IHashFunctionTests_XMODEM
@@ -1301,11 +1036,6 @@ namespace System.Data.HashFunction.Test
         protected override XMODEM CreateHashFunction(int hashSize)
         {
             return new XMODEM();
-        }
-
-        protected override Mock<XMODEM> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<XMODEM>();
         }
     }
 
@@ -1326,11 +1056,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC24();
         }
-
-        protected override Mock<CRC24> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC24>();
-        }
     }
 
     public class IHashFunctionTests_CRC24_FLEXRAYA
@@ -1349,11 +1074,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC24_FLEXRAYA CreateHashFunction(int hashSize)
         {
             return new CRC24_FLEXRAYA();
-        }
-
-        protected override Mock<CRC24_FLEXRAYA> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC24_FLEXRAYA>();
         }
     }
 
@@ -1374,11 +1094,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC24_FLEXRAYB();
         }
-
-        protected override Mock<CRC24_FLEXRAYB> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC24_FLEXRAYB>();
-        }
     }
 
     public class IHashFunctionTests_CRC31_PHILIPS
@@ -1397,11 +1112,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC31_PHILIPS CreateHashFunction(int hashSize)
         {
             return new CRC31_PHILIPS();
-        }
-
-        protected override Mock<CRC31_PHILIPS> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC31_PHILIPS>();
         }
     }
 
@@ -1422,11 +1132,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC32();
         }
-
-        protected override Mock<CRC32> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC32>();
-        }
     }
 
     public class IHashFunctionTests_CRC32_BZIP2
@@ -1445,11 +1150,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC32_BZIP2 CreateHashFunction(int hashSize)
         {
             return new CRC32_BZIP2();
-        }
-
-        protected override Mock<CRC32_BZIP2> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC32_BZIP2>();
         }
     }
 
@@ -1470,11 +1170,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC32C();
         }
-
-        protected override Mock<CRC32C> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC32C>();
-        }
     }
 
     public class IHashFunctionTests_CRC32D
@@ -1493,11 +1188,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC32D CreateHashFunction(int hashSize)
         {
             return new CRC32D();
-        }
-
-        protected override Mock<CRC32D> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC32D>();
         }
     }
 
@@ -1518,11 +1208,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC32_MPEG2();
         }
-
-        protected override Mock<CRC32_MPEG2> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC32_MPEG2>();
-        }
     }
 
     public class IHashFunctionTests_CRC32_POSIX
@@ -1541,11 +1226,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC32_POSIX CreateHashFunction(int hashSize)
         {
             return new CRC32_POSIX();
-        }
-
-        protected override Mock<CRC32_POSIX> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC32_POSIX>();
         }
     }
 
@@ -1566,11 +1246,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC32Q();
         }
-
-        protected override Mock<CRC32Q> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC32Q>();
-        }
     }
 
     public class IHashFunctionTests_JAMCRC
@@ -1589,11 +1264,6 @@ namespace System.Data.HashFunction.Test
         protected override JAMCRC CreateHashFunction(int hashSize)
         {
             return new JAMCRC();
-        }
-
-        protected override Mock<JAMCRC> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<JAMCRC>();
         }
     }
 
@@ -1614,11 +1284,6 @@ namespace System.Data.HashFunction.Test
         {
             return new XFER();
         }
-
-        protected override Mock<XFER> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<XFER>();
-        }
     }
 
     public class IHashFunctionTests_CRC40_GSM
@@ -1637,11 +1302,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC40_GSM CreateHashFunction(int hashSize)
         {
             return new CRC40_GSM();
-        }
-
-        protected override Mock<CRC40_GSM> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC40_GSM>();
         }
     }
 
@@ -1662,11 +1322,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC64();
         }
-
-        protected override Mock<CRC64> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC64>();
-        }
     }
 
     public class IHashFunctionTests_CRC64_WE
@@ -1686,11 +1341,6 @@ namespace System.Data.HashFunction.Test
         {
             return new CRC64_WE();
         }
-
-        protected override Mock<CRC64_WE> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC64_WE>();
-        }
     }
 
     public class IHashFunctionTests_CRC64_XZ
@@ -1709,11 +1359,6 @@ namespace System.Data.HashFunction.Test
         protected override CRC64_XZ CreateHashFunction(int hashSize)
         {
             return new CRC64_XZ();
-        }
-
-        protected override Mock<CRC64_XZ> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<CRC64_XZ>();
         }
     }
 

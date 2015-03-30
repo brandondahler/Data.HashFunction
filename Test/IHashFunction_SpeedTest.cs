@@ -81,6 +81,7 @@ namespace System.Data.HashFunction.Test
         #endregion
 
         #region ComputeHashAsync
+        // Note:  SpeedTests should run non-async to get the most accurate results
 
         [Fact]
         public void IHashFunction_SpeedTest_SingleBlock_ComputeHashAsync_Stream_Seekable()

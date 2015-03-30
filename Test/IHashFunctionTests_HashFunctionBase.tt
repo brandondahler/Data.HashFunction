@@ -1,13 +1,16 @@
 ﻿<#@ template debug="false" hostspecific="true" language="C#" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Web.Extensions" #>
+<#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
 <#@ import namespace="System.Web.Script.Serialization" #>
 <#@ output extension=".cs" #>
 <#
     var testGroups = ReadIHashFunctionTests(Host.ResolvePath("IHashFunctionTests_HashFunctionBase.json"));
+	var namedParameterRegex = new Regex(@"(?<=^|,)(\s)?\s*\w+:\s*");
 #>
 //! Automatically generated from IHashFunctionTests_HashFunctionBase.tt
 //! Direct modifications to this file will be lost.
@@ -34,7 +37,7 @@ namespace System.Data.HashFunction.Test
 
 <# foreach (var test in testGroup.Tests) { #>
 <# for (var x = 0; x < test.ConstructionParameters.Length; ++x) { #>
-    public class IHashFunction<#= (test.Async ? "Async" : "" )#>Tests_<#= test.IHashFunctionT.Replace("<", "_").Replace(">", "") #><#= test.NamePostfix == null ? "" : string.Format("_{0}", test.NamePostfix) #><#= x > 1 ? string.Format("_{0}", x) : "" #>
+    public class IHashFunction<#= (test.Async ? "Async" : "" )#>Tests_<#= test.IHashFunctionT.Replace("<", "_").Replace(">", "") #><#= test.NamePostfix == null ? "" : string.Format("_{0}", test.NamePostfix) #><#= x > 0 ? string.Format("_{0}", x + 1) : "" #>
         : IHashFunction<#= (test.Async ? "Async" : "" )#>Tests<<#= test.IHashFunctionT #>>
     {
         protected override IEnumerable<KnownValue> KnownValues
@@ -52,11 +55,6 @@ namespace System.Data.HashFunction.Test
         protected override <#= test.IHashFunctionT #> CreateHashFunction(int hashSize)
         {
             return new <#= test.IHashFunctionT #>(<#= test.ConstructionParameters[x] #>);
-        }
-
-        protected override Mock<<#= test.IHashFunctionT #>> CreateHashFunctionMock(int hashSize)
-        {
-            return new Mock<<#= test.IHashFunctionT #>>(<#= test.ConstructionParameters[x] #>);
         }
     }
     
@@ -78,26 +76,27 @@ namespace System.Data.HashFunction.Test
 
         private readonly IReadOnlyDictionary<string, IHashFunction> _TestHashFunctions = new Dictionary<string, IHashFunction>() {
 <# 
+var distinctNames = new HashSet<string>();
+
 foreach (var testGroup in testGroups) {
     foreach (var test in testGroup.Tests) { 
         for (var x = 0; x < test.ConstructionParameters.Length; ++x) { 
-            if(test.ConstructionParameters[x].Contains("hashSize")) {
-                foreach (var hashSize in test.KnownValues.Select(kv => kv.Bits).Distinct()) {
+			foreach (var hashSize in test.KnownValues.Select(kv => kv.Bits).Distinct()) {
+				var constructor = string.Format(
+					"{0}({1})",
+					test.IHashFunctionT,
+					test.ConstructionParameters[x].Replace("hashSize", hashSize.ToString()));
+
+				if (!distinctNames.Add(constructor))
+					continue;
+
 #>
                 { 
-                    @"<#=test.IHashFunctionT #>(<#= test.ConstructionParameters[x].Replace("\"", "\"\"").Replace("hashSize", hashSize.ToString()) #>)", 
-                    new <#= test.IHashFunctionT #>(<#= test.ConstructionParameters[x].Replace("hashSize", hashSize.ToString()) #>) 
-                },
-<# 
-                } 
-            } else {
-#>
-                { 
-                    @"<#=test.IHashFunctionT #>(<#= test.ConstructionParameters[x].Replace("\"", "\"\"") #>)", 
-                    new <#= test.IHashFunctionT #>(<#= test.ConstructionParameters[x] #>) 
+                    @"<#= constructor.Replace("\"", "\"\"") #>", 
+                    new <#= constructor #> 
                 },
 <#
-            }
+			}
         }
     }
 }

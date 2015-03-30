@@ -27,7 +27,7 @@ namespace System.Data.HashFunction
         /// <value>
         /// The CRC parameters that will be used to calculate hash values.
         /// </value>
-        public virtual Setting Settings
+        public Setting Settings
         {
             get { return _Settings; }
         }
@@ -95,21 +95,9 @@ namespace System.Data.HashFunction
 
 
 
-        /// <exception cref="System.InvalidOperationException">
-        /// Settings set to an invalid value.
-        /// or
-        /// HashSize set to an invalid value.
-        /// </exception>
         /// <inheritdoc />
         protected override byte[] ComputeHashInternal(UnifiedData data)
         {
-            if (Settings == null)
-                throw new InvalidOperationException("Settings set to an invalid value.");
-
-            if (HashSize != Settings.Bits)
-                throw new InvalidOperationException("HashSize set to an invalid value.");
-
-
             // Use 64-bit variable regardless of CRC bit length
             UInt64 hash = Settings.InitialValue;
 
@@ -145,21 +133,9 @@ namespace System.Data.HashFunction
         }
         
 #if NET45
-        /// <exception cref="System.InvalidOperationException">
-        /// Settings set to an invalid value.
-        /// or
-        /// HashSize set to an invalid value.
-        /// </exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
-            if (Settings == null)
-                throw new InvalidOperationException("Settings set to an invalid value.");
-
-            if (HashSize != Settings.Bits)
-                throw new InvalidOperationException("HashSize set to an invalid value.");
-
-
             // Use 64-bit variable regardless of CRC bit length
             UInt64 hash = Settings.InitialValue;
 
