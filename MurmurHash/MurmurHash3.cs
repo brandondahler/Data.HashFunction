@@ -16,7 +16,7 @@ namespace System.Data.HashFunction
     ///   and https://code.google.com/p/smhasher/wiki/MurmurHash3.
     /// </summary>
     public class MurmurHash3
-#if NET45
+#if !NET40
         : HashFunctionAsyncBase
 #else
         : HashFunctionBase
@@ -200,7 +200,7 @@ namespace System.Data.HashFunction
             return hash;
         }
         
-#if NET45
+#if !NET40
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
@@ -286,7 +286,7 @@ namespace System.Data.HashFunction
 #endif
 
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void ProcessGroup(ref UInt32 h1, byte[] dataGroup, int position, int length)
@@ -305,7 +305,7 @@ namespace System.Data.HashFunction
             }
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void ProcessGroup(ref UInt64 h1, ref UInt64 h2, byte[] dataGroup, int position, int length)
@@ -336,7 +336,7 @@ namespace System.Data.HashFunction
         }
 
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void ProcessRemainder(ref UInt32 h1, byte[] remainder, int position, int length)
@@ -358,7 +358,7 @@ namespace System.Data.HashFunction
             h1 ^= k2;
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void ProcessRemainder(ref UInt64 h1, ref UInt64 h2, byte[] remainder, int position, int length)
@@ -404,7 +404,7 @@ namespace System.Data.HashFunction
         }
 
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void Mix(ref UInt32 h)
@@ -416,7 +416,7 @@ namespace System.Data.HashFunction
             h ^= h >> 16;
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void Mix(ref UInt64 k)

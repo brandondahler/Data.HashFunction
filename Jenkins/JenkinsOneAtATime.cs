@@ -17,7 +17,7 @@ namespace System.Data.HashFunction
     /// This hash function has been superseded by JenkinsLookup2 and JenkinsLookup3.
     /// </summary>
     public class JenkinsOneAtATime
-#if NET45
+#if !NET40
         : HashFunctionAsyncBase
 #else
         : HashFunctionBase
@@ -51,7 +51,7 @@ namespace System.Data.HashFunction
             return BitConverter.GetBytes(hash);
         }
         
-#if NET45
+#if !NET40
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
@@ -70,7 +70,7 @@ namespace System.Data.HashFunction
 #endif
 
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void ProcessBytes(ref UInt32 hash, byte[] dataBytes, int position, int length)

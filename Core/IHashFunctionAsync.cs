@@ -1,4 +1,4 @@
-﻿#if NET45
+﻿#if !NET40
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;

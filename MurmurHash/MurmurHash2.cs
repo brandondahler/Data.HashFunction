@@ -18,7 +18,7 @@ namespace System.Data.HashFunction
     /// This hash function has been superseded by MurmurHash3.
     /// </summary>
     public class MurmurHash2
-#if NET45
+#if !NET40
         : HashFunctionAsyncBase
 #else
         : HashFunctionBase
@@ -162,7 +162,7 @@ namespace System.Data.HashFunction
             return hash;
         }
         
-#if NET45
+#if !NET40
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
@@ -224,7 +224,7 @@ namespace System.Data.HashFunction
 #endif
 
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void ProcessGroup(ref UInt32 h, UInt32 m, byte[] dataGroup, int position, int length)
@@ -242,7 +242,7 @@ namespace System.Data.HashFunction
             }
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void ProcessGroup(ref UInt64 h, UInt64 m, byte[] dataGroup, int position, int length)
@@ -260,7 +260,7 @@ namespace System.Data.HashFunction
             }
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void ProcessRemainder(ref UInt32 h, UInt32 m, byte[] remainder, int position, int length)
@@ -278,7 +278,7 @@ namespace System.Data.HashFunction
         }
 
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void ProcessRemainder(ref UInt64 h, UInt64 m, byte[] remainder, int position, int length)

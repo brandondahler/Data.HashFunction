@@ -40,18 +40,6 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'NuGetDeploy|AnyCPU'">
-    <OutputPath>bin\NuGetDeploy\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Data.HashFunction.Production.pfx</AssemblyOriginatorKeyFile>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Moq, Version=4.2.1502.911, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -165,7 +153,7 @@
       <Project>{fc9c9416-a84d-4087-8f54-065dbc3d4c23}</Project>
       <Name>Data.HashFunction.CRC</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Blake2B\Data.HashFunction.Blake2.csproj">
+    <ProjectReference Include="..\Blake2\Data.HashFunction.Blake2.csproj">
       <Project>{5fbb51f5-3def-4946-bfa4-bff721434fca}</Project>
       <Name>Data.HashFunction.Blake2</Name>
     </ProjectReference>

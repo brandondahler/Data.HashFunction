@@ -12,10 +12,10 @@
     <description>$description$</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2014</copyright>
-    <tags>Bernstein hash function djb2</tags>
+    <tags>Jenkins hash function lookup one-at-a-time</tags>
+
+    <dependencies>
+      <dependency id="System.Data.HashFunction.Core" version="$version$" />
+    </dependencies>
   </metadata>
-  <files>
-    <file src="bin\$configuration$\v4.0\$id$.dll" target="lib\net40\" />
-    <file src="bin\$configuration$\v4.0\$id$.xml" target="lib\net40\" />
-  </files>
 </package>

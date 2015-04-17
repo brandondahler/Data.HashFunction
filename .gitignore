@@ -112,3 +112,8 @@ UpgradeLog*.XML
 
 # Help documentation
 Help/
+
+#NuGet Packaging
+NuGet/*/lib/*/*.dll
+NuGet/*/lib/*/*.xml
+NuGet/*/lib/*/*.XML

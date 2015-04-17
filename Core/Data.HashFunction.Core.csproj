@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\System.Data.HashFunction.Core.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\System.Data.HashFunction.Core.XML</DocumentationFile>
     <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
   </PropertyGroup>
@@ -34,20 +34,6 @@
     <DocumentationFile>bin\Release\System.Data.HashFunction.Core.XML</DocumentationFile>
     <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
     <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'NuGetDeploy|AnyCPU'">
-    <OutputPath>bin\NuGetDeploy\</OutputPath>
-    <DefineConstants>TRACE;NuGetDeploy</DefineConstants>
-    <DocumentationFile>bin\NuGetDeploy\System.Data.HashFunction.Core.XML</DocumentationFile>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Data.HashFunction.Production.pfx</AssemblyOriginatorKeyFile>
-    <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -88,14 +74,7 @@
     <Compile Include="Utilities\UnifiedData\UnifiedData.cs" />
     <Compile Include="Utilities\UnifiedData\StreamData.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Data.HashFunction.Core.nuspec">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <Import Project="..\BuildMultipleFrameworks.props" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\BuildMultipleFrameworks.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

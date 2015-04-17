@@ -15,7 +15,7 @@ namespace System.Data.HashFunction
     /// Implementation of Bob Jenkins' Lookup3 hash function as specified at http://burtleburtle.net/bob/c/lookup3.c.
     /// </summary>
     public class JenkinsLookup3
-#if NET45
+#if !NET40
         : HashFunctionAsyncBase
 #else
         : HashFunctionBase
@@ -177,7 +177,7 @@ namespace System.Data.HashFunction
             return hash;
         }
         
-#if NET45
+#if !NET40
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
@@ -222,7 +222,7 @@ namespace System.Data.HashFunction
 #endif
 
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void ProcessGroup(ref UInt32 a, ref UInt32 b, ref UInt32 c, ref int dataCount, byte[] dataGroup, int position, int length)
@@ -241,7 +241,7 @@ namespace System.Data.HashFunction
             dataCount += length;
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void ProcessRemainder(ref UInt32 a, ref UInt32 b, ref UInt32 c, ref int dataCount, byte[] remainder, int position, int length)
@@ -279,7 +279,7 @@ namespace System.Data.HashFunction
         }
 
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void Mix(ref UInt32 a, ref UInt32 b, ref UInt32 c)
@@ -293,7 +293,7 @@ namespace System.Data.HashFunction
             c -= b; c ^= b.RotateLeft( 4); b += a;
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void Final(ref UInt32 a, ref UInt32 b, ref UInt32 c)

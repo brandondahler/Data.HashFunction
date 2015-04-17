@@ -12,10 +12,10 @@
     <description>$description$</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2014</copyright>
-    <tags>FNV hash function Fowler–Noll–Vo Fowler Noll Vo</tags>
+    <tags>Pearson hash function</tags>
+
+    <dependencies>
+      <dependency id="System.Data.HashFunction.Core" version="$version$" />
+    </dependencies>
   </metadata>
-  <files>
-    <file src="bin\$configuration$\v4.0\$id$.dll" target="lib\net40\" />
-    <file src="bin\$configuration$\v4.0\$id$.xml" target="lib\net40\" />
-  </files>
 </package>

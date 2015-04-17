@@ -17,7 +17,7 @@ namespace System.Data.HashFunction
         /// <summary>
         /// Array of 256 random and distinct UInt64 values.
         /// </summary>
-#if NET45
+#if !NET40
         private static readonly IReadOnlyList<UInt64> _Rtab = 
 #else
         private static readonly IList<UInt64> _Rtab =
@@ -102,7 +102,7 @@ namespace System.Data.HashFunction
 
         }
 
-#if NET45
+#if !NET40
         /// <param name="shiftDirection">The shift direction.</param>
         /// <remarks>
         /// Defaults <see cref="BuzHashBase.InitVal" /> to 0x3CD05367FD0337D3.
@@ -134,7 +134,7 @@ namespace System.Data.HashFunction
 
         }
 
-#if NET45
+#if !NET40
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultBuzHash"/> class.
         /// </summary>

@@ -25,7 +25,7 @@ namespace System.Data.HashFunction
     /// "
     /// </summary>
     public class CityHash 
-#if NET45
+#if !NET40
         : HashFunctionAsyncBase
 #else
         : HashFunctionBase
@@ -137,7 +137,7 @@ namespace System.Data.HashFunction
             return hash;
         }
         
-#if NET45
+#if !NET40
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
@@ -278,7 +278,7 @@ namespace System.Data.HashFunction
         }
 
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static UInt32 Hash32Len0to4(byte[] data) 
@@ -295,7 +295,7 @@ namespace System.Data.HashFunction
             return Mix(Mur(b, Mur((UInt32) data.Length, c)));
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static UInt32 Hash32Len5to12(byte[] data) 
@@ -313,7 +313,7 @@ namespace System.Data.HashFunction
             return Mix(Mur(c, Mur(b, Mur(a, d))));
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static UInt32 Hash32Len13to24(byte[] data) 
@@ -382,14 +382,14 @@ namespace System.Data.HashFunction
         }
 
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static UInt64 HashLen16(UInt64 u, UInt64 v) {
           return Hash128to64(new UInt128() { Low = u, High = v });
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static UInt64 HashLen16(UInt64 u, UInt64 v, UInt64 mul) 
@@ -404,7 +404,7 @@ namespace System.Data.HashFunction
             return b;
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static UInt64 HashLen0to16(byte[] data) 
@@ -444,7 +444,7 @@ namespace System.Data.HashFunction
 
         // This probably works well for 16-byte strings as well, but it may be overkill
         // in that case.
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static UInt64 HashLen17to32(byte[] data) 
@@ -461,7 +461,7 @@ namespace System.Data.HashFunction
 
         // Return a 16-byte hash for 48 bytes.  Quick and dirty.
         // Callers do best to use "random-looking" values for a and b.
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static UInt128 WeakHashLen32WithSeeds(
@@ -480,7 +480,7 @@ namespace System.Data.HashFunction
         }
 
         // Return a 16-byte hash for s[0] ... s[31], a, and b.  Quick and dirty.
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static UInt128 WeakHashLen32WithSeeds(byte[] data, int startIndex, UInt64 a, UInt64 b) 
@@ -495,7 +495,7 @@ namespace System.Data.HashFunction
         }
 
         // Return an 8-byte hash for 33 to 64 bytes.
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static UInt64 HashLen33to64(byte[] data) 
@@ -549,7 +549,7 @@ namespace System.Data.HashFunction
 
         // A subroutine for CityHash128().  Returns a decent 128-bit hash for strings
         // of any length representable in signed long.  Based on City and Murmur.
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static UInt128 CityMurmur(byte[] data, UInt128 seed) {
@@ -584,7 +584,7 @@ namespace System.Data.HashFunction
             return new UInt128() { Low = a ^ b, High = HashLen16(b, a) };
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static UInt128 CityHash128WithSeed(byte[] data, UInt128 seed)
@@ -680,7 +680,7 @@ namespace System.Data.HashFunction
 
         #region Shared Utilities
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static UInt32 Mix(UInt32 h)
@@ -693,7 +693,7 @@ namespace System.Data.HashFunction
             return h;
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static UInt64 Mix(UInt64 val)
@@ -702,7 +702,7 @@ namespace System.Data.HashFunction
         }
 
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static UInt32 Mur(UInt32 a, UInt32 h)
@@ -716,7 +716,7 @@ namespace System.Data.HashFunction
             return h * 5 + 0xe6546b64;
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void Permute3(ref UInt32 a, ref UInt32 b, ref UInt32 c)
@@ -728,7 +728,7 @@ namespace System.Data.HashFunction
             b = temp;
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static UInt64 Hash128to64(UInt128 x)

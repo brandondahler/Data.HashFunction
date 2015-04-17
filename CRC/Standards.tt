@@ -40,7 +40,7 @@ namespace System.Data.HashFunction
         /// <summary>
         /// Dictionary of Settings for each of the defined and implemented CRC standards.
         /// </summary>
-#if NET45
+#if !NET40
         public static readonly IReadOnlyDictionary<Standard, Setting> Standards = 
 #else
         public static readonly IDictionary<Standard, Setting> Standards = 

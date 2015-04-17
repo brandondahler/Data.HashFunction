@@ -73,7 +73,7 @@ namespace System.Data.HashFunction
             /// <value>
             /// The precalculated table giving the result of dividing the items index by the <see cref="Polynomial" />.
             /// </value>
-#if NET45
+#if !NET40
             public IReadOnlyList<UInt64> DataDivisionTable { get { return _DataDivisionTable.Value; } }
 #else
             public IList<UInt64> DataDivisionTable { get { return _DataDivisionTable.Value; } }

@@ -15,7 +15,7 @@ namespace System.Data.HashFunction
     /// This implementation is generalized to encompass all possible CRC parameters from 1 to 64 bits.
     /// </summary>
     public partial class CRC
-#if NET45
+#if !NET40
         : HashFunctionAsyncBase
 #else
         : HashFunctionBase
@@ -132,7 +132,7 @@ namespace System.Data.HashFunction
             return hash.ToBytes(HashSize);
         }
         
-#if NET45
+#if !NET40
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
@@ -171,7 +171,7 @@ namespace System.Data.HashFunction
         }
 #endif
 
-#if NET45
+#if !NET40
         private void ProcessBytes(ref UInt64 hash, IReadOnlyList<UInt64> crcTable, int mostSignificantShift, byte[] dataBytes, int position, int length)
 #else
         private void ProcessBytes(ref UInt64 hash, IList<UInt64> crcTable, int mostSignificantShift, byte[] dataBytes, int position, int length)

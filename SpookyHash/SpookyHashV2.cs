@@ -15,7 +15,7 @@ namespace System.Data.HashFunction
     /// Implements SpookyHash V2 as specified at http://burtleburtle.net/bob/hash/spooky.html.
     /// </summary>
     public class SpookyHashV2
-#if NET45
+#if !NET40
         : HashFunctionAsyncBase
 #else
         : HashFunctionBase
@@ -182,7 +182,7 @@ namespace System.Data.HashFunction
             return hash;
         }
 
-#if NET45
+#if !NET40
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
@@ -238,7 +238,7 @@ namespace System.Data.HashFunction
 #endif
 
 
-#if NET45
+#if !NET40
         private static readonly IReadOnlyList<int> _MixRotationParameters = 
 #else
         private static readonly IList<int> _MixRotationParameters = 
@@ -247,7 +247,7 @@ namespace System.Data.HashFunction
                 11, 32, 43, 31, 17,28, 39, 57, 55, 54, 22, 46
             };
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void Mix(UInt64[] h, byte[] data, int position, int length)
@@ -266,7 +266,7 @@ namespace System.Data.HashFunction
         }
 
 
-#if NET45
+#if !NET40
         private static readonly IReadOnlyList<int> _EndPartialRotationParameters = 
 #else
         private static readonly IList<int> _EndPartialRotationParameters = 
@@ -275,7 +275,7 @@ namespace System.Data.HashFunction
                 44, 15, 34, 21, 38, 33, 10, 13, 38, 53, 42, 54
             };
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void EndPartial(UInt64[] h)
@@ -288,7 +288,7 @@ namespace System.Data.HashFunction
             }
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void End(UInt64[] h, byte[] data, int position)

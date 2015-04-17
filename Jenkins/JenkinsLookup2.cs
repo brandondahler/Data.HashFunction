@@ -18,7 +18,7 @@ namespace System.Data.HashFunction
     /// This hash function has been superseded by JenkinsLookup3.
     /// </summary>
     public class JenkinsLookup2
-#if NET45
+#if !NET40
         : HashFunctionAsyncBase
 #else
         : HashFunctionBase
@@ -89,7 +89,7 @@ namespace System.Data.HashFunction
             return BitConverter.GetBytes(c);
         }
         
-#if NET45
+#if !NET40
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
@@ -121,7 +121,7 @@ namespace System.Data.HashFunction
 #endif
 
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void ProcessGroup(ref UInt32 a, ref UInt32 b, ref UInt32 c, byte[] dataGroup, int position, int length)
@@ -136,7 +136,7 @@ namespace System.Data.HashFunction
             }
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void ProcessRemainder(ref UInt32 a, ref UInt32 b, ref UInt32 c, byte[] remainder, int position, int length)
@@ -169,7 +169,7 @@ namespace System.Data.HashFunction
             }
         }
 
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void Mix(ref UInt32 a, ref UInt32 b, ref UInt32 c)

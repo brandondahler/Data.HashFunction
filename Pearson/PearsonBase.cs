@@ -17,7 +17,7 @@ namespace System.Data.HashFunction
     [SuppressMessage("Microsoft.Design", "CA1012:AbstractTypesShouldNotHaveConstructors", 
         Justification = "Constructor required to validate implementer's parameters.")]
     public abstract class PearsonBase
-#if NET45
+#if !NET40
         : HashFunctionAsyncBase
 #else
         : HashFunctionBase
@@ -29,14 +29,14 @@ namespace System.Data.HashFunction
         /// <value>
         /// The 256-item read only collection of bytes.
         /// </value>
-#if NET45
+#if !NET40
         public IReadOnlyList<byte> T { get { return _T; } }
 #else
         public IList<byte> T { get { return _T; } }
 #endif
 
 
-#if NET45
+#if !NET40
         private readonly IReadOnlyList<byte> _T;
 #else
         private readonly IList<byte> _T;
@@ -44,7 +44,7 @@ namespace System.Data.HashFunction
 
 
 
-#if NET45
+#if !NET40
         /// <remarks>
         /// Defaults <see cref="HashFunctionBase.HashSize" /> to 8.
         /// </remarks>
@@ -71,7 +71,7 @@ namespace System.Data.HashFunction
         /// <exception cref="System.ArgumentException">t must be a permutation of [0, 255].;t</exception>
         /// <exception cref="System.ArgumentOutOfRangeException">hashSize;hashSize must be a positive integer that is divisible by 8.</exception>
         /// <inheritdoc cref="HashFunctionBase(int)" />
-#if NET45
+#if !NET40
         public PearsonBase(IReadOnlyList<byte> t, int hashSize)
 #else
         public PearsonBase(IList<byte> t, int hashSize)
@@ -108,7 +108,7 @@ namespace System.Data.HashFunction
             return h;
         }
         
-#if NET45
+#if !NET40
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {

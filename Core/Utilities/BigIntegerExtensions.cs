@@ -22,7 +22,7 @@ namespace System.Data.HashFunction.Utilities
         /// Array of UInt32 values representing the BigInteger value.
         /// </returns>
         /// <exception cref="System.ArgumentOutOfRangeException">bitSize;bitSize must be a positive a multiple of 32.</exception>
-#if NET45
+#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public static UInt32[] ToUInt32Array(this BigInteger value, int bitSize)

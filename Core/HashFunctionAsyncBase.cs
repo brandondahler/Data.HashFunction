@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-#if NET45
+#if !NET40
 namespace System.Data.HashFunction
 {
     /// <summary>

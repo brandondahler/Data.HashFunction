@@ -11,11 +11,11 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright 2015</copyright>
-    <tags>BLAKE2 BLAKE2b hash function</tags>
+    <copyright>Copyright 2014</copyright>
+    <tags>Spooky hash function</tags>
+
+    <dependencies>
+      <dependency id="System.Data.HashFunction.Core" version="$version$" />
+    </dependencies>
   </metadata>
-  <files>
-    <file src="bin\$configuration$\v4.0\$id$.dll" target="lib\net40\" />
-    <file src="bin\$configuration$\v4.0\$id$.xml" target="lib\net40\" />
-  </files>
 </package>

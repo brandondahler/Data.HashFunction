@@ -15,7 +15,7 @@ namespace System.Data.HashFunction
     /// and allows seeding with a key, salt, and/or personalization sequence.
 	/// </summary>
 	public partial class Blake2B
-#if NET45
+#if !NET40
 		: HashFunctionAsyncBase
 #else
 		: HashFunctionBase
@@ -205,7 +205,7 @@ namespace System.Data.HashFunction
 		}
 
 
-#if NET45
+#if !NET40
 
 		/// <inheritdoc />
 		protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
