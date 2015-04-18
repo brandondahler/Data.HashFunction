@@ -120,6 +120,7 @@
     <Compile Include="UtilityExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="IHashFunctionTests_HashFunctionBase.json" />
     <None Include="IHashFunctionTests_CRC.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
