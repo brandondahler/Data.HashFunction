@@ -367,6 +367,23 @@ namespace System.Data.HashFunction.Test.Core.Utilities
 
         #endregion
 
+        #region Increment
+
+
+        [Fact]
+        public void UInt128_Increment_Increments()
+        {
+            var baseValue = new UInt128() { High = 0, Low = 1 };
+            var expected = new UInt128() { High = 0, Low = 2 };
+
+
+            Assert.Equal(
+                expected,
+                UInt128.Increment(baseValue));
+        }
+
+        #endregion
+
         #region operator --
 
         [Fact]
@@ -399,6 +416,22 @@ namespace System.Data.HashFunction.Test.Core.Utilities
             Assert.Equal(
                 expected,
                 baseValue);
+        }
+
+        #endregion
+
+        #region Decrement
+
+        [Fact]
+        public void UInt128_Decrement_Decrements()
+        {
+            var baseValue = new UInt128() { High = 0, Low = 2 };
+            var expected = new UInt128() { High = 0, Low = 1 };
+
+
+            Assert.Equal(
+                expected,
+                UInt128.Decrement(baseValue));
         }
 
         #endregion
@@ -574,6 +607,95 @@ namespace System.Data.HashFunction.Test.Core.Utilities
 
         #endregion
 
+        #region Add
+
+        [Fact]
+        public void UInt128_Add_SimpleLow()
+        {
+            var baseValue = new UInt128() { Low = 1 };
+            var addValue = new UInt128() { Low = 2 };
+
+            var expectedValue = new UInt128() { Low = 3 };
+
+
+            Assert.Equal(
+                expectedValue,
+                UInt128.Add(baseValue, addValue));
+        }
+
+        [Fact]
+        public void UInt128_Add_SimpleHigh()
+        {
+            var baseValue = new UInt128() { High = 1 };
+            var addValue = new UInt128() { High = 2 };
+
+            var expectedValue = new UInt128() { High = 3 };
+
+
+            Assert.Equal(
+                expectedValue,
+                UInt128.Add(baseValue, addValue));
+        }
+
+
+        [Fact]
+        public void UInt128_Add_SimpleMixed()
+        {
+            var baseValue = new UInt128() { High = 1, Low = 2 };
+            var addValue = new UInt128() { High = 2, Low = 1 };
+
+            var expectedValue = new UInt128() { High = 3, Low = 3 };
+
+
+            Assert.Equal(
+                expectedValue,
+                UInt128.Add(baseValue, addValue));
+        }
+
+        [Fact]
+        public void UInt128_Add_CarryOver()
+        {
+            var baseValue = new UInt128() { High = 1, Low = UInt64.MaxValue };
+            var addValue = new UInt128() { High = 2, Low = 2 };
+
+            var expectedValue = new UInt128() { High = 4, Low = 1 };
+
+
+            Assert.Equal(
+                expectedValue,
+                UInt128.Add(baseValue, addValue));
+        }
+
+        [Fact]
+        public void UInt128_Add_Overflow()
+        {
+            var baseValue = new UInt128() { High = UInt64.MaxValue, Low = 1 };
+            var addValue = new UInt128() { High = 2, Low = 2 };
+
+            var expectedValue = new UInt128() { High = 1, Low = 3 };
+
+
+            Assert.Equal(
+                expectedValue,
+                UInt128.Add(baseValue, addValue));
+        }
+
+        [Fact]
+        public void UInt128_Add_OverflowAndCarryOver()
+        {
+            var baseValue = new UInt128() { High = UInt64.MaxValue, Low = 2 };
+            var addValue = new UInt128() { High = 2, Low = UInt64.MaxValue };
+
+            var expectedValue = new UInt128() { High = 2, Low = 1 };
+
+
+            Assert.Equal(
+                expectedValue,
+                UInt128.Add(baseValue, addValue));
+        }
+
+        #endregion
+
         #region operator -
 
         [Fact]
@@ -659,6 +781,95 @@ namespace System.Data.HashFunction.Test.Core.Utilities
             Assert.Equal(
                 expectedValue,
                 baseValue - subtractValue);
+        }
+
+        #endregion
+
+        #region Subtract
+
+        [Fact]
+        public void UInt128_Subtract_SimpleLow()
+        {
+            var baseValue = new UInt128() { Low = 3 };
+            var subtractValue = new UInt128() { Low = 2 };
+
+            var expectedValue = new UInt128() { Low = 1 };
+
+
+            Assert.Equal(
+                expectedValue,
+                UInt128.Subtract(baseValue, subtractValue));
+        }
+
+        [Fact]
+        public void UInt128_Subtract_SimpleHigh()
+        {
+            var baseValue = new UInt128() { High = 3 };
+            var subtractValue = new UInt128() { High = 2 };
+
+            var expectedValue = new UInt128() { High = 1 };
+
+
+            Assert.Equal(
+                expectedValue,
+                UInt128.Subtract(baseValue, subtractValue));
+        }
+
+
+        [Fact]
+        public void UInt128_Subtract_SimpleMixed()
+        {
+            var baseValue = new UInt128() { High = 3, Low = 3 };
+            var subtractValue = new UInt128() { High = 2, Low = 1 };
+
+            var expectedValue = new UInt128() { High = 1, Low = 2 };
+
+
+            Assert.Equal(
+                expectedValue,
+                UInt128.Subtract(baseValue, subtractValue));
+        }
+
+        [Fact]
+        public void UInt128_Subtract_BorrowFrom()
+        {
+            var baseValue = new UInt128() { High = 1, Low = 0 };
+            var subtractValue = new UInt128() { High = 0, Low = 2 };
+
+            var expectedValue = new UInt128() { High = 0, Low = UInt64.MaxValue - 1 };
+
+
+            Assert.Equal(
+                expectedValue,
+                UInt128.Subtract(baseValue, subtractValue));
+        }
+
+        [Fact]
+        public void UInt128_Subtract_Underflow()
+        {
+            var baseValue = new UInt128() { High = 1, Low = 0 };
+            var subtractValue = new UInt128() { High = 2, Low = 0 };
+
+            var expectedValue = new UInt128() { High = UInt64.MaxValue, Low = 0 };
+
+
+            Assert.Equal(
+                expectedValue,
+                UInt128.Subtract(baseValue, subtractValue));
+        }
+
+        [Fact]
+        public void UInt128_Subtract_UnderflowAndBorrowFrom()
+        {
+            var baseValue = new UInt128() { High = 0, Low = 1 };
+            var subtractValue = new UInt128() { High = 1, Low = 2 };
+
+            var expectedValue = new UInt128() { High = UInt64.MaxValue - 1, Low = UInt64.MaxValue };
+
+
+            Assert.Equal(
+                expectedValue,
+                UInt128.Subtract(baseValue, subtractValue));
         }
 
         #endregion
@@ -863,6 +1074,7 @@ namespace System.Data.HashFunction.Test.Core.Utilities
         }
 
         #endregion
+
 
         #endregion
 
