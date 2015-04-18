@@ -19,6 +19,8 @@ The following hash functions have been implemented from the most reliable refere
 * [Bernstein Hash](http://www.eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx#djb)
   * BernsteinHash - Original
   * ModifiedBernsteinHash - Minor update that is said to result in better distribution
+* [Blake2](https://blake2.net/)
+  * Blake2b 
 * [BuzHash](http://www.serve.net/buz/hash.adt/java.002.html)
   * BuzHashBase - Abstract implementation, there is no authoritative implementation
   * DefaultBuzHash - Concrete implementation, uses 256 random 64-bit integers
@@ -58,7 +60,7 @@ Each family of hash functions is contained within its own project and NuGet pack
 Usage
 -----
 
-The usage for all hash functions has been standardized and is accessible via the System.Data.HashFunction.IHashFunction and System.Data.HashFunction.IHashFunctionAsync interfaces.  The core package, Data.HashFunction, only contains wrappers for the .Net BCL's Cryptographic HashAlgorithm functions.  In order to use a different function, you will need to reference one of the implementation packages.
+The usage for all hash functions has been standardized and is accessible via the System.Data.HashFunction.IHashFunction and System.Data.HashFunction.IHashFunctionAsync interfaces.  The core package, Data.HashFunction.Core, only contains wrappers for the .Net BCL's Cryptographic HashAlgorithm functions.  In order to use a different function, you will need to reference one of the implementation packages.
 
 Release Notes
 -------------
