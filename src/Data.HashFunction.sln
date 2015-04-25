@@ -15,8 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.CityHash"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D0A9A68F-2401-42E4-A6E7-D9FF9F080197}"
 	ProjectSection(SolutionItems) = preProject
+		CI.msbuild = CI.msbuild
 		Data.HashFunction.Production.pfx = Data.HashFunction.Production.pfx
-		NuGetPackAll.ps1 = NuGetPackAll.ps1
 		SolutionInfo.cs = SolutionInfo.cs
 	EndProjectSection
 EndProject
@@ -40,22 +40,22 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Blake2", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{09972C53-E05D-4BA4-BF98-58D9EA9C37A5}"
 	ProjectSection(SolutionItems) = preProject
-		NuGet\BernsteinHash\Data.HashFunction.BernsteinHash.nuspec = NuGet\BernsteinHash\Data.HashFunction.BernsteinHash.nuspec
-		NuGet\Blake2\Data.HashFunction.Blake2.nuspec = NuGet\Blake2\Data.HashFunction.Blake2.nuspec
-		NuGet\BuzHash\Data.HashFunction.BuzHash.nuspec = NuGet\BuzHash\Data.HashFunction.BuzHash.nuspec
-		NuGet\CityHash\Data.HashFunction.CityHash.nuspec = NuGet\CityHash\Data.HashFunction.CityHash.nuspec
-		NuGet\Core\Data.HashFunction.Core.nuspec = NuGet\Core\Data.HashFunction.Core.nuspec
-		NuGet\CRC\Data.HashFunction.CRC.nuspec = NuGet\CRC\Data.HashFunction.CRC.nuspec
-		NuGet\ELF64\Data.HashFunction.ELF64.nuspec = NuGet\ELF64\Data.HashFunction.ELF64.nuspec
-		NuGet\FNV\Data.HashFunction.FNV.nuspec = NuGet\FNV\Data.HashFunction.FNV.nuspec
-		NuGet\Jenkins\Data.HashFunction.Jenkins.nuspec = NuGet\Jenkins\Data.HashFunction.Jenkins.nuspec
-		NuGet\MurmurHash\Data.HashFunction.MurmurHash.nuspec = NuGet\MurmurHash\Data.HashFunction.MurmurHash.nuspec
-		NuGet\Pearson\Data.HashFunction.Pearson.nuspec = NuGet\Pearson\Data.HashFunction.Pearson.nuspec
-		NuGet\SpookyHash\Data.HashFunction.SpookyHash.nuspec = NuGet\SpookyHash\Data.HashFunction.SpookyHash.nuspec
-		NuGet\xxHash\Data.HashFunction.xxHash.nuspec = NuGet\xxHash\Data.HashFunction.xxHash.nuspec
+		..\NuGet\BernsteinHash\Data.HashFunction.BernsteinHash.nuspec = ..\NuGet\BernsteinHash\Data.HashFunction.BernsteinHash.nuspec
+		..\NuGet\Blake2\Data.HashFunction.Blake2.nuspec = ..\NuGet\Blake2\Data.HashFunction.Blake2.nuspec
+		..\NuGet\BuzHash\Data.HashFunction.BuzHash.nuspec = ..\NuGet\BuzHash\Data.HashFunction.BuzHash.nuspec
+		..\NuGet\CityHash\Data.HashFunction.CityHash.nuspec = ..\NuGet\CityHash\Data.HashFunction.CityHash.nuspec
+		..\NuGet\Core\Data.HashFunction.Core.nuspec = ..\NuGet\Core\Data.HashFunction.Core.nuspec
+		..\NuGet\CRC\Data.HashFunction.CRC.nuspec = ..\NuGet\CRC\Data.HashFunction.CRC.nuspec
+		..\NuGet\ELF64\Data.HashFunction.ELF64.nuspec = ..\NuGet\ELF64\Data.HashFunction.ELF64.nuspec
+		..\NuGet\FNV\Data.HashFunction.FNV.nuspec = ..\NuGet\FNV\Data.HashFunction.FNV.nuspec
+		..\NuGet\Jenkins\Data.HashFunction.Jenkins.nuspec = ..\NuGet\Jenkins\Data.HashFunction.Jenkins.nuspec
+		..\NuGet\MurmurHash\Data.HashFunction.MurmurHash.nuspec = ..\NuGet\MurmurHash\Data.HashFunction.MurmurHash.nuspec
+		..\NuGet\Pearson\Data.HashFunction.Pearson.nuspec = ..\NuGet\Pearson\Data.HashFunction.Pearson.nuspec
+		..\NuGet\SpookyHash\Data.HashFunction.SpookyHash.nuspec = ..\NuGet\SpookyHash\Data.HashFunction.SpookyHash.nuspec
+		..\NuGet\xxHash\Data.HashFunction.xxHash.nuspec = ..\NuGet\xxHash\Data.HashFunction.xxHash.nuspec
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{2A457430-9CCC-4EC0-AC02-41E6905625C5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{7889B206-313E-43CF-B4FD-8250275155C6}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection

@@ -9,5 +9,4 @@ using System.Reflection;
 
 [assembly: CLSCompliant(false)]
 
-[assembly: AssemblyVersion("1.5.2")]
-
+[assembly: AssemblyVersion("1.5.*")]

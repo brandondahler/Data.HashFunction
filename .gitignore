@@ -113,6 +113,9 @@ UpgradeLog*.XML
 # Help documentation
 Help/
 
+# xUnit Results
+xunit-results.xml
+
 #NuGet Packaging
 NuGet/*/lib/*/*.dll
 NuGet/*/lib/*/*.xml
