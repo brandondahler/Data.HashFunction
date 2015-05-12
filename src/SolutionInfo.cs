@@ -9,4 +9,6 @@ using System.Reflection;
 
 [assembly: CLSCompliant(false)]
 
-[assembly: AssemblyVersion("1.5.*")]
+#if !CUSTOM_VERSIONING
+[assembly: AssemblyVersion("1.6.*")]
+#endif

@@ -55,6 +55,10 @@
       <Project>{d8268071-2147-4364-9803-ed0921246899}</Project>
       <Name>Data.HashFunction.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Interfaces\Data.HashFunction.Interfaces.csproj">
+      <Project>{fb16e5b0-d48f-4030-ab86-0cd00a029014}</Project>
+      <Name>Data.HashFunction.Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

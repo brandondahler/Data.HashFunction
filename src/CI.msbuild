@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build;Test;Package" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build;Test;Package" TreatAsLocalProperty="InterfacesVersion" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Settings -->
   <PropertyGroup>
     <SolutionDir Condition=" '$(SolutionDir)' == '' ">.</SolutionDir>
@@ -10,6 +10,8 @@
     <NuGetExecutable Condition=" '$(NuGetExecutable)' == '' ">$(ToolsDir)\nuget.exe</NuGetExecutable>
     <MSBuildCommunityTasksPath Condition=" '$(MSBuildCommunityTasksPath)' == '' ">$(ToolsDir)</MSBuildCommunityTasksPath>
 
+    <InterfacesVersion Condition=" '$(InterfacesVersion)' == '' ">$([System.Text.RegularExpressions.Regex]::Replace('$(BuildVersion)', '^([0-9]+)(\.[0-9]+)*$', '$1.0.0.0'))</InterfacesVersion>
+    
     <xUnitConsoleVersion>2.0.0</xUnitConsoleVersion>
     <xUnitConsoleExecutable>$(SolutionDir)\packages\xunit.runner.console.$(xUnitConsoleVersion)\tools\xunit.console.exe</xUnitConsoleExecutable>
     <xUnitResultsXml>$(SolutionDir)\xunit-results.xml</xUnitResultsXml>
@@ -26,6 +28,7 @@
     <TestProjectToBuild Include="$(SolutionDir)\Test\*.csproj" />
 
     <AssemblyInfoFiles Include="$(SolutionDir)\SolutionInfo.cs" />
+    <InterfaceAssemblyInfoFile Include="$(SolutionDir)\Interfaces\Properties\AssemblyInfo.cs" />
   </ItemGroup>
 
   <Target Name="RemoveTestFromProjectToBuild">
@@ -47,6 +50,12 @@
                 Files="@(AssemblyInfoFiles)"
                 Regex="AssemblyVersion\(&quot;.*&quot;\)"
                 ReplacementText="AssemblyVersion(&quot;$(BuildVersion)&quot;)" />
+
+    <FileUpdate Condition=" '$(BuildVersion)' != '' "
+                Files="@(InterfaceAssemblyInfoFile)"
+                Regex="AssemblyVersion\(&quot;.*&quot;\)"
+                ReplacementText="AssemblyVersion(&quot;$(InterfacesVersion)&quot;)" />
+
   </Target>
 
   <!-- Build -->
@@ -160,7 +169,7 @@
           OutputPath=..\$(NuGetDir)\%(ProjectToBuild.ProjectName)\lib\net40;
           IntermediateOutputPath=obj\Release\net40\;
           DebugType=none;
-          DefineConstants=TRACE;NET40;
+          DefineConstants=TRACE;NET40;$('%(ProjectToBuild.ProjectName)' == 'Data.HashFunction.Interfaces' ? 'CUSTOM_VERSIONING;' : '')
 
           RunCodeAnalysis=false;
         </Properties>
@@ -176,7 +185,7 @@
           OutputPath=..\$(NuGetDir)\%(ProjectToBuild.ProjectName)\lib\net45;
           IntermediateOutputPath=obj\Release\net45\;
           DebugType=none;
-          DefineConstants=TRACE;
+          DefineConstants=TRACE;$('%(ProjectToBuild.ProjectName)' == 'Data.HashFunction.Interfaces' ? 'CUSTOM_VERSIONING;' : '')
 
           RunCodeAnalysis=false;
         </Properties>
@@ -193,9 +202,13 @@
     <ItemGroup>
       <CoreFiles Include="$(NuGetDir)\**\lib\net*\*.Core.*" />
       <CoreFiles Remove="$(NuGetDir)\Core\lib\net*\*.Core.*" />
+    
+      <InterfacesFiles Include="$(NuGetDir)\**\lib\net*\*.Interfaces.*" />
+      <InterfacesFiles Remove="$(NuGetDir)\Interfaces\lib\net*\*.Interfaces.*" />
     </ItemGroup>
 
     <Delete Files="@(CoreFiles)" />
+    <Delete Files="@(InterfacesFiles)" />
   </Target>
 
 
@@ -251,11 +264,8 @@
       <Output TaskParameter="NuGetPropertyString" PropertyName="PropertiesString" />
     </GetAssemblyInfo>
     
-    <Exec Command="$(NuGetExecutable) pack &quot;%(NuSpecFile.Identity)&quot; -Properties &quot;$(PropertiesString)&quot; -OutputDirectory &quot;$(NuGetDir)&quot;"/>
-  </Target>
-  
-  
-  
+    <Exec Command="$(NuGetExecutable) pack &quot;%(NuSpecFile.Identity)&quot; -Properties &quot;$(PropertiesString);interfaces_version=$(InterfacesVersion)&quot; -OutputDirectory &quot;$(NuGetDir)&quot;"/>
+  </Target>  
   
   
   
