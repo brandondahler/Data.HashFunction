@@ -1,4 +1,4 @@
-Data.HashFunction 
+Data.HashFunction ![License](https://img.shields.io/github/license/brandondahler/Data.HashFunction.svg)
 =================
 
 Data.HashFunction is a C# library to create a common interface to [non-cryptographic hash functions](http://en.wikipedia.org/wiki/List_of_hash_functions#Non-cryptographic_hash_functions) and provide implementations of public hash functions.  It is licensed under the permissive and OSI approved [MIT](http://opensource.org/licenses/MIT) license.
@@ -8,8 +8,34 @@ All functionality of the library is tested using [xUnit](https://github.com/xuni
 
 All code within the libarary is commented using Sandcastle-compatible XML comments.  Sandcastle documentation is now avaliable at http://datahashfunction.azurewebsites.net, source can be found at [Data.HashFunction.Documentation](https://github.com/brandondahler/Data.HashFunction.Documentation).
 
-[![Build Status](http://jenkins.dahler.org/buildStatus/icon?job=Data.HashFunction/Data.HashFunction Master)](http://jenkins.dahler.org/job/Data.HashFunction/Data.HashFunction Master)
+Status
+------
 
+
+### Master
+
+[![Build Status](http://jenkins.dahler.org/buildStatus/icon?job=Data.HashFunction/Data.HashFunction Master)](http://jenkins.dahler.org/job/Data.HashFunction/job/Data.HashFunction%20Master/lastCompletedBuild)
+[![Test Status](https://img.shields.io/jenkins/t/http/jenkins.dahler.org/job/Data.HashFunction/Data.HashFunction%20Master.svg)](http://jenkins.dahler.org/job/Data.HashFunction/job/Data.HashFunction%20Master/lastCompletedBuild/testReport/)
+
+
+### NuGet
+
+| Name                            | Latest Stable Release                                                                                                                                                  |
+|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Data.HashFunction.Interfaces    | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Interfaces.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Interfaces/)       |
+| Data.HashFunction.Core          | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Core.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Core/)                   |
+| Data.HashFunction.BernsteinHash | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.BernsteinHash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.BernsteinHash/) |
+| Data.HashFunction.Blake2        | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Blake2.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Blake2/)               |
+| Data.HashFunction.Buzhash       | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Buzhash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Buzhash/)             |
+| Data.HashFunction.CityHash      | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.CityHash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.CityHash/)           |
+| Data.HashFunction.CRC           | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.CRC.svg)](https://www.nuget.org/packages/System.Data.HashFunction.CRC/)                     |
+| Data.HashFunction.ELF64         | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.ELF64.svg)](https://www.nuget.org/packages/System.Data.HashFunction.ELF64/)                 |
+| Data.HashFunction.FNV           | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.FNV.svg)](https://www.nuget.org/packages/System.Data.HashFunction.FNV/)                     |
+| Data.HashFunction.Jenkins       | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Jenkins.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Jenkins/)             |
+| Data.HashFunction.MurmurHash    | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.MurmurHash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.MurmurHash/)       |
+| Data.HashFunction.Pearson       | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Pearson.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Pearson/)             |
+| Data.HashFunction.SpookyHash    | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.SpookyHash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.SpookyHash/)       |
+| Data.HashFunction.xxHash    | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.xxHash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.xxHash/)               |
 
 Implementations
 ---------------
