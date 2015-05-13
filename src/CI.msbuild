@@ -6,12 +6,12 @@
     <ToolsDir Condition=" '$(ToolsDir)' == '' ">..\tools</ToolsDir>
     <NuGetDir Condition=" '$(NuGetDir)' == '' ">..\NuGet</NuGetDir>
     <TestBinDir Condition =" '$(TestBinDir)' == '' ">..\test\bin</TestBinDir>
-    
+
     <NuGetExecutable Condition=" '$(NuGetExecutable)' == '' ">$(ToolsDir)\nuget.exe</NuGetExecutable>
     <MSBuildCommunityTasksPath Condition=" '$(MSBuildCommunityTasksPath)' == '' ">$(ToolsDir)</MSBuildCommunityTasksPath>
 
     <InterfacesVersion Condition=" '$(InterfacesVersion)' == '' ">$([System.Text.RegularExpressions.Regex]::Replace('$(BuildVersion)', '^([0-9]+)(\.[0-9]+)*$', '$1.0.0.0'))</InterfacesVersion>
-    
+
     <xUnitConsoleVersion>2.0.0</xUnitConsoleVersion>
     <xUnitConsoleExecutable>$(SolutionDir)\packages\xunit.runner.console.$(xUnitConsoleVersion)\tools\xunit.console.exe</xUnitConsoleExecutable>
     <xUnitResultsXml>$(SolutionDir)\xunit-results.xml</xUnitResultsXml>
@@ -22,12 +22,14 @@
 
 
   <!-- Project Items -->
-  
+
   <ItemGroup>
+    <ProjectToBuild Include="$(SolutionDir)\Interfaces\Data.HashFunction.Interfaces.csproj" />
+    <ProjectToBuild Include="$(SolutionDir)\Core\Data.HashFunction.Core.csproj" />
     <ProjectToBuild Include="$(SolutionDir)\**\*.csproj" />
     <TestProjectToBuild Include="$(SolutionDir)\Test\*.csproj" />
 
-    <AssemblyInfoFiles Include="$(SolutionDir)\SolutionInfo.cs" />
+    <AssemblyInfoFiles Include="$(SolutionDir)\**\AssemblyInfo.cs" />
     <InterfaceAssemblyInfoFile Include="$(SolutionDir)\Interfaces\Properties\AssemblyInfo.cs" />
   </ItemGroup>
 
@@ -36,22 +38,22 @@
       <ProjectToBuild Remove="@(TestProjectToBuild)" />
     </ItemGroup>
   </Target>
-  
+
 
   <!-- Restore Packages -->
-  
+
   <Target Name="RestorePackages">
     <Exec Command="$(NuGetExecutable) restore $(SolutionDir)" />
   </Target>
 
   <!-- Patch AssemblyInfo  -->
   <Target Name="PatchAssemblyFiles">
-    <FileUpdate Condition=" '$(BuildVersion)' != '' " 
+    <FileUpdate Condition=" '$(BuildVersion)' != '' "
                 Files="@(AssemblyInfoFiles)"
                 Regex="AssemblyVersion\(&quot;.*&quot;\)"
                 ReplacementText="AssemblyVersion(&quot;$(BuildVersion)&quot;)" />
 
-    <FileUpdate Condition=" '$(BuildVersion)' != '' "
+    <FileUpdate Condition=" '$(InterfacesVersion)' != '' "
                 Files="@(InterfaceAssemblyInfoFile)"
                 Regex="AssemblyVersion\(&quot;.*&quot;\)"
                 ReplacementText="AssemblyVersion(&quot;$(InterfacesVersion)&quot;)" />
@@ -75,12 +77,16 @@
         Build_NuGet;
       </BuildTargets>
     </PropertyGroup>
-    
+
     <CallTarget Targets="$(BuildTargets)" />
   </Target>
-  
+
   <Target Name="Build_CodeAnalysis" DependsOnTargets="RestorePackages;PatchAssemblyFiles;RemoveTestFromProjectToBuild">
     <ItemGroup>
+      <ProjectToBuild>
+        <ExtraDefines Condition="'$(BuildVersion)' != ''">CUSTOM_VERSIONING;</ExtraDefines>
+      </ProjectToBuild>
+
       <BuildConfiguration Include="Net40">
         <Projects>@(ProjectToBuild)</Projects>
 
@@ -91,10 +97,10 @@
           OutputPath=bin\Debug\net40;
           IntermediateOutputPath=obj\Debug\net40\;
           DebugType=full;
-          DefineConstants=DEBUG;TRACE;CODE_ANALYSIS;NET40;
+          DefineConstants=DEBUG;TRACE;CODE_ANALYSIS;NET40;%(ProjectToBuild.ExtraDefines)
 
           CodeAnalysisTreatWarningsAsErrors=true;
-          RunCodeAnalysis=true
+          RunCodeAnalysis=true;
         </Properties>
       </BuildConfiguration>
 
@@ -108,14 +114,14 @@
           OutputPath=bin\Debug\net45;
           IntermediateOutputPath=obj\Debug\net45\;
           DebugType=full;
-          DefineConstants=DEBUG;TRACE;CODE_ANALYSIS;
+          DefineConstants=DEBUG;TRACE;CODE_ANALYSIS;%(ProjectToBuild.ExtraDefines)
 
           CodeAnalysisTreatWarningsAsErrors=true;
           RunCodeAnalysis=true;
         </Properties>
       </BuildConfiguration>
     </ItemGroup>
-    
+
     <MSBuild Targets="Build"
              Projects="%(BuildConfiguration.Projects)"
              Properties="%(BuildConfiguration.Properties)"
@@ -126,6 +132,7 @@
     <ItemGroup>
       <TestProjectToBuild>
         <ProjectName>$([System.String]::Copy('%(Filename)').Replace('Data.HashFunction.', ''))</ProjectName>
+        <ExtraDefines Condition="'$(BuildVersion)' != ''">CUSTOM_VERSIONING;</ExtraDefines>
       </TestProjectToBuild>
 
       <BuildConfiguration Include="Net45">
@@ -138,7 +145,7 @@
           OutputPath=..\$(TestBinDir)\%(TestProjectToBuild.ProjectName);
           IntermediateOutputPath=obj\Debug\net45\;
           DebugType=full;
-          DefineConstants=DEBUG;TRACE;
+          DefineConstants=DEBUG;TRACE;%(TestProjectToBuild.ExtraDefines)
 
           RunCodeAnalysis=false;
         </Properties>
@@ -151,16 +158,16 @@
              BuildInParallel="true" />
   </Target>
 
-
   <Target Name="Build_NuGet" DependsOnTargets="RestorePackages;PatchAssemblyFiles;RemoveTestFromProjectToBuild">
     <ItemGroup>
       <ProjectToBuild>
         <ProjectName>$([System.String]::Copy('%(Filename)').Replace('Data.HashFunction.', ''))</ProjectName>
+        <ExtraDefines Condition="'$(BuildVersion)' != ''">CUSTOM_VERSIONING;</ExtraDefines>
       </ProjectToBuild>
-      
+
       <BuildConfiguration Include="Net40">
         <Projects>@(ProjectToBuild)</Projects>
-        
+
         <Properties>
           Configuration=Release;
           TargetFrameworkVersion=v4.0;
@@ -169,7 +176,7 @@
           OutputPath=..\$(NuGetDir)\%(ProjectToBuild.ProjectName)\lib\net40;
           IntermediateOutputPath=obj\Release\net40\;
           DebugType=none;
-          DefineConstants=TRACE;NET40;$('%(ProjectToBuild.ProjectName)' == 'Data.HashFunction.Interfaces' ? 'CUSTOM_VERSIONING;' : '')
+          DefineConstants=TRACE;NET40;%(ProjectToBuild.ExtraDefines)
 
           RunCodeAnalysis=false;
         </Properties>
@@ -177,7 +184,7 @@
 
       <BuildConfiguration Include="Net45">
         <Projects>@(ProjectToBuild)</Projects>
-        
+
         <Properties>
           Configuration=Release;
           TargetFrameworkVersion=v4.5;
@@ -185,7 +192,7 @@
           OutputPath=..\$(NuGetDir)\%(ProjectToBuild.ProjectName)\lib\net45;
           IntermediateOutputPath=obj\Release\net45\;
           DebugType=none;
-          DefineConstants=TRACE;$('%(ProjectToBuild.ProjectName)' == 'Data.HashFunction.Interfaces' ? 'CUSTOM_VERSIONING;' : '')
+          DefineConstants=TRACE;%(ProjectToBuild.ExtraDefines)
 
           RunCodeAnalysis=false;
         </Properties>
@@ -202,7 +209,7 @@
     <ItemGroup>
       <CoreFiles Include="$(NuGetDir)\**\lib\net*\*.Core.*" />
       <CoreFiles Remove="$(NuGetDir)\Core\lib\net*\*.Core.*" />
-    
+
       <InterfacesFiles Include="$(NuGetDir)\**\lib\net*\*.Interfaces.*" />
       <InterfacesFiles Remove="$(NuGetDir)\Interfaces\lib\net*\*.Interfaces.*" />
     </ItemGroup>
@@ -212,7 +219,7 @@
   </Target>
 
 
-  
+
   <!-- Test -->
 
   <PropertyGroup>
@@ -221,8 +228,8 @@
       $(TestDependsOn);
     </TestDependsOn>
   </PropertyGroup>
-  
-  
+
+
   <Target Name="Test" DependsOnTargets="RestorePackages;$(TestDependsOn)">
     <ItemGroup>
       <TestProjectToBuild>
@@ -251,7 +258,7 @@
   <ItemGroup>
     <NuSpecFile Include="$(NuGetDir)/**/*.nuspec" />
   </ItemGroup>
-  
+
   <Target Name="Package" DependsOnTargets="$(PackageDependsOn)" Outputs="%(NuSpecFile.Identity)">
     <ItemGroup>
       <NuSpecFile>
@@ -259,16 +266,16 @@
         <PropertyString></PropertyString>
       </NuSpecFile>
     </ItemGroup>
-    
+
     <GetAssemblyInfo AssemblyPath="%(NuSpecFile.AssemblyPath)">
       <Output TaskParameter="NuGetPropertyString" PropertyName="PropertiesString" />
     </GetAssemblyInfo>
-    
+
     <Exec Command="$(NuGetExecutable) pack &quot;%(NuSpecFile.Identity)&quot; -Properties &quot;$(PropertiesString);interfaces_version=$(InterfacesVersion)&quot; -OutputDirectory &quot;$(NuGetDir)&quot;"/>
-  </Target>  
-  
-  
-  
+  </Target>
+
+
+
   <!-- Read Assembly Info -->
 
   <UsingTask TaskName="GetAssemblyInfo" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
@@ -276,7 +283,7 @@
       <AssemblyPath ParameterType="System.String" Required="true" />
       <NuGetPropertyString ParameterType="System.String" Output="true" />
     </ParameterGroup>
-    
+
     <Task>
       <Reference Include="System.Core" />
       <Using Namespace="System" />
@@ -316,5 +323,5 @@
       </Code>
     </Task>
   </UsingTask>
-  
+
 </Project>

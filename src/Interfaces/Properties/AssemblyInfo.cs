@@ -13,5 +13,5 @@ using System.Runtime.InteropServices;
 [assembly: Guid("7af60ab9-79a0-4063-a01f-f14cf8d9f52f")]
 
 #if CUSTOM_VERSIONING
-[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyVersion("0.0.0.0")]
 #endif

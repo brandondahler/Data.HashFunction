@@ -8,3 +8,7 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible(false)]
 [assembly: Guid("7903f1c0-0569-4278-87f7-8f1425a48244")]
+
+#if CUSTOM_VERSIONING
+[assembly: AssemblyVersion("0.0.0.0")]
+#endif
