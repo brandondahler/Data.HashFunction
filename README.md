@@ -8,6 +8,8 @@ All functionality of the library is tested using [xUnit](https://github.com/xuni
 
 All code within the libarary is commented using Sandcastle-compatible XML comments.  Sandcastle documentation is now avaliable at http://datahashfunction.azurewebsites.net, source can be found at [Data.HashFunction.Documentation](https://github.com/brandondahler/Data.HashFunction.Documentation).
 
+[![Build Status](http://jenkins.dahler.org/buildStatus/icon?job=Data.HashFunction/Data.HashFunction Master)](http://jenkins.dahler.org/job/Data.HashFunction/Data.HashFunction Master)
+
 
 Implementations
 ---------------
