@@ -10,12 +10,13 @@
     <projectUrl>https://github.com/brandondahler/Data.HashFunction/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes></releaseNotes>
+    <releaseNotes>https://github.com/brandondahler/Data.HashFunction/wiki/Release-Notes</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>ELF hash function elf64</tags>
 
     <dependencies>
       <dependency id="System.Data.HashFunction.Core" version="$version$" />
+      <dependency id="System.Data.HashFunction.Interfaces" version="$interfaces_version$" />
     </dependencies>
   </metadata>
 </package>
