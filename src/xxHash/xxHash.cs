@@ -130,7 +130,7 @@ namespace System.Data.HashFunction
                 {
                     var h = ((UInt32) InitVal) + _primes32[4];
 
-                    int dataCount = 0;
+                    ulong dataCount = 0;
                     byte[] remainder = null;
 
 
@@ -153,13 +153,13 @@ namespace System.Data.HashFunction
                                 }
                             }
 
-                            dataCount += length;
+                            dataCount += (ulong)length;
                         },
                         (remainderData, position, length) => {
                             remainder = new byte[length];
                             Array.Copy(remainderData, position, remainder, 0, length);
 
-                            dataCount += length;
+                            dataCount += (ulong)length;
                         });
 
 
@@ -173,7 +173,7 @@ namespace System.Data.HashFunction
                 {
                      var h = InitVal + _primes64[4];
 
-                    int dataCount = 0;
+                    ulong dataCount = 0;
                     byte[] remainder = null;
 
                     var initValues = new[] {
@@ -197,13 +197,13 @@ namespace System.Data.HashFunction
                                 }
                             }
 
-                            dataCount += length;
+                            dataCount += (ulong) length;
                         },
                         (remainderData, position, length) => {
                             remainder = new byte[length];
                             Array.Copy(remainderData, position, remainder, 0, length);
 
-                            dataCount += length;
+                            dataCount += (ulong) length;
                         });
 
 
@@ -230,7 +230,7 @@ namespace System.Data.HashFunction
                 {
                     var h = ((UInt32) InitVal) + _primes32[4];
 
-                    int dataCount = 0;
+                    ulong dataCount = 0;
                     byte[] remainder = null;
 
 
@@ -253,13 +253,13 @@ namespace System.Data.HashFunction
                                 }
                             }
 
-                            dataCount += length;
+                            dataCount += (ulong) length;
                         },
                         (remainderData, position, length) => {
                             remainder = new byte[length];
                             Array.Copy(remainderData, position, remainder, 0, length);
 
-                            dataCount += length;
+                            dataCount += (ulong) length;
                         }).ConfigureAwait(false);
 
                     PostProcess(ref h, initValues, dataCount, remainder);
@@ -272,7 +272,7 @@ namespace System.Data.HashFunction
                 {
                      var h = InitVal + _primes64[4];
 
-                    int dataCount = 0;
+                    ulong dataCount = 0;
                     byte[] remainder = null;
 
                     var initValues = new[] {
@@ -295,13 +295,13 @@ namespace System.Data.HashFunction
                                 }
                             }
 
-                            dataCount += length;
+                            dataCount += (ulong) length;
                         },
                         (remainderData, position, length) => {
                             remainder = new byte[length];
                             Array.Copy(remainderData, position, remainder, 0, length);
 
-                            dataCount += remainder.Length;
+                            dataCount += (ulong) remainder.Length;
                         }).ConfigureAwait(false);
 
 
@@ -320,7 +320,7 @@ namespace System.Data.HashFunction
 #if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private static void PostProcess(ref UInt32 h, UInt32[] initValues, int dataCount, byte[] remainder)
+        private static void PostProcess(ref UInt32 h, UInt32[] initValues, ulong dataCount, byte[] remainder)
         {
             if (dataCount >= 16)
             {
@@ -361,7 +361,7 @@ namespace System.Data.HashFunction
 #if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private static void PostProcess(ref UInt64 h, UInt64[] initValues, int dataCount, byte[] remainder)
+        private static void PostProcess(ref UInt64 h, UInt64[] initValues, ulong dataCount, byte[] remainder)
         {
             if (dataCount >= 32)
             {
@@ -395,7 +395,7 @@ namespace System.Data.HashFunction
 
 
                 // Process a 4-byte chunk if it exists
-                if ((remainder.Length % 8) > 4)
+                if ((remainder.Length % 8) >= 4)
                 {
                     h ^= ((UInt64) BitConverter.ToUInt32(remainder, remainder.Length - (remainder.Length % 8))) * _primes64[0];
                     h  = (h.RotateLeft(23) * _primes64[1]) + _primes64[2];
