@@ -312,8 +312,8 @@ namespace System.Data.HashFunction
         {
             for (var x = position; x < position + length; x += 16)
             {
-                UInt64 k1 = BitConverter.ToUInt64(dataGroup, 0);
-                UInt64 k2 = BitConverter.ToUInt64(dataGroup, 8);
+                UInt64 k1 = BitConverter.ToUInt64(dataGroup, x);
+                UInt64 k2 = BitConverter.ToUInt64(dataGroup, x + 8);
 
                 k1 *= c1_128;
                 k1 = k1.RotateLeft(31);
