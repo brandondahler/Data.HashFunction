@@ -1,6 +1,7 @@
 ﻿//! Automatically generated from IHashFunctionTests_HashFunctionBase.tt
 //! Direct modifications to this file will be lost.
 
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Data.HashFunction.Test.Mocks;
@@ -8,8 +9,6 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Moq;
-using MoreLinq;
 using Xunit;
 
 namespace System.Data.HashFunction.Test
@@ -1777,6 +1776,7 @@ namespace System.Data.HashFunction.Test
                     new KnownValue(128, TestConstants.LoremIpsum.Take(7), "1689190f13f3290b3c5ead34c751ea8a"),
                     new KnownValue(32, TestConstants.LoremIpsum.Take(31), 0x8d50f530),
                     new KnownValue(128, TestConstants.LoremIpsum.Take(31), "5c769a439b78878e8640e16335e4313f"),
+                    new KnownValue(128, TestConstants.LoremIpsum.Take(33), "7fdc48ea7913cb074565f43f4c1e1356"),
                 };
             }
         }
