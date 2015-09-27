@@ -1416,12 +1416,14 @@
                 "Async": true,
                 "ConstructionParameters": [ "hashSize" ],
                 "KnownValues":  [
-                    { "Bits": 32, "TestValue": "TestConstants.Empty",      "ExpectedValue": "0x02cc5d05" },
-                    { "Bits": 32, "TestValue": "TestConstants.FooBar",     "ExpectedValue": "0xeda34aaf" },
-                    { "Bits": 32, "TestValue": "TestConstants.LoremIpsum", "ExpectedValue": "0x92ea46ac" },
-                    { "Bits": 64, "TestValue": "TestConstants.Empty",      "ExpectedValue": "0xef46db3751d8e999" },
-                    { "Bits": 64, "TestValue": "TestConstants.FooBar",     "ExpectedValue": "0xa2aa05ed9085aaf9" },
-                    { "Bits": 64, "TestValue": "TestConstants.LoremIpsum", "ExpectedValue": "0xaf35642971419cbe" }
+                    { "Bits": 32, "TestValue": "TestConstants.Empty",               "ExpectedValue": "0x02cc5d05" },
+                    { "Bits": 32, "TestValue": "TestConstants.FooBar",              "ExpectedValue": "0xeda34aaf" },
+                    { "Bits": 32, "TestValue": "TestConstants.LoremIpsum",          "ExpectedValue": "0x92ea46ac" },
+                    { "Bits": 32, "TestValue": "TestConstants.LoremIpsum.Take(4)",  "ExpectedValue": "0x0df3e9ea" },
+                    { "Bits": 64, "TestValue": "TestConstants.Empty",               "ExpectedValue": "0xef46db3751d8e999" },
+                    { "Bits": 64, "TestValue": "TestConstants.FooBar",              "ExpectedValue": "0xa2aa05ed9085aaf9" },
+                    { "Bits": 64, "TestValue": "TestConstants.LoremIpsum",          "ExpectedValue": "0xaf35642971419cbe" },
+                    { "Bits": 64, "TestValue": "TestConstants.LoremIpsum.Take(4)",  "ExpectedValue": "0x103460bb4a599cab" }
                 ]
             },
 
