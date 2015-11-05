@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build;Test;Package" TreatAsLocalProperty="InterfacesVersion" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!-- Settings -->
+  <!-- Properties -->
   <PropertyGroup>
     <SolutionDir Condition=" '$(SolutionDir)' == '' ">.</SolutionDir>
     <ToolsDir Condition=" '$(ToolsDir)' == '' ">..\tools</ToolsDir>
@@ -11,41 +11,52 @@
     <MSBuildCommunityTasksPath Condition=" '$(MSBuildCommunityTasksPath)' == '' ">$(ToolsDir)</MSBuildCommunityTasksPath>
 
     <InterfacesVersion Condition=" '$(InterfacesVersion)' == '' ">$([System.Text.RegularExpressions.Regex]::Replace('$(BuildVersion)', '^([0-9]+)(\.[0-9]+)*$', '$1.0.0.0'))</InterfacesVersion>
+    <InterfacesVersion Condition=" '$(InterfacesVersion)' == '' ">1.0.0.0</InterfacesVersion>
+    <ExtraDefines Condition="'$(BuildVersion)' != ''">CUSTOM_VERSIONING;</ExtraDefines>
 
     <xUnitConsoleVersion>2.0.0</xUnitConsoleVersion>
     <xUnitConsoleExecutable>$(SolutionDir)\packages\xunit.runner.console.$(xUnitConsoleVersion)\tools\xunit.console.exe</xUnitConsoleExecutable>
     <xUnitResultsXml>$(SolutionDir)\xunit-results.xml</xUnitResultsXml>
   </PropertyGroup>
 
-  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
-
-
-
-  <!-- Project Items -->
-
+  
+  
+  <!-- Items -->
   <ItemGroup>
-    <ProjectToBuild Include="$(SolutionDir)\Interfaces\Data.HashFunction.Interfaces.csproj" />
-    <ProjectToBuild Include="$(SolutionDir)\Core\Data.HashFunction.Core.csproj" />
-    <ProjectToBuild Include="$(SolutionDir)\**\*.csproj" />
-    <TestProjectToBuild Include="$(SolutionDir)\Test\*.csproj" />
+    <ProjectToBuild Include="$(SolutionDir)\**\*.csproj" Exclude="$(SolutionDir)\Test\*.csproj;$(SolutionDir)\**\*.Net40Async.csproj">
+      <ProjectName>$([System.String]::Copy('%(Filename)').Replace('Data.HashFunction.', ''))</ProjectName>
+      <Async40Project>%(RootDir)%(Directory)%(Filename).Net40Async%(Extension)</Async40Project>
+    </ProjectToBuild>
 
-    <AssemblyInfoFiles Include="$(SolutionDir)\**\AssemblyInfo.cs" />
+    <TestProjectToBuild Include="$(SolutionDir)\Test\*.csproj">
+      <ProjectName>$([System.String]::Copy('%(Filename)').Replace('Data.HashFunction.', ''))</ProjectName>
+    </TestProjectToBuild>
+
+    
+    <AssemblyInfoFiles Include="$(SolutionDir)\**\AssemblyInfo.cs" Exclude="$(SolutionDir)\Interfaces\Properties\AssemblyInfo.cs" />
     <InterfaceAssemblyInfoFile Include="$(SolutionDir)\Interfaces\Properties\AssemblyInfo.cs" />
+
+    
+    <NuSpecFile Include="$(NuGetDir)/**/*.nuspec">
+      <AssemblyName>$([System.String]::Copy('%(Filename)').Replace('.Net40Async', ''))</AssemblyName>
+      <AssemblyPath Condition="$([System.String]::Copy('%(Filename)').EndsWith('.Net40Async'))">%(RelativeDir)lib\net40\System.%(AssemblyName).dll</AssemblyPath>
+      <AssemblyPath Condition="'%(AssemblyPath)' == ''">%(RelativeDir)lib\net45\System.%(AssemblyName).dll</AssemblyPath>
+    </NuSpecFile>
   </ItemGroup>
 
-  <Target Name="RemoveTestFromProjectToBuild">
-    <ItemGroup>
-      <ProjectToBuild Remove="@(TestProjectToBuild)" />
-    </ItemGroup>
-  </Target>
+  
+  
+  <!-- Imports -->
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
 
-
+  
+  
   <!-- Restore Packages -->
-
   <Target Name="RestorePackages">
     <Exec Command="$(NuGetExecutable) restore $(SolutionDir)" />
   </Target>
 
+  
   <!-- Patch AssemblyInfo  -->
   <Target Name="PatchAssemblyFiles">
     <FileUpdate Condition=" '$(BuildVersion)' != '' "
@@ -57,39 +68,42 @@
                 Files="@(InterfaceAssemblyInfoFile)"
                 Regex="AssemblyVersion\(&quot;.*&quot;\)"
                 ReplacementText="AssemblyVersion(&quot;$(InterfacesVersion)&quot;)" />
-
   </Target>
 
-  <!-- Build -->
 
+  <!-- BclAsync_Projects -->
+  <Target Name="BclAsync_Projects" Inputs="$(ToolsDir)\BclAsync.csproj.xslt" Outputs="%(ProjectToBuild.Async40Project)">
+    <XslTransformation 
+      XslInputPath="$(ToolsDir)\BclAsync.csproj.xslt" 
+      XmlInputPaths="%(ProjectToBuild.Identity)" 
+      OutputPaths="%(ProjectToBuild.Async40Project)" />
+  </Target>
+  
+  
+  <!-- Build -->
   <PropertyGroup>
     <BuildDependsOn>
       RestorePackages;
       PatchAssemblyFiles;
+      Build_Configure;
     </BuildDependsOn>
+
+    <Build_ConfigureDependsOn>
+      BclAsync_Projects;
+    </Build_ConfigureDependsOn>
   </PropertyGroup>
 
   <Target Name="Build" DependsOnTargets="$(BuildDependsOn)">
-    <PropertyGroup>
-      <BuildTargets>
-        Build_CodeAnalysis;
-        Build_Test;
-        Build_NuGet;
-      </BuildTargets>
-    </PropertyGroup>
-
-    <CallTarget Targets="$(BuildTargets)" />
+    <MSBuild Targets="Build"
+             Projects="%(ProjectBuildConfiguration.Project)"
+             Properties="%(ProjectBuildConfiguration.Properties)"
+             BuildInParallel="true" />
   </Target>
 
-  <Target Name="Build_CodeAnalysis" DependsOnTargets="RestorePackages;PatchAssemblyFiles;RemoveTestFromProjectToBuild">
+  <Target Name="Build_Configure" Outputs="%(ProjectToBuild.Identity)" DependsOnTargets="$(Build_ConfigureDependsOn)">
     <ItemGroup>
-      <ProjectToBuild>
-        <ExtraDefines Condition="'$(BuildVersion)' != ''">CUSTOM_VERSIONING;</ExtraDefines>
-      </ProjectToBuild>
-
-      <BuildConfiguration Include="Net40">
-        <Projects>@(ProjectToBuild)</Projects>
-
+      <ProjectBuildConfiguration Include="Net40::%(ProjectToBuild.Identity)">
+        <Project>%(ProjectToBuild.Identity)</Project>
         <Properties>
           Configuration=Debug;
           TargetFrameworkVersion=v4.0;
@@ -97,16 +111,32 @@
           OutputPath=bin\Debug\net40;
           IntermediateOutputPath=obj\Debug\net40\;
           DebugType=full;
-          DefineConstants=DEBUG;TRACE;CODE_ANALYSIS;NET40;%(ProjectToBuild.ExtraDefines)
+          DefineConstants=DEBUG;TRACE;CODE_ANALYSIS;NET40;$(ExtraDefines)
 
           CodeAnalysisTreatWarningsAsErrors=true;
           RunCodeAnalysis=true;
         </Properties>
-      </BuildConfiguration>
+      </ProjectBuildConfiguration>
 
-      <BuildConfiguration Include="Net45">
-        <Projects>@(ProjectToBuild)</Projects>
+      <ProjectBuildConfiguration Include="Net40_WithAsync::%(ProjectToBuild.Identity)">
+        <Project>%(ProjectToBuild.Async40Project)</Project>
+        <Properties>
+          Configuration=Debug;
+          TargetFrameworkVersion=v4.0;
+          AppConfig=..\$(ToolsDir)\BclAsync.app.config;
 
+          OutputPath=bin\Debug\net40Async;
+          IntermediateOutputPath=obj\Debug\net40Async\;
+          DebugType=full;
+          DefineConstants=DEBUG;TRACE;CODE_ANALYSIS;NET40;INCLUDE_ASYNC;$(ExtraDefines)
+
+          CodeAnalysisTreatWarningsAsErrors=true;
+          RunCodeAnalysis=true;
+        </Properties>
+      </ProjectBuildConfiguration>
+
+      <ProjectBuildConfiguration Include="Net45::%(ProjectToBuild.Identity)">
+        <Project>%(ProjectToBuild.Identity)</Project>
         <Properties>
           Configuration=Debug;
           TargetFrameworkVersion=v4.5;
@@ -114,30 +144,36 @@
           OutputPath=bin\Debug\net45;
           IntermediateOutputPath=obj\Debug\net45\;
           DebugType=full;
-          DefineConstants=DEBUG;TRACE;CODE_ANALYSIS;%(ProjectToBuild.ExtraDefines)
+          DefineConstants=DEBUG;TRACE;CODE_ANALYSIS;$(ExtraDefines)
 
           CodeAnalysisTreatWarningsAsErrors=true;
           RunCodeAnalysis=true;
         </Properties>
-      </BuildConfiguration>
+      </ProjectBuildConfiguration>
     </ItemGroup>
+  </Target>
+  
+  <!-- BuildTest -->
+  <PropertyGroup>
+    <BuildTestDependsOn>
+      RestorePackages;
+      PatchAssemblyFiles;
+      BuildTest_Configure
+    </BuildTestDependsOn>
+  </PropertyGroup>
 
+  <Target Name="BuildTest" DependsOnTargets="$(BuildTestDependsOn)">
     <MSBuild Targets="Build"
-             Projects="%(BuildConfiguration.Projects)"
-             Properties="%(BuildConfiguration.Properties)"
+             Projects="%(TestProjectBuildConfiguration.Project)"
+             Properties="%(TestProjectBuildConfiguration.Properties)"
              BuildInParallel="true" />
   </Target>
 
-  <Target Name="Build_Test" DependsOnTargets="RestorePackages;PatchAssemblyFiles">
+  <Target Name="BuildTest_Configure" Outputs="%(TestProjectToBuild.Identity)">
     <ItemGroup>
-      <TestProjectToBuild>
-        <ProjectName>$([System.String]::Copy('%(Filename)').Replace('Data.HashFunction.', ''))</ProjectName>
-        <ExtraDefines Condition="'$(BuildVersion)' != ''">CUSTOM_VERSIONING;</ExtraDefines>
-      </TestProjectToBuild>
-
-      <BuildConfiguration Include="Net45">
-        <Projects>@(TestProjectToBuild)</Projects>
-
+      <TestProjectBuildConfiguration Include="Net45::%(TestProjectToBuild.Identity)">
+        <Project>%(TestProjectToBuild.Identity)</Project>
+        <TestAssembly>$(TestBinDir)\%(TestProjectToBuild.ProjectName)\System.%(TestProjectToBuild.Filename).dll</TestAssembly>
         <Properties>
           Configuration=Debug;
           TargetFrameworkVersion=v4.5;
@@ -145,29 +181,53 @@
           OutputPath=..\$(TestBinDir)\%(TestProjectToBuild.ProjectName);
           IntermediateOutputPath=obj\Debug\net45\;
           DebugType=full;
-          DefineConstants=DEBUG;TRACE;%(TestProjectToBuild.ExtraDefines)
+          DefineConstants=DEBUG;TRACE;$(ExtraDefines)
 
           RunCodeAnalysis=false;
         </Properties>
-      </BuildConfiguration>
+      </TestProjectBuildConfiguration>
     </ItemGroup>
-
-    <MSBuild Targets="Build"
-             Projects="%(BuildConfiguration.Projects)"
-             Properties="%(BuildConfiguration.Properties)"
-             BuildInParallel="true" />
   </Target>
 
-  <Target Name="Build_NuGet" DependsOnTargets="RestorePackages;PatchAssemblyFiles;RemoveTestFromProjectToBuild">
+  <!-- BuildNuGet -->
+  <PropertyGroup>
+    <BuildNuGetDependsOn>
+      RestorePackages;
+      PatchAssemblyFiles;
+      BuildNuGet_Configure
+    </BuildNuGetDependsOn>
+
+    <BuildNuGet_ConfigureDependsOn>
+      BclAsync_Projects;
+    </BuildNuGet_ConfigureDependsOn>
+  </PropertyGroup>
+  
+  <Target Name="BuildNuGet" DependsOnTargets="$(BuildNuGetDependsOn)">
+    <MSBuild Targets="Build"
+             Projects="%(NuGetProjectBuildConfiguration.Project)"
+             Properties="%(NuGetProjectBuildConfiguration.Properties)"
+             BuildInParallel="true" />
+    
     <ItemGroup>
-      <ProjectToBuild>
-        <ProjectName>$([System.String]::Copy('%(Filename)').Replace('Data.HashFunction.', ''))</ProjectName>
-        <ExtraDefines Condition="'$(BuildVersion)' != ''">CUSTOM_VERSIONING;</ExtraDefines>
-      </ProjectToBuild>
+      <CoreFiles Include="$(NuGetDir)\**\lib\net*\*.Core.*" Exclude="$(NuGetDir)\Core\lib\net*\*.Core.*;$(NuGetDir)\Core.Net40Async\lib\net*\*.Core.*" />
 
-      <BuildConfiguration Include="Net40">
-        <Projects>@(ProjectToBuild)</Projects>
+      <Net40AsyncPackageFiles Include="$(NuGetDir)\**\lib\net40\Microsoft.Threading.Tasks.*"/>
+      <Net40AsyncPackageFiles Include="$(NuGetDir)\**\lib\net40\System.IO.*"/>
+      <Net40AsyncPackageFiles Include="$(NuGetDir)\**\lib\net40\System.Runtime.*"/>
+      <Net40AsyncPackageFiles Include="$(NuGetDir)\**\lib\net40\System.Threading.Tasks.*"/>
+      
+      <InterfacesFiles Include="$(NuGetDir)\**\lib\net*\*.Interfaces.*" Exclude="$(NuGetDir)\Interfaces\lib\net*\*.Interfaces.*" />
+    </ItemGroup>
 
+    <Delete Files="@(CoreFiles)" />
+    <Delete Files="@(Net40AsyncPackageFiles)" />
+    <Delete Files="@(InterfacesFiles)" />
+  </Target>
+
+  <Target Name="BuildNuGet_Configure" Outputs="%(ProjectToBuild.Identity)" DependsOnTargets="$(BuildNuGet_ConfigureDependsOn)">
+    <ItemGroup>
+      <NuGetProjectBuildConfiguration Include="Net40::%(ProjectToBuild.Identity)">
+        <Project>%(ProjectToBuild.Identity)</Project>
         <Properties>
           Configuration=Release;
           TargetFrameworkVersion=v4.0;
@@ -176,15 +236,30 @@
           OutputPath=..\$(NuGetDir)\%(ProjectToBuild.ProjectName)\lib\net40;
           IntermediateOutputPath=obj\Release\net40\;
           DebugType=none;
-          DefineConstants=TRACE;NET40;%(ProjectToBuild.ExtraDefines)
+          DefineConstants=TRACE;NET40;$(ExtraDefines)
 
           RunCodeAnalysis=false;
         </Properties>
-      </BuildConfiguration>
+      </NuGetProjectBuildConfiguration>
 
-      <BuildConfiguration Include="Net45">
-        <Projects>@(ProjectToBuild)</Projects>
+      <NuGetProjectBuildConfiguration Include="Net40_WithAsync::%(ProjectToBuild.Identity)" Condition="'%(ProjectToBuild.ProjectName)' != 'Interfaces'">
+        <Project>%(ProjectToBuild.Async40Project)</Project>
+        <Properties>
+          Configuration=Release;
+          TargetFrameworkVersion=v4.0;
+          AppConfig=..\$(ToolsDir)\BclAsync.app.config;
 
+          OutputPath=..\$(NuGetDir)\%(ProjectToBuild.ProjectName).Net40Async\lib\net40;
+          IntermediateOutputPath=obj\Release\net40Async\;
+          DebugType=none;
+          DefineConstants=TRACE;NET40;INCLUDE_ASYNC;$(ExtraDefines)
+
+          RunCodeAnalysis=false;
+        </Properties>
+      </NuGetProjectBuildConfiguration>
+
+      <NuGetProjectBuildConfiguration Include="Net45::%(ProjectToBuild.Identity)">
+        <Project>%(ProjectToBuild.Identity)</Project>
         <Properties>
           Configuration=Release;
           TargetFrameworkVersion=v4.5;
@@ -192,81 +267,36 @@
           OutputPath=..\$(NuGetDir)\%(ProjectToBuild.ProjectName)\lib\net45;
           IntermediateOutputPath=obj\Release\net45\;
           DebugType=none;
-          DefineConstants=TRACE;%(ProjectToBuild.ExtraDefines)
+          DefineConstants=TRACE;$(ExtraDefines)
 
           RunCodeAnalysis=false;
         </Properties>
-      </BuildConfiguration>
+      </NuGetProjectBuildConfiguration>
     </ItemGroup>
-
-    <MSBuild Targets="Build"
-             Projects="%(BuildConfiguration.Projects)"
-             Properties="%(BuildConfiguration.Properties)"
-             BuildInParallel="true" />
-
-
-
-    <ItemGroup>
-      <CoreFiles Include="$(NuGetDir)\**\lib\net*\*.Core.*" />
-      <CoreFiles Remove="$(NuGetDir)\Core\lib\net*\*.Core.*" />
-
-      <InterfacesFiles Include="$(NuGetDir)\**\lib\net*\*.Interfaces.*" />
-      <InterfacesFiles Remove="$(NuGetDir)\Interfaces\lib\net*\*.Interfaces.*" />
-    </ItemGroup>
-
-    <Delete Files="@(CoreFiles)" />
-    <Delete Files="@(InterfacesFiles)" />
   </Target>
-
-
-
+  
   <!-- Test -->
-
   <PropertyGroup>
     <TestDependsOn Condition=" '$(TestBuilt)' != 'true' ">
-      Build_Test;
+      BuildTest;
       $(TestDependsOn);
     </TestDependsOn>
   </PropertyGroup>
 
-
-  <Target Name="Test" DependsOnTargets="RestorePackages;$(TestDependsOn)">
-    <ItemGroup>
-      <TestProjectToBuild>
-        <ProjectName>$([System.String]::Copy('%(Filename)').Replace('Data.HashFunction.', ''))</ProjectName>
-      </TestProjectToBuild>
-
-      <TestProjectToBuild>
-        <TestAssembly>$(TestBinDir)\%(ProjectName)\System.%(FileName).dll</TestAssembly>
-      </TestProjectToBuild>
-    </ItemGroup>
-
-    <Exec Command="$(xUnitConsoleExecutable) @(TestProjectToBuild->Metadata('TestAssembly'), ' ') -xml $(xUnitResultsXml)" />
+  <Target Name="Test" DependsOnTargets="RestorePackages;$(TestDependsOn)" Outputs="%(TestProjectBuildConfiguration.Identity)">
+    <Exec Command="$(xUnitConsoleExecutable) @(TestProjectBuildConfiguration->Metadata('TestAssembly'), ' ') -xml $(xUnitResultsXml)" />
   </Target>
 
 
-
-
   <!-- Package -->
-
   <PropertyGroup>
     <PackageDependsOn Condition=" '$(NuGetBuilt)' != 'true' ">
-      Build_NuGet
+      BuildNuGet;
+      $(PackageDependsOn);
     </PackageDependsOn>
   </PropertyGroup>
-
-  <ItemGroup>
-    <NuSpecFile Include="$(NuGetDir)/**/*.nuspec" />
-  </ItemGroup>
-
+  
   <Target Name="Package" DependsOnTargets="$(PackageDependsOn)" Outputs="%(NuSpecFile.Identity)">
-    <ItemGroup>
-      <NuSpecFile>
-        <AssemblyPath>%(RelativeDir)lib\net45\System.%(Filename).dll</AssemblyPath>
-        <PropertyString></PropertyString>
-      </NuSpecFile>
-    </ItemGroup>
-
     <GetAssemblyInfo AssemblyPath="%(NuSpecFile.AssemblyPath)">
       <Output TaskParameter="NuGetPropertyString" PropertyName="PropertiesString" />
     </GetAssemblyInfo>
@@ -277,7 +307,6 @@
 
 
   <!-- Read Assembly Info -->
-
   <UsingTask TaskName="GetAssemblyInfo" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
     <ParameterGroup>
       <AssemblyPath ParameterType="System.String" Required="true" />

@@ -16,7 +16,7 @@ namespace System.Data.HashFunction
     ///   https://code.google.com/p/xxhash/.
     /// </summary>
     public class xxHash
-#if !NET40
+#if !NET40 || INCLUDE_ASYNC
         : HashFunctionAsyncBase
 #else
         : HashFunctionBase
@@ -217,7 +217,7 @@ namespace System.Data.HashFunction
             return hash;
         }
 
-#if !NET40
+#if !NET40 || INCLUDE_ASYNC
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)

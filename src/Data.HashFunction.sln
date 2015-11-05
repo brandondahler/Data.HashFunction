@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Test", "Test\Data.HashFunction.Test.csproj", "{FFCE0E36-1B66-4C8D-803E-A28754A7D4E4}"
 EndProject
@@ -38,30 +38,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.CRC", "CR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Blake2", "Blake2\Data.HashFunction.Blake2.csproj", "{5FBB51F5-3DEF-4946-BFA4-BFF721434FCA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{09972C53-E05D-4BA4-BF98-58D9EA9C37A5}"
-	ProjectSection(SolutionItems) = preProject
-		..\NuGet\BernsteinHash\Data.HashFunction.BernsteinHash.nuspec = ..\NuGet\BernsteinHash\Data.HashFunction.BernsteinHash.nuspec
-		..\NuGet\Blake2\Data.HashFunction.Blake2.nuspec = ..\NuGet\Blake2\Data.HashFunction.Blake2.nuspec
-		..\NuGet\BuzHash\Data.HashFunction.BuzHash.nuspec = ..\NuGet\BuzHash\Data.HashFunction.BuzHash.nuspec
-		..\NuGet\CityHash\Data.HashFunction.CityHash.nuspec = ..\NuGet\CityHash\Data.HashFunction.CityHash.nuspec
-		..\NuGet\Core\Data.HashFunction.Core.nuspec = ..\NuGet\Core\Data.HashFunction.Core.nuspec
-		..\NuGet\CRC\Data.HashFunction.CRC.nuspec = ..\NuGet\CRC\Data.HashFunction.CRC.nuspec
-		..\NuGet\ELF64\Data.HashFunction.ELF64.nuspec = ..\NuGet\ELF64\Data.HashFunction.ELF64.nuspec
-		..\NuGet\FNV\Data.HashFunction.FNV.nuspec = ..\NuGet\FNV\Data.HashFunction.FNV.nuspec
-		..\NuGet\Interfaces\Data.HashFunction.Interfaces.nuspec = ..\NuGet\Interfaces\Data.HashFunction.Interfaces.nuspec
-		..\NuGet\Jenkins\Data.HashFunction.Jenkins.nuspec = ..\NuGet\Jenkins\Data.HashFunction.Jenkins.nuspec
-		..\NuGet\MurmurHash\Data.HashFunction.MurmurHash.nuspec = ..\NuGet\MurmurHash\Data.HashFunction.MurmurHash.nuspec
-		..\NuGet\Pearson\Data.HashFunction.Pearson.nuspec = ..\NuGet\Pearson\Data.HashFunction.Pearson.nuspec
-		..\NuGet\SpookyHash\Data.HashFunction.SpookyHash.nuspec = ..\NuGet\SpookyHash\Data.HashFunction.SpookyHash.nuspec
-		..\NuGet\xxHash\Data.HashFunction.xxHash.nuspec = ..\NuGet\xxHash\Data.HashFunction.xxHash.nuspec
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{7889B206-313E-43CF-B4FD-8250275155C6}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Interfaces", "Interfaces\Data.HashFunction.Interfaces.csproj", "{FB16E5B0-D48F-4030-AB86-0CD00A029014}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5B1C1AAF-9453-4F2E-902F-222D14FC579A}"
+	ProjectSection(SolutionItems) = preProject
+		..\tools\BclAsync.app.config = ..\tools\BclAsync.app.config
+		..\tools\BclAsync.csproj.xslt = ..\tools\BclAsync.csproj.xslt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

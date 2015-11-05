@@ -23,9 +23,7 @@ namespace System.Data.HashFunction.Utilities.IntegerManipulation
         /// That is, the actual shift count is 0 to 7 bits.
         /// </remarks>
 #if !NET40
-#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
 #endif
         public static byte RotateLeft(this byte operand, int shiftCount)
         {

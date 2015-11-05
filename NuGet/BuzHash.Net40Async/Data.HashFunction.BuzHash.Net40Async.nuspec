@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$.Net40Async</id>
+    <version>$version$</version>
+    <title>$title$.Net40Async</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://raw.githubusercontent.com/brandondahler/Data.HashFunction/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/brandondahler/Data.HashFunction/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>https://github.com/brandondahler/Data.HashFunction/wiki/Release-Notes</releaseNotes>
+    <copyright>Copyright 2014</copyright>
+    <tags>BuzHash hash function buz</tags>
+
+    <dependencies>
+      <dependency id="System.Data.HashFunction.Core.Net40Async" version="$version$" />
+      <dependency id="System.Data.HashFunction.Interfaces" version="$interfaces_version$" />      
+      <dependency id="Microsoft.Bcl" version="1.1.7" />
+      <dependency id="Microsoft.Bcl.Async" version="1.0.16" />
+      <dependency id="Microsoft.Bcl.Build" version="1.0.4" />
+    </dependencies>
+  </metadata>
+</package>
