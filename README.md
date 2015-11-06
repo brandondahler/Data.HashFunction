@@ -20,27 +20,27 @@ Status
 
 ### NuGet
 
-| Name                            | Latest Stable Release                                                                                                                                                  |
-|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Data.HashFunction.Interfaces    | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Interfaces.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Interfaces/)       |
-| Data.HashFunction.Core          | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Core.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Core/)                   |
-| Data.HashFunction.BernsteinHash | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.BernsteinHash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.BernsteinHash/) |
-| Data.HashFunction.Blake2        | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Blake2.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Blake2/)               |
-| Data.HashFunction.Buzhash       | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Buzhash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Buzhash/)             |
-| Data.HashFunction.CityHash      | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.CityHash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.CityHash/)           |
-| Data.HashFunction.CRC           | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.CRC.svg)](https://www.nuget.org/packages/System.Data.HashFunction.CRC/)                     |
-| Data.HashFunction.ELF64         | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.ELF64.svg)](https://www.nuget.org/packages/System.Data.HashFunction.ELF64/)                 |
-| Data.HashFunction.FNV           | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.FNV.svg)](https://www.nuget.org/packages/System.Data.HashFunction.FNV/)                     |
-| Data.HashFunction.Jenkins       | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Jenkins.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Jenkins/)             |
-| Data.HashFunction.MurmurHash    | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.MurmurHash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.MurmurHash/)       |
-| Data.HashFunction.Pearson       | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Pearson.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Pearson/)             |
-| Data.HashFunction.SpookyHash    | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.SpookyHash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.SpookyHash/)       |
-| Data.HashFunction.xxHash    | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.xxHash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.xxHash/)               |
+| Name                            | Normal                                                                                                                                                                 | Net40Asnyc                                                                                                                                                                                  |
+|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Data.HashFunction.Interfaces    | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Interfaces.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Interfaces/)       | N/A                                                                                                                                                                                         | 
+| Data.HashFunction.Core          | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Core.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Core/)                   |[![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Core.Net40Asnyc.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Core.Net40Asnyc/)                   |
+| Data.HashFunction.BernsteinHash | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.BernsteinHash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.BernsteinHash/) |[![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.BernsteinHash.Net40Asnyc.svg)](https://www.nuget.org/packages/System.Data.HashFunction.BernsteinHash.Net40Asnyc/) |
+| Data.HashFunction.Blake2        | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Blake2.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Blake2/)               |[![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Blake2.Net40Asnyc.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Blake2.Net40Asnyc/)               |
+| Data.HashFunction.Buzhash       | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Buzhash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Buzhash/)             |[![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Buzhash.Net40Asnyc.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Buzhash.Net40Asnyc/)             |
+| Data.HashFunction.CityHash      | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.CityHash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.CityHash/)           |[![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.CityHash.Net40Asnyc.svg)](https://www.nuget.org/packages/System.Data.HashFunction.CityHash.Net40Asnyc/)           |
+| Data.HashFunction.CRC           | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.CRC.svg)](https://www.nuget.org/packages/System.Data.HashFunction.CRC/)                     |[![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.CRC.Net40Asnyc.svg)](https://www.nuget.org/packages/System.Data.HashFunction.CRC.Net40Asnyc/)                     |
+| Data.HashFunction.ELF64         | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.ELF64.svg)](https://www.nuget.org/packages/System.Data.HashFunction.ELF64/)                 |[![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.ELF64.Net40Asnyc.svg)](https://www.nuget.org/packages/System.Data.HashFunction.ELF64.Net40Asnyc/)                 |
+| Data.HashFunction.FNV           | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.FNV.svg)](https://www.nuget.org/packages/System.Data.HashFunction.FNV/)                     |[![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.FNV.Net40Asnyc.svg)](https://www.nuget.org/packages/System.Data.HashFunction.FNV.Net40Asnyc/)                     |
+| Data.HashFunction.Jenkins       | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Jenkins.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Jenkins/)             |[![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Jenkins.Net40Asnyc.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Jenkins.Net40Asnyc/)             |
+| Data.HashFunction.MurmurHash    | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.MurmurHash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.MurmurHash/)       |[![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.MurmurHash.Net40Asnyc.svg)](https://www.nuget.org/packages/System.Data.HashFunction.MurmurHash.Net40Asnyc/)       |
+| Data.HashFunction.Pearson       | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Pearson.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Pearson/)             |[![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Pearson.Net40Asnyc.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Pearson.Net40Asnyc/)             |
+| Data.HashFunction.SpookyHash    | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.SpookyHash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.SpookyHash/)       |[![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.SpookyHash.Net40Asnyc.svg)](https://www.nuget.org/packages/System.Data.HashFunction.SpookyHash.Net40Asnyc/)       |
+| Data.HashFunction.xxHash        | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.xxHash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.xxHash/)               |[![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.xxHash.Net40Asnyc.svg)](https://www.nuget.org/packages/System.Data.HashFunction.xxHash.Net40Asnyc/)               |
 
 Implementations
 ---------------
 
-All implementation packages depend on the Data.HashFunctionBase NuGet package.
+All implementation packages depend on the Data.HashFunction.Interfaces and Data.HashFunction.Core NuGet packages.
 
 The following hash functions have been implemented from the most reliable reference that could be found.
 
@@ -89,6 +89,8 @@ Usage
 -----
 
 The usage for all hash functions has been standardized and is accessible via the System.Data.HashFunction.IHashFunction and System.Data.HashFunction.IHashFunctionAsync interfaces.  The core package, Data.HashFunction.Core, only contains wrappers for the .Net BCL's Cryptographic HashAlgorithm functions.  In order to use a different function, you will need to reference one of the implementation packages.
+
+To use the async/await functionality in a .Net 4.0 you must use the Data.HashFunction.*.Net40Async package.  If you do not desire the async/await functionality in .Net 4.0 or are using .Net 4.5, you should use the non-Net40Async package(s).
 
 Release Notes
 -------------
