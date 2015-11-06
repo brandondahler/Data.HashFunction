@@ -15,7 +15,7 @@ namespace System.Data.HashFunction
     /// Implementation of Bob Jenkins' Lookup3 hash function as specified at http://burtleburtle.net/bob/c/lookup3.c.
     /// </summary>
     public class JenkinsLookup3
-#if !NET40
+#if !NET40 || INCLUDE_ASYNC
         : HashFunctionAsyncBase
 #else
         : HashFunctionBase
@@ -177,7 +177,7 @@ namespace System.Data.HashFunction
             return hash;
         }
         
-#if !NET40
+#if !NET40 || INCLUDE_ASYNC
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)

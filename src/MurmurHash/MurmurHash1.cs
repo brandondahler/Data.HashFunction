@@ -18,7 +18,7 @@ namespace System.Data.HashFunction
     /// This hash function has been superseded by MurmurHash2 and MurmurHash3.
     /// </summary>
     public class MurmurHash1
-#if !NET40
+#if !NET40 || INCLUDE_ASYNC
         : HashFunctionAsyncBase
 #else
         : HashFunctionBase
@@ -85,7 +85,7 @@ namespace System.Data.HashFunction
             return BitConverter.GetBytes(h);
         }
         
-#if !NET40
+#if !NET40 || INCLUDE_ASYNC
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {

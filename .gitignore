@@ -116,7 +116,12 @@ Help/
 # xUnit Results
 xunit-results.xml
 
-#NuGet Packaging
+
+# Generated Project Files
+src/*/*.Net40Async.csproj
+
+# NuGet Packaging
 NuGet/*/lib/*/*.dll
+NuGet/*/lib/*/*.dll.config
 NuGet/*/lib/*/*.xml
 NuGet/*/lib/*/*.XML

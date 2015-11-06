@@ -1,5 +1,4 @@
-﻿#if !NET40
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -24,4 +23,3 @@ namespace System.Data.HashFunction
         Task<byte[]> ComputeHashAsync(Stream data);
     }
 }
-#endif

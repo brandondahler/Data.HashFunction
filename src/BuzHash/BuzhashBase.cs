@@ -18,7 +18,7 @@ namespace System.Data.HashFunction
     /// Also can be set to use left or right rotation when running the rotate step.
     /// </summary>
     public abstract class BuzHashBase
-#if !NET40
+#if !NET40 || INCLUDE_ASYNC
         : HashFunctionAsyncBase
 #else
         : HashFunctionBase
@@ -205,7 +205,7 @@ namespace System.Data.HashFunction
             return hash;
         }
         
-#if !NET40
+#if !NET40 || INCLUDE_ASYNC
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)

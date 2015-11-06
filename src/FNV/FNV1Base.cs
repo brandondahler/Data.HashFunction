@@ -18,7 +18,7 @@ namespace System.Data.HashFunction
     /// Abstract implementation of Fowler–Noll–Vo hash function (FNV-1 and FNV-1a) as specified at http://www.isthe.com/chongo/tech/comp/fnv/index.html.
     /// </summary>
     public abstract class FNV1Base
-#if !NET40
+#if !NET40 || INCLUDE_ASYNC
         : HashFunctionAsyncBase
 #else
         : HashFunctionBase
@@ -181,7 +181,7 @@ namespace System.Data.HashFunction
             }
         }
         
-#if !NET40
+#if !NET40 || INCLUDE_ASYNC
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {

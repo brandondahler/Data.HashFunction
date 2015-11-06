@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-#if !NET40
+#if !NET40 || INCLUDE_ASYNC
 namespace System.Data.HashFunction
 {
     /// <summary>

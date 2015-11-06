@@ -32,7 +32,7 @@ namespace System.Data.HashFunction
     /// "
     /// </summary>
     public class BernsteinHash
-#if !NET40
+#if !NET40 || INCLUDE_ASYNC
         : HashFunctionAsyncBase
 #else
         : HashFunctionBase
@@ -64,7 +64,7 @@ namespace System.Data.HashFunction
             return BitConverter.GetBytes(h);
         }
         
-#if !NET40
+#if !NET40 || INCLUDE_ASYNC
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {

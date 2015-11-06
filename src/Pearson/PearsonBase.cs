@@ -17,7 +17,7 @@ namespace System.Data.HashFunction
     [SuppressMessage("Microsoft.Design", "CA1012:AbstractTypesShouldNotHaveConstructors", 
         Justification = "Constructor required to validate implementer's parameters.")]
     public abstract class PearsonBase
-#if !NET40
+#if !NET40 || INCLUDE_ASYNC
         : HashFunctionAsyncBase
 #else
         : HashFunctionBase
@@ -108,7 +108,7 @@ namespace System.Data.HashFunction
             return h;
         }
         
-#if !NET40
+#if !NET40 || INCLUDE_ASYNC
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
