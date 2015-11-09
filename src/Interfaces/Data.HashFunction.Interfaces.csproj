@@ -50,6 +50,7 @@
     </Compile>
     <Compile Include="IHashFunction.cs" />
     <Compile Include="IHashFunctionAsync.cs" />
+    <Compile Include="IObjectHashFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
