@@ -49,8 +49,13 @@ namespace System.Data.HashFunction
         private readonly IHashFunction _hashFunction;
         private readonly Func<object, byte[]> _objectSerializer;
 
-        private static IReadOnlyDictionary<Type, MethodInfo> BitConverterMethods {  get { return _BitConverterMethods.Value; } }
+#if !NET40
+        private static IReadOnlyDictionary<Type, MethodInfo> BitConverterMethods { get { return _BitConverterMethods.Value; } }
         private static readonly Lazy<IReadOnlyDictionary<Type, MethodInfo>> _BitConverterMethods = new Lazy<IReadOnlyDictionary<Type, MethodInfo>>(GetBitConverterMethods);
+#else
+        private static IDictionary<Type, MethodInfo> BitConverterMethods { get { return _BitConverterMethods.Value; } }
+        private static readonly Lazy<IDictionary<Type, MethodInfo>> _BitConverterMethods = new Lazy<IDictionary<Type, MethodInfo>>(GetBitConverterMethods);
+#endif
 
 
         /// <summary>
@@ -149,7 +154,11 @@ namespace System.Data.HashFunction
             return (byte[]) getBytesMethod.Invoke(null, new[] { data });
         }
 
+#if !NET40
         private static IReadOnlyDictionary<Type, MethodInfo> GetBitConverterMethods()
+#else
+        private static IDictionary<Type, MethodInfo> GetBitConverterMethods()
+#endif
         {
             var type = typeof(BitConverter);
             var methodInfos = type.GetMethods(Reflection.BindingFlags.Public | Reflection.BindingFlags.Static | Reflection.BindingFlags.InvokeMethod);
