@@ -1,0 +1,3 @@
+﻿.\packages\OpenCover.4.6.166\tools\OpenCover.Console.exe -target:".\packages\xunit.runner.console.2.0.0\tools\xunit.console.exe" -targetargs:".\Test\bin\Debug\System.Data.HashFunction.Test.dll -noshadow" -nodefaultfilters -filter:"+[System.Data.HashFunction.*]* -[System.Data.HashFunction.Test]*" -output:coverage-results.xml;
+.\packages\OpenCoverToCoberturaConverter.0.2.4.0\tools\OpenCoverToCoberturaConverter.exe -input:coverage-results.xml -output:coverage-results-cobertura.xml -sources:./
+.\packages\ReportGenerator.2.3.4.0\tools\ReportGenerator.exe -reports:.\coverage-results.xml -targetdir:CoverageResults;

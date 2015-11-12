@@ -72,6 +72,7 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Blake2\Blake2B_Tests.cs" />
+    <Compile Include="Core\ObjectHashFunction_Tests.cs" />
     <Compile Include="Core\Utilities\UInt128Tests.cs" />
     <Compile Include="Core\HashFunctionAsyncBaseTests.cs" />
     <Compile Include="Core\HashFunctionBaseTests.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Core\Utilities\UInt32ExtensionsTests.cs" />
     <Compile Include="Core\Utilities\BigIntegerExtensionsTests.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Core\GetHashCodeWrapper_Test.cs" />
     <Compile Include="IHashFunctionAsyncTests.cs" />
     <Compile Include="IHashFunctionTests_CRC.cs">
       <AutoGen>True</AutoGen>

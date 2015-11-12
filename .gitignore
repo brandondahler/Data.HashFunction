@@ -113,6 +113,11 @@ UpgradeLog*.XML
 # Help documentation
 Help/
 
+#OpenCover Results
+coverage-results.xml
+coverage-results-cobertura.xml
+CoverageResults/
+
 # xUnit Results
 xunit-results.xml
 

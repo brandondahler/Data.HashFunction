@@ -34,7 +34,7 @@ namespace System.Data.HashFunction
         public byte[] CalculateHash(object @object)
         {
             if (@object == null)
-                return new byte[4];
+                throw new ArgumentNullException("object");
 
             return BitConverter.GetBytes(@object.GetHashCode());
         }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using System.Reflection;
 
 namespace System.Data.HashFunction
 {
@@ -48,6 +49,8 @@ namespace System.Data.HashFunction
         private readonly IHashFunction _hashFunction;
         private readonly Func<object, byte[]> _objectSerializer;
 
+        private static IReadOnlyDictionary<Type, MethodInfo> BitConverterMethods {  get { return _BitConverterMethods.Value; } }
+        private static readonly Lazy<IReadOnlyDictionary<Type, MethodInfo>> _BitConverterMethods = new Lazy<IReadOnlyDictionary<Type, MethodInfo>>(GetBitConverterMethods);
 
 
         /// <summary>
@@ -57,6 +60,10 @@ namespace System.Data.HashFunction
         /// <param name="builtInSerializerOption">The built in serializer option to serailize the object with.</param>
         public ObjectHashFunction(IHashFunction hashFunction, BuiltInSerializerOptions builtInSerializerOption)
         {
+            if (hashFunction == null)
+                throw new ArgumentNullException("hashFunction");
+
+
             _hashFunction = hashFunction;
 
             switch (builtInSerializerOption)
@@ -81,6 +88,13 @@ namespace System.Data.HashFunction
         /// <param name="customSerializer">The serializer to serailize the object with.</param>
         public ObjectHashFunction(IHashFunction hashFunction, Func<object, byte[]> customSerializer)
         {
+            if (hashFunction == null)
+                throw new ArgumentNullException("hashFunction");
+
+            if (customSerializer == null)
+                throw new ArgumentNullException("customSerializer");
+
+
             _hashFunction = hashFunction;
             _objectSerializer = customSerializer;
         }
@@ -95,6 +109,10 @@ namespace System.Data.HashFunction
         /// </returns>
         public byte[] CalculateHash(object @object)
         {
+            if (@object == null)
+                throw new ArgumentNullException("object");
+
+
             return _hashFunction.ComputeHash(
                 _objectSerializer(@object));
         }
@@ -114,15 +132,43 @@ namespace System.Data.HashFunction
 
         private static byte[] BitConverterSerializer(object @object)
         {
-            var bitConverterType = typeof(BitConverter);
-            var getBytesMethod = bitConverterType.GetMethod(
-                "GetBytes", 
-                Reflection.BindingFlags.Public | Reflection.BindingFlags.Static | Reflection.BindingFlags.InvokeMethod,
-                null,
-                new[] { @object.GetType() },
-                null);
+            var objectType = @object.GetType();
+
+            if (objectType == typeof(byte))
+                return new byte[] { (byte) @object };
+
+
+            if (!BitConverterMethods.ContainsKey(objectType))
+            {
+                throw new InvalidOperationException(
+                    string.Format("BuiltInSerializationOptions.BitConverter cannot handle type \"{0}\"", objectType.Name));
+            }
+
+            var getBytesMethod = BitConverterMethods[objectType];
 
             return (byte[]) getBytesMethod.Invoke(null, new[] { @object });
+        }
+
+        private static IReadOnlyDictionary<Type, MethodInfo> GetBitConverterMethods()
+        {
+            var type = typeof(BitConverter);
+            var methodInfos = type.GetMethods(Reflection.BindingFlags.Public | Reflection.BindingFlags.Static | Reflection.BindingFlags.InvokeMethod);
+
+
+            var methods = new Dictionary<Type, MethodInfo>();
+
+            foreach (var methodInfo in methodInfos)
+            {
+                if (methodInfo.Name != "GetBytes")
+                    continue;
+
+
+                methods.Add(
+                    methodInfo.GetParameters().Single().ParameterType,
+                    methodInfo);
+            }
+            
+            return methods;
         }
     }
 }
