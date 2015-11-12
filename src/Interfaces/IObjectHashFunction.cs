@@ -22,10 +22,13 @@ namespace System.Data.HashFunction
         /// <summary>
         /// Computes hash value for given object.
         /// </summary>
-        /// <param name="object">Object to hash.</param>
+        /// <param name="data">Object to hash.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>
-        byte[] CalculateHash(object @object);
+        /// <remarks>
+        /// <paramref name="data"/> cannot be null.
+        /// </remarks>
+        byte[] CalculateHash(object data);
     }
 }

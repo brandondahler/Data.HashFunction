@@ -70,12 +70,12 @@ namespace System.Data.HashFunction.Test.Core
         #region CalculateHash
 
         [Fact]
-        public void ObjectHashFunction_CalculateHash_ObjectNull_Throws()
+        public void ObjectHashFunction_CalculateHash_DataNull_Throws()
         {
             var objectHashFunction = new ObjectHashFunction(Mock.Of<IHashFunction>(), ObjectHashFunction.BuiltInSerializerOptions.BinaryFormatter);
 
             Assert.Equal(
-                "object",
+                "data",
                 Assert.Throws<ArgumentNullException>(() =>
                         objectHashFunction.CalculateHash(null))
                     .ParamName);

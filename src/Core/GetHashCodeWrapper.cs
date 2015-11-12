@@ -27,16 +27,16 @@ namespace System.Data.HashFunction
         /// <summary>
         /// Computes hash value for given object.
         /// </summary>
-        /// <param name="object">Object to hash.</param>
+        /// <param name="data">Object to hash.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>
-        public byte[] CalculateHash(object @object)
+        public byte[] CalculateHash(object data)
         {
-            if (@object == null)
-                throw new ArgumentNullException("object");
+            if (data == null)
+                throw new ArgumentNullException("data");
 
-            return BitConverter.GetBytes(@object.GetHashCode());
+            return BitConverter.GetBytes(data.GetHashCode());
         }
 
     }

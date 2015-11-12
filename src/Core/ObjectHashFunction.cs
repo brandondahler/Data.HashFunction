@@ -103,39 +103,39 @@ namespace System.Data.HashFunction
         /// <summary>
         /// Computes hash value for given object.
         /// </summary>
-        /// <param name="object">Object to hash.</param>
+        /// <param name="data">Object to hash.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>
-        public byte[] CalculateHash(object @object)
+        public byte[] CalculateHash(object data)
         {
-            if (@object == null)
-                throw new ArgumentNullException("object");
+            if (data == null)
+                throw new ArgumentNullException("data");
 
 
             return _hashFunction.ComputeHash(
-                _objectSerializer(@object));
+                _objectSerializer(data));
         }
 
 
 
-        private static byte[] BinaryFormatterSerializer(object @object)
+        private static byte[] BinaryFormatterSerializer(object data)
         {
             using (var memoryStream = new MemoryStream())
             {
                 var binaryFormatter = new BinaryFormatter();
-                binaryFormatter.Serialize(memoryStream, @object);
+                binaryFormatter.Serialize(memoryStream, data);
 
                 return memoryStream.ToArray();
             }
         }
 
-        private static byte[] BitConverterSerializer(object @object)
+        private static byte[] BitConverterSerializer(object data)
         {
-            var objectType = @object.GetType();
+            var objectType = data.GetType();
 
             if (objectType == typeof(byte))
-                return new byte[] { (byte) @object };
+                return new byte[] { (byte) data };
 
 
             if (!BitConverterMethods.ContainsKey(objectType))
@@ -146,7 +146,7 @@ namespace System.Data.HashFunction
 
             var getBytesMethod = BitConverterMethods[objectType];
 
-            return (byte[]) getBytesMethod.Invoke(null, new[] { @object });
+            return (byte[]) getBytesMethod.Invoke(null, new[] { data });
         }
 
         private static IReadOnlyDictionary<Type, MethodInfo> GetBitConverterMethods()

@@ -23,7 +23,7 @@ namespace System.Data.HashFunction.Test.Core
             var getHashCodeWrapper = new GetHashCodeWrapper();
 
             Assert.Equal(
-                "object",
+                "data",
                 Assert.Throws<ArgumentNullException>(() => 
                         getHashCodeWrapper.CalculateHash(null))
                     .ParamName);
@@ -34,11 +34,11 @@ namespace System.Data.HashFunction.Test.Core
         public void GetHashCodeWrapper_CalculateHash_MatchesGetHashCode()
         {
             var getHashCodeWrapper = new GetHashCodeWrapper();
-            var @object = new object();
+            var data = new object();
 
             Assert.Equal(
-                BitConverter.GetBytes(@object.GetHashCode()),
-                getHashCodeWrapper.CalculateHash(@object));
+                BitConverter.GetBytes(data.GetHashCode()),
+                getHashCodeWrapper.CalculateHash(data));
         }
 
     }
