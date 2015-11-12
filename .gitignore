@@ -113,14 +113,11 @@ UpgradeLog*.XML
 # Help documentation
 Help/
 
-#OpenCover Results
-coverage-results.xml
-coverage-results-cobertura.xml
-CoverageResults/
+# Test
+Test/
 
-# xUnit Results
-xunit-results.xml
-
+# OpenCover Results
+coverage/
 
 # Generated Project Files
 src/*/*.Net40Async.csproj

@@ -14,9 +14,23 @@
     <InterfacesVersion Condition=" '$(InterfacesVersion)' == '' ">1.0.0.0</InterfacesVersion>
     <ExtraDefines Condition="'$(BuildVersion)' != ''">CUSTOM_VERSIONING;</ExtraDefines>
 
+
+    <OpenCoverVersion>4.6.166</OpenCoverVersion>
+    <OpenCoverExecutable>$(SolutionDir)\packages\OpenCover.$(OpenCoverVersion)\tools\OpenCover.Console.exe</OpenCoverExecutable>
+    <OpenCoverResultsXml>$(SolutionDir)\..\coverage\coverage-results.xml</OpenCoverResultsXml>
+
+    <OpenCoverToCoberturaConverterVersion>0.2.4.0</OpenCoverToCoberturaConverterVersion>
+    <OpenCoverToCoberturaConverterExecutable>$(SolutionDir)\packages\OpenCoverToCoberturaConverter.$(OpenCoverToCoberturaConverterVersion)\tools\OpenCoverToCoberturaConverter.exe</OpenCoverToCoberturaConverterExecutable>
+    <OpenCoverToCoberturaConverterResultsXml>$(SolutionDir)\..\coverage\coverage-results-cobertura.xml</OpenCoverToCoberturaConverterResultsXml>
+    
+    <ReportGeneratorVersion>2.3.4.0</ReportGeneratorVersion>
+    <ReportGeneratorExecutable>$(SolutionDir)\packages\ReportGenerator.$(ReportGeneratorVersion)\tools\ReportGenerator.exe</ReportGeneratorExecutable>
+    <ReportGeneratorResultsDirectory>$(SolutionDir)\..\coverage\CoverageReport\</ReportGeneratorResultsDirectory>
+    
     <xUnitConsoleVersion>2.0.0</xUnitConsoleVersion>
     <xUnitConsoleExecutable>$(SolutionDir)\packages\xunit.runner.console.$(xUnitConsoleVersion)\tools\xunit.console.exe</xUnitConsoleExecutable>
-    <xUnitResultsXml>$(SolutionDir)\xunit-results.xml</xUnitResultsXml>
+    <xUnitResultsXml>$(SolutionDir)\..\test\xunit-results.xml</xUnitResultsXml>
+  
   </PropertyGroup>
 
   
@@ -284,7 +298,11 @@
   </PropertyGroup>
 
   <Target Name="Test" DependsOnTargets="RestorePackages;$(TestDependsOn)" Outputs="%(TestProjectBuildConfiguration.Identity)">
-    <Exec Command="$(xUnitConsoleExecutable) @(TestProjectBuildConfiguration->Metadata('TestAssembly'), ' ') -xml $(xUnitResultsXml)" />
+    <MakeDir Directories="$([System.IO.Path]::GetDirectoryName('$(OpenCoverResultsXml)'))" />
+    
+    <Exec Command="$(OpenCoverExecutable) -target:&quot;$(xUnitConsoleExecutable)&quot; -targetargs:&quot;\&quot;@(TestProjectBuildConfiguration->Metadata('TestAssembly'), '\&quot; \&quot;')\&quot; -noshadow -xml \&quot;$(xUnitResultsXml)\&quot;&quot; -nodefaultfilters -filter:&quot;+[System.Data.HashFunction.*]* -[System.Data.HashFunction.Test]*&quot; -output:&quot;$(OpenCoverResultsXml)&quot;" />
+    <Exec Command="$(OpenCoverToCoberturaConverterExecutable) -input:&quot;$(OpenCoverResultsXml)&quot; -output:&quot;$(OpenCoverToCoberturaConverterResultsXml)&quot; -sources:&quot;$(SolutionDir)&quot;" />
+    <Exec Command="$(ReportGeneratorExecutable) -reports:&quot;$(OpenCoverResultsXml)&quot; -targetdir:&quot;$(ReportGeneratorResultsDirectory)&quot;" />
   </Target>
 
 
