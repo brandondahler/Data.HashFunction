@@ -10,8 +10,7 @@
     <NuGetExecutable Condition=" '$(NuGetExecutable)' == '' ">$(ToolsDir)\nuget.exe</NuGetExecutable>
     <MSBuildCommunityTasksPath Condition=" '$(MSBuildCommunityTasksPath)' == '' ">$(ToolsDir)</MSBuildCommunityTasksPath>
 
-    <InterfacesVersion Condition=" '$(InterfacesVersion)' == '' ">$([System.Text.RegularExpressions.Regex]::Replace('$(BuildVersion)', '^([0-9]+)(\.[0-9]+)*$', '$1.0.0.0'))</InterfacesVersion>
-    <InterfacesVersion Condition=" '$(InterfacesVersion)' == '' ">1.0.0.0</InterfacesVersion>
+    <InterfacesVersion Condition=" '$(InterfacesVersion)' == '' ">1.0.0.2</InterfacesVersion>
     <ExtraDefines Condition="'$(BuildVersion)' != ''">CUSTOM_VERSIONING;</ExtraDefines>
 
     <xUnitConsoleVersion>2.0.0</xUnitConsoleVersion>

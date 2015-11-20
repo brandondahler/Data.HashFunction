@@ -10,5 +10,5 @@ using System.Reflection;
 [assembly: CLSCompliant(false)]
 
 #if !CUSTOM_VERSIONING
-[assembly: AssemblyVersion("1.7.*")]
+[assembly: AssemblyVersion("1.8.*")]
 #endif
