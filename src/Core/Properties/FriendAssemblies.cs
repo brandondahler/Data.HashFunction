@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-#if !NuGetDeploy
+#if !STRONG_NAME
     [assembly: InternalsVisibleTo("System.Data.HashFunction.BernsteinHash")]
     [assembly: InternalsVisibleTo("System.Data.HashFunction.Blake2")]
     [assembly: InternalsVisibleTo("System.Data.HashFunction.BuzHash")]

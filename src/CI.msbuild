@@ -23,7 +23,7 @@
   
   <!-- Items -->
   <ItemGroup>
-    <ProjectToBuild Include="$(SolutionDir)\**\*.csproj" Exclude="$(SolutionDir)\Test\*.csproj;$(SolutionDir)\**\*.Net40Async.csproj">
+    <ProjectToBuild Include="$(SolutionDir)\**\*.csproj" Exclude="$(SolutionDir)\Test\*.csproj;$(SolutionDir)\packages\**\*.csproj;$(SolutionDir)\**\*.Net40Async.csproj">
       <ProjectName>$([System.String]::Copy('%(Filename)').Replace('Data.HashFunction.', ''))</ProjectName>
       <Async40Project>%(RootDir)%(Directory)%(Filename).Net40Async%(Extension)</Async40Project>
     </ProjectToBuild>
@@ -236,9 +236,11 @@
           OutputPath=..\$(NuGetDir)\%(ProjectToBuild.ProjectName)\lib\net40;
           IntermediateOutputPath=obj\Release\net40\;
           DebugType=none;
-          DefineConstants=TRACE;NET40;$(ExtraDefines)
+          DefineConstants=TRACE;STRONG_NAME;NET40;$(ExtraDefines)
 
           RunCodeAnalysis=false;
+          SignAssembly=true;
+          AssemblyOriginatorKeyFile=..\Data.HashFunction.Production.pfx;
         </Properties>
       </NuGetProjectBuildConfiguration>
 
@@ -252,9 +254,11 @@
           OutputPath=..\$(NuGetDir)\%(ProjectToBuild.ProjectName).Net40Async\lib\net40;
           IntermediateOutputPath=obj\Release\net40Async\;
           DebugType=none;
-          DefineConstants=TRACE;NET40;INCLUDE_ASYNC;$(ExtraDefines)
+          DefineConstants=TRACE;NET40;STRONG_NAME;INCLUDE_ASYNC;$(ExtraDefines)
 
           RunCodeAnalysis=false;
+          SignAssembly=true;
+          AssemblyOriginatorKeyFile=..\Data.HashFunction.Production.pfx;
         </Properties>
       </NuGetProjectBuildConfiguration>
 
@@ -267,9 +271,11 @@
           OutputPath=..\$(NuGetDir)\%(ProjectToBuild.ProjectName)\lib\net45;
           IntermediateOutputPath=obj\Release\net45\;
           DebugType=none;
-          DefineConstants=TRACE;$(ExtraDefines)
+          DefineConstants=TRACE;STRONG_NAME;$(ExtraDefines)
 
           RunCodeAnalysis=false;
+          SignAssembly=true;
+          AssemblyOriginatorKeyFile=..\Data.HashFunction.Production.pfx;
         </Properties>
       </NuGetProjectBuildConfiguration>
     </ItemGroup>
