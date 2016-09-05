@@ -237,15 +237,15 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="hashFunction">Hash function to use.</param>
         /// <param name="data">Data to be hashed.</param>
-        /// <param name="desizedHashSize">Desired size of resulting hash, in bits.</param>
+        /// <param name="desiredHashSize">Desired size of resulting hash, in bits.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>
-        public static byte[] ComputeHash(this IHashFunction hashFunction, bool data, int desizedHashSize)
+        public static byte[] ComputeHash(this IHashFunction hashFunction, bool data, int desiredHashSize)
         {
             return hashFunction.ComputeHash(
                 BitConverter.GetBytes(data),
-                desizedHashSize);
+                desiredHashSize);
         }
 
         /// <summary>
@@ -253,15 +253,15 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="hashFunction">Hash function to use.</param>
         /// <param name="data">Data to be hashed.</param>
-        /// <param name="desizedHashSize">Desired size of resulting hash, in bits.</param>
+        /// <param name="desiredHashSize">Desired size of resulting hash, in bits.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>
-        public static byte[] ComputeHash(this IHashFunction hashFunction, byte data, int desizedHashSize)
+        public static byte[] ComputeHash(this IHashFunction hashFunction, byte data, int desiredHashSize)
         {
             return hashFunction.ComputeHash(
                 new[] { data },
-                desizedHashSize);
+                desiredHashSize);
         }
 
         /// <summary>
@@ -269,15 +269,15 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="hashFunction">Hash function to use.</param>
         /// <param name="data">Data to be hashed.</param>
-        /// <param name="desizedHashSize">Desired size of resulting hash, in bits.</param>
+        /// <param name="desiredHashSize">Desired size of resulting hash, in bits.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>
-        public static byte[] ComputeHash(this IHashFunction hashFunction, char data, int desizedHashSize)
+        public static byte[] ComputeHash(this IHashFunction hashFunction, char data, int desiredHashSize)
         {
             return hashFunction.ComputeHash(
                 BitConverter.GetBytes(data),
-                desizedHashSize);
+                desiredHashSize);
         }
 
         /// <summary>
@@ -285,15 +285,15 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="hashFunction">Hash function to use.</param>
         /// <param name="data">Data to be hashed.</param>
-        /// <param name="desizedHashSize">Desired size of resulting hash, in bits.</param>
+        /// <param name="desiredHashSize">Desired size of resulting hash, in bits.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>
-        public static byte[] ComputeHash(this IHashFunction hashFunction, double data, int desizedHashSize)
+        public static byte[] ComputeHash(this IHashFunction hashFunction, double data, int desiredHashSize)
         {
             return hashFunction.ComputeHash(
                 BitConverter.GetBytes(data),
-                desizedHashSize);
+                desiredHashSize);
         }
 
         /// <summary>
@@ -301,15 +301,15 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="hashFunction">Hash function to use.</param>
         /// <param name="data">Data to be hashed.</param>
-        /// <param name="desizedHashSize">Desired size of resulting hash, in bits.</param>
+        /// <param name="desiredHashSize">Desired size of resulting hash, in bits.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>
-        public static byte[] ComputeHash(this IHashFunction hashFunction, float data, int desizedHashSize)
+        public static byte[] ComputeHash(this IHashFunction hashFunction, float data, int desiredHashSize)
         {
             return hashFunction.ComputeHash(
                 BitConverter.GetBytes(data),
-                desizedHashSize);
+                desiredHashSize);
         }
 
         /// <summary>
@@ -317,15 +317,15 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="hashFunction">Hash function to use.</param>
         /// <param name="data">Data to be hashed.</param>
-        /// <param name="desizedHashSize">Desired size of resulting hash, in bits.</param>
+        /// <param name="desiredHashSize">Desired size of resulting hash, in bits.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>
-        public static byte[] ComputeHash(this IHashFunction hashFunction, int data, int desizedHashSize)
+        public static byte[] ComputeHash(this IHashFunction hashFunction, int data, int desiredHashSize)
         {
             return hashFunction.ComputeHash(
                 BitConverter.GetBytes(data),
-                desizedHashSize);
+                desiredHashSize);
         }
 
         /// <summary>
@@ -333,15 +333,15 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="hashFunction">Hash function to use.</param>
         /// <param name="data">Data to be hashed.</param>
-        /// <param name="desizedHashSize">Desired size of resulting hash, in bits.</param>
+        /// <param name="desiredHashSize">Desired size of resulting hash, in bits.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>
-        public static byte[] ComputeHash(this IHashFunction hashFunction, long data, int desizedHashSize)
+        public static byte[] ComputeHash(this IHashFunction hashFunction, long data, int desiredHashSize)
         {
             return hashFunction.ComputeHash(
                 BitConverter.GetBytes(data),
-                desizedHashSize);
+                desiredHashSize);
         }
 
         /// <summary>
@@ -349,15 +349,15 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="hashFunction">Hash function to use.</param>
         /// <param name="data">Data to be hashed.</param>
-        /// <param name="desizedHashSize">Desired size of resulting hash, in bits.</param>
+        /// <param name="desiredHashSize">Desired size of resulting hash, in bits.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>
-        public static byte[] ComputeHash(this IHashFunction hashFunction, sbyte data, int desizedHashSize)
+        public static byte[] ComputeHash(this IHashFunction hashFunction, sbyte data, int desiredHashSize)
         {
             return hashFunction.ComputeHash(
                 new[] { (byte)data },
-                desizedHashSize);
+                desiredHashSize);
         }
 
         /// <summary>
@@ -365,15 +365,15 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="hashFunction">Hash function to use.</param>
         /// <param name="data">Data to be hashed.</param>
-        /// <param name="desizedHashSize">Desired size of resulting hash, in bits.</param>
+        /// <param name="desiredHashSize">Desired size of resulting hash, in bits.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>
-        public static byte[] ComputeHash(this IHashFunction hashFunction, short data, int desizedHashSize)
+        public static byte[] ComputeHash(this IHashFunction hashFunction, short data, int desiredHashSize)
         {
             return hashFunction.ComputeHash(
                 BitConverter.GetBytes(data),
-                desizedHashSize);
+                desiredHashSize);
         }
 
         /// <summary>
@@ -381,18 +381,18 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="hashFunction">Hash function to use.</param>
         /// <param name="data">Data to be hashed.</param>
-        /// <param name="desizedHashSize">Desired size of resulting hash, in bits.</param>
+        /// <param name="desiredHashSize">Desired size of resulting hash, in bits.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>
         /// <remarks>
         /// UTF-8 encoding used to convert string to bytes.
         /// </remarks>
-        public static byte[] ComputeHash(this IHashFunction hashFunction, string data, int desizedHashSize)
+        public static byte[] ComputeHash(this IHashFunction hashFunction, string data, int desiredHashSize)
         {
             return hashFunction.ComputeHash(
                 Encoding.UTF8.GetBytes(data),
-                desizedHashSize);
+                desiredHashSize);
         }
 
         /// <summary>
@@ -400,15 +400,15 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="hashFunction">Hash function to use.</param>
         /// <param name="data">Data to be hashed.</param>
-        /// <param name="desizedHashSize">Desired size of resulting hash, in bits.</param>
+        /// <param name="desiredHashSize">Desired size of resulting hash, in bits.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>
-        public static byte[] ComputeHash(this IHashFunction hashFunction, uint data, int desizedHashSize)
+        public static byte[] ComputeHash(this IHashFunction hashFunction, uint data, int desiredHashSize)
         {
             return hashFunction.ComputeHash(
                 BitConverter.GetBytes(data),
-                desizedHashSize);
+                desiredHashSize);
         }
 
         /// <summary>
@@ -416,15 +416,15 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="hashFunction">Hash function to use.</param>
         /// <param name="data">Data to be hashed.</param>
-        /// <param name="desizedHashSize">Desired size of resulting hash, in bits.</param>
+        /// <param name="desiredHashSize">Desired size of resulting hash, in bits.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>
-        public static byte[] ComputeHash(this IHashFunction hashFunction, ulong data, int desizedHashSize)
+        public static byte[] ComputeHash(this IHashFunction hashFunction, ulong data, int desiredHashSize)
         {
             return hashFunction.ComputeHash(
                 BitConverter.GetBytes(data),
-                desizedHashSize);
+                desiredHashSize);
         }
 
         /// <summary>
@@ -432,15 +432,15 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="hashFunction">Hash function to use.</param>
         /// <param name="data">Data to be hashed.</param>
-        /// <param name="desizedHashSize">Desired size of resulting hash, in bits.</param>
+        /// <param name="desiredHashSize">Desired size of resulting hash, in bits.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>
-        public static byte[] ComputeHash(this IHashFunction hashFunction, ushort data, int desizedHashSize)
+        public static byte[] ComputeHash(this IHashFunction hashFunction, ushort data, int desiredHashSize)
         {
             return hashFunction.ComputeHash(
                 BitConverter.GetBytes(data),
-                desizedHashSize);
+                desiredHashSize);
         }
 
         /// <summary>
@@ -449,14 +449,14 @@ namespace System.Data.HashFunction
         /// <typeparam name="ModelT">Type of data to be hashed.</typeparam>
         /// <param name="hashFunction">Hash function to use.</param>
         /// <param name="data">Data to be hashed.</param>
-        /// <param name="desizedHashSize">Desired size of resulting hash, in bits.</param>
+        /// <param name="desiredHashSize">Desired size of resulting hash, in bits.</param>
         /// <returns>
         /// Hash value of the data as byte array.
         /// </returns>
         /// <remarks>
         /// <see cref="BinaryFormatter"/> is used to turn given data into a byte array.
         /// </remarks>
-        public static byte[] ComputeHash<ModelT>(this IHashFunction hashFunction, ModelT data, int desizedHashSize)
+        public static byte[] ComputeHash<ModelT>(this IHashFunction hashFunction, ModelT data, int desiredHashSize)
         {
             using (var memoryStream = new MemoryStream())
             {
@@ -465,7 +465,7 @@ namespace System.Data.HashFunction
 
                 return hashFunction.ComputeHash(
                     memoryStream.ToArray(),
-                    desizedHashSize);
+                    desiredHashSize);
             }
         }
 
