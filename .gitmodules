@@ -1,0 +1,3 @@
+[submodule "tools/psake"]
+	path = tools/psake
+	url = https://github.com/psake/psake.git

@@ -1,0 +1,33 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "System.Data.HashFunction.Interfaces": {
+      "target": "project"
+    }
+  },
+
+  "frameworks": {
+    "net40": {
+      "frameworkAssemblies": {
+        "System.Numerics": ""
+      }
+    },
+    "net45": {
+      "frameworkAssemblies": {
+        "System.Numerics": ""
+      }
+    },
+
+    "netstandard1.0": {
+      "dependencies": {
+        "NETStandard.Library": "1.6.0",
+        "System.Runtime.Numerics": "4.0.0"
+      },
+      "imports": "dnxcore50"
+    }
+  },
+  "buildOptions": {
+    "xmlDoc": true
+  }
+}
