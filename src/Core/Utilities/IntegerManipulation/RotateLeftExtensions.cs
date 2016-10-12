@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace System.Data.HashFunction.Utilities.IntegerManipulation
 {
@@ -22,9 +21,6 @@ namespace System.Data.HashFunction.Utilities.IntegerManipulation
         /// The shift count is given by the low-order three bits of the shiftCount parameter.
         /// That is, the actual shift count is 0 to 7 bits.
         /// </remarks>
-#if !NET40
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static byte RotateLeft(this byte operand, int shiftCount)
         {
             shiftCount &= 0x07;
@@ -46,9 +42,6 @@ namespace System.Data.HashFunction.Utilities.IntegerManipulation
         /// The shift count is given by the low-order four bits of the shiftCount parameter.
         /// That is, the actual shift count is 0 to 15 bits.
         /// </remarks>
-#if !NET40
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static UInt16 RotateLeft(this UInt16 operand, int shiftCount)
         {
             shiftCount &= 0x0f;
@@ -70,9 +63,6 @@ namespace System.Data.HashFunction.Utilities.IntegerManipulation
         /// The shift count is given by the low-order five bits of the shiftCount parameter.
         /// That is, the actual shift count is 0 to 31 bits.
         /// </remarks>
-#if !NET40
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static UInt32 RotateLeft(this UInt32 operand, int shiftCount)
         {
             shiftCount &= 0x1f;
@@ -94,9 +84,6 @@ namespace System.Data.HashFunction.Utilities.IntegerManipulation
         /// The shift count is given by the low-order six bits of the shiftCount parameter.
         /// That is, the actual shift count is 0 to 63 bits.
         /// </remarks>
-#if !NET40
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static UInt64 RotateLeft(this UInt64 operand, int shiftCount)
         {
             shiftCount &= 0x3f;

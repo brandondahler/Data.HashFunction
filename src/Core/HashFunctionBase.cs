@@ -5,7 +5,6 @@ using System.Data.HashFunction.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
@@ -62,11 +61,17 @@ namespace System.Data.HashFunction
 
             if (!data.CanSeek && RequiresSeekableStream)
             {
-                byte[] buffer;
+                const int bufferSize = 1024;
+                byte[] buffer = new byte[bufferSize];
 
                 using (var ms = new MemoryStream())
                 {
-                    data.CopyTo(ms);
+                    int readSize;
+
+                    while ((readSize = data.Read(buffer, 0, bufferSize)) > 0)
+                    {
+                        ms.Write(buffer, 0, readSize);
+                    }
 
                     buffer = ms.ToArray();
                 }
