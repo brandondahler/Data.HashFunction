@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace System.Data.HashFunction.Utilities
 {
@@ -16,6 +17,9 @@ namespace System.Data.HashFunction.Utilities
         /// <returns>
         /// Bytes representing the UInt32 array.
         /// </returns>
+#if !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public static IEnumerable<byte> ToBytes(this IEnumerable<UInt32> values)
         {
             return values.SelectMany(v => BitConverter.GetBytes(v));

@@ -1,5 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
@@ -67,7 +72,7 @@ namespace System.Data.HashFunction
             lock (SyncRoot)
             {
                 if (!_disposed && _ownsInstance)
-                    ((IDisposable)_hashAlgorithm).Dispose();
+                    _hashAlgorithm.Dispose();
 
                 _disposed = true;
             }
@@ -142,7 +147,7 @@ namespace System.Data.HashFunction
             lock (SyncRoot)
             {
                 if (!_disposed)
-                    ((IDisposable)_hashAlgorithm).Dispose();
+                    _hashAlgorithm.Dispose();
 
                 _disposed = true;
             }

@@ -9,9 +9,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>System.Data.HashFunction</RootNamespace>
     <AssemblyName>System.Data.HashFunction.Core</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,13 +37,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="HashAlgorithmWrapper.cs" />
+    <Compile Include="HashFunctionAsyncBase.cs" />
     <Compile Include="HashFunctionBase.cs" />
+    <Compile Include="IHashFunction_Extensions.cs" />
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\FriendAssemblies.cs" />
@@ -58,6 +66,7 @@
     <Compile Include="Utilities\IntegerManipulation\ReverseByteOrderExtensions.cs" />
     <Compile Include="Utilities\UInt128.cs" />
     <Compile Include="Utilities\UInt32Extensions.cs" />
+    <Compile Include="Utilities\BigIntegerExtensions.cs" />
     <Compile Include="Utilities\UnifiedData\ArrayData.cs" />
     <Compile Include="Utilities\UnifiedData\NamespaceDoc.cs" />
     <Compile Include="Utilities\UnifiedData\UnifiedData.cs" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace System.Data.HashFunction.Utilities.IntegerManipulation
 {
@@ -17,7 +18,12 @@ namespace System.Data.HashFunction.Utilities.IntegerManipulation
         /// <param name="operand1">Array of UInt32 values to be multiplied.</param>
         /// <param name="operand2">Array of UInt32 values to multiply by.</param>
         /// <returns></returns>
+#if !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static UInt32[] ExtendedMultiply(this IReadOnlyList<UInt32> operand1, IReadOnlyList<UInt32> operand2)
+#else
         public static UInt32[] ExtendedMultiply(this IList<UInt32> operand1, IList<UInt32> operand2)
+#endif
         {
             // Temporary array to hold the results of 32-bit multiplication.
             var product = new UInt32[(operand1.Count >= operand2.Count ? operand1.Count : operand2.Count)];
