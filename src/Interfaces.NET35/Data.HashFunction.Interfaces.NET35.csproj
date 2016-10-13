@@ -7,8 +7,8 @@
     <ProjectGuid>{B0DDF57C-F4A2-4B84-82A7-955B6BBC26D5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Data.HashFunction.Interfaces</RootNamespace>
-    <AssemblyName>Data.HashFunction.Interfaces</AssemblyName>
+    <RootNamespace>System.Data.HashFunction.Interfaces</RootNamespace>
+    <AssemblyName>System.Data.HashFunction.Interfaces</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -39,6 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\Interfaces\*.cs">
       <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
