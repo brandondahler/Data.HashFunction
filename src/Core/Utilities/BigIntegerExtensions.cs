@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿#if !NET35
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace System.Data.HashFunction.Utilities
@@ -44,3 +45,4 @@ namespace System.Data.HashFunction.Utilities
         }
     }
 }
+#endif

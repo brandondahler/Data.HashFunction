@@ -67,7 +67,11 @@ namespace System.Data.HashFunction
             lock (SyncRoot)
             {
                 if (!_disposed && _ownsInstance)
+#if NET35
+                    ((IDisposable)_hashAlgorithm).Dispose();
+#else
                     _hashAlgorithm.Dispose();
+#endif
 
                 _disposed = true;
             }
@@ -142,7 +146,11 @@ namespace System.Data.HashFunction
             lock (SyncRoot)
             {
                 if (!_disposed)
+#if NET35
+                    ((IDisposable)_hashAlgorithm).Dispose();
+#else
                     _hashAlgorithm.Dispose();
+#endif
 
                 _disposed = true;
             }

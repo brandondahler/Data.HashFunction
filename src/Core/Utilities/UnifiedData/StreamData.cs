@@ -1,5 +1,7 @@
 ﻿using System.IO;
+#if !NET35
 using System.Threading.Tasks;
+#endif
 
 namespace System.Data.HashFunction.Utilities.UnifiedData
 {
@@ -45,7 +47,7 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
                 action(buffer, 0, bytesRead);
         }
 
-#if !NET40 || INCLUDE_ASYNC
+#if (!NET35 && !NET40) || INCLUDE_ASYNC
         /// <inheritdoc />
         public override async Task ForEachReadAsync(Action<byte[], int, int> action)
         {
@@ -112,7 +114,7 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
                 remainderAction(buffer, 0, position);
         }
 
-#if !NET40 || INCLUDE_ASYNC
+#if (!NET35 && !NET40) || INCLUDE_ASYNC
         /// <inheritdoc />
         public override async Task ForEachGroupAsync(int groupSize, Action<byte[], int, int> action, Action<byte[], int, int> remainderAction)
         {
@@ -170,13 +172,25 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
         {
             using (var ms = new MemoryStream())
             {
+#if !NET35
                 _Data.CopyTo(ms);
+#else
+                const int bufferSize = 1024;
+                byte[] buffer = new byte[bufferSize];
+
+                int readSize;
+
+                while ((readSize = _Data.Read(buffer, 0, bufferSize)) > 0)
+                {
+                    ms.Write(buffer, 0, readSize);
+                }
+#endif
 
                 return ms.ToArray();
             }
         }
 
-#if !NET40 || INCLUDE_ASYNC
+#if (!NET35 && !NET40) || INCLUDE_ASYNC
         /// <inheritdoc />
         public override async Task<byte[]> ToArrayAsync()
         {

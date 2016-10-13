@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+#if !NET35
 using System.Numerics;
+using System.Threading.Tasks;
+#endif
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace System.Data.HashFunction
 {
@@ -15,9 +18,9 @@ namespace System.Data.HashFunction
     public static class IHashFunction_Extensions
     {
 
-        #region ComputeHash
+#region ComputeHash
 
-        #region Sugar
+#region Sugar
 
         /// <summary>
         /// Computes hash value for given data.
@@ -228,9 +231,9 @@ namespace System.Data.HashFunction
             }
         }
 
-        #endregion
+#endregion
 
-        #region Sugar with desiredSize
+#region Sugar with desiredSize
 
         /// <summary>
         /// Computes hash value for given data.
@@ -471,6 +474,7 @@ namespace System.Data.HashFunction
 
         #endregion
 
+#if !NET35
         /// <summary>
         /// Computes hash value for given data.
         /// </summary>
@@ -538,8 +542,9 @@ namespace System.Data.HashFunction
 
             return hashBytes;
         }
+#endif
 
-        #endregion
+#endregion
 
     }
 }

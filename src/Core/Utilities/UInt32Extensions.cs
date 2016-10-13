@@ -14,7 +14,7 @@ namespace System.Data.HashFunction.Utilities
         /// <returns>
         /// Bytes representing the UInt32 array.
         /// </returns>
-#if !NET40
+#if !NET35 && !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public static IEnumerable<byte> ToBytes(this IEnumerable<UInt32> values)

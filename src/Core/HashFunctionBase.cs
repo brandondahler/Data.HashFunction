@@ -60,7 +60,18 @@ namespace System.Data.HashFunction
 
                 using (var ms = new MemoryStream())
                 {
+#if !NET35
                     data.CopyTo(ms);
+#else
+                    const int bufferSize = 1024;
+                    buffer = new byte[bufferSize];
+
+                    int readSize;
+                    while ((readSize = data.Read(buffer, 0, bufferSize)) > 0)
+                    {
+                        ms.Write(buffer, 0, readSize);
+                    }
+#endif
 
                     buffer = ms.ToArray();
                 }

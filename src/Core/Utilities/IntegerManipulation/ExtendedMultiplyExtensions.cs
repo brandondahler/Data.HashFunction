@@ -14,7 +14,7 @@ namespace System.Data.HashFunction.Utilities.IntegerManipulation
         /// <param name="operand1">Array of UInt32 values to be multiplied.</param>
         /// <param name="operand2">Array of UInt32 values to multiply by.</param>
         /// <returns></returns>
-#if !NET40
+#if !NET35 && !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static UInt32[] ExtendedMultiply(this IReadOnlyList<UInt32> operand1, IReadOnlyList<UInt32> operand2)
 #else
