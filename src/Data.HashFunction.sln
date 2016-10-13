@@ -55,6 +55,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Core.NET3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Interfaces.NET35", "Interfaces.NET35\Data.HashFunction.Interfaces.NET35.csproj", "{B0DDF57C-F4A2-4B84-82A7-955B6BBC26D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.xxHash.NET35", "xxHash.NET35\Data.HashFunction.xxHash.NET35.csproj", "{80E4AB73-F8A2-440F-B2C7-55058F5A0658}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +131,10 @@ Global
 		{B0DDF57C-F4A2-4B84-82A7-955B6BBC26D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0DDF57C-F4A2-4B84-82A7-955B6BBC26D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0DDF57C-F4A2-4B84-82A7-955B6BBC26D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80E4AB73-F8A2-440F-B2C7-55058F5A0658}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80E4AB73-F8A2-440F-B2C7-55058F5A0658}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80E4AB73-F8A2-440F-B2C7-55058F5A0658}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80E4AB73-F8A2-440F-B2C7-55058F5A0658}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

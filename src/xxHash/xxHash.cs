@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Data.HashFunction.Utilities.IntegerManipulation;
 using System.Data.HashFunction.Utilities.UnifiedData;
+#if !NET35
+using System.Threading.Tasks;
+#endif
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
@@ -12,7 +14,7 @@ namespace System.Data.HashFunction
     ///   https://code.google.com/p/xxhash/.
     /// </summary>
     public class xxHash
-#if !NET40 || INCLUDE_ASYNC
+#if (!NET35 && !NET40) || INCLUDE_ASYNC
         : HashFunctionAsyncBase
 #else
         : HashFunctionBase
@@ -35,7 +37,7 @@ namespace System.Data.HashFunction
         public static IEnumerable<int> ValidHashSizes { get { return _validHashSizes; } }
 
 
-#if !NET40
+#if (!NET35 && !NET40)
         private static readonly IReadOnlyList<UInt32> _primes32 = 
 #else
         private static readonly IList<UInt32> _primes32 = 
@@ -48,7 +50,7 @@ namespace System.Data.HashFunction
                  374761393U
             };
 
-#if !NET40
+#if (!NET35 && !NET40)
         private static readonly IReadOnlyList<UInt64> _primes64 = 
 #else
         private static readonly IList<UInt64> _primes64 = 
@@ -213,7 +215,7 @@ namespace System.Data.HashFunction
             return hash;
         }
 
-#if !NET40 || INCLUDE_ASYNC
+#if (!NET35 && !NET40) || INCLUDE_ASYNC
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
@@ -313,7 +315,7 @@ namespace System.Data.HashFunction
 #endif
 
 
-#if !NET40
+#if (!NET35 && !NET40)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void PostProcess(ref UInt32 h, UInt32[] initValues, ulong dataCount, byte[] remainder)
@@ -354,7 +356,7 @@ namespace System.Data.HashFunction
             h ^= h >> 16;
         }
 
-#if !NET40
+#if (!NET35 && !NET40)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void PostProcess(ref UInt64 h, UInt64[] initValues, ulong dataCount, byte[] remainder)
