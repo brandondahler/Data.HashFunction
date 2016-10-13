@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿#if !NET35
 using System.Threading.Tasks;
+#endif
 
 namespace System.Data.HashFunction.Utilities.UnifiedData
 {
@@ -50,7 +47,7 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
         public abstract void ForEachRead(Action<byte[], int, int> action);
 
 
-#if !NET40 || INCLUDE_ASYNC
+#if (!NET35 && !NET40) || INCLUDE_ASYNC
         /// <inheritdoc cref="ForEachRead(Action{byte[], int, int})" />
         /// <returns>Task representing the asynchronous operation.</returns>
         public abstract Task ForEachReadAsync(Action<byte[], int, int> action);
@@ -67,8 +64,8 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
         /// <param name="remainderAction">Action to execute if the final group is less than groupSize.  Null values are allowed.</param>
         /// <remarks>remainderAction will not be run if the length of the data is a multiple of groupSize.</remarks>
         public abstract void ForEachGroup(int groupSize, Action<byte[], int, int> action, Action<byte[], int, int> remainderAction);
-        
-#if !NET40 || INCLUDE_ASYNC
+
+#if (!NET35 && !NET40) || INCLUDE_ASYNC
         /// <inheritdoc cref="ForEachGroup(int, Action{byte[], int, int}, Action{byte[], int, int})" />
         /// <returns>Task representing the asynchronous operation.</returns>
         public abstract Task ForEachGroupAsync(int groupSize, Action<byte[], int, int> action, Action<byte[], int, int> remainderAction);
@@ -81,8 +78,8 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
         /// </summary>
         /// <returns>Array of bytes read from the data provider.</returns>
         public abstract byte[] ToArray();
-        
-#if !NET40 || INCLUDE_ASYNC
+
+#if (!NET35 && !NET40) || INCLUDE_ASYNC
         /// <inheritdoc cref="ToArray()" />
         public abstract Task<byte[]> ToArrayAsync();
 #endif

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿#if !NET35
 using System.Threading.Tasks;
+#endif
 
 namespace System.Data.HashFunction.Utilities.UnifiedData
 {
@@ -41,7 +39,7 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
             action(_Data, 0, _Data.Length);
         }
 
-#if !NET40 || INCLUDE_ASYNC
+#if (!NET35 && !NET40) || INCLUDE_ASYNC
         /// <inheritdoc />
         public override Task ForEachReadAsync(Action<byte[], int, int> action)
         {
@@ -57,7 +55,7 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
 
 
 
-            /// <inheritdoc />
+        /// <inheritdoc />
         public override void ForEachGroup(int groupSize, Action<byte[], int, int> action, Action<byte[], int, int> remainderAction)
         {
             if (groupSize <= 0)
@@ -79,7 +77,7 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
             }
         }
 
-#if !NET40 || INCLUDE_ASYNC
+#if (!NET35 && !NET40) || INCLUDE_ASYNC
         /// <inheritdoc />
         public override Task ForEachGroupAsync(int groupSize, Action<byte[], int, int> action, Action<byte[], int, int> remainderAction)
         {
@@ -101,7 +99,7 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
             return _Data;
         }
 
-#if !NET40 || INCLUDE_ASYNC
+#if (!NET35 && !NET40) || INCLUDE_ASYNC
         /// <inheritdoc />
         public override Task<byte[]> ToArrayAsync()
         {

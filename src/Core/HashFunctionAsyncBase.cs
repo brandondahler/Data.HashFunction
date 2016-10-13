@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.HashFunction.Utilities;
+﻿#if (!NET35 && !NET40) || INCLUDE_ASYNC
 using System.Data.HashFunction.Utilities.UnifiedData;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-#if !NET40 || INCLUDE_ASYNC
 namespace System.Data.HashFunction
 {
     /// <summary>

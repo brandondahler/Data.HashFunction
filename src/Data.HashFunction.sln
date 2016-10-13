@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Test", "Test\Data.HashFunction.Test.csproj", "{FFCE0E36-1B66-4C8D-803E-A28754A7D4E4}"
 EndProject
@@ -50,6 +50,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5B1C1AAF
 		..\tools\BclAsync.app.config = ..\tools\BclAsync.app.config
 		..\tools\BclAsync.csproj.xslt = ..\tools\BclAsync.csproj.xslt
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Core.NET35", "Core.NET35\Data.HashFunction.Core.NET35.csproj", "{555D81DB-1385-41C6-974D-5AB4D22CDC0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.Interfaces.NET35", "Interfaces.NET35\Data.HashFunction.Interfaces.NET35.csproj", "{B0DDF57C-F4A2-4B84-82A7-955B6BBC26D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.HashFunction.xxHash.NET35", "xxHash.NET35\Data.HashFunction.xxHash.NET35.csproj", "{80E4AB73-F8A2-440F-B2C7-55058F5A0658}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +123,18 @@ Global
 		{FB16E5B0-D48F-4030-AB86-0CD00A029014}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB16E5B0-D48F-4030-AB86-0CD00A029014}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB16E5B0-D48F-4030-AB86-0CD00A029014}.Release|Any CPU.Build.0 = Release|Any CPU
+		{555D81DB-1385-41C6-974D-5AB4D22CDC0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{555D81DB-1385-41C6-974D-5AB4D22CDC0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{555D81DB-1385-41C6-974D-5AB4D22CDC0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{555D81DB-1385-41C6-974D-5AB4D22CDC0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0DDF57C-F4A2-4B84-82A7-955B6BBC26D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0DDF57C-F4A2-4B84-82A7-955B6BBC26D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0DDF57C-F4A2-4B84-82A7-955B6BBC26D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0DDF57C-F4A2-4B84-82A7-955B6BBC26D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80E4AB73-F8A2-440F-B2C7-55058F5A0658}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80E4AB73-F8A2-440F-B2C7-55058F5A0658}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80E4AB73-F8A2-440F-B2C7-55058F5A0658}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80E4AB73-F8A2-440F-B2C7-55058F5A0658}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

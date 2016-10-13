@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.HashFunction.Utilities;
-using System.Data.HashFunction.Utilities.UnifiedData;
+﻿using System.Data.HashFunction.Utilities.UnifiedData;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
@@ -66,7 +60,18 @@ namespace System.Data.HashFunction
 
                 using (var ms = new MemoryStream())
                 {
+#if !NET35
                     data.CopyTo(ms);
+#else
+                    const int bufferSize = 1024;
+                    buffer = new byte[bufferSize];
+
+                    int readSize;
+                    while ((readSize = data.Read(buffer, 0, bufferSize)) > 0)
+                    {
+                        ms.Write(buffer, 0, readSize);
+                    }
+#endif
 
                     buffer = ms.ToArray();
                 }
