@@ -1,12 +1,34 @@
 ﻿{
-  "version": "1.0.0-*",
+  "version": "2.0.0-*",
+
+  "authors": [ "Data.HashFunction Developers" ],
+  "copyright": "Copyright 2015",
+  "description": "Data.HashFunction implementation of BLAKE2 hash (http://blake2.net/).",
+  "title": "Data.HashFunction.Blake2",
+
+  "buildOptions": {
+    "compile": {
+      "includeFiles": [
+        "../SolutionInfo.cs"
+      ]
+    }
+  },
+
+  "packOptions": {
+    "licenseUrl": "https://raw.githubusercontent.com/brandondahler/Data.HashFunction/master/LICENSE",
+    "releaseNotes": "https://github.com/brandondahler/Data.HashFunction/wiki/Release-Notes",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/brandondahler/Data.HashFunction/"
+    },
+    "tags": [ "BLAKE2", "BLAKE2b", "hash", "function" ]
+  },
 
   "dependencies": {
     "System.Data.HashFunction.Core": {
       "target": "project"
     }
   },
-
 
   "frameworks": {
     "net40": {},

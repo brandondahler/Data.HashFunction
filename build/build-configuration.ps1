@@ -1,218 +1,223 @@
-$baseDir  = resolve-path $PSScriptRoot\..
+$baseDir  = Resolve-Path $PSScriptRoot\.. -Relative
+$currentYear = [DateTime]::Today.Year
 
 properties {
-	$majorVersion = "2.0"
-	$majorWithReleaseVersion = "2.0.0"
-	$nugetPrerelease = $null
-	$version = GetVersion $majorWithReleaseVersion
-	$packageIdBase = "System.Data.HashFunction"
+	$configuration = "Debug"
+	$nuGetBaseUrl = "https://www.nuget.org/api/v2/"
+	$preReleaseTag = "local"
 	$signAssemblies = $false
 	$signKeyPath = "$baseDir\Data.HashFunction.Production.pfx"
-	$buildDocumentation = $false
-	$buildNuGet = $true
 	$treatWarningsAsErrors = $true
-	$workingName = if ($workingName) {$workingName} else {"working"}
   
+	$gitExecutable = "git.exe"
+	$nuGetExecutable = "nuget.exe"
+
+	$artifactsDir = "$baseDir\Artifacts"
 	$buildDir = "$baseDir\build"
 	$sourceDir = "$baseDir\src"
 	$toolsDir = "$baseDir\tools"
-	$docDir = "$baseDir\doc"
 	$releaseDir = "$baseDir\release"
-	$workingDir = "$baseDir\$workingName"
-	$workingSourceDir = "$workingDir\src"
-	$builds = @(
-		@{Name = "Interfaces";       Directory = "System.Data.HashFunction.Interfaces"},
-		@{Name = "Core";             Directory = "System.Data.HashFunction.Core"},
-								     
-		@{Name = "BernsteinHash";    Directory = "System.Data.HashFunction.BernsteinHash"},
-		@{Name = "Blake2";           Directory = "System.Data.HashFunction.Blake2"},
-		@{Name = "BuzHash";          Directory = "System.Data.HashFunction.BuzHash"},
-		@{Name = "CityHash";         Directory = "System.Data.HashFunction.CityHash"},
-		@{Name = "CRC";              Directory = "System.Data.HashFunction.CRC"},
-		@{Name = "ELF64";            Directory = "System.Data.HashFunction.ELF64"},
-		@{Name = "FNV";              Directory = "System.Data.HashFunction.FNV"},
-		@{Name = "HashAlgorithm";    Directory = "System.Data.HashFunction.HashAlgorithm"},
-		@{Name = "Jenkins";          Directory = "System.Data.HashFunction.Jenkins"},
-		@{Name = "MurmurHash";       Directory = "System.Data.HashFunction.MurmurHash"},
-		@{Name = "Pearson";          Directory = "System.Data.HashFunction.Pearson"},
-		@{Name = "SpookyHash";       Directory = "System.Data.HashFunction.SpookyHash"},
-		@{Name = "xxHash";           Directory = "System.Data.HashFunction.xxHash"},
-								     
-		@{Name = "Test";             Directory = "System.Data.HashFunction.Test"}
-	)
+	$nuGetDir = "$baseDir\NuGet"
+
+	$buildNumber = Read-BuildNumber "$buildDir\BuildNumber.txt"
 }
 
-framework '4.0x86'
 
+Task Default -depends Validate,Build
 
-task default -depends Test
+Task Validate -depends Validate-Versions
+Task Build -depends Build-Solution
+Task Test -depends Test-Solution
+Task Pack -depends Prepare-NuGet,Pack-NuGet
 
-
-# Ensure a clean working directory
-task Clean {
-	Write-Host "Setting location to $baseDir"
-	Set-Location $baseDir
-  
-	if (Test-Path -path $workingDir)
-	{
-		Write-Host "Deleting existing working directory $workingDir"
-    
-		Execute-Command -command { del $workingDir -Recurse -Force }
-	}
-  
-	Write-Host "Creating working directory $workingDir"
-	New-Item -Path $workingDir -ItemType Directory > $null
-}
-
-# Build each solution, optionally signed
-Task Build-Common -depends Clean {
-	$excludeMatches = @(
-		"[\\/]bin([\\/]|$)", 
-		"[\\/]obj([\\/]|$)", 
-		"[\\/]TestResults([\\/]|$)", 
-		"[\\/]packages([\\/]|$)", 
-		"[\\/]\.vs([\\/]|$)", 
-		"\.suo$", 
-		"\.user$", 
-		"\.lock\.json$")
-	[regex] $excludeMatchRegEx = '(?i)' + ($excludeMatches –join "|" ) + ''
-
-	Write-Host "Copying source to working source directory $workingSourceDir"
+Task Resolve-Projects {
+	$script:projects = [System.Collections.ArrayList]::new()
 	
-	Get-ChildItem -Path $sourceDir -Recurse -Exclude $exclude | 
-		where { $_.FullName.Replace($sourceDir, "") -notmatch $excludeMatchRegEx} |
-		Copy-Item -Destination {
-			Join-Path $workingSourceDir $_.FullName.Substring($sourceDir.length)
+	$projectDirectories = Get-ChildItem "$sourceDir\System.Data.HashFunction.*" -Directory
+	foreach ($projectDirectory in $projectDirectories)
+	{
+		$name = $projectDirectory.Name
+
+		$script:projects.Add(@{
+			Name = $name
+			Path = "$sourceDir\$name"
+			ProjectJsonPath = "$sourceDir\$name\project.json"
+			Project = Get-Content "$sourceDir\$name\project.json" | ConvertFrom-Json
+			NuGetPath = "$nuGetDir\$name"
+			NuGetPackageName = $name
+			SkipPackaging = $name -eq "System.Data.HashFunction.Test"
+		})
+	}
+}
+
+Task Resolve-Production-Versions -depends Resolve-Projects {
+	$script:productionPackageVersions = @{}
+
+	foreach ($project in $script:projects)
+	{
+		if ($project.SkipPackaging)
+		{
+			continue
 		}
 
+		$xmlDocument = [System.Xml.XmlDocument]::new()
+			
+		$versionResults = Invoke-WebRequest $($nuGetBaseUrl + "FindPackagesById()?Id='" + $project.NuGetPackageName + "'")
+		$xmlDocument.LoadXml($versionResults.Content)
 
-	Write-Host -ForegroundColor Green "Updating assembly version"
-	Write-Host
-	Update-AssemblyInfoFiles $workingSourceDir ($majorVersion + '.0.0') $version
+		$versions = @{}
 
-	
-	foreach ($build in $builds)
-	{
-		Update-Project $workingSourceDir\$($build.Directory)\project.json $signAssemblies
-	}
+		foreach ($entry in $xmlDocument.feed.entry)
+		{
+			$entryVcsRevision = $(Parse-VCS-Revision $entry.ReleaseNotes)
+			$versions.Add($entry.properties.Version, $entryVcsRevision)
+		}
 
-}
-
-task Build-Debug -depends Build-Common {
-	
-	foreach ($build in $builds)
-	{
-		$name = $build.Name
-
-		Write-Host -ForegroundColor Green "Building " $name
-		Write-Host -ForegroundColor Green "Configuration Debug"
-		Write-Host -ForegroundColor Green "Signed " $signAssemblies
-		Write-Host -ForegroundColor Green "Key " $signKeyPath
-		
-		Update-Project $workingSourceDir\$($build.Directory)\project.json $signAssemblies
-
-		& Invoke-Build $build "Debug"
+		$script:productionPackageVersions.Add($project.Name, $versions)
 	}
 }
 
-task Build-Release -depends Build-Common {
-	
-	foreach ($build in $builds)
+Task Validate-Versions -depends Resolve-Production-Versions {
+	$anyVersionBumpRequired = $false
+
+	foreach ($project in $script:projects)
 	{
-		$name = $build.Name
-
-		Write-Host -ForegroundColor Green "Building " $name
-		Write-Host -ForegroundColor Green "Configuration Debug"
-		Write-Host -ForegroundColor Green "Signed " $signAssemblies
-		Write-Host -ForegroundColor Green "Key " $signKeyPath
+		if ($project.SkipPackaging)
+		{
+			continue
+		}
 		
-		Update-Project $workingSourceDir\$($build.Directory)\project.json $signAssemblies
 
-		& Invoke-Build $build "Release"
+		Write-Host $("Validating version for " + $project.Name + ".")
+
+
+		$currentProjectVersion = $project.Project.version
+
+		if ($script:productionPackageVersions.ContainsKey($project.NuGetPackageName))
+		{
+			$packageVersions = $script:productionPackageVersions[$project.NuGetPackageName]
+
+			if ($packageVersions.ContainsKey($currentProjectVersion))
+			{
+				$packageRevision = $packageVersions[$currentProjectVersion]
+
+				$fileChanges = @()
+
+				if ($packageRevision -ne $null)
+				{
+					$fileChanges = $(& $gitExecutable diff $packageRevision $project.Path)
+				}
+
+				if ($fileChanges.Count -gt 0)
+				{
+					Write-Host "Changes made since last production deploy, version bump required." -ForegroundColor Red
+					$anyVersionBumpRequired = $true
+				}
+			}
+		}
+	}
+
+	if ($anyVersionBumpRequired)
+	{
+		throw "Version bump required for at least one project."
 	}
 }
 
+task Build-Solution -depends Resolve-Projects {	
+	$versionSuffix = ""
 
-# Test each solution
-task Test -depends Build-Debug {
+	if ($preReleaseTag -eq "")
+	{
+		$versionSuffix = "$preReleaseTag-$buildNumber"
+	}
 
-	Write-Host -ForegroundColor Green "Testing"
+	$vcsRevision = Exec { & $gitExecutable rev-parse HEAD }
+	try
+	{
+		foreach ($project in $script:projects)
+		{
+			$projectJsonPath = $project.Path + "\project.json"
+			$oldProjectJsonPath = $project.Path + "\project.old.json"
+
+			Copy-Item $projectJsonPath -Destination $oldProjectJsonPath -Force
+
+
+			$updatedProject = $project.Project | ConvertTo-Json | ConvertFrom-Json
+
+			if (!$project.SkipPackaging)
+			{
+				$updatedProject.packOptions.releaseNotes += "`nvcs-revision: $vcsRevision"
+			}
+
+
+			Set-Content $projectJsonPath -Value $(ConvertTo-Json $updatedProject) -Force
+		}
+	
+		Exec { & dotnet.exe restore $sourceDir }
 		
-	& Invoke-Tests @{Name = "Tests"; Directory = "System.Data.HashFunction.Test"} "Debug"
+		foreach ($project in $script:projects)
+		{
+			Write-Host $project.Name
+			if ($versionSuffix -ne "")
+			{
+				Exec { & dotnet.exe build $project.Path -c $configuration --version-suffix "$versionSuffix" | Write-Output }
+
+			} else {
+				Exec { & dotnet.exe build $project.Path -c $configuration | Write-Output }
+			}
+		}
+	} finally {
+		
+		foreach ($project in $script:projects)
+		{
+			$projectJsonPath = $project.Path + "\project.json"
+			$oldProjectJsonPath = $project.Path + "\project.old.json"
+
+			if (Test-Path $oldProjectJsonPath)
+			{
+				Move-Item $oldProjectJsonPath -Destination $projectJsonPath -Force
+			}
+		}
+
+		Exec { & dotnet.exe restore $sourceDir > $null }
+	}
 }
 
-function Invoke-Build($build, $configuration)
-{
-	$name = $build.Name
-	$directory = $build.Directory
-	$projectPath = "$workingSourceDir\$directory\project.json"
+task Pack-NuGet -depends Relove-Projects {
+	foreach ($project in $script:projects)
+	{
+		$versionSuffix = ""
 
-	Write-Host -ForegroundColor Green "Restoring packages for $name"
-	Write-Host
-	exec { dotnet restore $projectPath | Out-Default }
+		if ($preReleaseTag -eq "")
+		{
+			$versionSuffix = "$preReleaseTag-$buildNumber"
+		}
 
-	Write-Host -ForegroundColor Green "Building $projectPath $framework"
-	exec { dotnet build $projectPath -c $configuration | Out-Default }
+		$updatedProjectPath = $project.Path + "\project.updated.json"
+
+
+		Exec { & dotnet.exe pack $updatedProjectPath -c $configuration --version-suffix "$versionSuffix" -o $artifactsDir }
+	}
 }
 
+function Read-BuildNumber {
+	param (
+		[string] $buildNumberFilePath
+	)
 
-function Invoke-Tests($build, $configuration)
-{
-	$name = $build.Name
-	$directory = $build.Directory
+	$buildNumber = 0
 
-	exec { dotnet test "$workingSourceDir\$directory\project.json" -c $configuration | Out-Default }
-}
-
-
-
-function GetVersion($majorVersion)
-{
-    $now = [DateTime]::Now
-    
-    $year = $now.Year - 2000
-    $month = $now.Month
-    $totalMonthsSince2000 = ($year * 12) + $month
-    $day = $now.Day
-    $minor = "{0}{1:00}" -f $totalMonthsSince2000, $day
-    
-    $hour = $now.Hour
-    $minute = $now.Minute
-    $revision = "{0:00}{1:00}" -f $hour, $minute
-    
-    return $majorVersion + "." + $minor
-}
-
-function GetNuGetVersion()
-{
-  $nugetVersion = $majorWithReleaseVersion
-  if ($nugetPrerelease -ne $null)
-  {
-    $nugetVersion = $nugetVersion + "-" + $nugetPrerelease
-  }
-
-  return $nugetVersion
-}
+	if (-Not (Test-Path $buildNumberFilePath))
+	{
+		New-Item $buildNumberFilePath -ItemType File -Value $buildNumber
+	}
 
 
-function Update-AssemblyInfoFiles ([string] $workingSourceDir, [string] $assemblyVersionNumber, [string] $fileVersionNumber)
-{
-    $assemblyVersionPattern = 'AssemblyVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
-    $fileVersionPattern = 'AssemblyFileVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
-    $assemblyVersion = 'AssemblyVersion("' + $assemblyVersionNumber + '")';
-    $fileVersion = 'AssemblyFileVersion("' + $fileVersionNumber + '")';
-    
-    Get-ChildItem -Path $workingSourceDir -r -filter AssemblyInfo.cs | ForEach-Object {
-        
-        $filename = $_.Directory.ToString() + '\' + $_.Name
-        Write-Host $filename
-        $filename + ' -> ' + $version
-    
-        (Get-Content $filename) | ForEach-Object {
-            % {$_ -replace $assemblyVersionPattern, $assemblyVersion } |
-            % {$_ -replace $fileVersionPattern, $fileVersion }
-        } | Set-Content $filename
-    }
+	$buildNumber = [int]::Parse($(Get-Content $buildNumberFilePath -Raw)) + 1
+
+	Set-Content $buildNumberFilePath -Value $buildNumber
+
+	return $buildNumber
 }
 
 function Update-Project {
@@ -223,7 +228,7 @@ function Update-Project {
 
 	$file = switch($sign) { $true { $signKeyPath } default { $null } }
 
-	$json = (Get-Content $projectPath) -join "`n" | ConvertFrom-Json
+	$json = (Get-Content $projectPath -Raw) | ConvertFrom-Json
 
 	# Add/Update buildOptions
 	if ($json.buildOptions -eq $null) 
@@ -248,24 +253,36 @@ function Update-Project {
 	ConvertTo-Json $json -Depth 10 | Set-Content $projectPath
 }
 
-function Execute-Command($command) {
-    $currentRetry = 0
-    $success = $false
+function Parse-VCS-Revision
+{
+	param (
+		[string] $releaseNotes
+	)
 
-    do 
+	[System.Text.RegularExpressions.Match] $match = [Regex]::Match($releaseNotes, "vcs-revision: ([0-9a-fA-F]{32})")
+
+	if (!$match.Success)
 	{
-        try
-        {
-            & $command
-            $success = $true
-        } catch [System.Exception] {
-            if ($currentRetry -gt 5) {
-                throw $_.Exception.ToString()
-            } else {
-                write-host "Retry $currentRetry"
-                Start-Sleep -s 1
-            }
-            $currentRetry = $currentRetry + 1
-        }
-    } while (!$success)
+		return $null
+	}
+
+	return $match.Groups[1]
+}
+
+function Get-Description-FromAssemblyInfo
+{
+	param (
+		$assemblyInfoPath
+	)
+
+	$assemblyInfoContent = Get-Content $assemblyInfoPath -Raw
+
+	$match = [System.Text.RegularExpressions.Regex]::Match("\[assembly: AssemblyDescription\(`"([^`"]*)`"\)\]")
+
+	if (!$match.Success)
+	{
+		return ""
+	}
+
+	return $match.Groups[1].Value
 }

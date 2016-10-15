@@ -2685,12 +2685,12 @@
           "lib/netstandard1.1/xunit.runner.utility.dotnet.dll": {}
         }
       },
-      "System.Data.HashFunction.BernsteinHash/1.0.0": {
+      "System.Data.HashFunction.BernsteinHash/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.BernsteinHash.dll": {}
@@ -2699,12 +2699,12 @@
           "netstandard1.0/System.Data.HashFunction.BernsteinHash.dll": {}
         }
       },
-      "System.Data.HashFunction.Blake2/1.0.0": {
+      "System.Data.HashFunction.Blake2/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.Blake2.dll": {}
@@ -2713,12 +2713,12 @@
           "netstandard1.0/System.Data.HashFunction.Blake2.dll": {}
         }
       },
-      "System.Data.HashFunction.BuzHash/1.0.0": {
+      "System.Data.HashFunction.BuzHash/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.BuzHash.dll": {}
@@ -2727,12 +2727,12 @@
           "netstandard1.0/System.Data.HashFunction.BuzHash.dll": {}
         }
       },
-      "System.Data.HashFunction.CityHash/1.0.0": {
+      "System.Data.HashFunction.CityHash/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.CityHash.dll": {}
@@ -2741,12 +2741,12 @@
           "netstandard1.0/System.Data.HashFunction.CityHash.dll": {}
         }
       },
-      "System.Data.HashFunction.Core/1.0.0": {
+      "System.Data.HashFunction.Core/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Interfaces": "1.0.0",
+          "System.Data.HashFunction.Interfaces": "(, )",
           "System.Runtime.Numerics": "4.0.0"
         },
         "compile": {
@@ -2756,12 +2756,12 @@
           "netstandard1.0/System.Data.HashFunction.Core.dll": {}
         }
       },
-      "System.Data.HashFunction.CRC/1.0.0": {
+      "System.Data.HashFunction.CRC/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.CRC.dll": {}
@@ -2770,12 +2770,12 @@
           "netstandard1.0/System.Data.HashFunction.CRC.dll": {}
         }
       },
-      "System.Data.HashFunction.ELF64/1.0.0": {
+      "System.Data.HashFunction.ELF64/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.ELF64.dll": {}
@@ -2784,13 +2784,13 @@
           "netstandard1.0/System.Data.HashFunction.ELF64.dll": {}
         }
       },
-      "System.Data.HashFunction.FNV/1.0.0": {
+      "System.Data.HashFunction.FNV/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
           "System.Collections.Concurrent": "4.0.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.FNV.dll": {}
@@ -2799,12 +2799,12 @@
           "netstandard1.0/System.Data.HashFunction.FNV.dll": {}
         }
       },
-      "System.Data.HashFunction.HashAlgorithm/1.0.0": {
+      "System.Data.HashFunction.HashAlgorithm/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.3",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.3/System.Data.HashFunction.HashAlgorithm.dll": {}
@@ -2813,7 +2813,7 @@
           "netstandard1.3/System.Data.HashFunction.HashAlgorithm.dll": {}
         }
       },
-      "System.Data.HashFunction.Interfaces/1.0.0": {
+      "System.Data.HashFunction.Interfaces/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
@@ -2826,12 +2826,12 @@
           "netstandard1.0/System.Data.HashFunction.Interfaces.dll": {}
         }
       },
-      "System.Data.HashFunction.Jenkins/1.0.0": {
+      "System.Data.HashFunction.Jenkins/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.Jenkins.dll": {}
@@ -2840,12 +2840,12 @@
           "netstandard1.0/System.Data.HashFunction.Jenkins.dll": {}
         }
       },
-      "System.Data.HashFunction.MurmurHash/1.0.0": {
+      "System.Data.HashFunction.MurmurHash/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.MurmurHash.dll": {}
@@ -2854,12 +2854,12 @@
           "netstandard1.0/System.Data.HashFunction.MurmurHash.dll": {}
         }
       },
-      "System.Data.HashFunction.Pearson/1.0.0": {
+      "System.Data.HashFunction.Pearson/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.Pearson.dll": {}
@@ -2868,12 +2868,12 @@
           "netstandard1.0/System.Data.HashFunction.Pearson.dll": {}
         }
       },
-      "System.Data.HashFunction.SpookyHash/1.0.0": {
+      "System.Data.HashFunction.SpookyHash/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.SpookyHash.dll": {}
@@ -2882,12 +2882,12 @@
           "netstandard1.0/System.Data.HashFunction.SpookyHash.dll": {}
         }
       },
-      "System.Data.HashFunction.xxHash/1.0.0": {
+      "System.Data.HashFunction.xxHash/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.xxHash.dll": {}
@@ -5764,12 +5764,12 @@
           "lib/netstandard1.1/xunit.runner.utility.dotnet.dll": {}
         }
       },
-      "System.Data.HashFunction.BernsteinHash/1.0.0": {
+      "System.Data.HashFunction.BernsteinHash/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.BernsteinHash.dll": {}
@@ -5778,12 +5778,12 @@
           "netstandard1.0/System.Data.HashFunction.BernsteinHash.dll": {}
         }
       },
-      "System.Data.HashFunction.Blake2/1.0.0": {
+      "System.Data.HashFunction.Blake2/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.Blake2.dll": {}
@@ -5792,12 +5792,12 @@
           "netstandard1.0/System.Data.HashFunction.Blake2.dll": {}
         }
       },
-      "System.Data.HashFunction.BuzHash/1.0.0": {
+      "System.Data.HashFunction.BuzHash/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.BuzHash.dll": {}
@@ -5806,12 +5806,12 @@
           "netstandard1.0/System.Data.HashFunction.BuzHash.dll": {}
         }
       },
-      "System.Data.HashFunction.CityHash/1.0.0": {
+      "System.Data.HashFunction.CityHash/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.CityHash.dll": {}
@@ -5820,12 +5820,12 @@
           "netstandard1.0/System.Data.HashFunction.CityHash.dll": {}
         }
       },
-      "System.Data.HashFunction.Core/1.0.0": {
+      "System.Data.HashFunction.Core/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Interfaces": "1.0.0",
+          "System.Data.HashFunction.Interfaces": "(, )",
           "System.Runtime.Numerics": "4.0.0"
         },
         "compile": {
@@ -5835,12 +5835,12 @@
           "netstandard1.0/System.Data.HashFunction.Core.dll": {}
         }
       },
-      "System.Data.HashFunction.CRC/1.0.0": {
+      "System.Data.HashFunction.CRC/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.CRC.dll": {}
@@ -5849,12 +5849,12 @@
           "netstandard1.0/System.Data.HashFunction.CRC.dll": {}
         }
       },
-      "System.Data.HashFunction.ELF64/1.0.0": {
+      "System.Data.HashFunction.ELF64/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.ELF64.dll": {}
@@ -5863,13 +5863,13 @@
           "netstandard1.0/System.Data.HashFunction.ELF64.dll": {}
         }
       },
-      "System.Data.HashFunction.FNV/1.0.0": {
+      "System.Data.HashFunction.FNV/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
           "System.Collections.Concurrent": "4.0.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.FNV.dll": {}
@@ -5878,12 +5878,12 @@
           "netstandard1.0/System.Data.HashFunction.FNV.dll": {}
         }
       },
-      "System.Data.HashFunction.HashAlgorithm/1.0.0": {
+      "System.Data.HashFunction.HashAlgorithm/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.3",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.3/System.Data.HashFunction.HashAlgorithm.dll": {}
@@ -5892,7 +5892,7 @@
           "netstandard1.3/System.Data.HashFunction.HashAlgorithm.dll": {}
         }
       },
-      "System.Data.HashFunction.Interfaces/1.0.0": {
+      "System.Data.HashFunction.Interfaces/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
@@ -5905,12 +5905,12 @@
           "netstandard1.0/System.Data.HashFunction.Interfaces.dll": {}
         }
       },
-      "System.Data.HashFunction.Jenkins/1.0.0": {
+      "System.Data.HashFunction.Jenkins/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.Jenkins.dll": {}
@@ -5919,12 +5919,12 @@
           "netstandard1.0/System.Data.HashFunction.Jenkins.dll": {}
         }
       },
-      "System.Data.HashFunction.MurmurHash/1.0.0": {
+      "System.Data.HashFunction.MurmurHash/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.MurmurHash.dll": {}
@@ -5933,12 +5933,12 @@
           "netstandard1.0/System.Data.HashFunction.MurmurHash.dll": {}
         }
       },
-      "System.Data.HashFunction.Pearson/1.0.0": {
+      "System.Data.HashFunction.Pearson/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.Pearson.dll": {}
@@ -5947,12 +5947,12 @@
           "netstandard1.0/System.Data.HashFunction.Pearson.dll": {}
         }
       },
-      "System.Data.HashFunction.SpookyHash/1.0.0": {
+      "System.Data.HashFunction.SpookyHash/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.SpookyHash.dll": {}
@@ -5961,12 +5961,12 @@
           "netstandard1.0/System.Data.HashFunction.SpookyHash.dll": {}
         }
       },
-      "System.Data.HashFunction.xxHash/1.0.0": {
+      "System.Data.HashFunction.xxHash/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "netstandard1.0/System.Data.HashFunction.xxHash.dll": {}
@@ -6379,11 +6379,11 @@
           "lib/net45/xunit.runner.utility.desktop.dll": {}
         }
       },
-      "System.Data.HashFunction.BernsteinHash/1.0.0": {
+      "System.Data.HashFunction.BernsteinHash/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.BernsteinHash.dll": {}
@@ -6392,11 +6392,11 @@
           "net45/System.Data.HashFunction.BernsteinHash.dll": {}
         }
       },
-      "System.Data.HashFunction.Blake2/1.0.0": {
+      "System.Data.HashFunction.Blake2/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.Blake2.dll": {}
@@ -6405,11 +6405,11 @@
           "net45/System.Data.HashFunction.Blake2.dll": {}
         }
       },
-      "System.Data.HashFunction.BuzHash/1.0.0": {
+      "System.Data.HashFunction.BuzHash/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.BuzHash.dll": {}
@@ -6418,11 +6418,11 @@
           "net45/System.Data.HashFunction.BuzHash.dll": {}
         }
       },
-      "System.Data.HashFunction.CityHash/1.0.0": {
+      "System.Data.HashFunction.CityHash/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.CityHash.dll": {}
@@ -6431,11 +6431,11 @@
           "net45/System.Data.HashFunction.CityHash.dll": {}
         }
       },
-      "System.Data.HashFunction.Core/1.0.0": {
+      "System.Data.HashFunction.Core/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Interfaces": "1.0.0"
+          "System.Data.HashFunction.Interfaces": "(, )"
         },
         "frameworkAssemblies": [
           "System.Numerics"
@@ -6447,11 +6447,11 @@
           "net45/System.Data.HashFunction.Core.dll": {}
         }
       },
-      "System.Data.HashFunction.CRC/1.0.0": {
+      "System.Data.HashFunction.CRC/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.CRC.dll": {}
@@ -6460,11 +6460,11 @@
           "net45/System.Data.HashFunction.CRC.dll": {}
         }
       },
-      "System.Data.HashFunction.ELF64/1.0.0": {
+      "System.Data.HashFunction.ELF64/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.ELF64.dll": {}
@@ -6473,11 +6473,11 @@
           "net45/System.Data.HashFunction.ELF64.dll": {}
         }
       },
-      "System.Data.HashFunction.FNV/1.0.0": {
+      "System.Data.HashFunction.FNV/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.FNV.dll": {}
@@ -6486,11 +6486,11 @@
           "net45/System.Data.HashFunction.FNV.dll": {}
         }
       },
-      "System.Data.HashFunction.HashAlgorithm/1.0.0": {
+      "System.Data.HashFunction.HashAlgorithm/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.HashAlgorithm.dll": {}
@@ -6499,7 +6499,7 @@
           "net45/System.Data.HashFunction.HashAlgorithm.dll": {}
         }
       },
-      "System.Data.HashFunction.Interfaces/1.0.0": {
+      "System.Data.HashFunction.Interfaces/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "compile": {
@@ -6509,11 +6509,11 @@
           "net45/System.Data.HashFunction.Interfaces.dll": {}
         }
       },
-      "System.Data.HashFunction.Jenkins/1.0.0": {
+      "System.Data.HashFunction.Jenkins/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.Jenkins.dll": {}
@@ -6522,11 +6522,11 @@
           "net45/System.Data.HashFunction.Jenkins.dll": {}
         }
       },
-      "System.Data.HashFunction.MurmurHash/1.0.0": {
+      "System.Data.HashFunction.MurmurHash/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.MurmurHash.dll": {}
@@ -6535,11 +6535,11 @@
           "net45/System.Data.HashFunction.MurmurHash.dll": {}
         }
       },
-      "System.Data.HashFunction.Pearson/1.0.0": {
+      "System.Data.HashFunction.Pearson/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.Pearson.dll": {}
@@ -6548,11 +6548,11 @@
           "net45/System.Data.HashFunction.Pearson.dll": {}
         }
       },
-      "System.Data.HashFunction.SpookyHash/1.0.0": {
+      "System.Data.HashFunction.SpookyHash/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.SpookyHash.dll": {}
@@ -6561,11 +6561,11 @@
           "net45/System.Data.HashFunction.SpookyHash.dll": {}
         }
       },
-      "System.Data.HashFunction.xxHash/1.0.0": {
+      "System.Data.HashFunction.xxHash/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.xxHash.dll": {}
@@ -6941,11 +6941,11 @@
           "lib/net45/xunit.runner.utility.desktop.dll": {}
         }
       },
-      "System.Data.HashFunction.BernsteinHash/1.0.0": {
+      "System.Data.HashFunction.BernsteinHash/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.BernsteinHash.dll": {}
@@ -6954,11 +6954,11 @@
           "net45/System.Data.HashFunction.BernsteinHash.dll": {}
         }
       },
-      "System.Data.HashFunction.Blake2/1.0.0": {
+      "System.Data.HashFunction.Blake2/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.Blake2.dll": {}
@@ -6967,11 +6967,11 @@
           "net45/System.Data.HashFunction.Blake2.dll": {}
         }
       },
-      "System.Data.HashFunction.BuzHash/1.0.0": {
+      "System.Data.HashFunction.BuzHash/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.BuzHash.dll": {}
@@ -6980,11 +6980,11 @@
           "net45/System.Data.HashFunction.BuzHash.dll": {}
         }
       },
-      "System.Data.HashFunction.CityHash/1.0.0": {
+      "System.Data.HashFunction.CityHash/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.CityHash.dll": {}
@@ -6993,11 +6993,11 @@
           "net45/System.Data.HashFunction.CityHash.dll": {}
         }
       },
-      "System.Data.HashFunction.Core/1.0.0": {
+      "System.Data.HashFunction.Core/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Interfaces": "1.0.0"
+          "System.Data.HashFunction.Interfaces": "(, )"
         },
         "frameworkAssemblies": [
           "System.Numerics"
@@ -7009,11 +7009,11 @@
           "net45/System.Data.HashFunction.Core.dll": {}
         }
       },
-      "System.Data.HashFunction.CRC/1.0.0": {
+      "System.Data.HashFunction.CRC/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.CRC.dll": {}
@@ -7022,11 +7022,11 @@
           "net45/System.Data.HashFunction.CRC.dll": {}
         }
       },
-      "System.Data.HashFunction.ELF64/1.0.0": {
+      "System.Data.HashFunction.ELF64/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.ELF64.dll": {}
@@ -7035,11 +7035,11 @@
           "net45/System.Data.HashFunction.ELF64.dll": {}
         }
       },
-      "System.Data.HashFunction.FNV/1.0.0": {
+      "System.Data.HashFunction.FNV/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.FNV.dll": {}
@@ -7048,11 +7048,11 @@
           "net45/System.Data.HashFunction.FNV.dll": {}
         }
       },
-      "System.Data.HashFunction.HashAlgorithm/1.0.0": {
+      "System.Data.HashFunction.HashAlgorithm/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.HashAlgorithm.dll": {}
@@ -7061,7 +7061,7 @@
           "net45/System.Data.HashFunction.HashAlgorithm.dll": {}
         }
       },
-      "System.Data.HashFunction.Interfaces/1.0.0": {
+      "System.Data.HashFunction.Interfaces/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "compile": {
@@ -7071,11 +7071,11 @@
           "net45/System.Data.HashFunction.Interfaces.dll": {}
         }
       },
-      "System.Data.HashFunction.Jenkins/1.0.0": {
+      "System.Data.HashFunction.Jenkins/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.Jenkins.dll": {}
@@ -7084,11 +7084,11 @@
           "net45/System.Data.HashFunction.Jenkins.dll": {}
         }
       },
-      "System.Data.HashFunction.MurmurHash/1.0.0": {
+      "System.Data.HashFunction.MurmurHash/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.MurmurHash.dll": {}
@@ -7097,11 +7097,11 @@
           "net45/System.Data.HashFunction.MurmurHash.dll": {}
         }
       },
-      "System.Data.HashFunction.Pearson/1.0.0": {
+      "System.Data.HashFunction.Pearson/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.Pearson.dll": {}
@@ -7110,11 +7110,11 @@
           "net45/System.Data.HashFunction.Pearson.dll": {}
         }
       },
-      "System.Data.HashFunction.SpookyHash/1.0.0": {
+      "System.Data.HashFunction.SpookyHash/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.SpookyHash.dll": {}
@@ -7123,11 +7123,11 @@
           "net45/System.Data.HashFunction.SpookyHash.dll": {}
         }
       },
-      "System.Data.HashFunction.xxHash/1.0.0": {
+      "System.Data.HashFunction.xxHash/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Core": "1.0.0"
+          "System.Data.HashFunction.Core": "(, )"
         },
         "compile": {
           "net45/System.Data.HashFunction.xxHash.dll": {}
@@ -13100,77 +13100,77 @@
         "xunit.runner.utility.nuspec"
       ]
     },
-    "System.Data.HashFunction.BernsteinHash/1.0.0": {
+    "System.Data.HashFunction.BernsteinHash/2.0.0": {
       "type": "project",
       "path": "../System.Data.HashFunction.BernsteinHash/project.json",
       "msbuildProject": "../System.Data.HashFunction.BernsteinHash/System.Data.HashFunction.BernsteinHash.xproj"
     },
-    "System.Data.HashFunction.Blake2/1.0.0": {
+    "System.Data.HashFunction.Blake2/2.0.0": {
       "type": "project",
       "path": "../System.Data.HashFunction.Blake2/project.json",
       "msbuildProject": "../System.Data.HashFunction.Blake2/System.Data.HashFunction.Blake2.xproj"
     },
-    "System.Data.HashFunction.BuzHash/1.0.0": {
+    "System.Data.HashFunction.BuzHash/2.0.0": {
       "type": "project",
       "path": "../System.Data.HashFunction.BuzHash/project.json",
       "msbuildProject": "../System.Data.HashFunction.BuzHash/System.Data.HashFunction.BuzHash.xproj"
     },
-    "System.Data.HashFunction.CityHash/1.0.0": {
+    "System.Data.HashFunction.CityHash/2.0.0": {
       "type": "project",
       "path": "../System.Data.HashFunction.CityHash/project.json",
       "msbuildProject": "../System.Data.HashFunction.CityHash/System.Data.HashFunction.CityHash.xproj"
     },
-    "System.Data.HashFunction.Core/1.0.0": {
+    "System.Data.HashFunction.Core/2.0.0": {
       "type": "project",
       "path": "../System.Data.HashFunction.Core/project.json",
       "msbuildProject": "../System.Data.HashFunction.Core/System.Data.HashFunction.Core.xproj"
     },
-    "System.Data.HashFunction.CRC/1.0.0": {
+    "System.Data.HashFunction.CRC/2.0.0": {
       "type": "project",
       "path": "../System.Data.HashFunction.CRC/project.json",
       "msbuildProject": "../System.Data.HashFunction.CRC/System.Data.HashFunction.CRC.xproj"
     },
-    "System.Data.HashFunction.ELF64/1.0.0": {
+    "System.Data.HashFunction.ELF64/2.0.0": {
       "type": "project",
       "path": "../System.Data.HashFunction.ELF64/project.json",
       "msbuildProject": "../System.Data.HashFunction.ELF64/System.Data.HashFunction.ELF64.xproj"
     },
-    "System.Data.HashFunction.FNV/1.0.0": {
+    "System.Data.HashFunction.FNV/2.0.0": {
       "type": "project",
       "path": "../System.Data.HashFunction.FNV/project.json",
       "msbuildProject": "../System.Data.HashFunction.FNV/System.Data.HashFunction.FNV.xproj"
     },
-    "System.Data.HashFunction.HashAlgorithm/1.0.0": {
+    "System.Data.HashFunction.HashAlgorithm/2.0.0": {
       "type": "project",
       "path": "../System.Data.HashFunction.HashAlgorithm/project.json",
       "msbuildProject": "../System.Data.HashFunction.HashAlgorithm/System.Data.HashFunction.HashAlgorithm.xproj"
     },
-    "System.Data.HashFunction.Interfaces/1.0.0": {
+    "System.Data.HashFunction.Interfaces/2.0.0": {
       "type": "project",
       "path": "../System.Data.HashFunction.Interfaces/project.json",
       "msbuildProject": "../System.Data.HashFunction.Interfaces/System.Data.HashFunction.Interfaces.xproj"
     },
-    "System.Data.HashFunction.Jenkins/1.0.0": {
+    "System.Data.HashFunction.Jenkins/2.0.0": {
       "type": "project",
       "path": "../System.Data.HashFunction.Jenkins/project.json",
       "msbuildProject": "../System.Data.HashFunction.Jenkins/System.Data.HashFunction.Jenkins.xproj"
     },
-    "System.Data.HashFunction.MurmurHash/1.0.0": {
+    "System.Data.HashFunction.MurmurHash/2.0.0": {
       "type": "project",
       "path": "../System.Data.HashFunction.MurmurHash/project.json",
       "msbuildProject": "../System.Data.HashFunction.MurmurHash/System.Data.HashFunction.MurmurHash.xproj"
     },
-    "System.Data.HashFunction.Pearson/1.0.0": {
+    "System.Data.HashFunction.Pearson/2.0.0": {
       "type": "project",
       "path": "../System.Data.HashFunction.Pearson/project.json",
       "msbuildProject": "../System.Data.HashFunction.Pearson/System.Data.HashFunction.Pearson.xproj"
     },
-    "System.Data.HashFunction.SpookyHash/1.0.0": {
+    "System.Data.HashFunction.SpookyHash/2.0.0": {
       "type": "project",
       "path": "../System.Data.HashFunction.SpookyHash/project.json",
       "msbuildProject": "../System.Data.HashFunction.SpookyHash/System.Data.HashFunction.SpookyHash.xproj"
     },
-    "System.Data.HashFunction.xxHash/1.0.0": {
+    "System.Data.HashFunction.xxHash/2.0.0": {
       "type": "project",
       "path": "../System.Data.HashFunction.xxHash/project.json",
       "msbuildProject": "../System.Data.HashFunction.xxHash/System.Data.HashFunction.xxHash.xproj"

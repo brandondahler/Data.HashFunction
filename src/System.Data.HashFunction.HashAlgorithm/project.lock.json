@@ -3,11 +3,11 @@
   "version": 2,
   "targets": {
     ".NETFramework,Version=v4.0": {
-      "System.Data.HashFunction.Core/1.0.0": {
+      "System.Data.HashFunction.Core/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.0",
         "dependencies": {
-          "System.Data.HashFunction.Interfaces": "1.0.0"
+          "System.Data.HashFunction.Interfaces": "(, )"
         },
         "frameworkAssemblies": [
           "System.Numerics"
@@ -19,7 +19,7 @@
           "net40/System.Data.HashFunction.Core.dll": {}
         }
       },
-      "System.Data.HashFunction.Interfaces/1.0.0": {
+      "System.Data.HashFunction.Interfaces/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.0",
         "compile": {
@@ -31,11 +31,11 @@
       }
     },
     ".NETFramework,Version=v4.5": {
-      "System.Data.HashFunction.Core/1.0.0": {
+      "System.Data.HashFunction.Core/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "dependencies": {
-          "System.Data.HashFunction.Interfaces": "1.0.0"
+          "System.Data.HashFunction.Interfaces": "(, )"
         },
         "frameworkAssemblies": [
           "System.Numerics"
@@ -47,7 +47,7 @@
           "net45/System.Data.HashFunction.Core.dll": {}
         }
       },
-      "System.Data.HashFunction.Interfaces/1.0.0": {
+      "System.Data.HashFunction.Interfaces/2.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5",
         "compile": {
@@ -842,12 +842,12 @@
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
       },
-      "System.Data.HashFunction.Core/1.0.0": {
+      "System.Data.HashFunction.Core/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
           "NETStandard.Library": "1.6.0",
-          "System.Data.HashFunction.Interfaces": "1.0.0",
+          "System.Data.HashFunction.Interfaces": "(, )",
           "System.Runtime.Numerics": "4.0.0"
         },
         "compile": {
@@ -857,7 +857,7 @@
           "netstandard1.0/System.Data.HashFunction.Core.dll": {}
         }
       },
-      "System.Data.HashFunction.Interfaces/1.0.0": {
+      "System.Data.HashFunction.Interfaces/2.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
@@ -3551,12 +3551,12 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "System.Data.HashFunction.Core/1.0.0": {
+    "System.Data.HashFunction.Core/2.0.0": {
       "type": "project",
       "path": "../System.Data.HashFunction.Core/project.json",
       "msbuildProject": "../System.Data.HashFunction.Core/System.Data.HashFunction.Core.xproj"
     },
-    "System.Data.HashFunction.Interfaces/1.0.0": {
+    "System.Data.HashFunction.Interfaces/2.0.0": {
       "type": "project",
       "path": "../System.Data.HashFunction.Interfaces/project.json",
       "msbuildProject": "../System.Data.HashFunction.Interfaces/System.Data.HashFunction.Interfaces.xproj"

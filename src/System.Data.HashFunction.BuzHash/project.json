@@ -1,12 +1,34 @@
 ﻿{
-  "version": "1.0.0-*",
+  "version": "2.0.0-*",
+
+  "authors": [ "Data.HashFunction Developers" ],
+  "copyright": "Copyright 2014",
+  "description": "Data.HashFunction implementation of BuzHash (http://www.serve.net/buz/hash.adt/java.002.html).",
+  "title": "Data.HashFunction.BuzHash",
+
+  "buildOptions": {
+    "compile": {
+      "includeFiles": [
+        "../SolutionInfo.cs"
+      ]
+    }
+  },
+
+  "packOptions": {
+    "licenseUrl": "https://raw.githubusercontent.com/brandondahler/Data.HashFunction/master/LICENSE",
+    "releaseNotes": "https://github.com/brandondahler/Data.HashFunction/wiki/Release-Notes",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/brandondahler/Data.HashFunction/"
+    },
+    "tags": [ "BuzHash", "hash", "function", "buz" ]
+  },
 
   "dependencies": {
     "System.Data.HashFunction.Core": {
       "target": "project"
     }
   },
-
 
   "frameworks": {
     "net40": {},

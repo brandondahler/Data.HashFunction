@@ -5,8 +5,6 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D0A9A68F-2401-42E4-A6E7-D9FF9F080197}"
 	ProjectSection(SolutionItems) = preProject
-		..\build\build-configuration.ps1 = ..\build\build-configuration.ps1
-		..\build\build.ps1 = ..\build\build.ps1
 		Data.HashFunction.Production.pfx = Data.HashFunction.Production.pfx
 		SolutionInfo.cs = SolutionInfo.cs
 	EndProjectSection
@@ -58,12 +56,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{FED52411
 	ProjectSection(SolutionItems) = preProject
 		..\build\build-configuration.ps1 = ..\build\build-configuration.ps1
 		..\build\build.ps1 = ..\build\build.ps1
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PSake", "PSake", "{1E82FB2C-40D9-49D0-BD9A-D308A82F9EC3}"
-	ProjectSection(SolutionItems) = preProject
-		..\tools\PSake\psake.psd1 = ..\tools\PSake\psake.psd1
-		..\tools\PSake\psake.psm1 = ..\tools\PSake\psake.psm1
 	EndProjectSection
 EndProject
 Global
@@ -139,8 +131,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{1E82FB2C-40D9-49D0-BD9A-D308A82F9EC3} = {5B1C1AAF-9453-4F2E-902F-222D14FC579A}
 	EndGlobalSection
 EndGlobal

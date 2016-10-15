@@ -1,5 +1,28 @@
 ﻿{
-  "version": "1.0.0-*",
+  "version": "2.0.0-*",
+
+  "authors": [ "Data.HashFunction Developers" ],
+  "copyright": "Copyright 2015",
+  "description": "C# library to create a common interface to non-cryptographic hash functions (http://en.wikipedia.org/wiki/List_of_hash_functions#Non-cryptographic_hash_functions).",
+  "title": "Data.HashFunction.Interfaces",
+
+  "buildOptions": {
+    "compile": {
+      "includeFiles": [
+        "../SolutionInfo.cs"
+      ]
+    }
+  },
+
+  "packOptions": {
+    "licenseUrl": "https://raw.githubusercontent.com/brandondahler/Data.HashFunction/master/LICENSE",
+    "releaseNotes": "https://github.com/brandondahler/Data.HashFunction/wiki/Release-Notes",
+    "repository":  {
+      "type": "git",
+      "url": "https://github.com/brandondahler/Data.HashFunction/"
+    },
+    "tags": [ "hash", "function" ]
+  },
 
   "dependencies": {
   },
@@ -14,9 +37,5 @@
       },
       "imports": "dnxcore50"
     }
-  },
-
-  "buildOptions": {
-    "xmlDoc": true
   }
 }

@@ -1,5 +1,28 @@
 ﻿{
-  "version": "1.0.0-*",
+  "version": "2.0.0-*",
+
+  "authors": [ "Data.HashFunction Developers" ],
+  "copyright": "Copyright 2014",
+  "description": "Data.HashFunction implementation of Pearson hashing (http://en.wikipedia.org/wiki/Pearson_hashing) (http://cs.mwsu.edu/~griffin/courses/2133/downloads/Spring11/p677-pearson.pdf).",
+  "title": "Data.HashFunction.Pearson",
+
+  "buildOptions": {
+    "compile": {
+      "includeFiles": [
+        "../SolutionInfo.cs"
+      ]
+    }
+  },
+
+  "packOptions": {
+    "licenseUrl": "https://raw.githubusercontent.com/brandondahler/Data.HashFunction/master/LICENSE",
+    "releaseNotes": "https://github.com/brandondahler/Data.HashFunction/wiki/Release-Notes",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/brandondahler/Data.HashFunction/"
+    },
+    "tags": [ "Pearson", "hash", "function" ]
+  },
 
   "dependencies": {
     "System.Data.HashFunction.Core": {

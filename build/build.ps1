@@ -1,12 +1,23 @@
-$location = $PSScriptRoot
+param (
+	[Parameter()]
+	[string] $taskList,
+	[Parameter()]
+	[string] $configuration = "Debug"
+)
 
-Start-Transcript "$PSScriptRoot\build.txt"
-try
+$buildDir = $PSScriptRoot
+
+Import-Module $(Resolve-Path "packages\psake.4.6.0\tools\psake.psm1")
+
+$properties = @{}
+foreach ($parameterKey in $PSBoundParameters.Keys)
 {
-	Import-Module "$PSScriptRoot\..\tools\PSake\psake.psm1"
-	Invoke-Expression "Invoke-psake -buildFile ""$PSScriptRoot\..\Build\build-configuration.ps1"" $args" 
-} finally {
-	Stop-Transcript
+	if ($parameterKey -eq "taskList")
+	{
+		continue
+	}
+	
+	$properties.Add($parameterKey, $PSBoundParameters[$parameterKey])
 }
 
-exit !($psake.build_success);
+Invoke-psake "$buildDir\build-configuration.ps1" -taskList $taskList -properties $properties
