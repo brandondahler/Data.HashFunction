@@ -23,12 +23,11 @@ properties {
 }
 
 
-Task Default -depends Validate,Build
+Task Default -depends Validate,Build,Test
 
 Task Validate -depends Validate-Versions
 Task Build -depends Build-Solution
 Task Test -depends Test-Solution
-Task Pack -depends Prepare-NuGet,Pack-NuGet
 
 Task Resolve-Projects {
 	$script:projects = [System.Collections.ArrayList]::new()
@@ -46,7 +45,8 @@ Task Resolve-Projects {
 			NuGetPath = "$nuGetDir\$name"
 			NuGetPackageName = $name
 			SkipPackaging = $name -eq "System.Data.HashFunction.Test"
-		})
+			RunTests = $name -eq "System.Data.HashFunction.Test"
+		}) > $null
 	}
 }
 
@@ -126,77 +126,84 @@ Task Validate-Versions -depends Resolve-Production-Versions {
 task Build-Solution -depends Resolve-Projects {	
 	$versionSuffix = ""
 
-	if ($preReleaseTag -eq "")
+	if ($preReleaseTag -ne "")
 	{
 		$versionSuffix = "$preReleaseTag-$buildNumber"
 	}
 
 	$vcsRevision = Exec { & $gitExecutable rev-parse HEAD }
+
+
+	if (Test-Path $artifactsDir)
+	{
+		Remove-Item "$artifactsDir\*" -Force
+	}
+
+	$allProjects = [System.Collections.ArrayList]::new()
+
 	try
 	{
+
 		foreach ($project in $script:projects)
 		{
 			$projectJsonPath = $project.Path + "\project.json"
 			$oldProjectJsonPath = $project.Path + "\project.old.json"
 
-			Copy-Item $projectJsonPath -Destination $oldProjectJsonPath -Force
-
-
-			$updatedProject = $project.Project | ConvertTo-Json | ConvertFrom-Json
 
 			if (!$project.SkipPackaging)
 			{
+				Copy-Item $projectJsonPath -Destination $oldProjectJsonPath -Force
+
+				$updatedProject = $project.Project | ConvertTo-Json -Depth 100 | ConvertFrom-Json
 				$updatedProject.packOptions.releaseNotes += "`nvcs-revision: $vcsRevision"
+			
+				Set-Content $projectJsonPath -Value $(ConvertTo-Json $updatedProject -Depth 100) -Force
 			}
 
-
-			Set-Content $projectJsonPath -Value $(ConvertTo-Json $updatedProject) -Force
+			$allProjects.Add($projectJsonPath) > $null
 		}
+
+
+		Exec { & dotnet.exe restore $allProjects > $null }
 	
-		Exec { & dotnet.exe restore $sourceDir }
-		
-		foreach ($project in $script:projects)
+		if ($versionSuffix -ne "")
 		{
-			Write-Host $project.Name
-			if ($versionSuffix -ne "")
-			{
-				Exec { & dotnet.exe build $project.Path -c $configuration --version-suffix "$versionSuffix" | Write-Output }
+			Exec { & dotnet.exe build $allProjects -c $configuration --version-suffix $versionSuffix }
 
-			} else {
-				Exec { & dotnet.exe build $project.Path -c $configuration | Write-Output }
-			}
+		} else {
+			Exec { & dotnet.exe build $allProjects -c $configuration }
 		}
-	} finally {
 		
+	} finally {
 		foreach ($project in $script:projects)
 		{
 			$projectJsonPath = $project.Path + "\project.json"
 			$oldProjectJsonPath = $project.Path + "\project.old.json"
+
+			if ($versionSuffix -ne "")
+			{
+				Exec { & dotnet.exe pack "$projectJsonPath" -c $configuration --version-suffix "$versionSuffix" -o $artifactsDir }
+			} else {
+				Exec { & dotnet.exe pack "$projectJsonPath" -c $configuration -o $artifactsDir }
+			}
 
 			if (Test-Path $oldProjectJsonPath)
 			{
 				Move-Item $oldProjectJsonPath -Destination $projectJsonPath -Force
 			}
 		}
-
-		Exec { & dotnet.exe restore $sourceDir > $null }
 	}
 }
 
-task Pack-NuGet -depends Relove-Projects {
+task Test-Solution -depends Resolve-Projects {
 	foreach ($project in $script:projects)
 	{
-		$versionSuffix = ""
-
-		if ($preReleaseTag -eq "")
+		if ($project.RunTests)
 		{
-			$versionSuffix = "$preReleaseTag-$buildNumber"
+			$projectJsonPath = $project.Path + "\project.json"
+
+			Exec { & dotnet.exe test "$projectJsonPath" }
 		}
-
-		$updatedProjectPath = $project.Path + "\project.updated.json"
-
-
-		Exec { & dotnet.exe pack $updatedProjectPath -c $configuration --version-suffix "$versionSuffix" -o $artifactsDir }
 	}
 }
 
@@ -220,39 +227,6 @@ function Read-BuildNumber {
 	return $buildNumber
 }
 
-function Update-Project {
-	param (
-		[string] $projectPath,
-		[string] $sign
-	)
-
-	$file = switch($sign) { $true { $signKeyPath } default { $null } }
-
-	$json = (Get-Content $projectPath -Raw) | ConvertFrom-Json
-
-	# Add/Update buildOptions
-	if ($json.buildOptions -eq $null) 
-	{
-		Add-Member -InputObject $json -MemberType NoteProperty -Name "buildOptions" -Value $(New-Object -TypeName psobject) -Force
-	}
-
-	# Add/Update buildOptions.*
-	$overrideOptions = @{"warningsAsErrors" = $true; "xmlDoc" = $true; "keyFile" = $file }
-	$overrideOptions.Keys | % { 
-		if ($(Get-Member -InputObject $json.buildOptions -MemberType NoteProperty -Name $_) -eq $null) 
-		{
-			Add-Member -InputObject $json.buildOptions -MemberType NoteProperty -Name $_ -Value $overrideOptions[$_] 
-		} else {
-			$json.buildOptions.$_ = $overrideOptions[$_];
-		}
-	}
-
-
-	$json.version = GetNuGetVersion
-
-	ConvertTo-Json $json -Depth 10 | Set-Content $projectPath
-}
-
 function Parse-VCS-Revision
 {
 	param (
@@ -267,22 +241,4 @@ function Parse-VCS-Revision
 	}
 
 	return $match.Groups[1]
-}
-
-function Get-Description-FromAssemblyInfo
-{
-	param (
-		$assemblyInfoPath
-	)
-
-	$assemblyInfoContent = Get-Content $assemblyInfoPath -Raw
-
-	$match = [System.Text.RegularExpressions.Regex]::Match("\[assembly: AssemblyDescription\(`"([^`"]*)`"\)\]")
-
-	if (!$match.Success)
-	{
-		return ""
-	}
-
-	return $match.Groups[1].Value
 }

@@ -121,6 +121,9 @@ xunit-results.xml
 # Generated Project Files
 src/*/*.Net40Async.csproj
 
+# Build Number
+build/BuildNumber.txt
+
 # NuGet Packaging
 NuGet/*/lib/*/*.dll
 NuGet/*/lib/*/*.dll.config
