@@ -37,22 +37,34 @@ Task Resolve-Projects {
 	{
 		$name = $projectDirectory.Name
 
-		$script:projects.Add(@{
+		$projectObject = Get-Content "$sourceDir\$name\project.json" | ConvertFrom-Json
+
+		$versionSuffix = ""
+
+		if ($preReleaseTag -ne "")
+		{
+			$versionSuffix = "$preReleaseTag-$buildNumber"
+		}
+
+
+		$project = New-Object –TypeName PSObject –Prop @{
 			Name = $name
 			Path = "$sourceDir\$name"
 			ProjectJsonPath = "$sourceDir\$name\project.json"
-			Project = Get-Content "$sourceDir\$name\project.json" | ConvertFrom-Json
+			Project = $projectObject
+			SemanticVersion = [NuGet.SemanticVersion]::new($projectObject.version.Replace("-*", "-$versionSuffix"))
+			VersionSuffix = $versionSuffix
 			NuGetPath = "$nuGetDir\$name"
 			NuGetPackageName = $name
 			SkipPackaging = $name -eq "System.Data.HashFunction.Test"
 			RunTests = $name -eq "System.Data.HashFunction.Test"
-		}) > $null
+		}
+
+		$script:projects.Add($project) > $null
 	}
 }
 
 Task Resolve-Production-Versions -depends Resolve-Projects {
-	$script:productionPackageVersions = @{}
-
 	foreach ($project in $script:projects)
 	{
 		if ($project.SkipPackaging)
@@ -65,15 +77,36 @@ Task Resolve-Production-Versions -depends Resolve-Projects {
 		$versionResults = Invoke-WebRequest $($nuGetBaseUrl + "FindPackagesById()?Id='" + $project.NuGetPackageName + "'")
 		$xmlDocument.LoadXml($versionResults.Content)
 
-		$versions = @{}
+		$versions = New-Object -TypeName PSObject -Property @{
+			Production = $(New-Object -TypeName PSObject -Property @{
+				SemanticVersion = $null
+				VcsRevision = $null
+			})
+			PreRelease = $(New-Object -TypeName PSObject -Property @{
+				SemanticVersion = $null
+				VcsRevision = $null
+			}) 
+		}
 
 		foreach ($entry in $xmlDocument.feed.entry)
 		{
-			$entryVcsRevision = $(Parse-VCS-Revision $entry.ReleaseNotes)
-			$versions.Add($entry.properties.Version, $entryVcsRevision)
+			$entrySemanticVersion = [NuGet.SemanticVersion]::new($entry.properties.Version)
+			$entryVcsRevision = Parse-VCS-Revision $entry.properties.ReleaseNotes
+
+			if ($entry.properties.IsLatestVersion)
+			{
+				$versions.Production.SemanticVersion = $entrySemanticVersion
+				$versions.Production.VcsRevision = $entryVcsRevision
+			}
+
+			if ($entry.properties.IsAbsoluteLatestVersion)
+			{
+				$versions.PreRelease.SemanticVersion = $entrySemanticVersion
+				$versions.PreRelease.VcsRevision = $entryVcsRevision
+			}
 		}
 
-		$script:productionPackageVersions.Add($project.Name, $versions)
+	    Add-Member -InputObject $project -MemberType NoteProperty -Name "Versions" -Value $versions
 	}
 }
 
@@ -91,16 +124,16 @@ Task Validate-Versions -depends Resolve-Production-Versions {
 		Write-Host $("Validating version for " + $project.Name + ".")
 
 
-		$currentProjectVersion = $project.Project.version
+		$packageRevision = $project.NewestVersionVcsRevision
 
-		if ($script:productionPackageVersions.ContainsKey($project.NuGetPackageName))
+		if ($versions.Production.Version -ne $null -and $versions.Production.SemanticVersion.Version -gt $project.SemanticVersion.Version)
 		{
-			$packageVersions = $script:productionPackageVersions[$project.NuGetPackageName]
+			Write-Host "Newer production version already exists, version bump required." -ForegroundColor Red
+			$anyVersionBumpRequired = $true;
 
-			if ($packageVersions.ContainsKey($currentProjectVersion))
+		} else  {
+			if ($project.NewestVersionVcsRevision -ne $null)
 			{
-				$packageRevision = $packageVersions[$currentProjectVersion]
-
 				$fileChanges = @()
 
 				if ($packageRevision -ne $null)
@@ -124,13 +157,7 @@ Task Validate-Versions -depends Resolve-Production-Versions {
 }
 
 task Build-Solution -depends Resolve-Projects {	
-	$versionSuffix = ""
-
-	if ($preReleaseTag -ne "")
-	{
-		$versionSuffix = "$preReleaseTag-$buildNumber"
-	}
-
+	
 	$vcsRevision = Exec { & $gitExecutable rev-parse HEAD }
 
 
@@ -152,12 +179,18 @@ task Build-Solution -depends Resolve-Projects {
 
 			if (!$project.SkipPackaging)
 			{
-				Copy-Item $projectJsonPath -Destination $oldProjectJsonPath -Force
+				#if (Test-Path $oldProjectJsonPath)
+				#{
+				#	Move-Item $oldProjectJsonPath -Destination $projectJsonPath -Force
+				#	throw "project.old.json exists!"
+				#}
 
-				$updatedProject = $project.Project | ConvertTo-Json -Depth 100 | ConvertFrom-Json
-				$updatedProject.packOptions.releaseNotes += "`nvcs-revision: $vcsRevision"
+				#Copy-Item $projectJsonPath -Destination $oldProjectJsonPath
+
+				#$updatedProject = $project.Project | ConvertTo-Json -Depth 100 | ConvertFrom-Json
+				#$updatedProject.packOptions.releaseNotes += "`nvcs-revision: $vcsRevision"
 			
-				Set-Content $projectJsonPath -Value $(ConvertTo-Json $updatedProject -Depth 100) -Force
+				#Set-Content $projectJsonPath -Value $(ConvertTo-Json $updatedProject -Depth 100) -Force
 			}
 
 			$allProjects.Add($projectJsonPath) > $null
@@ -166,32 +199,38 @@ task Build-Solution -depends Resolve-Projects {
 
 		Exec { & dotnet.exe restore $allProjects > $null }
 	
-		if ($versionSuffix -ne "")
+		if ($project.VersionSuffix -ne "")
 		{
-			Exec { & dotnet.exe build $allProjects -c $configuration --version-suffix $versionSuffix }
+			Exec { & dotnet.exe build $allProjects -c $configuration --version-suffix $project.VersionSuffix }
 
 		} else {
 			Exec { & dotnet.exe build $allProjects -c $configuration }
 		}
 		
-	} finally {
+		
 		foreach ($project in $script:projects)
 		{
 			$projectJsonPath = $project.Path + "\project.json"
-			$oldProjectJsonPath = $project.Path + "\project.old.json"
 
-			if ($versionSuffix -ne "")
+			if ($project.VersionSuffix -ne "")
 			{
-				Exec { & dotnet.exe pack "$projectJsonPath" -c $configuration --version-suffix "$versionSuffix" -o $artifactsDir }
+				Exec { & dotnet.exe pack $projectJsonPath -c $configuration --version-suffix $project.VersionSuffix -o $artifactsDir --no-build  }
 			} else {
-				Exec { & dotnet.exe pack "$projectJsonPath" -c $configuration -o $artifactsDir }
-			}
-
-			if (Test-Path $oldProjectJsonPath)
-			{
-				Move-Item $oldProjectJsonPath -Destination $projectJsonPath -Force
+				Exec { & dotnet.exe pack $projectJsonPath -c $configuration -o $artifactsDir }
 			}
 		}
+	} finally {
+		#foreach ($project in $script:projects)
+		#{
+		#	$projectJsonPath = $project.Path + "\project.json"
+		#	$oldProjectJsonPath = $project.Path + "\project.old.json"
+
+
+		#	if (Test-Path $oldProjectJsonPath)
+		#	{
+		#		Move-Item $oldProjectJsonPath -Destination $projectJsonPath -Force
+		#	}
+		#}
 	}
 }
 
