@@ -6,8 +6,9 @@ param (
 )
 
 $buildDir = $PSScriptRoot
+$baseDir  = Resolve-Path $PSScriptRoot\.. -Relative
 
-Import-Module $(Resolve-Path "packages\psake.4.6.0\tools\psake.psm1")
+Import-Module $(Resolve-Path "$baseDir\src\packages\psake.4.6.0\tools\psake.psm1")
 
 $properties = @{}
 foreach ($parameterKey in $PSBoundParameters.Keys)
