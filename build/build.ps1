@@ -10,7 +10,9 @@ param (
 	[Parameter()]
 	[string] $signAssemblies,
 	[Parameter()]
-	[string] $gitExecutable
+	[string] $gitExecutable,
+	[Parameter()]
+	[string] $dotNetExecutable
 )
 
 $buildDir = $PSScriptRoot
