@@ -29,7 +29,11 @@ Task Validate -depends Validate-Versions
 Task Build -depends Build-Solution
 Task Test -depends Test-Solution
 
-Task Resolve-Projects {
+Task Load-Powershell-Dependencies {
+	Add-Type -Path "$sourceDir\packages\NuGet.Core.2.14.0\lib\net40-Client\NuGet.Core.dll"
+}
+
+Task Resolve-Projects -depends Load-Powershell-Dependencies {
 	$script:projects = [System.Collections.ArrayList]::new()
 	
 	$projectDirectories = Get-ChildItem "$sourceDir\System.Data.HashFunction.*" -Directory
@@ -64,7 +68,7 @@ Task Resolve-Projects {
 	}
 }
 
-Task Resolve-Production-Versions -depends Resolve-Projects {
+Task Resolve-Production-Versions -depends Load-Powershell-Dependencies,Resolve-Projects {
 	foreach ($project in $script:projects)
 	{
 		if ($project.SkipPackaging)
