@@ -2,7 +2,15 @@ param (
 	[Parameter()]
 	[string] $taskList,
 	[Parameter()]
-	[string] $configuration = "Debug"
+	[string] $configuration,
+	[Parameter()]
+	[string] $preReleaseTag,
+	[Parameter()]
+	[string] $buildNumber,
+	[Parameter()]
+	[string] $signAssemblies,
+	[Parameter()]
+	[string] $gitExecutable
 )
 
 $buildDir = $PSScriptRoot

@@ -9,8 +9,8 @@ properties {
 	$signKeyPath = "$baseDir\Data.HashFunction.Production.pfx"
 	$treatWarningsAsErrors = $true
   
-	$gitExecutable = "git.exe"
-	$nuGetExecutable = "nuget.exe"
+	$gitExecutable = "git"
+	$dotNetExecutable = "dotnet"
 
 	$artifactsDir = "$baseDir\Artifacts"
 	$buildDir = "$baseDir\build"
@@ -197,14 +197,14 @@ task Build-Solution -depends Resolve-Projects {
 		}
 
 
-		Exec { & dotnet.exe restore $allProjects > $null }
+		Exec { & $dotNetExecutable restore $allProjects > $null }
 	
 		if ($project.VersionSuffix -ne "")
 		{
-			Exec { & dotnet.exe build $allProjects -c $configuration --version-suffix $project.VersionSuffix }
+			Exec { & $dotNetExecutable build $allProjects -c $configuration --version-suffix $project.VersionSuffix }
 
 		} else {
-			Exec { & dotnet.exe build $allProjects -c $configuration }
+			Exec { & $dotNetExecutable build $allProjects -c $configuration }
 		}
 		
 		
@@ -214,9 +214,9 @@ task Build-Solution -depends Resolve-Projects {
 
 			if ($project.VersionSuffix -ne "")
 			{
-				Exec { & dotnet.exe pack $projectJsonPath -c $configuration --version-suffix $project.VersionSuffix -o $artifactsDir --no-build  }
+				Exec { & $dotNetExecutable pack $projectJsonPath -c $configuration --version-suffix $project.VersionSuffix -o $artifactsDir --no-build  }
 			} else {
-				Exec { & dotnet.exe pack $projectJsonPath -c $configuration -o $artifactsDir }
+				Exec { & $dotNetExecutable pack $projectJsonPath -c $configuration -o $artifactsDir }
 			}
 		}
 	} finally {
@@ -241,7 +241,7 @@ task Test-Solution -depends Resolve-Projects {
 		{
 			$projectJsonPath = $project.Path + "\project.json"
 
-			Exec { & dotnet.exe test "$projectJsonPath" }
+			Exec { & $dotNetExecutable test "$projectJsonPath" }
 		}
 	}
 }
