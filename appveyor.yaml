@@ -1,0 +1,22 @@
+version: '1.0.{build}'
+configuration:
+- Debug
+- Release
+platform: Any CPU
+environment:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+init:
+- ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
+before_build:
+- appveyor-retry dotnet restore -v Minimal
+build_script:
+- ps: .\build\build.ps1 -taskList 'Build' -configuration 'Debug' -preReleaseTag 'ci' -buildNumber '%LABEL%'
+after_build:
+- ps: .\build\build.ps1 -taskList 'Test' -configuration 'Debug' -preReleaseTag 'ci' -buildNumber '%LABEL%'
+- dotnet publish "src\ConsoleApplication" -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o artifacts\ConsoleApplication
+test_script:
+- ps: .\build\build.ps1 -taskList 'Test' -configuration 'Debug' -preReleaseTag 'ci' -buildNumber '%LABEL%'
+artifacts:
+- path: Artifacts\*.*
+cache:
+- '%USERPROFILE%\.nuget\packages'
