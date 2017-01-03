@@ -16,10 +16,6 @@
     "xmlDoc": true
   },
 
-  "runtimes": {
-    "win10-x64": {}
-  },
-
   "testRunner": "xunit",
 
   "dependencies": {
@@ -86,10 +82,11 @@
     },
     "netcoreapp1.0": {
       "dependencies": {
-        "Microsoft.CodeCoverage": "1.0.1",
-        "Microsoft.NETCore.App": "1.0.0"
-      },
-      "imports": "dnxcore50"
+        "Microsoft.NETCore.App": {
+          "version": "1.0.0",
+          "type": "platform"
+        }
+      }
     }
   }
 }
