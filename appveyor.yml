@@ -12,7 +12,7 @@ before_build:
 - appveyor-retry dotnet restore -v Minimal
 - ps: .\build\build.ps1 -taskList 'Validate' -configuration 'Debug' -preReleaseTag 'ci' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
 build_script:
-- ps: .\build\build.ps1 -taskList 'Build' -configuration 'Debug' -preReleaseTag 'ci' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDE
+- ps: .\build\build.ps1 -taskList 'Build' -configuration 'Debug' -preReleaseTag 'ci' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
 test_script:
 - ps: .\build\build.ps1 -taskList 'Test' -configuration 'Debug' -preReleaseTag 'ci' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
 artifacts:
