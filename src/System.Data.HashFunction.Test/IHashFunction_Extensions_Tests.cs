@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Data.HashFunction.Test.Mocks;
 using System.IO;
 using System.Linq;
-#if !NETCOREAPP1_0
+#if !NETCOREAPP1_1
 using System.Runtime.Serialization.Formatters.Binary;
 #endif
 using System.Text;
@@ -147,7 +147,7 @@ namespace System.Data.HashFunction.Test
                     BitConverter.GetBytes(value));
             }
 
-#if !NETCOREAPP1_0
+#if !NETCOREAPP1_1
 
             [Fact]
             public void IHashFunction_Extensions_ComputeHash_TModel()
@@ -317,7 +317,7 @@ namespace System.Data.HashFunction.Test
                     BitConverter.GetBytes(value));
             }
 
-#if !NETCOREAPP1_0
+#if !NETCOREAPP1_1
 
             [Fact]
             public void IHashFunction_Extensions_ComputeHash_WithDesiredBits_TModel()

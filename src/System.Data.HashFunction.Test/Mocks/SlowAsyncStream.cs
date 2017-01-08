@@ -47,7 +47,7 @@ namespace System.Data.HashFunction.Test.Mocks
             _underlyingStream = underlyingStream;
         }
 
-#if !NETCOREAPP1_0
+#if !NETCOREAPP1_1
 
         public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
@@ -61,7 +61,7 @@ namespace System.Data.HashFunction.Test.Mocks
 
 #endif
 
-#if !NETCOREAPP1_0
+#if !NETCOREAPP1_1
 
         public override void Close()
         {
@@ -84,7 +84,7 @@ namespace System.Data.HashFunction.Test.Mocks
             if (disposing)
                 _underlyingStream.Dispose();
         }
-#if !NETCOREAPP1_0
+#if !NETCOREAPP1_1
 
         public override int EndRead(IAsyncResult asyncResult)
         {

@@ -1126,7 +1126,7 @@ namespace System.Data.HashFunction.Test
 
     #endregion
 
-#if !NETCOREAPP1_0
+#if !NETCOREAPP1_1
 
 #region Data.HashFunction.Core
 
@@ -2455,7 +2455,7 @@ namespace System.Data.HashFunction.Test
                     @"HashFunctionImpl(0)", 
                     new HashFunctionImpl(0) 
                 },
-#if !NETCOREAPP1_0
+#if !NETCOREAPP1_1
             { 
                     @"HashAlgorithmWrapper(new SHA1Managed())", 
                     new HashAlgorithmWrapper(new SHA1Managed()) 

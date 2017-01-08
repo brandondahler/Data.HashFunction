@@ -1,6 +1,4 @@
-﻿#if !NETSTANDARD1_0
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -174,5 +172,3 @@ namespace System.Data.HashFunction
     }
 
 }
-
-#endif

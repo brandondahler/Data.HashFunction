@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+#if !NETSTANDARD1_0
 using System.Numerics;
-#if !NETSTANDARD1_0 && !NETSTANDARD1_3
+#endif
+#if NET40 || NET45
 using System.Runtime.Serialization.Formatters.Binary;
 #endif
 using System.Text;
@@ -16,10 +18,10 @@ namespace System.Data.HashFunction
     /// </summary>
     public static class IHashFunction_Extensions
     {
+        
+        #region ComputeHash
 
-#region ComputeHash
-
-#region Sugar
+        #region Sugar
 
         /// <summary>
         /// Computes hash value for given data.
@@ -206,7 +208,7 @@ namespace System.Data.HashFunction
                 BitConverter.GetBytes(data));
         }
 
-#if !NETSTANDARD1_0 && !NETSTANDARD1_3
+#if NET40 || NET45
         /// <summary>
         /// Computes hash value for given data.
         /// </summary>
@@ -233,6 +235,8 @@ namespace System.Data.HashFunction
 #endif
 
         #endregion
+
+#if !NETSTANDARD1_0
 
         #region Sugar with desiredSize
 
@@ -447,7 +451,7 @@ namespace System.Data.HashFunction
                 desiredHashSize);
         }
 
-#if !NETSTANDARD1_0 && !NETSTANDARD1_3
+#if NET40 || NET45
         /// <summary>
         /// Computes hash value for given data.
         /// </summary>
@@ -473,9 +477,8 @@ namespace System.Data.HashFunction
                     desiredHashSize);
             }
         }
-#endif
 
-        #endregion
+#endif
 
         /// <summary>
         /// Computes hash value for given data.
@@ -500,13 +503,15 @@ namespace System.Data.HashFunction
             for (int x = 0; x < Math.Max(hashesNeeded, 1); ++x)
             {
                 byte[] currentData;
-                
+
                 if (x != 0)
                 {
                     Array.Copy(BitConverter.GetBytes(x), seededData, 4);
                     currentData = seededData;
 
-                } else {
+                }
+                else
+                {
                     // Use original data for first 
                     currentData = data;
                 }
@@ -514,7 +519,7 @@ namespace System.Data.HashFunction
 
                 var elementHash = new BigInteger(
                     hashFunction.ComputeHash(currentData)
-                        .Concat(new[] { (byte) 0 })
+                        .Concat(new[] { (byte)0 })
                         .ToArray());
 
                 hash |= elementHash << (x * hashFunction.HashSize);
@@ -545,7 +550,11 @@ namespace System.Data.HashFunction
             return hashBytes;
         }
 
-#endregion
+        #endregion
+
+#endif
+
+        #endregion
 
     }
 }

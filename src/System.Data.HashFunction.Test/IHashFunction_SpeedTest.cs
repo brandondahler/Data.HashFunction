@@ -161,7 +161,7 @@ namespace System.Data.HashFunction.Test
 
 
                 Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
-#if !NETCOREAPP1_0
+#if !NETCOREAPP1_1
                 Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
 #endif
 
@@ -175,7 +175,7 @@ namespace System.Data.HashFunction.Test
 
 
                 Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
-#if !NETCOREAPP1_0
+#if !NETCOREAPP1_1
                 Thread.CurrentThread.Priority = ThreadPriority.Normal;
 #endif
 

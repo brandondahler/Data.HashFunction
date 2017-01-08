@@ -7,7 +7,6 @@ properties {
 	$preReleaseTag = "local"
 	$signAssemblies = $false
 	$signKeyPath = "$baseDir\Data.HashFunction.Production.pfx"
-	$treatWarningsAsErrors = $true
   
 	$gitExecutable = "git"
 	$dotNetExecutable = "dotnet"
@@ -60,8 +59,8 @@ Task Resolve-Projects -depends Load-Powershell-Dependencies {
 			VersionSuffix = $versionSuffix
 			NuGetPath = "$nuGetDir\$name"
 			NuGetPackageName = $name
-			SkipPackaging = $name -eq "System.Data.HashFunction.Test"
-			RunTests = $name -eq "System.Data.HashFunction.Test"
+			SkipPackaging = $name.StartsWith("System.Data.HashFunction.Test")
+			RunTests = $name.StartsWith("System.Data.HashFunction.Test")
 		}
 
 		$script:projects.Add($project) > $null

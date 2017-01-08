@@ -1,0 +1,49 @@
+﻿{
+  "version": "2.0.0-*",
+
+  "authors": [ "Data.HashFunction Developers" ],
+  "copyright": "Copyright 2014",
+  "description": "Data.HashFunction implementation of SpookyHash (http://burtleburtle.net/bob/hash/spooky.html).",
+  "title": "Data.HashFunction.SpookyHash",
+
+  "buildOptions": {
+    "define": [
+      "INCLUDE_ASYNC"
+    ],
+    "warningsAsErrors": true,
+    "xmlDoc": true,
+    "compile": {
+      "include": [
+        "../System.Data.HashFunction.SpookyHash/**/*.cs",
+        "../SolutionInfo.cs"
+      ],
+      "exclude": [
+        "../System.Data.HashFunction.SpookyHash/obj/**/*.cs"
+      ]
+    }
+  },
+
+  "packOptions": {
+    "licenseUrl": "https://raw.githubusercontent.com/brandondahler/Data.HashFunction/master/LICENSE",
+    "releaseNotes": "https://github.com/brandondahler/Data.HashFunction/wiki/Release-Notes",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/brandondahler/Data.HashFunction/"
+    },
+    "tags": [ "Spooky", "hash", "function" ]
+  },
+
+  "dependencies": {
+    "System.Data.HashFunction.Core.Net40Async": {
+      "target": "project"
+    }
+  },
+
+  "frameworks": {
+    "net40": {
+      "dependencies": {
+        "Microsoft.Bcl.Async": "1.0.16"
+      }
+    }
+  }
+}

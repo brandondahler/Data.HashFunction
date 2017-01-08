@@ -14,7 +14,7 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
         {
             get
             {
-#if !NETSTANDARD1_0 && !NETSTANDARD1_3
+#if NET40 || NET45
                 return _Data.LongLength;
 #else
                 return _Data.Length;

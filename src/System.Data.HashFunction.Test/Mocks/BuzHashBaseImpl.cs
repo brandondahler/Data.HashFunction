@@ -11,7 +11,11 @@ namespace System.Data.HashFunction.Test.Mocks
     public class BuzHashBaseImpl
         : BuzHashBase
     {
-        private static readonly IReadOnlyList<UInt64> _Rtab = new UInt64[256] { 
+#if !NET40
+        private static readonly IReadOnlyList<UInt64> _Rtab = new UInt64[256] {
+#else
+        private static readonly IList<UInt64> _Rtab = new UInt64[256] { 
+#endif
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

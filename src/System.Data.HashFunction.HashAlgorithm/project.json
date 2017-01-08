@@ -7,8 +7,10 @@
   "title": "Data.HashFunction.HashAlgorithm",
 
   "buildOptions": {
+    "warningsAsErrors": true,
+    "xmlDoc": true,
     "compile": {
-      "includeFiles": [
+      "include": [
         "../SolutionInfo.cs"
       ]
     }
@@ -37,9 +39,7 @@
     "netstandard1.3": {
       "dependencies": {
         "NETStandard.Library": "1.6.0"
-      },
-
-      "imports": "dnxcore50"
+      }
     }
   }
 }

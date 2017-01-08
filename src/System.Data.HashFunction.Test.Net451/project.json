@@ -1,0 +1,86 @@
+﻿{
+  "version": "2.0.0-*",
+
+  "authors": [ "Data.HashFunction Developers" ],
+  "copyright": "Copyright 2014",
+  "description": "Test suite for Data.HashFunction implementations.",
+  "title": "Data.HashFunction.Test",
+
+  "buildOptions": {
+    "compile": {
+      "include": [
+        "../System.Data.HashFunction.Test/**/*.cs",
+        "../SolutionInfo.cs"
+      ],
+      "exclude": [
+        "../System.Data.HashFunction.Test/obj/**/*.cs"
+      ]
+    },
+    "nowarn": [ "CS1591" ],
+  },
+
+  "testRunner": "xunit",
+
+  "dependencies": {
+    "dotnet-test-xunit": "2.2.0-preview2-build1029",
+    "Moq": "4.6.38-alpha",
+    "xunit": "2.2.0-beta2-build3300",
+    "System.Data.HashFunction.BernsteinHash": {
+      "target": "project"
+    },
+    "System.Data.HashFunction.Blake2": {
+      "target": "project"
+    },
+    "System.Data.HashFunction.BuzHash": {
+      "target": "project"
+    },
+    "System.Data.HashFunction.CityHash": {
+      "target": "project"
+    },
+    "System.Data.HashFunction.Core": {
+      "target": "project"
+    },
+    "System.Data.HashFunction.CRC": {
+      "target": "project"
+    },
+    "System.Data.HashFunction.ELF64": {
+      "target": "project"
+    },
+    "System.Data.HashFunction.FNV": {
+      "target": "project"
+    },
+    "System.Data.HashFunction.Interfaces": {
+      "target": "project"
+    },
+    "System.Data.HashFunction.Jenkins": {
+      "target": "project"
+    },
+    "System.Data.HashFunction.MurmurHash": {
+      "target": "project"
+    },
+    "System.Data.HashFunction.Pearson": {
+      "target": "project"
+    },
+    "System.Data.HashFunction.SpookyHash": {
+      "target": "project"
+    },
+    "System.Data.HashFunction.xxHash": {
+      "target": "project"
+    }
+  },
+
+  "tools": {
+    "OpenCover": "4.6.519"
+  },
+
+  "frameworks": {
+    "net451": {
+      "dependencies": {
+        "System.Data.HashFunction.HashAlgorithm": {
+          "target": "project"
+        }
+      }
+
+    }
+  }
+}

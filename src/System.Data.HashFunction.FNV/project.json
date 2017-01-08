@@ -7,8 +7,10 @@
   "title": "Data.HashFunction.FNV",
 
   "buildOptions": {
+    "warningsAsErrors": true,
+    "xmlDoc": true,
     "compile": {
-      "includeFiles": [
+      "include": [
         "../SolutionInfo.cs"
       ]
     }
@@ -34,12 +36,11 @@
     "net40": {},
     "net45": {},
 
-    "netstandard1.0": {
+    "netstandard1.1": {
       "dependencies": {
         "NETStandard.Library": "1.6.0",
-        "System.Collections.Concurrent": "4.0.0"
-      },
-      "imports": "dnxcore50"
+        "System.Collections.Concurrent": "4.0.12"
+      }
     }
   }
 }

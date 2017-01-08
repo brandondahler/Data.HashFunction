@@ -7,10 +7,20 @@
   "title": "Data.HashFunction.Core",
 
   "buildOptions": {
+    "warningsAsErrors": true,
+    "xmlDoc": true,
     "compile": {
-      "includeFiles": [
+      "include": [
         "../SolutionInfo.cs"
       ]
+    }
+  },
+
+  "configurations": {
+    "Release": {
+      "buildOptions": {
+        "keyFile": "../Data.HashFunction.Production.pfx"
+      }
     }
   },
 
@@ -44,13 +54,14 @@
 
     "netstandard1.0": {
       "dependencies": {
+        "NETStandard.Library": "1.6.0"
+      }
+    },
+    "netstandard1.1": {
+      "dependencies": {
         "NETStandard.Library": "1.6.0",
-        "System.Runtime.Numerics": "4.0.0"
-      },
-      "imports": "dnxcore50"
+        "System.Runtime.Numerics": "4.0.1"
+      }
     }
-  },
-  "buildOptions": {
-    "xmlDoc": true
   }
 }

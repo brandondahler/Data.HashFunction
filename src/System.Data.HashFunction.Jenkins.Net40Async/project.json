@@ -1,0 +1,49 @@
+﻿{
+  "version": "2.0.0-*",
+
+  "authors": [ "Data.HashFunction Developers" ],
+  "copyright": "Copyright 2014",
+  "description": "Data.HashFunction implementation of the Jenkins family of hash functions (http://en.wikipedia.org/wiki/Jenkins_hash_function).  Note:  SpookyHash can be found in the Data.HashFunction.SpookyHash package.",
+  "title": "Data.HashFunction.Jenkins",
+
+  "buildOptions": {
+    "define": [
+      "INCLUDE_ASYNC"
+    ],
+    "warningsAsErrors": true,
+    "xmlDoc": true,
+    "compile": {
+      "include": [
+        "../System.Data.HashFunction.Jenkins/**/*.cs",
+        "../SolutionInfo.cs"
+      ],
+      "exclude": [
+        "../System.Data.HashFunction.Jenkins/obj/**/*.cs"
+      ]
+    }
+  },
+
+  "packOptions": {
+    "licenseUrl": "https://raw.githubusercontent.com/brandondahler/Data.HashFunction/master/LICENSE",
+    "releaseNotes": "https://github.com/brandondahler/Data.HashFunction/wiki/Release-Notes",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/brandondahler/Data.HashFunction/"
+    },
+    "tags": [ "Jenkins", "hash", "function", "lookup", "one-at-a-time" ]
+  },
+
+  "dependencies": {
+    "System.Data.HashFunction.Core.Net40Async": {
+      "target": "project"
+    }
+  },
+
+  "frameworks": {
+    "net40": {
+      "dependencies": {
+        "Microsoft.Bcl.Async": "1.0.16"
+      }
+    }
+  }
+}
