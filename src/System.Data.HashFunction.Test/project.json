@@ -12,7 +12,7 @@
         "../SolutionInfo.cs"
       ]
     },
-    "nowarn": [ "CS1591" ],
+    "nowarn": [ "CS1591" ]
   },
 
   "testRunner": "xunit",
@@ -75,7 +75,8 @@
         "Microsoft.NETCore.App": {
           "version": "1.1.0",
           "type": "platform"
-        }
+        },
+        "Microsoft.CodeCoverage": "1.0.2"
       }
     }
   }

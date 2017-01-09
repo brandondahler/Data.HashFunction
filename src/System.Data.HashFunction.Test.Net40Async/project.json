@@ -11,6 +11,7 @@
       "INCLUDE_ASYNC",
       "NET40"
     ],
+    "keyFile": "../Data.HashFunction.Production.snk",
     "nowarn": [ "CS1591" ],
     "compile": {
       "include": [

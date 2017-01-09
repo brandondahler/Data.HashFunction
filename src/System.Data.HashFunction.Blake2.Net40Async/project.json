@@ -10,6 +10,7 @@
     "define": [
       "INCLUDE_ASYNC"
     ],
+    "keyFile": "../Data.HashFunction.Production.snk",
     "warningsAsErrors": true,
     "xmlDoc": true,
     "compile": {

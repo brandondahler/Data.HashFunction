@@ -7,20 +7,13 @@
   "title": "Data.HashFunction.BernsteinHash",
 
   "buildOptions": {
+    "keyFile": "../Data.HashFunction.Production.snk",
     "warningsAsErrors": true,
     "xmlDoc": true,
     "compile": {
       "include": [
         "../SolutionInfo.cs"
       ]
-    }
-  },
-
-  "configurations": {
-    "Release": {
-      "buildOptions": {
-        "keyFile": "../Data.HashFunction.Production.pfx"
-      }
     }
   },
 

@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D0A9A6
 	ProjectSection(SolutionItems) = preProject
 		..\appveyor.yml = ..\appveyor.yml
 		Data.HashFunction.Production.pfx = Data.HashFunction.Production.pfx
+		Data.HashFunction.runsettings = Data.HashFunction.runsettings
 		SolutionInfo.cs = SolutionInfo.cs
 	EndProjectSection
 EndProject

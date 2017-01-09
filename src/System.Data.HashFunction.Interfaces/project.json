@@ -7,6 +7,7 @@
   "title": "Data.HashFunction.Interfaces",
 
   "buildOptions": {
+    "keyFile": "../Data.HashFunction.Production.snk",
     "warningsAsErrors": true,
     "xmlDoc": true,
     "compile": {
@@ -19,7 +20,7 @@
   "packOptions": {
     "licenseUrl": "https://raw.githubusercontent.com/brandondahler/Data.HashFunction/master/LICENSE",
     "releaseNotes": "https://github.com/brandondahler/Data.HashFunction/wiki/Release-Notes",
-    "repository":  {
+    "repository": {
       "type": "git",
       "url": "https://github.com/brandondahler/Data.HashFunction/"
     },
