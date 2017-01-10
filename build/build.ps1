@@ -8,8 +8,6 @@ param (
 	[Parameter()]
 	[string] $buildNumber,
 	[Parameter()]
-	[string] $signAssemblies,
-	[Parameter()]
 	[string] $gitExecutable,
 	[Parameter()]
 	[string] $dotNetExecutable

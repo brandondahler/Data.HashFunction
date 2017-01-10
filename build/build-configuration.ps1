@@ -5,8 +5,6 @@ properties {
 	$configuration = "Debug"
 	$nuGetBaseUrl = "https://www.nuget.org/api/v2/"
 	$preReleaseTag = "local"
-	$signAssemblies = $false
-	$signKeyPath = "$baseDir\Data.HashFunction.Production.pfx"
   
 	$gitExecutable = "git"
 	$dotNetExecutable = "dotnet"
@@ -39,8 +37,11 @@ Task Resolve-Projects -depends Load-Powershell-Dependencies {
 	foreach ($projectDirectory in $projectDirectories)
 	{
 		$name = $projectDirectory.Name
+		$path = "$sourceDir\$name"
+		$projectJsonPath = "$path\project.json"
 
-		$projectObject = Get-Content "$sourceDir\$name\project.json" | ConvertFrom-Json
+		$projectObject = Get-Content $projectJsonPath| ConvertFrom-Json
+
 
 		$versionSuffix = ""
 
@@ -52,9 +53,8 @@ Task Resolve-Projects -depends Load-Powershell-Dependencies {
 
 		$project = New-Object –TypeName PSObject –Prop @{
 			Name = $name
-			Path = "$sourceDir\$name"
-			ProjectJsonPath = "$sourceDir\$name\project.json"
-			Project = $projectObject
+			Path = $path
+			ProjectJsonPath = $projectJsonPath
 			SemanticVersion = [NuGet.SemanticVersion]::new($projectObject.version.Replace("-*", "-$versionSuffix"))
 			VersionSuffix = $versionSuffix
 			NuGetPath = "$nuGetDir\$name"
@@ -159,7 +159,7 @@ Task Validate-Versions -depends Resolve-Production-Versions {
 	}
 }
 
-task Build-Solution -depends Resolve-Projects {	
+task Build-Solution -depends Resolve-Projects,Resolve-Production-Versions {	
 	
 	$vcsRevision = Exec { & $gitExecutable rev-parse HEAD }
 
@@ -171,70 +171,37 @@ task Build-Solution -depends Resolve-Projects {
 
 	$allProjects = [System.Collections.ArrayList]::new()
 
-	try
+	foreach ($project in $script:projects)
 	{
-
-		foreach ($project in $script:projects)
-		{
-			$projectJsonPath = $project.Path + "\project.json"
-			$oldProjectJsonPath = $project.Path + "\project.old.json"
+		$allProjects.Add($project.ProjectJsonPath) > $null
+	}
 
 
-			if (!$project.SkipPackaging)
-			{
-				#if (Test-Path $oldProjectJsonPath)
-				#{
-				#	Move-Item $oldProjectJsonPath -Destination $projectJsonPath -Force
-				#	throw "project.old.json exists!"
-				#}
-
-				#Copy-Item $projectJsonPath -Destination $oldProjectJsonPath
-
-				#$updatedProject = $project.Project | ConvertTo-Json -Depth 100 | ConvertFrom-Json
-				#$updatedProject.packOptions.releaseNotes += "`nvcs-revision: $vcsRevision"
-			
-				#Set-Content $projectJsonPath -Value $(ConvertTo-Json $updatedProject -Depth 100) -Force
-			}
-
-			$allProjects.Add($projectJsonPath) > $null
-		}
-
-
-		Exec { & $dotNetExecutable restore $allProjects > $null }
+	Exec { & $dotNetExecutable restore $allProjects > $null }
 	
+	if ($project.VersionSuffix -ne "")
+	{
+		Exec { & $dotNetExecutable build $allProjects -c $configuration --version-suffix $project.VersionSuffix }
+
+	} else {
+		Exec { & $dotNetExecutable build $allProjects -c $configuration }
+	}
+		
+		
+	foreach ($project in $script:projects)
+	{
+		
 		if ($project.VersionSuffix -ne "")
 		{
-			Exec { & $dotNetExecutable build $allProjects -c $configuration --version-suffix $project.VersionSuffix }
-
+			Exec { & $dotNetExecutable pack $project.ProjectJsonPath -c $configuration --version-suffix $project.VersionSuffix --no-build -o $artifactsDir  }
 		} else {
-			Exec { & $dotNetExecutable build $allProjects -c $configuration }
-		}
-		
-		
-		foreach ($project in $script:projects)
-		{
-			$projectJsonPath = $project.Path + "\project.json"
-
-			if ($project.VersionSuffix -ne "")
+			if ($versions.Production.SemanticVersion.Version -lt $project.SemanticVersion.Version)
 			{
-				Exec { & $dotNetExecutable pack $projectJsonPath -c $configuration --version-suffix $project.VersionSuffix -o $artifactsDir --no-build  }
-			} else {
-				Exec { & $dotNetExecutable pack $projectJsonPath -c $configuration -o $artifactsDir }
+				Exec { & $dotNetExecutable pack $project.ProjectJsonPath -c $configuration --no-build -o $artifactsDir }
 			}
 		}
-	} finally {
-		#foreach ($project in $script:projects)
-		#{
-		#	$projectJsonPath = $project.Path + "\project.json"
-		#	$oldProjectJsonPath = $project.Path + "\project.old.json"
-
-
-		#	if (Test-Path $oldProjectJsonPath)
-		#	{
-		#		Move-Item $oldProjectJsonPath -Destination $projectJsonPath -Force
-		#	}
-		#}
 	}
+	
 }
 
 task Test-Solution -depends Resolve-Projects {
@@ -242,9 +209,8 @@ task Test-Solution -depends Resolve-Projects {
 	{
 		if ($project.RunTests)
 		{
-			$projectJsonPath = $project.Path + "\project.json"
-
-			Exec { & $dotNetExecutable test "$projectJsonPath" }
+			
+			Exec { & $dotNetExecutable test $project.ProjectJsonPath -c $configuration --no-build }
 		}
 	}
 }

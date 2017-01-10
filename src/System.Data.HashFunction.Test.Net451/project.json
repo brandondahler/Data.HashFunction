@@ -7,6 +7,7 @@
   "title": "Data.HashFunction.Test",
 
   "buildOptions": {
+    "keyFile": "../Data.HashFunction.Production.snk",
     "compile": {
       "include": [
         "../System.Data.HashFunction.Test/**/*.cs",
@@ -16,7 +17,7 @@
         "../System.Data.HashFunction.Test/obj/**/*.cs"
       ]
     },
-    "nowarn": [ "CS1591" ],
+    "nowarn": [ "CS1591" ]
   },
 
   "testRunner": "xunit",

@@ -1,0 +1,18 @@
+version: '1.0.{build}'
+configuration:
+  - Release
+platform: Any CPU
+before_build:
+  - appveyor-retry tools\nuget.exe restore src
+  - appveyor-retry dotnet restore -v Minimal
+  - ps: .\build\build.ps1 -taskList 'Validate' -configuration 'Release' -preReleaseTag ''
+build_script:
+  - ps: .\build\build.ps1 -taskList 'Build' -configuration 'Release' -preReleaseTag ''
+test_script:
+  - ps: .\build\build.ps1 -taskList 'Test' -configuration 'Release' -preReleaseTag ''
+artifacts:
+  - path: Artifacts\*.*
+    name: Packages
+	type: NuGetPackage
+cache:
+  - '%USERPROFILE%\.nuget\packages'
