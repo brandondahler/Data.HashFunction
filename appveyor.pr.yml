@@ -11,11 +11,11 @@ init:
 before_build:
   - appveyor-retry tools\nuget.exe restore src
   - appveyor-retry dotnet restore -v Minimal
-  - ps: .\build\build.ps1 -taskList 'Validate' -configuration 'Debug' -preReleaseTag 'ci' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
+  - ps: .\build\build.ps1 -taskList 'Validate' -configuration 'Debug' -preReleaseTag 'pr' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
 build_script:
-  - ps: .\build\build.ps1 -taskList 'Build' -configuration 'Debug' -preReleaseTag 'ci' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
+  - ps: .\build\build.ps1 -taskList 'Build' -configuration 'Debug' -preReleaseTag 'pr' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
 test_script:
-  - ps: .\build\build.ps1 -taskList 'Test' -configuration 'Debug' -preReleaseTag 'ci' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
+  - ps: .\build\build.ps1 -taskList 'Test' -configuration 'Debug' -preReleaseTag 'pr' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
 artifacts:
   - path: Artifacts\*.*
     name: Packages

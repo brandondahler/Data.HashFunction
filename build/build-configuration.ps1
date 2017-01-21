@@ -190,10 +190,16 @@ task Build-Solution -depends Resolve-Projects,Resolve-Production-Versions {
 		
 	foreach ($project in $script:projects)
 	{
+		if ($project.SkipPackaging)
+		{
+			continue
+		}
+		
 		
 		if ($project.VersionSuffix -ne "")
 		{
 			Exec { & $dotNetExecutable pack $project.ProjectJsonPath -c $configuration --version-suffix $project.VersionSuffix --no-build -o $artifactsDir  }
+
 		} else {
 			if ($versions.Production.SemanticVersion.Version -lt $project.SemanticVersion.Version)
 			{
