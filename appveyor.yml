@@ -1,7 +1,7 @@
 version: '1.0.{build}'
 configuration:
   - Debug
-nuGet:
+nuget:
   account_feed: false
   project_feed: true
   disable_publish_on_pr: true

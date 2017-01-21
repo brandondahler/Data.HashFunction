@@ -1,9 +1,10 @@
 version: '1.0.{build}'
 configuration:
   - Release
-nuGet:
+nuget:
   account_feed: false
   project_feed: false
+  disable_publish_on_pr: true
 platform: Any CPU
 before_build:
   - appveyor-retry tools\nuget.exe restore src
