@@ -27,6 +27,6 @@ artifacts:
     type: NuGetPackage
   - path: Artifacts\Coverage\*.xml
     name: CoverageResults
-	type: File
+    type: File
 cache:
   - '%USERPROFILE%\.nuget\packages'
