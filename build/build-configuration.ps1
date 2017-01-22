@@ -26,6 +26,7 @@ Task Default -depends Validate,Build,Test
 
 Task Validate -depends Validate-Versions
 Task Build -depends Build-Solution
+Task Pack -depends Pack-Solution
 Task Test -depends Test-Solution
 
 Task Load-Powershell-Dependencies {
@@ -161,22 +162,7 @@ Task Validate-Versions -depends Resolve-Production-Versions {
 	}
 }
 
-task Build-Solution -depends Resolve-Projects,Resolve-Production-Versions {	
-	
-	$vcsRevision = Exec { & $gitExecutable rev-parse HEAD }
-
-	if (-Not (Test-Path $artifactsDir))
-	{
-		New-Item $artifactsDir -ItemType Directory > $null
-	}
-
-	if (Test-Path "$artifactsDir\Packages")
-	{
-		Remove-Item "$artifactsDir\Packages\*" -Force
-	} else {
-		New-Item "$artifactsDir\Packages" -ItemType Directory > $null
-	}
-
+task Build-Solution -depends Resolve-Projects {	
 	$allProjects = [System.Collections.ArrayList]::new()
 
 	foreach ($project in $script:projects)
@@ -194,8 +180,22 @@ task Build-Solution -depends Resolve-Projects,Resolve-Production-Versions {
 	} else {
 		Exec { & $dotNetExecutable build $allProjects -c $configuration }
 	}
-		
-		
+}
+
+task Pack-Solution -depends Resolve-Projects,Resolve-Production-Versions {
+
+	if (-Not (Test-Path $artifactsDir))
+	{
+		New-Item $artifactsDir -ItemType Directory > $null
+	}
+
+	if (Test-Path "$artifactsDir\Packages")
+	{
+		Remove-Item "$artifactsDir\Packages\*" -Force
+	} else {
+		New-Item "$artifactsDir\Packages" -ItemType Directory > $null
+	}
+	
 	foreach ($project in $script:projects)
 	{
 		if ($project.SkipPackaging)
@@ -215,7 +215,6 @@ task Build-Solution -depends Resolve-Projects,Resolve-Production-Versions {
 			}
 		}
 	}
-	
 }
 
 task Test-Solution -depends Resolve-Projects {

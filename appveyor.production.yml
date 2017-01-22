@@ -12,6 +12,7 @@ before_build:
   - ps: .\build\build.ps1 -taskList 'Validate' -configuration 'Release' -preReleaseTag ''
 build_script:
   - ps: .\build\build.ps1 -taskList 'Build' -configuration 'Release' -preReleaseTag ''
+  - ps: .\build\build.ps1 -taskList 'Pack' -configuration 'Release' -preReleaseTag ''
 test_script:
   - ps: .\build\build.ps1 -taskList 'Test' -configuration 'Release' -preReleaseTag ''
 artifacts:

@@ -53,6 +53,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{FED52411
 	ProjectSection(SolutionItems) = preProject
 		..\build\build-configuration.ps1 = ..\build\build-configuration.ps1
 		..\build\build.ps1 = ..\build\build.ps1
+		..\build\coverity.ps1 = ..\build\coverity.ps1
 	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.Core.Net40Async", "System.Data.HashFunction.Core.Net40Async\System.Data.HashFunction.Core.Net40Async.xproj", "{A22B18AE-37C2-4B47-BD02-F4CE25BFB34C}"

@@ -4,6 +4,8 @@ configuration:
 environment:
   COVERALLS_REPO_TOKEN:
     secure: 6jeh+WtWuKh30geTgWNduraiRDXN4HDp5TJNWRwrzl3ZZvG9HPZ0DVvpKWqeG6Ha
+  COVERITY_TOKEN:
+    secure: CSQbgJmXPTyS85qE8DgVZJaUVxUL883PJjXsKChfYR4
 nuget:
   account_feed: false
   project_feed: true
@@ -17,10 +19,13 @@ before_build:
   - ps: .\build\build.ps1 -taskList 'Validate' -configuration 'Debug' -preReleaseTag 'ci' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
 build_script:
   - ps: .\build\build.ps1 -taskList 'Build' -configuration 'Debug' -preReleaseTag 'ci' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
+  - ps: .\build\build.ps1 -taskList 'Pack' -configuration 'Debug' -preReleaseTag 'ci' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
 test_script:
   - ps: .\build\build.ps1 -taskList 'Test' -configuration 'Debug' -preReleaseTag 'ci' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
 after_test:
   - cmd: src\packages\coveralls.io.1.3.4\tools\coveralls.net.exe --opencover Artifacts\Coverage\*.xml
+# For when coverity supports dotnet analysis.
+#  - ps: .\build\coverity.ps1 -configuration 'Debug' -preReleaseTag 'coverity-ci' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
 artifacts:
   - path: Artifacts\Packages\*.nupkg
     name: Packages
