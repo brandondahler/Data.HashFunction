@@ -17,7 +17,7 @@ build_script:
 test_script:
   - ps: .\build\build.ps1 -taskList 'Test' -configuration 'Debug' -preReleaseTag 'pr' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
 artifacts:
-  - path: Artifacts\*.*
+  - path: Artifacts\Packages\*.nupkg
     name: Packages
     type: NuGetPackage
 cache:

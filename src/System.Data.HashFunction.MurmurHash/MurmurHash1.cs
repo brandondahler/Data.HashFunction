@@ -134,6 +134,9 @@ namespace System.Data.HashFunction
                 case 1:
                     h += (UInt32) remainder[position];
                     break;
+                    
+                default:
+                    throw new NotImplementedException();
             };
 
             h *= m;

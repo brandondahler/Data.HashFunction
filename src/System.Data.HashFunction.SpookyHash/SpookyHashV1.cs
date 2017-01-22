@@ -182,11 +182,14 @@ namespace System.Data.HashFunction
                         .CopyTo(hash, 8);
 
                     break;
+                    
+                default:
+                    throw new NotImplementedException();
             }
 
             return hash;
         }
-        
+
 #if !NET40 || INCLUDE_ASYNC
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
@@ -236,6 +239,9 @@ namespace System.Data.HashFunction
                         .CopyTo(hash, 8);
 
                     break;
+
+                default:
+                    throw new NotImplementedException();
             }
 
             return hash;

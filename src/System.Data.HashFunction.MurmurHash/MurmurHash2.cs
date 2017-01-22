@@ -157,11 +157,16 @@ namespace System.Data.HashFunction
                     hash = BitConverter.GetBytes(h);
                     break;
                 }
+                    
+                default:
+                {
+                    throw new NotImplementedException();
+                }
             }
 
             return hash;
         }
-        
+
 #if !NET40 || INCLUDE_ASYNC
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
@@ -216,6 +221,11 @@ namespace System.Data.HashFunction
 
                     hash = BitConverter.GetBytes(h);
                     break;
+                }
+        
+                default:
+                {
+                    throw new NotImplementedException();
                 }
             }
 
@@ -272,6 +282,9 @@ namespace System.Data.HashFunction
                 case 1:
                     h ^= remainder[position];
                     break;
+
+                default:
+                    throw new NotImplementedException();
             };
 
             h *= m;
@@ -297,6 +310,9 @@ namespace System.Data.HashFunction
                 case 1: 
                     h ^= (UInt64) remainder[position];
                     break;
+
+                default:
+                    throw new NotImplementedException();
             };
 
             h *= m;

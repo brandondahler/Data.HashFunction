@@ -177,6 +177,9 @@ namespace System.Data.HashFunction
                         .CopyTo(hash, 8);
 
                     break;
+
+                default:
+                    throw new NotImplementedException();
             }
 
             return hash;
@@ -231,6 +234,9 @@ namespace System.Data.HashFunction
                         .CopyTo(hash, 8);
 
                     break;
+        
+                default:
+                    throw new NotImplementedException();
             }
 
             return hash;

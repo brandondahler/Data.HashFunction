@@ -166,6 +166,9 @@ namespace System.Data.HashFunction
                 case 1:
                     a += (UInt32) remainder[position];
                     break;
+
+                default:
+                    throw new NotImplementedException();
             }
         }
 

@@ -7,7 +7,7 @@ properties {
 	$preReleaseTag = "local"
   
 	$gitExecutable = "git"
-	$dotNetExecutable = "dotnet"
+	$dotNetExecutable = "dotnet.exe"
 
 	$artifactsDir = "$baseDir\Artifacts"
 	$buildDir = "$baseDir\build"
@@ -15,6 +15,8 @@ properties {
 	$toolsDir = "$baseDir\tools"
 	$releaseDir = "$baseDir\release"
 	$nuGetDir = "$baseDir\NuGet"
+
+	$openCoverExecutable = "$sourceDir\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe"
 
 	$buildNumber = Read-BuildNumber "$buildDir\BuildNumber.txt"
 }
@@ -163,10 +165,16 @@ task Build-Solution -depends Resolve-Projects,Resolve-Production-Versions {
 	
 	$vcsRevision = Exec { & $gitExecutable rev-parse HEAD }
 
-
-	if (Test-Path $artifactsDir)
+	if (-Not (Test-Path $artifactsDir))
 	{
-		Remove-Item "$artifactsDir\*" -Force
+		New-Item $artifactsDir -ItemType Directory > $null
+	}
+
+	if (Test-Path "$artifactsDir\Packages")
+	{
+		Remove-Item "$artifactsDir\Packages\*" -Force
+	} else {
+		New-Item "$artifactsDir\Packages" -ItemType Directory > $null
 	}
 
 	$allProjects = [System.Collections.ArrayList]::new()
@@ -198,12 +206,12 @@ task Build-Solution -depends Resolve-Projects,Resolve-Production-Versions {
 		
 		if ($project.VersionSuffix -ne "")
 		{
-			Exec { & $dotNetExecutable pack $project.ProjectJsonPath -c $configuration --version-suffix $project.VersionSuffix --no-build -o $artifactsDir  }
+			Exec { & $dotNetExecutable pack $project.ProjectJsonPath -c $configuration --version-suffix $project.VersionSuffix --no-build -o "$artifactsDir\Packages"  }
 
 		} else {
 			if ($versions.Production.SemanticVersion.Version -lt $project.SemanticVersion.Version)
 			{
-				Exec { & $dotNetExecutable pack $project.ProjectJsonPath -c $configuration --no-build -o $artifactsDir }
+				Exec { & $dotNetExecutable pack $project.ProjectJsonPath -c $configuration --no-build -o "$artifactsDir\Packages" }
 			}
 		}
 	}
@@ -211,12 +219,24 @@ task Build-Solution -depends Resolve-Projects,Resolve-Production-Versions {
 }
 
 task Test-Solution -depends Resolve-Projects {
+	
+	if (-Not (Test-Path $artifactsDir))
+	{
+		New-Item $artifactsDir -ItemType Directory > $null
+	}
+
+	if (Test-Path "$artifactsDir\Coverage")
+	{
+		Remove-Item "$artifactsDir\Coverage\*" -Force
+	} else {
+		New-Item "$artifactsDir\Coverage" -ItemType Directory > $null
+	}
+
 	foreach ($project in $script:projects)
 	{
 		if ($project.RunTests)
 		{
-			
-			Exec { & $dotNetExecutable test $project.ProjectJsonPath -c $configuration --no-build }
+			Exec { & $openCoverExecutable "-target:$dotNetExecutable" $("`"-targetargs:test " + $project.ProjectJsonPath + " -c $configuration --no-build`"") -nodefaultfilters $("`"-filter:+[System.Data.HashFunction.*]* -[" + $project.Name + "]*`"") $("`"-output:$artifactsDir\Coverage\" + $project.Name + ".xml`"") -register:user -oldStyle }
 		}
 	}
 }
@@ -230,7 +250,7 @@ function Read-BuildNumber {
 
 	if (-Not (Test-Path $buildNumberFilePath))
 	{
-		New-Item $buildNumberFilePath -ItemType File -Value $buildNumber
+		New-Item $buildNumberFilePath -ItemType File -Value $buildNumber > $null
 	}
 
 

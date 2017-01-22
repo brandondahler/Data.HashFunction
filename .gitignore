@@ -130,3 +130,6 @@ NuGet/*/lib/*/*.dll
 NuGet/*/lib/*/*.dll.config
 NuGet/*/lib/*/*.xml
 NuGet/*/lib/*/*.XML
+
+# Build Artifacts
+Artifacts/

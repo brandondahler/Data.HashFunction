@@ -200,6 +200,11 @@ namespace System.Data.HashFunction
                     hash = BitConverter.GetBytes(h);
                     break;
                 }
+
+                default:
+                {
+                    throw new NotImplementedException();
+                }
             }
 
             return hash;
@@ -260,6 +265,11 @@ namespace System.Data.HashFunction
             
                     hash = BitConverter.GetBytes(h);
                     break;
+                }
+
+                default:
+                {
+                    throw new NotImplementedException();
                 }
             }
 

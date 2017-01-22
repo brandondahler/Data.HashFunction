@@ -195,11 +195,14 @@ namespace System.Data.HashFunction
                     hash = hashBytes;
                     break;
                 }
+
+                default:
+                    throw new NotImplementedException();
             }
 
             return hash;
         }
-        
+
 #if !NET40 || INCLUDE_ASYNC
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
@@ -279,6 +282,11 @@ namespace System.Data.HashFunction
 
                     break;
                 }
+        
+                default:
+                {
+                    throw new NotImplementedException();
+                }
             }
 
             return hash;
@@ -350,6 +358,9 @@ namespace System.Data.HashFunction
                 case 1:
                     k2 ^= (UInt32) remainder[position];        
                     break;
+
+                default:
+                    throw new NotImplementedException();
             }
 
             k2 *= c1_32;
@@ -395,6 +406,10 @@ namespace System.Data.HashFunction
                 case  1: 
                     k1 ^= (UInt64) remainder[position] << 0;
                     break;
+
+
+                default:
+                    throw new NotImplementedException();
             }
 
             k1 *= c1_128;

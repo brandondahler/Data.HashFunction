@@ -172,11 +172,14 @@ namespace System.Data.HashFunction
                 case 64:
                     hash = BitConverter.GetBytes((((UInt64) b) << 32) | c);
                     break;
+
+                default:
+                    throw new NotImplementedException();
             }
 
             return hash;
         }
-        
+
 #if !NET40 || INCLUDE_ASYNC
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
@@ -215,6 +218,9 @@ namespace System.Data.HashFunction
                 case 64:
                     hash = BitConverter.GetBytes((((UInt64) b) << 32) | c);
                     break;
+        
+                default:
+                    throw new NotImplementedException();
             }
 
             return hash;
@@ -273,6 +279,9 @@ namespace System.Data.HashFunction
                 case 1: 
                     a += (UInt32) remainder[position]; 
                     break;
+                    
+                default:
+                    throw new NotImplementedException();
             }
 
             dataCount += length;
