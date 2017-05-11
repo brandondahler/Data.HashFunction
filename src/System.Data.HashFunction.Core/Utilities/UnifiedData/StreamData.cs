@@ -49,7 +49,6 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
                 action(buffer, 0, bytesRead);
         }
 
-#if !NET40 || INCLUDE_ASYNC
         /// <inheritdoc />
         public override async Task ForEachReadAsync(Action<byte[], int, int> action)
         {
@@ -63,7 +62,6 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
             while ((bytesRead = await _Data.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
                 action(buffer, 0, bytesRead);
         }
-#endif
 
 
         /// <inheritdoc />
@@ -116,7 +114,6 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
                 remainderAction(buffer, 0, position);
         }
 
-#if !NET40 || INCLUDE_ASYNC
         /// <inheritdoc />
         public override async Task ForEachGroupAsync(int groupSize, Action<byte[], int, int> action, Action<byte[], int, int> remainderAction)
         {
@@ -166,7 +163,6 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
             if (remainderAction != null && position > 0)
                 remainderAction(buffer, 0, position);
         }
-#endif
 
 
         /// <inheritdoc />
@@ -180,7 +176,6 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
             }
         }
 
-#if !NET40 || INCLUDE_ASYNC
         /// <inheritdoc />
         public override async Task<byte[]> ToArrayAsync()
         {
@@ -192,6 +187,5 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
                 return ms.ToArray();
             }
         }
-#endif
     }
 }

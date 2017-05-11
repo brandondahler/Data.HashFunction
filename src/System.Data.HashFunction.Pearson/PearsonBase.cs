@@ -17,11 +17,7 @@ namespace System.Data.HashFunction
     [SuppressMessage("Microsoft.Design", "CA1012:AbstractTypesShouldNotHaveConstructors", 
         Justification = "Constructor required to validate implementer's parameters.")]
     public abstract class PearsonBase
-#if !NET40 || INCLUDE_ASYNC
         : HashFunctionAsyncBase
-#else
-        : HashFunctionBase
-#endif
     {
         /// <summary>
         /// 256-item read only collection of bytes.  Must be a permutation of [0, 255].
@@ -29,34 +25,18 @@ namespace System.Data.HashFunction
         /// <value>
         /// The 256-item read only collection of bytes.
         /// </value>
-#if !NET40
         public IReadOnlyList<byte> T { get { return _T; } }
-#else
-        public IList<byte> T { get { return _T; } }
-#endif
 
 
-#if !NET40
         private readonly IReadOnlyList<byte> _T;
-#else
-        private readonly IList<byte> _T;
-#endif
 
 
 
-#if !NET40
         /// <remarks>
         /// Defaults <see cref="HashFunctionBase.HashSize" /> to 8.
         /// </remarks>
         /// <inheritdoc cref="PearsonBase(IReadOnlyList{byte}, int)" />
         public PearsonBase(IReadOnlyList<byte> t)
-#else
-        /// <remarks>
-        /// Defaults <see cref="HashFunctionBase.HashSize" /> to 8.
-        /// </remarks>
-        /// <inheritdoc cref="PearsonBase(IList{byte}, int)" />
-        public PearsonBase(IList<byte> t)
-#endif
             : this(t, 8)
         {
 
@@ -71,11 +51,7 @@ namespace System.Data.HashFunction
         /// <exception cref="System.ArgumentException">t must be a permutation of [0, 255].;t</exception>
         /// <exception cref="System.ArgumentOutOfRangeException">hashSize;hashSize must be a positive integer that is divisible by 8.</exception>
         /// <inheritdoc cref="HashFunctionBase(int)" />
-#if !NET40
         public PearsonBase(IReadOnlyList<byte> t, int hashSize)
-#else
-        public PearsonBase(IList<byte> t, int hashSize)
-#endif
             : base(hashSize)
         {
             if (t == null)
@@ -108,7 +84,6 @@ namespace System.Data.HashFunction
             return h;
         }
         
-#if !NET40 || INCLUDE_ASYNC
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
@@ -121,7 +96,6 @@ namespace System.Data.HashFunction
 
             return h;
         }
-#endif
 
 
         private void ProcessBytes(ref byte[] h, ref bool firstByte, byte[] dataBytes, int position, int length)

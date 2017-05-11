@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-#if !NET40 || INCLUDE_ASYNC
 namespace System.Data.HashFunction
 {
     /// <summary>
@@ -67,4 +66,3 @@ namespace System.Data.HashFunction
         protected abstract Task<byte[]> ComputeHashAsyncInternal(UnifiedData data);
     }
 }
-#endif

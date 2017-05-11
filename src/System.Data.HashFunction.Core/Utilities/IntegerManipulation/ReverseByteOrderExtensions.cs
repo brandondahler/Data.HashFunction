@@ -19,9 +19,7 @@ namespace System.Data.HashFunction.Utilities.IntegerManipulation
         /// <returns>
         /// Resulting 16-bit integer after reversing the operand's byte order.
         /// </returns>
-#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static UInt16 ReverseByteOrder(this UInt16 operand)
         {
             return (UInt16) (
@@ -36,9 +34,7 @@ namespace System.Data.HashFunction.Utilities.IntegerManipulation
         /// <returns>
         /// Resulting 32-bit integer after reversing the parameter's byte order.
         /// </returns>
-#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static UInt32 ReverseByteOrder(this UInt32 operand)
         {
             return 
@@ -55,9 +51,7 @@ namespace System.Data.HashFunction.Utilities.IntegerManipulation
         /// <returns>
         /// Resulting 64-bit integer after reversing the parameter's byte order.
         /// </returns>
-#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public static UInt64 ReverseByteOrder(this UInt64 operand)
         {
             return 

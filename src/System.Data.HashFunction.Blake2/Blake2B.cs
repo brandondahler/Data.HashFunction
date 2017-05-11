@@ -15,11 +15,7 @@ namespace System.Data.HashFunction
     /// and allows seeding with a key, salt, and/or personalization sequence.
 	/// </summary>
 	public partial class Blake2B
-#if !NET40 || INCLUDE_ASYNC
 		: HashFunctionAsyncBase
-#else
-		: HashFunctionBase
-#endif
 	{
         private readonly uint _originalKeyLength;
         private readonly byte[] _key;
@@ -205,7 +201,6 @@ namespace System.Data.HashFunction
 		}
 
 
-#if !NET40 || INCLUDE_ASYNC
 
 		/// <inheritdoc />
 		protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
@@ -223,8 +218,6 @@ namespace System.Data.HashFunction
 
 			return Final(HashSize, internalState);
 		}
-
-#endif
 
 
         private static void ProcessBytes(InternalState internalState, byte[] array, int start, int count)

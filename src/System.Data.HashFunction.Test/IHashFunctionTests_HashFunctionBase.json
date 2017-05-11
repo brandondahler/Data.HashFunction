@@ -3548,7 +3548,7 @@
       {
         "IHashFunctionT": "HashAlgorithmWrapper",
         "NamePostfix": "SHA1",
-        "ConstructionParameters": [ "new SHA1Managed()" ],
+        "ConstructionParameters": [ "SHA1.Create()" ],
         "KnownValues": [
           {
             "Bits": 160,
@@ -3581,7 +3581,7 @@
       {
         "IHashFunctionT": "HashAlgorithmWrapper",
         "NamePostfix": "SHA256",
-        "ConstructionParameters": [ "new SHA256Managed()" ],
+        "ConstructionParameters": [ "SHA256.Create()" ],
         "KnownValues": [
           {
             "Bits": 256,
@@ -3594,7 +3594,7 @@
       {
         "IHashFunctionT": "HashAlgorithmWrapper",
         "NamePostfix": "SHA384",
-        "ConstructionParameters": [ "new SHA384Managed()" ],
+        "ConstructionParameters": [ "SHA384.Create()" ],
         "KnownValues": [
           {
             "Bits": 384,
@@ -3607,7 +3607,7 @@
       {
         "IHashFunctionT": "HashAlgorithmWrapper",
         "NamePostfix": "SHA512",
-        "ConstructionParameters": [ "new SHA512Managed()" ],
+        "ConstructionParameters": [ "SHA512.Create()" ],
         "KnownValues": [
           {
             "Bits": 512,
@@ -3620,118 +3620,12 @@
       {
         "IHashFunctionT": "HashAlgorithmWrapper",
         "NamePostfix": "MD5",
-        "ConstructionParameters": [ "new MD5CryptoServiceProvider()" ],
+        "ConstructionParameters": [ "MD5.Create()" ],
         "KnownValues": [
           {
             "Bits": 128,
             "TestValue": "TestConstants.FooBar",
             "ExpectedValue": "\"3858f62230ac3c915f300c664312c63f\""
-          }
-        ]
-      },
-
-      {
-        "IHashFunctionT": "HashAlgorithmWrapper",
-        "NamePostfix": "RIPEMD160",
-        "ConstructionParameters": [ "new RIPEMD160Managed()" ],
-        "KnownValues": [
-          {
-            "Bits": 160,
-            "TestValue": "TestConstants.FooBar",
-            "ExpectedValue": "\"a06e327ea7388c18e4740e350ed4e60f2e04fc41\""
-          }
-        ]
-      },
-
-
-      {
-        "IHashFunctionT": "HashAlgorithmWrapper<SHA1Managed>",
-        "ConstructionParameters": [ "" ],
-        "KnownValues": [
-          {
-            "Bits": 160,
-            "TestValue": "TestConstants.Empty",
-            "ExpectedValue": "\"da39a3ee5e6b4b0d3255bfef95601890afd80709\""
-          },
-          {
-            "Bits": 160,
-            "TestValue": "TestConstants.FooBar",
-            "ExpectedValue": "\"8843d7f92416211de9ebb963ff4ce28125932878\""
-          },
-          {
-            "Bits": 160,
-            "TestValue": "TestConstants.LoremIpsum",
-            "ExpectedValue": "\"2dd4010f15f21c9e26e31a693ba31c6ab78a5a4c\""
-          },
-          {
-            "Bits": 160,
-            "TestValue": "TestConstants.RandomShort",
-            "ExpectedValue": "\"d64df40c72068b01e7dfb5ceb2b519ad3b483eb0\""
-          },
-          {
-            "Bits": 160,
-            "TestValue": "TestConstants.RandomLong",
-            "ExpectedValue": "\"e5901cb4679133729c5555210c3cfe3e5851a2aa\""
-          }
-        ]
-      },
-
-      {
-        "IHashFunctionT": "HashAlgorithmWrapper<SHA256Managed>",
-        "ConstructionParameters": [ "" ],
-        "KnownValues": [
-          {
-            "Bits": 256,
-            "TestValue": "TestConstants.FooBar",
-            "ExpectedValue": "\"c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2\""
-          }
-        ]
-      },
-
-      {
-        "IHashFunctionT": "HashAlgorithmWrapper<SHA384Managed>",
-        "ConstructionParameters": [ "" ],
-        "KnownValues": [
-          {
-            "Bits": 384,
-            "TestValue": "TestConstants.FooBar",
-            "ExpectedValue": "\"3c9c30d9f665e74d515c842960d4a451c83a0125fd3de7392d7b37231af10c72ea58aedfcdf89a5765bf902af93ecf06\""
-          }
-        ]
-      },
-
-      {
-        "IHashFunctionT": "HashAlgorithmWrapper<SHA512Managed>",
-        "ConstructionParameters": [ "" ],
-        "KnownValues": [
-          {
-            "Bits": 512,
-            "TestValue": "TestConstants.FooBar",
-            "ExpectedValue": "\"0a50261ebd1a390fed2bf326f2673c145582a6342d523204973d0219337f81616a8069b012587cf5635f6925f1b56c360230c19b273500ee013e030601bf2425\""
-          }
-        ]
-      },
-
-      {
-        "IHashFunctionT": "HashAlgorithmWrapper<MD5CryptoServiceProvider>",
-        "ConstructionParameters": [ "" ],
-        "KnownValues": [
-          {
-            "Bits": 128,
-            "TestValue": "TestConstants.FooBar",
-            "ExpectedValue": "\"3858f62230ac3c915f300c664312c63f\""
-          }
-        ]
-      },
-
-      {
-        "IHashFunctionT": "HashAlgorithmWrapper<RIPEMD160Managed>",
-        "ConstructionParameters": [ "" ],
-        "KnownValues": [
-          {
-            "Bits": 160,
-            "TestValue": "TestConstants.FooBar",
-            "ExpectedValue": "\"a06e327ea7388c18e4740e350ed4e60f2e04fc41\""
           }
         ]
       }

@@ -1150,7 +1150,7 @@ namespace System.Data.HashFunction.Test
 
     #endregion
 
-    #region Data.HAshFunction.HashAlgorithm
+    #region Data.HashFunction.HashAlgorithm
 
     public class IHashFunctionTests_HashAlgorithmWrapper_SHA1
         : IHashFunctionTests<HashAlgorithmWrapper>
@@ -1171,7 +1171,7 @@ namespace System.Data.HashFunction.Test
 
         protected override HashAlgorithmWrapper CreateHashFunction(int hashSize)
         {
-            return new HashAlgorithmWrapper(new SHA1Managed());
+            return new HashAlgorithmWrapper(SHA1.Create());
         }
     }
     
@@ -1191,7 +1191,7 @@ namespace System.Data.HashFunction.Test
 
         protected override HashAlgorithmWrapper CreateHashFunction(int hashSize)
         {
-            return new HashAlgorithmWrapper(new SHA256Managed());
+            return new HashAlgorithmWrapper(SHA256.Create());
         }
     }
     
@@ -1211,7 +1211,7 @@ namespace System.Data.HashFunction.Test
 
         protected override HashAlgorithmWrapper CreateHashFunction(int hashSize)
         {
-            return new HashAlgorithmWrapper(new SHA384Managed());
+            return new HashAlgorithmWrapper(SHA384.Create());
         }
     }
     
@@ -1231,7 +1231,7 @@ namespace System.Data.HashFunction.Test
 
         protected override HashAlgorithmWrapper CreateHashFunction(int hashSize)
         {
-            return new HashAlgorithmWrapper(new SHA512Managed());
+            return new HashAlgorithmWrapper(SHA512.Create());
         }
     }
     
@@ -1251,151 +1251,7 @@ namespace System.Data.HashFunction.Test
 
         protected override HashAlgorithmWrapper CreateHashFunction(int hashSize)
         {
-            return new HashAlgorithmWrapper(new MD5CryptoServiceProvider());
-        }
-    }
-    
-
-    public class IHashFunctionTests_HashAlgorithmWrapper_RIPEMD160
-        : IHashFunctionTests<HashAlgorithmWrapper>
-    {
-        protected override IEnumerable<KnownValue> KnownValues
-        {
-            get
-            {
-                return new KnownValue[] {
-                    new KnownValue(160, TestConstants.FooBar, "a06e327ea7388c18e4740e350ed4e60f2e04fc41"),
-                };
-            }
-        }
-
-        protected override HashAlgorithmWrapper CreateHashFunction(int hashSize)
-        {
-            return new HashAlgorithmWrapper(new RIPEMD160Managed());
-        }
-    }
-    
-
-    public class IHashFunctionTests_HashAlgorithmWrapper_SHA1Managed
-        : IHashFunctionTests<HashAlgorithmWrapper<SHA1Managed>>
-    {
-        protected override IEnumerable<KnownValue> KnownValues
-        {
-            get
-            {
-                return new KnownValue[] {
-                    new KnownValue(160, TestConstants.Empty, "da39a3ee5e6b4b0d3255bfef95601890afd80709"),
-                    new KnownValue(160, TestConstants.FooBar, "8843d7f92416211de9ebb963ff4ce28125932878"),
-                    new KnownValue(160, TestConstants.LoremIpsum, "2dd4010f15f21c9e26e31a693ba31c6ab78a5a4c"),
-                    new KnownValue(160, TestConstants.RandomShort, "d64df40c72068b01e7dfb5ceb2b519ad3b483eb0"),
-                    new KnownValue(160, TestConstants.RandomLong, "e5901cb4679133729c5555210c3cfe3e5851a2aa"),
-                };
-            }
-        }
-
-        protected override HashAlgorithmWrapper<SHA1Managed> CreateHashFunction(int hashSize)
-        {
-            return new HashAlgorithmWrapper<SHA1Managed>();
-        }
-    }
-    
-
-    public class IHashFunctionTests_HashAlgorithmWrapper_SHA256Managed
-        : IHashFunctionTests<HashAlgorithmWrapper<SHA256Managed>>
-    {
-        protected override IEnumerable<KnownValue> KnownValues
-        {
-            get
-            {
-                return new KnownValue[] {
-                    new KnownValue(256, TestConstants.FooBar, "c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2"),
-                };
-            }
-        }
-
-        protected override HashAlgorithmWrapper<SHA256Managed> CreateHashFunction(int hashSize)
-        {
-            return new HashAlgorithmWrapper<SHA256Managed>();
-        }
-    }
-    
-
-    public class IHashFunctionTests_HashAlgorithmWrapper_SHA384Managed
-        : IHashFunctionTests<HashAlgorithmWrapper<SHA384Managed>>
-    {
-        protected override IEnumerable<KnownValue> KnownValues
-        {
-            get
-            {
-                return new KnownValue[] {
-                    new KnownValue(384, TestConstants.FooBar, "3c9c30d9f665e74d515c842960d4a451c83a0125fd3de7392d7b37231af10c72ea58aedfcdf89a5765bf902af93ecf06"),
-                };
-            }
-        }
-
-        protected override HashAlgorithmWrapper<SHA384Managed> CreateHashFunction(int hashSize)
-        {
-            return new HashAlgorithmWrapper<SHA384Managed>();
-        }
-    }
-    
-
-    public class IHashFunctionTests_HashAlgorithmWrapper_SHA512Managed
-        : IHashFunctionTests<HashAlgorithmWrapper<SHA512Managed>>
-    {
-        protected override IEnumerable<KnownValue> KnownValues
-        {
-            get
-            {
-                return new KnownValue[] {
-                    new KnownValue(512, TestConstants.FooBar, "0a50261ebd1a390fed2bf326f2673c145582a6342d523204973d0219337f81616a8069b012587cf5635f6925f1b56c360230c19b273500ee013e030601bf2425"),
-                };
-            }
-        }
-
-        protected override HashAlgorithmWrapper<SHA512Managed> CreateHashFunction(int hashSize)
-        {
-            return new HashAlgorithmWrapper<SHA512Managed>();
-        }
-    }
-    
-
-    public class IHashFunctionTests_HashAlgorithmWrapper_MD5CryptoServiceProvider
-        : IHashFunctionTests<HashAlgorithmWrapper<MD5CryptoServiceProvider>>
-    {
-        protected override IEnumerable<KnownValue> KnownValues
-        {
-            get
-            {
-                return new KnownValue[] {
-                    new KnownValue(128, TestConstants.FooBar, "3858f62230ac3c915f300c664312c63f"),
-                };
-            }
-        }
-
-        protected override HashAlgorithmWrapper<MD5CryptoServiceProvider> CreateHashFunction(int hashSize)
-        {
-            return new HashAlgorithmWrapper<MD5CryptoServiceProvider>();
-        }
-    }
-    
-
-    public class IHashFunctionTests_HashAlgorithmWrapper_RIPEMD160Managed
-        : IHashFunctionTests<HashAlgorithmWrapper<RIPEMD160Managed>>
-    {
-        protected override IEnumerable<KnownValue> KnownValues
-        {
-            get
-            {
-                return new KnownValue[] {
-                    new KnownValue(160, TestConstants.FooBar, "a06e327ea7388c18e4740e350ed4e60f2e04fc41"),
-                };
-            }
-        }
-
-        protected override HashAlgorithmWrapper<RIPEMD160Managed> CreateHashFunction(int hashSize)
-        {
-            return new HashAlgorithmWrapper<RIPEMD160Managed>();
+            return new HashAlgorithmWrapper(MD5.Create());
         }
     }
     
@@ -2434,52 +2290,24 @@ namespace System.Data.HashFunction.Test
                     new HashFunctionImpl(0) 
                 },
                 { 
-                    @"HashAlgorithmWrapper(new SHA1Managed())", 
-                    new HashAlgorithmWrapper(new SHA1Managed()) 
+                    @"HashAlgorithmWrapper(SHA1.Create())", 
+                    new HashAlgorithmWrapper(SHA1.Create()) 
                 },
                 { 
-                    @"HashAlgorithmWrapper(new SHA256Managed())", 
-                    new HashAlgorithmWrapper(new SHA256Managed()) 
+                    @"HashAlgorithmWrapper(SHA256.Create())", 
+                    new HashAlgorithmWrapper(SHA256.Create()) 
                 },
                 { 
-                    @"HashAlgorithmWrapper(new SHA384Managed())", 
-                    new HashAlgorithmWrapper(new SHA384Managed()) 
+                    @"HashAlgorithmWrapper(SHA384.Create())", 
+                    new HashAlgorithmWrapper(SHA384.Create()) 
                 },
                 { 
-                    @"HashAlgorithmWrapper(new SHA512Managed())", 
-                    new HashAlgorithmWrapper(new SHA512Managed()) 
+                    @"HashAlgorithmWrapper(SHA512.Create())", 
+                    new HashAlgorithmWrapper(SHA512.Create()) 
                 },
                 { 
-                    @"HashAlgorithmWrapper(new MD5CryptoServiceProvider())", 
-                    new HashAlgorithmWrapper(new MD5CryptoServiceProvider()) 
-                },
-                { 
-                    @"HashAlgorithmWrapper(new RIPEMD160Managed())", 
-                    new HashAlgorithmWrapper(new RIPEMD160Managed()) 
-                },
-                { 
-                    @"HashAlgorithmWrapper<SHA1Managed>()", 
-                    new HashAlgorithmWrapper<SHA1Managed>() 
-                },
-                { 
-                    @"HashAlgorithmWrapper<SHA256Managed>()", 
-                    new HashAlgorithmWrapper<System.Security.Cryptography.SHA256Managed>() 
-                },
-                { 
-                    @"HashAlgorithmWrapper<SHA384Managed>()", 
-                    new HashAlgorithmWrapper<SHA384Managed>() 
-                },
-                { 
-                    @"HashAlgorithmWrapper<SHA512Managed>()", 
-                    new HashAlgorithmWrapper<SHA512Managed>() 
-                },
-                { 
-                    @"HashAlgorithmWrapper<MD5CryptoServiceProvider>()", 
-                    new HashAlgorithmWrapper<MD5CryptoServiceProvider>() 
-                },
-                { 
-                    @"HashAlgorithmWrapper<RIPEMD160Managed>()", 
-                    new HashAlgorithmWrapper<RIPEMD160Managed>() 
+                    @"HashAlgorithmWrapper(MD5.Create())", 
+                    new HashAlgorithmWrapper(MD5.Create()) 
                 },
                 { 
                     @"ELF64()", 

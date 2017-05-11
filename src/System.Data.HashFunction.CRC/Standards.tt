@@ -40,11 +40,7 @@ namespace System.Data.HashFunction
         /// <summary>
         /// Dictionary of Settings for each of the defined and implemented CRC standards.
         /// </summary>
-#if !NET40
         public static readonly IReadOnlyDictionary<Standard, Setting> Standards = 
-#else
-        public static readonly IDictionary<Standard, Setting> Standards = 
-#endif
             new Dictionary<Standard, Setting>() {
 <# foreach (var standard in standards) { 
         var settingsLine = string.Format(

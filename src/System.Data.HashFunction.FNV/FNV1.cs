@@ -39,11 +39,7 @@ namespace System.Data.HashFunction
 
         /// <inheritdoc />
         protected override void ProcessBytes(
-#if !NET40
             ref UInt32[] hash, IReadOnlyList<UInt32> prime, byte[] data, int position, int length)
-#else
-            ref UInt32[] hash, IList<UInt32> prime, byte[] data, int position, int length)
-#endif
         {
             for (var x = position; x < position + length; ++x)
             {

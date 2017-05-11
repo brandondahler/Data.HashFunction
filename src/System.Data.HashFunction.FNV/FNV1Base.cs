@@ -18,11 +18,7 @@ namespace System.Data.HashFunction
     /// Abstract implementation of Fowler–Noll–Vo hash function (FNV-1 and FNV-1a) as specified at http://www.isthe.com/chongo/tech/comp/fnv/index.html.
     /// </summary>
     public abstract class FNV1Base
-#if !NET40 || INCLUDE_ASYNC
         : HashFunctionAsyncBase
-#else
-        : HashFunctionBase
-#endif
     {
         /// <summary>
         /// The list of possible hash sizes that can be provided to the <see cref="FNV1Base" /> constructor.
@@ -181,7 +177,6 @@ namespace System.Data.HashFunction
             }
         }
         
-#if !NET40 || INCLUDE_ASYNC
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
@@ -228,7 +223,6 @@ namespace System.Data.HashFunction
                     .ToArray();
             }
         }
-#endif
 
 
 
@@ -260,10 +254,6 @@ namespace System.Data.HashFunction
         /// <param name="data">Data to process.</param>
         /// <param name="position">The starting index of the data array.</param>
         /// <param name="length">The length of the data in the data array, starting from the position parameter.</param>
-#if !NET40
         protected abstract void ProcessBytes(ref UInt32[] hash, IReadOnlyList<UInt32> prime, byte[] data, int position, int length);
-#else
-        protected abstract void ProcessBytes(ref UInt32[] hash, IList<UInt32> prime, byte[] data, int position, int length);
-#endif
     }
 }

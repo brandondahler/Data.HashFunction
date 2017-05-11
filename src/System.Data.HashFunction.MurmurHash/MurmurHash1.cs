@@ -18,11 +18,7 @@ namespace System.Data.HashFunction
     /// This hash function has been superseded by MurmurHash2 and MurmurHash3.
     /// </summary>
     public class MurmurHash1
-#if !NET40 || INCLUDE_ASYNC
         : HashFunctionAsyncBase
-#else
-        : HashFunctionBase
-#endif
     {
         /// <summary>
         /// Seed value for hash calculation.
@@ -85,7 +81,6 @@ namespace System.Data.HashFunction
             return BitConverter.GetBytes(h);
         }
         
-#if !NET40 || INCLUDE_ASYNC
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
@@ -106,12 +101,9 @@ namespace System.Data.HashFunction
 
             return BitConverter.GetBytes(h);
         }
-#endif
 
 
-#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         private static void ProcessGroup(ref UInt32 h, byte[] dataGroup, int position, int length)
         {
             for (var x = position; x < position + length; x += 4)
@@ -122,9 +114,7 @@ namespace System.Data.HashFunction
             }
         }
 
-#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         private static void ProcessRemainder(ref UInt32 h, byte[] remainder, int position, int length)
         {
             switch (length)

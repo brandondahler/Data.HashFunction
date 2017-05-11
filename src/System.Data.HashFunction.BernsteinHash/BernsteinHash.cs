@@ -32,11 +32,7 @@ namespace System.Data.HashFunction
     /// "
     /// </summary>
     public class BernsteinHash
-#if !NET40 || INCLUDE_ASYNC
         : HashFunctionAsyncBase
-#else
-        : HashFunctionBase
-#endif
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="BernsteinHash"/> class.
@@ -64,7 +60,6 @@ namespace System.Data.HashFunction
             return BitConverter.GetBytes(h);
         }
         
-#if !NET40 || INCLUDE_ASYNC
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
         {
@@ -76,12 +71,9 @@ namespace System.Data.HashFunction
 
             return BitConverter.GetBytes(h);
         }
-#endif
 
 
-#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         private static void ProcessBytes(ref UInt32 h, byte[] dataBytes, int position, int length)
         {
             for (var x = position; x < position + length; ++x)

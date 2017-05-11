@@ -16,11 +16,7 @@ namespace System.Data.HashFunction
     ///   https://code.google.com/p/xxhash/.
     /// </summary>
     public class xxHash
-#if !NET40 || INCLUDE_ASYNC
         : HashFunctionAsyncBase
-#else
-        : HashFunctionBase
-#endif
     {
         /// <summary>
         /// Seed value for hash calculation.
@@ -39,11 +35,7 @@ namespace System.Data.HashFunction
         public static IEnumerable<int> ValidHashSizes { get { return _validHashSizes; } }
 
 
-#if !NET40
         private static readonly IReadOnlyList<UInt32> _primes32 = 
-#else
-        private static readonly IList<UInt32> _primes32 = 
-#endif
             new[] {
                 2654435761U,
                 2246822519U,
@@ -52,11 +44,7 @@ namespace System.Data.HashFunction
                  374761393U
             };
 
-#if !NET40
         private static readonly IReadOnlyList<UInt64> _primes64 = 
-#else
-        private static readonly IList<UInt64> _primes64 = 
-#endif
             new[] {
                 11400714785074694791UL,
                 14029467366897019727UL,
@@ -212,7 +200,6 @@ namespace System.Data.HashFunction
             return hash;
         }
 
-#if !NET40 || INCLUDE_ASYNC
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
@@ -314,12 +301,9 @@ namespace System.Data.HashFunction
 
             return hash;
         }
-#endif
 
 
-#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         private static void PostProcess(ref UInt32 h, UInt32[] initValues, ulong dataCount, byte[] remainder)
         {
             if (dataCount >= 16)
@@ -358,9 +342,7 @@ namespace System.Data.HashFunction
             h ^= h >> 16;
         }
 
-#if !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         private static void PostProcess(ref UInt64 h, UInt64[] initValues, ulong dataCount, byte[] remainder)
         {
             if (dataCount >= 32)

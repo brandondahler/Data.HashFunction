@@ -63,11 +63,7 @@ namespace System.Data.HashFunction.Test.Pearson
         private class PearsonBase_T_NonDistinct
             : PearsonBase
         {
-#if !NET40
             private static readonly IReadOnlyList<byte> NonDistinct_T =
-#else
-            private static readonly IList<byte> NonDistinct_T =
-#endif
                 Enumerable.Range(0, 255)
                     .Select(i => (byte) i)
                     .Concat(new byte[] { 0 })

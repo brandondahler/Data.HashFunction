@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-#if !NETSTANDARD1_0
 using System.Numerics;
-#endif
-#if NET40 || NET45
+#if NET45
 using System.Runtime.Serialization.Formatters.Binary;
 #endif
 using System.Text;
@@ -208,7 +206,7 @@ namespace System.Data.HashFunction
                 BitConverter.GetBytes(data));
         }
 
-#if NET40 || NET45
+#if NET45
         /// <summary>
         /// Computes hash value for given data.
         /// </summary>
@@ -235,8 +233,6 @@ namespace System.Data.HashFunction
 #endif
 
         #endregion
-
-#if !NETSTANDARD1_0
 
         #region Sugar with desiredSize
 
@@ -451,7 +447,7 @@ namespace System.Data.HashFunction
                 desiredHashSize);
         }
 
-#if NET40 || NET45
+#if NET45
         /// <summary>
         /// Computes hash value for given data.
         /// </summary>
@@ -551,8 +547,6 @@ namespace System.Data.HashFunction
         }
 
         #endregion
-
-#endif
 
         #endregion
 
