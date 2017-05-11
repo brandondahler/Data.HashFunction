@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D0A9A68F-2401-42E4-A6E7-D9FF9F080197}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,38 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{7889B2
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.Interfaces", "System.Data.HashFunction.Interfaces\System.Data.HashFunction.Interfaces.xproj", "{58B4D4D3-90EC-4F34-8C8F-E57DABD859CF}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.Core", "System.Data.HashFunction.Core\System.Data.HashFunction.Core.xproj", "{FCD2D38D-5A85-425E-952C-969A95395E1E}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.BernsteinHash", "System.Data.HashFunction.BernsteinHash\System.Data.HashFunction.BernsteinHash.xproj", "{6BC9E1F2-B802-4ED9-92E6-E12C1D9840BC}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.Blake2", "System.Data.HashFunction.Blake2\System.Data.HashFunction.Blake2.xproj", "{C41485CB-8446-4F3C-995E-A3121249A668}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.BuzHash", "System.Data.HashFunction.BuzHash\System.Data.HashFunction.BuzHash.xproj", "{23BD0A7E-1B5A-49F6-B98D-B45CF5F6DE87}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.CityHash", "System.Data.HashFunction.CityHash\System.Data.HashFunction.CityHash.xproj", "{7B02E48B-A8BD-4BA9-81D9-CF9D99E41863}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.CRC", "System.Data.HashFunction.CRC\System.Data.HashFunction.CRC.xproj", "{430008BB-7973-40D6-87A5-36F9DE82854E}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.ELF64", "System.Data.HashFunction.ELF64\System.Data.HashFunction.ELF64.xproj", "{5B210687-E8B4-4BC4-A65D-3E504212C207}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.FNV", "System.Data.HashFunction.FNV\System.Data.HashFunction.FNV.xproj", "{B1C242A6-9A88-4BFC-A75E-F20E29F8F3D6}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.Jenkins", "System.Data.HashFunction.Jenkins\System.Data.HashFunction.Jenkins.xproj", "{D93196A6-0525-4E49-81C8-29CB694E26B6}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.MurmurHash", "System.Data.HashFunction.MurmurHash\System.Data.HashFunction.MurmurHash.xproj", "{51D02F05-0557-4586-8288-5FF95D89FD3E}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.Pearson", "System.Data.HashFunction.Pearson\System.Data.HashFunction.Pearson.xproj", "{FB716555-104D-4F62-9A8F-DF915378B52F}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.SpookyHash", "System.Data.HashFunction.SpookyHash\System.Data.HashFunction.SpookyHash.xproj", "{E3B6C41C-F55D-4980-9E12-00BAEF1D26F5}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.Test", "System.Data.HashFunction.Test\System.Data.HashFunction.Test.xproj", "{CEC9E70A-A7A6-49B1-A10D-521FED0FD47D}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.xxHash", "System.Data.HashFunction.xxHash\System.Data.HashFunction.xxHash.xproj", "{048E84BE-B266-453C-96B9-D4AAAD5ABF34}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.HashAlgorithm", "System.Data.HashFunction.HashAlgorithm\System.Data.HashFunction.HashAlgorithm.xproj", "{89C43129-57DC-445C-9521-5C7A6011A878}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{FED52411-2DD2-45DC-ADF9-CA07424CC074}"
 	ProjectSection(SolutionItems) = preProject
 		..\build\build-configuration.ps1 = ..\build\build-configuration.ps1
@@ -56,37 +24,69 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{FED52411
 		..\build\coverity.ps1 = ..\build\coverity.ps1
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.Core.Net40Async", "System.Data.HashFunction.Core.Net40Async\System.Data.HashFunction.Core.Net40Async.xproj", "{A22B18AE-37C2-4B47-BD02-F4CE25BFB34C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Interfaces", "System.Data.HashFunction.Interfaces\System.Data.HashFunction.Interfaces.csproj", "{58B4D4D3-90EC-4F34-8C8F-E57DABD859CF}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.CRC.Net40Async", "System.Data.HashFunction.CRC.Net40Async\System.Data.HashFunction.CRC.Net40Async.xproj", "{E801B9B4-4B73-4646-8268-C5BD0E2C5DAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Core", "System.Data.HashFunction.Core\System.Data.HashFunction.Core.csproj", "{FCD2D38D-5A85-425E-952C-969A95395E1E}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.BernsteinHash.Net40Async", "System.Data.HashFunction.BernsteinHash.Net40Async\System.Data.HashFunction.BernsteinHash.Net40Async.xproj", "{3D897912-2C81-4892-B3D6-D6B4E5AC34D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.BernsteinHash", "System.Data.HashFunction.BernsteinHash\System.Data.HashFunction.BernsteinHash.csproj", "{6BC9E1F2-B802-4ED9-92E6-E12C1D9840BC}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.Blake2.Net40Async", "System.Data.HashFunction.Blake2.Net40Async\System.Data.HashFunction.Blake2.Net40Async.xproj", "{BD988BAC-D6D3-458E-A392-DBF0CDAB49A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Blake2", "System.Data.HashFunction.Blake2\System.Data.HashFunction.Blake2.csproj", "{C41485CB-8446-4F3C-995E-A3121249A668}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.BuzHash.Net40Async", "System.Data.HashFunction.BuzHash.Net40Async\System.Data.HashFunction.BuzHash.Net40Async.xproj", "{BF71C7FA-6356-4DD6-9B08-62B465FB5F36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.BuzHash", "System.Data.HashFunction.BuzHash\System.Data.HashFunction.BuzHash.csproj", "{23BD0A7E-1B5A-49F6-B98D-B45CF5F6DE87}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.CityHash.Net40Async", "System.Data.HashFunction.CityHash.Net40Async\System.Data.HashFunction.CityHash.Net40Async.xproj", "{5F332D31-5ED3-429C-8FFD-376F239D1EC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.CityHash", "System.Data.HashFunction.CityHash\System.Data.HashFunction.CityHash.csproj", "{7B02E48B-A8BD-4BA9-81D9-CF9D99E41863}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.ELF64.Net40Async", "System.Data.HashFunction.ELF64.Net40Async\System.Data.HashFunction.ELF64.Net40Async.xproj", "{4EE3840D-6C1D-485D-B8FB-CACF5CDB1694}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.CRC", "System.Data.HashFunction.CRC\System.Data.HashFunction.CRC.csproj", "{430008BB-7973-40D6-87A5-36F9DE82854E}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.FNV.Net40Async", "System.Data.HashFunction.FNV.Net40Async\System.Data.HashFunction.FNV.Net40Async.xproj", "{A13DD780-9E05-434F-9103-EA15FF72E4DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.ELF64", "System.Data.HashFunction.ELF64\System.Data.HashFunction.ELF64.csproj", "{5B210687-E8B4-4BC4-A65D-3E504212C207}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.HashAlgorithm.Net40Async", "System.Data.HashFunction.HashAlgorithm.Net40Async\System.Data.HashFunction.HashAlgorithm.Net40Async.xproj", "{5F10ECB0-7FE6-43C7-9A99-B5FD0F40B652}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.FNV", "System.Data.HashFunction.FNV\System.Data.HashFunction.FNV.csproj", "{B1C242A6-9A88-4BFC-A75E-F20E29F8F3D6}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.Jenkins.Net40Async", "System.Data.HashFunction.Jenkins.Net40Async\System.Data.HashFunction.Jenkins.Net40Async.xproj", "{AEB5FCAC-BBB5-48F1-B949-7D87CD4D2FF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Jenkins", "System.Data.HashFunction.Jenkins\System.Data.HashFunction.Jenkins.csproj", "{D93196A6-0525-4E49-81C8-29CB694E26B6}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.MurmurHash.Net40Async", "System.Data.HashFunction.MurmurHash.Net40Async\System.Data.HashFunction.MurmurHash.Net40Async.xproj", "{D49B0394-51D0-4E85-B494-2BAD79C02980}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.MurmurHash", "System.Data.HashFunction.MurmurHash\System.Data.HashFunction.MurmurHash.csproj", "{51D02F05-0557-4586-8288-5FF95D89FD3E}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.Pearson.Net40Async", "System.Data.HashFunction.Pearson.Net40Async\System.Data.HashFunction.Pearson.Net40Async.xproj", "{2F7821AE-3B05-4457-A761-B05AB91FBD41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Pearson", "System.Data.HashFunction.Pearson\System.Data.HashFunction.Pearson.csproj", "{FB716555-104D-4F62-9A8F-DF915378B52F}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.SpookyHash.Net40Async", "System.Data.HashFunction.SpookyHash.Net40Async\System.Data.HashFunction.SpookyHash.Net40Async.xproj", "{AB6F380C-6450-4FFB-AE61-6759120F0359}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.SpookyHash", "System.Data.HashFunction.SpookyHash\System.Data.HashFunction.SpookyHash.csproj", "{E3B6C41C-F55D-4980-9E12-00BAEF1D26F5}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.Test.Net40Async", "System.Data.HashFunction.Test.Net40Async\System.Data.HashFunction.Test.Net40Async.xproj", "{BF17D816-ABE2-4BBB-8767-3BDFB5E11AB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Test", "System.Data.HashFunction.Test\System.Data.HashFunction.Test.csproj", "{CEC9E70A-A7A6-49B1-A10D-521FED0FD47D}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.xxHash.Net40Async", "System.Data.HashFunction.xxHash.Net40Async\System.Data.HashFunction.xxHash.Net40Async.xproj", "{DA7EF365-2DC4-413D-9782-EEEBF9A29609}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.xxHash", "System.Data.HashFunction.xxHash\System.Data.HashFunction.xxHash.csproj", "{048E84BE-B266-453C-96B9-D4AAAD5ABF34}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Data.HashFunction.Test.Net451", "System.Data.HashFunction.Test.Net451\System.Data.HashFunction.Test.Net451.xproj", "{FC2BE8F2-85FA-4432-9229-E88FF9FF03FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.HashAlgorithm", "System.Data.HashFunction.HashAlgorithm\System.Data.HashFunction.HashAlgorithm.csproj", "{89C43129-57DC-445C-9521-5C7A6011A878}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Core.Net40Async", "System.Data.HashFunction.Core.Net40Async\System.Data.HashFunction.Core.Net40Async.csproj", "{A22B18AE-37C2-4B47-BD02-F4CE25BFB34C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.CRC.Net40Async", "System.Data.HashFunction.CRC.Net40Async\System.Data.HashFunction.CRC.Net40Async.csproj", "{E801B9B4-4B73-4646-8268-C5BD0E2C5DAB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.BernsteinHash.Net40Async", "System.Data.HashFunction.BernsteinHash.Net40Async\System.Data.HashFunction.BernsteinHash.Net40Async.csproj", "{3D897912-2C81-4892-B3D6-D6B4E5AC34D1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Blake2.Net40Async", "System.Data.HashFunction.Blake2.Net40Async\System.Data.HashFunction.Blake2.Net40Async.csproj", "{BD988BAC-D6D3-458E-A392-DBF0CDAB49A7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.BuzHash.Net40Async", "System.Data.HashFunction.BuzHash.Net40Async\System.Data.HashFunction.BuzHash.Net40Async.csproj", "{BF71C7FA-6356-4DD6-9B08-62B465FB5F36}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.CityHash.Net40Async", "System.Data.HashFunction.CityHash.Net40Async\System.Data.HashFunction.CityHash.Net40Async.csproj", "{5F332D31-5ED3-429C-8FFD-376F239D1EC0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.ELF64.Net40Async", "System.Data.HashFunction.ELF64.Net40Async\System.Data.HashFunction.ELF64.Net40Async.csproj", "{4EE3840D-6C1D-485D-B8FB-CACF5CDB1694}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.FNV.Net40Async", "System.Data.HashFunction.FNV.Net40Async\System.Data.HashFunction.FNV.Net40Async.csproj", "{A13DD780-9E05-434F-9103-EA15FF72E4DF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.HashAlgorithm.Net40Async", "System.Data.HashFunction.HashAlgorithm.Net40Async\System.Data.HashFunction.HashAlgorithm.Net40Async.csproj", "{5F10ECB0-7FE6-43C7-9A99-B5FD0F40B652}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Jenkins.Net40Async", "System.Data.HashFunction.Jenkins.Net40Async\System.Data.HashFunction.Jenkins.Net40Async.csproj", "{AEB5FCAC-BBB5-48F1-B949-7D87CD4D2FF0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.MurmurHash.Net40Async", "System.Data.HashFunction.MurmurHash.Net40Async\System.Data.HashFunction.MurmurHash.Net40Async.csproj", "{D49B0394-51D0-4E85-B494-2BAD79C02980}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Pearson.Net40Async", "System.Data.HashFunction.Pearson.Net40Async\System.Data.HashFunction.Pearson.Net40Async.csproj", "{2F7821AE-3B05-4457-A761-B05AB91FBD41}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.SpookyHash.Net40Async", "System.Data.HashFunction.SpookyHash.Net40Async\System.Data.HashFunction.SpookyHash.Net40Async.csproj", "{AB6F380C-6450-4FFB-AE61-6759120F0359}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Test.Net40Async", "System.Data.HashFunction.Test.Net40Async\System.Data.HashFunction.Test.Net40Async.csproj", "{BF17D816-ABE2-4BBB-8767-3BDFB5E11AB3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.xxHash.Net40Async", "System.Data.HashFunction.xxHash.Net40Async\System.Data.HashFunction.xxHash.Net40Async.csproj", "{DA7EF365-2DC4-413D-9782-EEEBF9A29609}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Test.Net451", "System.Data.HashFunction.Test.Net451\System.Data.HashFunction.Test.Net451.csproj", "{FC2BE8F2-85FA-4432-9229-E88FF9FF03FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
