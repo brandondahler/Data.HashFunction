@@ -57,6 +57,9 @@
     "System.Data.HashFunction.FNV.Net40Async": {
       "target": "project"
     },
+    "System.Data.HashFunction.HashAlgorithm.Net40Async": {
+      "target": "project"
+    },
     "System.Data.HashFunction.Interfaces": {
       "target": "project"
     },

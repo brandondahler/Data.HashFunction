@@ -70,11 +70,11 @@ namespace System.Data.HashFunction
 
 
         /// <remarks>
-        /// Defaults <see cref="InitVal" /> to 0.  <inheritdoc cref="xxHash(UInt64)" />
+        /// Defaults <see cref="HashFunctionBase.HashSize" /> to 32.  <inheritdoc cref="xxHash(int)" />
         /// </remarks>
-        /// <inheritdoc cref="xxHash(UInt64)" />
+        /// <inheritdoc cref="xxHash(int)" />
         public xxHash()
-            : this(0U)
+            : this(32)
         {
 
         }
@@ -88,17 +88,7 @@ namespace System.Data.HashFunction
         {
 
         }
-
-        /// <remarks>
-        /// Defaults <see cref="HashFunctionBase.HashSize" /> to 32.
-        /// </remarks>
-        /// <inheritdoc cref="xxHash(int, UInt64)" />
-        public xxHash(UInt64 initVal)
-            : this(32, initVal)
-        {
-
-        }
-
+        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="xxHash" /> class.

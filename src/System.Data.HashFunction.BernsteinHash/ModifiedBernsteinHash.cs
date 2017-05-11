@@ -51,7 +51,7 @@ namespace System.Data.HashFunction
         /// <inheritdoc cref="HashFunctionBase(int)" />
         public ModifiedBernsteinHash()
             : base(32)
-        { 
+        {
             
         }
 

@@ -49,6 +49,9 @@
     "System.Data.HashFunction.Interfaces": {
       "target": "project"
     },
+    "System.Data.HashFunction.HashAlgorithm": {
+      "target": "project"
+    },
     "System.Data.HashFunction.Jenkins": {
       "target": "project"
     },

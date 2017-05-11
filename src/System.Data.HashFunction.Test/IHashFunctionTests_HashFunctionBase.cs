@@ -1122,13 +1122,11 @@ namespace System.Data.HashFunction.Test
             return new CityHash();
         }
     }
-
+    
 
     #endregion
 
-#if !NETCOREAPP1_1
-
-#region Data.HashFunction.Core
+    #region Data.HashFunction.Core
 
     public class IHashFunctionAsyncTests_HashFunctionImpl
         : IHashFunctionAsyncTests<HashFunctionImpl>
@@ -1149,6 +1147,10 @@ namespace System.Data.HashFunction.Test
         }
     }
     
+
+    #endregion
+
+    #region Data.HAshFunction.HashAlgorithm
 
     public class IHashFunctionTests_HashAlgorithmWrapper_SHA1
         : IHashFunctionTests<HashAlgorithmWrapper>
@@ -1398,11 +1400,9 @@ namespace System.Data.HashFunction.Test
     }
     
 
-#endregion
+    #endregion
 
-#endif
-
-#region Data.HashFunction.ELF64
+    #region Data.HashFunction.ELF64
 
     public class IHashFunctionAsyncTests_ELF64
         : IHashFunctionAsyncTests<ELF64>
@@ -1426,9 +1426,9 @@ namespace System.Data.HashFunction.Test
     }
     
 
-#endregion
+    #endregion
 
-#region Data.HashFunction.FNV
+    #region Data.HashFunction.FNV
 
     public class IHashFunctionAsyncTests_FNV1
         : IHashFunctionAsyncTests<FNV1>
@@ -1530,9 +1530,9 @@ namespace System.Data.HashFunction.Test
     }
     
 
-#endregion
+    #endregion
 
-#region Data.HashFunction.Jenkins
+    #region Data.HashFunction.Jenkins
 
     public class IHashFunctionAsyncTests_JenkinsOneAtATime
         : IHashFunctionAsyncTests<JenkinsOneAtATime>
@@ -1695,9 +1695,9 @@ namespace System.Data.HashFunction.Test
     }
     
 
-#endregion
+    #endregion
 
-#region Data.HashFunction.MurmurHash
+    #region Data.HashFunction.MurmurHash
 
     public class IHashFunctionAsyncTests_MurmurHash1
         : IHashFunctionAsyncTests<MurmurHash1>
@@ -1814,9 +1814,9 @@ namespace System.Data.HashFunction.Test
     }
     
 
-#endregion
+    #endregion
 
-#region Data.HashFunction.Pearson
+    #region Data.HashFunction.Pearson
 
     public class IHashFunctionAsyncTests_WikipediaPearson
         : IHashFunctionAsyncTests<WikipediaPearson>
@@ -1898,9 +1898,9 @@ namespace System.Data.HashFunction.Test
     }
     
 
-#endregion
+    #endregion
 
-#region Data.HashFunction.SpookyHash
+    #region Data.HashFunction.SpookyHash
 
     public class IHashFunctionAsyncTests_SpookyHashV1
         : IHashFunctionAsyncTests<SpookyHashV1>
@@ -2078,9 +2078,9 @@ namespace System.Data.HashFunction.Test
     }
     
 
-#endregion
+    #endregion
 
-#region Data.HashFunction.xxHash
+    #region Data.HashFunction.xxHash
 
     public class IHashFunctionAsyncTests_xxHash
         : IHashFunctionAsyncTests<xxHash>
@@ -2156,34 +2156,12 @@ namespace System.Data.HashFunction.Test
     }
     
 
-    public class IHashFunctionAsyncTests_xxHash_WithInitVal_DefaultHashSize
-        : IHashFunctionAsyncTests<xxHash>
-    {
-        protected override IEnumerable<KnownValue> KnownValues
-        {
-            get
-            {
-                return new KnownValue[] {
-                    new KnownValue(32, TestConstants.Empty, 0xff52b36b),
-                    new KnownValue(32, TestConstants.FooBar, 0x294f6b05),
-                    new KnownValue(32, TestConstants.LoremIpsum, 0x01f950ab),
-                };
-            }
-        }
-
-        protected override xxHash CreateHashFunction(int hashSize)
-        {
-            return new xxHash(0x78fef705b7c769faU);
-        }
-    }
-    
-
-#endregion
+    #endregion
 
 
-#endregion
+    #endregion
 
-#region IHashFunction_SpeedTest
+    #region IHashFunction_SpeedTest
 
     public class IHashFunction_SpeedTests_HashFunctionBase
         : IHashFunction_SpeedTest
@@ -2455,8 +2433,7 @@ namespace System.Data.HashFunction.Test
                     @"HashFunctionImpl(0)", 
                     new HashFunctionImpl(0) 
                 },
-#if !NETCOREAPP1_1
-            { 
+                { 
                     @"HashAlgorithmWrapper(new SHA1Managed())", 
                     new HashAlgorithmWrapper(new SHA1Managed()) 
                 },
@@ -2486,7 +2463,7 @@ namespace System.Data.HashFunction.Test
                 },
                 { 
                     @"HashAlgorithmWrapper<SHA256Managed>()", 
-                    new HashAlgorithmWrapper<SHA256Managed>() 
+                    new HashAlgorithmWrapper<System.Security.Cryptography.SHA256Managed>() 
                 },
                 { 
                     @"HashAlgorithmWrapper<SHA384Managed>()", 
@@ -2504,7 +2481,6 @@ namespace System.Data.HashFunction.Test
                     @"HashAlgorithmWrapper<RIPEMD160Managed>()", 
                     new HashAlgorithmWrapper<RIPEMD160Managed>() 
                 },
-#endif
                 { 
                     @"ELF64()", 
                     new ELF64() 
@@ -2745,16 +2721,12 @@ namespace System.Data.HashFunction.Test
                     @"xxHash(64, 0x78fef705b7c769faU)", 
                     new xxHash(64, 0x78fef705b7c769faU) 
                 },
-                { 
-                    @"xxHash(0x78fef705b7c769faU)", 
-                    new xxHash(0x78fef705b7c769faU) 
-                },
         };
     }
 
-#endregion
+    #endregion
 
-#pragma warning restore 0618 // Restore ObsoleteAttribute warnings
+    #pragma warning restore 0618 // Restore ObsoleteAttribute warnings
 
 }
 
