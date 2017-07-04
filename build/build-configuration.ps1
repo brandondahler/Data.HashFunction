@@ -191,9 +191,9 @@ task Pack-Solution -depends Resolve-Projects,Resolve-Production-Versions {
 		}
 		
 		
-		if ($project.VersionSuffix -ne "")
+		if ($versionSuffix -ne "")
 		{
-			Exec { & $dotNetExecutable pack $project.ProjectXmlPath -c $configuration --version-suffix $project.VersionSuffix --no-build -o "$artifactsDir\Packages"  }
+			Exec { & $dotNetExecutable pack $project.ProjectXmlPath -c $configuration --version-suffix $versionSuffix --no-build -o "$artifactsDir\Packages"  }
 
 		} else {
 			if ($versions.Production.SemanticVersion.Version -lt $project.SemanticVersion.Version)
