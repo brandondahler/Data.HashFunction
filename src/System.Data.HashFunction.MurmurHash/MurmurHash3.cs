@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Utilities;
-using System.Data.HashFunction.Utilities.IntegerManipulation;
-using System.Data.HashFunction.Utilities.UnifiedData;
+using System.Data.HashFunction.Core;
+using System.Data.HashFunction.Core.Utilities;
+using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
@@ -114,7 +115,7 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(UnifiedData data)
+        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {
             byte[] hash = null;
 
@@ -136,7 +137,8 @@ namespace System.Data.HashFunction
                             ProcessRemainder(ref h1, remainder, position, length);
 
                             dataCount += length;
-                        });
+                        },
+                        cancellationToken);
             
 
                     h1 ^= (UInt32) dataCount;
@@ -164,7 +166,8 @@ namespace System.Data.HashFunction
                             ProcessRemainder(ref h1, ref h2, remainder, position, length);
 
                             dataCount += length;
-                        });
+                        },
+                        cancellationToken);
 
 
                     h1 ^= (UInt64) dataCount; 
@@ -201,7 +204,7 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
         {
             byte[] hash = null;
 
@@ -214,16 +217,18 @@ namespace System.Data.HashFunction
 
 
                     await data.ForEachGroupAsync(4, 
-                        (dataGroup, position, length) => {
-                            ProcessGroup(ref h1, dataGroup, position, length);
+                            (dataGroup, position, length) => {
+                                ProcessGroup(ref h1, dataGroup, position, length);
 
-                            dataCount += length;
-                        },
-                        (remainder, position, length) => {
-                            ProcessRemainder(ref h1, remainder, position, length);
+                                dataCount += length;
+                            },
+                            (remainder, position, length) => {
+                                ProcessRemainder(ref h1, remainder, position, length);
 
-                            dataCount += length;
-                        }).ConfigureAwait(false);
+                                dataCount += length;
+                            },
+                            cancellationToken)
+                        .ConfigureAwait(false);
             
 
                     h1 ^= (UInt32) dataCount;
@@ -242,16 +247,18 @@ namespace System.Data.HashFunction
 
             
                     await data.ForEachGroupAsync(16, 
-                        (dataGroup, position, length) => {
-                            ProcessGroup(ref h1, ref h2, dataGroup, position, length);
+                            (dataGroup, position, length) => {
+                                ProcessGroup(ref h1, ref h2, dataGroup, position, length);
 
-                            dataCount += length;
-                        },
-                        (remainder, position, length) => {
-                            ProcessRemainder(ref h1, ref h2, remainder, position, length);
+                                dataCount += length;
+                            },
+                            (remainder, position, length) => {
+                                ProcessRemainder(ref h1, ref h2, remainder, position, length);
 
-                            dataCount += length;
-                        }).ConfigureAwait(false);
+                                dataCount += length;
+                            },
+                            cancellationToken)
+                        .ConfigureAwait(false);
 
 
                     h1 ^= (UInt64) dataCount; 
@@ -288,25 +295,23 @@ namespace System.Data.HashFunction
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void ProcessGroup(ref UInt32 h1, byte[] dataGroup, int position, int length)
+        private void ProcessGroup(ref UInt32 h1, byte[] dataGroup, int position, int length)
         {
             for (var x = position; x < position + length; x += 4)
             {
                 UInt32 k1 = BitConverter.ToUInt32(dataGroup, x);
 
                 k1 *= c1_32;
-                k1 = k1.RotateLeft(15);
+                k1 = RotateLeft(k1, 15);
                 k1 *= c2_32;
 
                 h1 ^= k1;
-                h1 = h1.RotateLeft(13);
+                h1 = RotateLeft(h1, 13);
                 h1 = (h1 * 5) + 0xe6546b64;
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void ProcessGroup(ref UInt64 h1, ref UInt64 h2, byte[] dataGroup, int position, int length)
+        private void ProcessGroup(ref UInt64 h1, ref UInt64 h2, byte[] dataGroup, int position, int length)
         {
             for (var x = position; x < position + length; x += 16)
             {
@@ -314,28 +319,27 @@ namespace System.Data.HashFunction
                 UInt64 k2 = BitConverter.ToUInt64(dataGroup, x + 8);
 
                 k1 *= c1_128;
-                k1 = k1.RotateLeft(31);
+                k1 = RotateLeft(k1, 31);
                 k1 *= c2_128;
                 h1 ^= k1;
 
-                h1 = h1.RotateLeft(27);
+                h1 = RotateLeft(h1, 27);
                 h1 += h2;
                 h1 = (h1 * 5) + 0x52dce729;
 
                 k2 *= c2_128;
-                k2 = k2.RotateLeft(33);
+                k2 = RotateLeft(k2, 33);
                 k2 *= c1_128;
                 h2 ^= k2;
 
-                h2 = h2.RotateLeft(31);
+                h2 = RotateLeft(h2, 31);
                 h2 += h1;
                 h2 = (h2 * 5) + 0x38495ab5;
             }
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void ProcessRemainder(ref UInt32 h1, byte[] remainder, int position, int length)
+        private void ProcessRemainder(ref UInt32 h1, byte[] remainder, int position, int length)
         {
             UInt32 k2 = 0;
 
@@ -352,13 +356,12 @@ namespace System.Data.HashFunction
             }
 
             k2 *= c1_32;
-            k2 = k2.RotateLeft(15);
+            k2 = RotateLeft(k2, 15);
             k2 *= c2_32;
             h1 ^= k2;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void ProcessRemainder(ref UInt64 h1, ref UInt64 h2, byte[] remainder, int position, int length)
+        private void ProcessRemainder(ref UInt64 h1, ref UInt64 h2, byte[] remainder, int position, int length)
         {
             UInt64 k1 = 0;
             UInt64 k2 = 0;
@@ -374,7 +377,7 @@ namespace System.Data.HashFunction
                 case  9: 
                     k2 ^= ((UInt64) remainder[position + 8]) <<  0;
                     k2 *= c2_128; 
-                    k2  = k2.RotateLeft(33); 
+                    k2  = RotateLeft(k2, 33); 
                     k2 *= c1_128; h2 ^= k2;
 
                     goto case 8;
@@ -399,13 +402,12 @@ namespace System.Data.HashFunction
             }
 
             k1 *= c1_128;
-            k1  = k1.RotateLeft(31);
+            k1  = RotateLeft(k1, 31);
             k1 *= c2_128;
             h1 ^= k1;
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Mix(ref UInt32 h)
         {
             h ^= h >> 16;
@@ -415,7 +417,6 @@ namespace System.Data.HashFunction
             h ^= h >> 16;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Mix(ref UInt64 k)
         {
             k ^= k >> 33;
@@ -423,6 +424,25 @@ namespace System.Data.HashFunction
             k ^= k >> 33;
             k *= 0xc4ceb9fe1a85ec53;
             k ^= k >> 33;
+        }
+
+
+        private static UInt32 RotateLeft(UInt32 operand, int shiftCount)
+        {
+            shiftCount &= 0x1f;
+
+            return
+                (operand << shiftCount) |
+                (operand >> (32 - shiftCount));
+        }
+
+        private static UInt64 RotateLeft(UInt64 operand, int shiftCount)
+        {
+            shiftCount &= 0x3f;
+
+            return
+                (operand << shiftCount) |
+                (operand >> (64 - shiftCount));
         }
     }
 }

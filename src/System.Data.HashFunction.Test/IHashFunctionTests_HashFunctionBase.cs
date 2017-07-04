@@ -1126,30 +1126,6 @@ namespace System.Data.HashFunction.Test
 
     #endregion
 
-    #region Data.HashFunction.Core
-
-    public class IHashFunctionAsyncTests_HashFunctionImpl
-        : IHashFunctionAsyncTests<HashFunctionImpl>
-    {
-        protected override IEnumerable<KnownValue> KnownValues
-        {
-            get
-            {
-                return new KnownValue[] {
-                    new KnownValue(0, TestConstants.Empty, new byte[0]),
-                };
-            }
-        }
-
-        protected override HashFunctionImpl CreateHashFunction(int hashSize)
-        {
-            return new HashFunctionImpl(hashSize);
-        }
-    }
-    
-
-    #endregion
-
     #region Data.HashFunction.HashAlgorithm
 
     public class IHashFunctionTests_HashAlgorithmWrapper_SHA1
@@ -1171,7 +1147,7 @@ namespace System.Data.HashFunction.Test
 
         protected override HashAlgorithmWrapper CreateHashFunction(int hashSize)
         {
-            return new HashAlgorithmWrapper(SHA1.Create());
+            return new HashAlgorithmWrapper(() => SHA1.Create());
         }
     }
     
@@ -1191,7 +1167,7 @@ namespace System.Data.HashFunction.Test
 
         protected override HashAlgorithmWrapper CreateHashFunction(int hashSize)
         {
-            return new HashAlgorithmWrapper(SHA256.Create());
+            return new HashAlgorithmWrapper(() => SHA256.Create());
         }
     }
     
@@ -1211,7 +1187,7 @@ namespace System.Data.HashFunction.Test
 
         protected override HashAlgorithmWrapper CreateHashFunction(int hashSize)
         {
-            return new HashAlgorithmWrapper(SHA384.Create());
+            return new HashAlgorithmWrapper(() => SHA384.Create());
         }
     }
     
@@ -1231,7 +1207,7 @@ namespace System.Data.HashFunction.Test
 
         protected override HashAlgorithmWrapper CreateHashFunction(int hashSize)
         {
-            return new HashAlgorithmWrapper(SHA512.Create());
+            return new HashAlgorithmWrapper(() => SHA512.Create());
         }
     }
     
@@ -1251,7 +1227,7 @@ namespace System.Data.HashFunction.Test
 
         protected override HashAlgorithmWrapper CreateHashFunction(int hashSize)
         {
-            return new HashAlgorithmWrapper(MD5.Create());
+            return new HashAlgorithmWrapper(() => MD5.Create());
         }
     }
     
@@ -2286,28 +2262,24 @@ namespace System.Data.HashFunction.Test
                     new CityHash() 
                 },
                 { 
-                    @"HashFunctionImpl(0)", 
-                    new HashFunctionImpl(0) 
+                    @"HashAlgorithmWrapper(() => SHA1.Create())", 
+                    new HashAlgorithmWrapper(() => SHA1.Create()) 
                 },
                 { 
-                    @"HashAlgorithmWrapper(SHA1.Create())", 
-                    new HashAlgorithmWrapper(SHA1.Create()) 
+                    @"HashAlgorithmWrapper(() => SHA256.Create())", 
+                    new HashAlgorithmWrapper(() => SHA256.Create()) 
                 },
                 { 
-                    @"HashAlgorithmWrapper(SHA256.Create())", 
-                    new HashAlgorithmWrapper(SHA256.Create()) 
+                    @"HashAlgorithmWrapper(() => SHA384.Create())", 
+                    new HashAlgorithmWrapper(() => SHA384.Create()) 
                 },
                 { 
-                    @"HashAlgorithmWrapper(SHA384.Create())", 
-                    new HashAlgorithmWrapper(SHA384.Create()) 
+                    @"HashAlgorithmWrapper(() => SHA512.Create())", 
+                    new HashAlgorithmWrapper(() => SHA512.Create()) 
                 },
                 { 
-                    @"HashAlgorithmWrapper(SHA512.Create())", 
-                    new HashAlgorithmWrapper(SHA512.Create()) 
-                },
-                { 
-                    @"HashAlgorithmWrapper(MD5.Create())", 
-                    new HashAlgorithmWrapper(MD5.Create()) 
+                    @"HashAlgorithmWrapper(() => MD5.Create())", 
+                    new HashAlgorithmWrapper(() => MD5.Create()) 
                 },
                 { 
                     @"ELF64()", 

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Utilities.UnifiedData;
+using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -35,7 +35,7 @@ namespace System.Data.HashFunction.Test.Jenkins
 
                 Assert.Equal(
                     0x85c64fdU,
-                    BitConverter.ToUInt32(resultBytes, 0));
+                    BitConverter.ToUInt32(resultBytes.Hash, 0));
             }
         }
     }

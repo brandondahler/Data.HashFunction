@@ -19,6 +19,13 @@ properties {
 	$openCoverExecutable = "$sourceDir\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe"
 
 	$buildNumber = Read-BuildNumber "$buildDir\BuildNumber.txt"
+	
+	$versionSuffix = ""
+
+	if ($preReleaseTag -ne "")
+	{
+		$versionSuffix = "$preReleaseTag-$buildNumber"
+	}
 }
 
 
@@ -41,25 +48,16 @@ Task Resolve-Projects -depends Load-Powershell-Dependencies {
 	{
 		$name = $projectDirectory.Name
 		$path = "$sourceDir\$name"
-		$projectJsonPath = "$path\project.json"
+		$projectXmlPath = "$path\$name.csproj"
 
-		$projectObject = Get-Content $projectJsonPath| ConvertFrom-Json
-
-
-		$versionSuffix = ""
-
-		if ($preReleaseTag -ne "")
-		{
-			$versionSuffix = "$preReleaseTag-$buildNumber"
-		}
+		[xml] $projectObject = Get-Content $projectXmlPath
 
 
 		$project = New-Object –TypeName PSObject –Prop @{
 			Name = $name
 			Path = $path
-			ProjectJsonPath = $projectJsonPath
-			SemanticVersion = [NuGet.SemanticVersion]::new($projectObject.version.Replace("-*", "-$versionSuffix"))
-			VersionSuffix = $versionSuffix
+			ProjectXmlPath = $projectXmlPath
+			SemanticVersion = [NuGet.SemanticVersion]::new($(Select-Xml "/Project/PropertyGroup/VersionPrefix/text()" $projectObject).ToString() + "-$versionSuffix")
 			NuGetPath = "$nuGetDir\$name"
 			NuGetPackageName = $name
 			SkipPackaging = $name.StartsWith("System.Data.HashFunction.Test")
@@ -77,11 +75,8 @@ Task Resolve-Production-Versions -depends Load-Powershell-Dependencies,Resolve-P
 		{
 			continue
 		}
-
-		$xmlDocument = [System.Xml.XmlDocument]::new()
 			
-		$versionResults = Invoke-WebRequest $($nuGetBaseUrl + "FindPackagesById()?Id='" + $project.NuGetPackageName + "'")
-		$xmlDocument.LoadXml($versionResults.Content)
+		$versionResults = Invoke-RestMethod -Method Get $($nuGetBaseUrl + "FindPackagesById()?Id='" + $project.NuGetPackageName + "'&`$format=xml")
 
 		$versions = New-Object -TypeName PSObject -Property @{
 			Production = $(New-Object -TypeName PSObject -Property @{
@@ -94,7 +89,7 @@ Task Resolve-Production-Versions -depends Load-Powershell-Dependencies,Resolve-P
 			}) 
 		}
 
-		foreach ($entry in $xmlDocument.feed.entry)
+		foreach ($entry in $versionResults)
 		{
 			$entrySemanticVersion = [NuGet.SemanticVersion]::new($entry.properties.Version)
 			$entryVcsRevision = Parse-VCS-Revision $entry.properties.ReleaseNotes
@@ -163,22 +158,14 @@ Task Validate-Versions -depends Resolve-Production-Versions {
 }
 
 task Build-Solution -depends Resolve-Projects {	
-	$allProjects = [System.Collections.ArrayList]::new()
-
-	foreach ($project in $script:projects)
-	{
-		$allProjects.Add($project.ProjectJsonPath) > $null
-	}
-
-
-	Exec { & $dotNetExecutable restore $allProjects > $null }
+	Exec { & $dotNetExecutable restore "$sourceDir" }
 	
-	if ($project.VersionSuffix -ne "")
+	if ($preReleaseTag -ne "")
 	{
-		Exec { & $dotNetExecutable build $allProjects -c $configuration --version-suffix $project.VersionSuffix }
+		Exec { & $dotNetExecutable build "$sourceDir" -c $configuration --version-suffix $versionSuffix }
 
 	} else {
-		Exec { & $dotNetExecutable build $allProjects -c $configuration }
+		Exec { & $dotNetExecutable build "$sourceDir" -c $configuration }
 	}
 }
 
@@ -206,12 +193,12 @@ task Pack-Solution -depends Resolve-Projects,Resolve-Production-Versions {
 		
 		if ($project.VersionSuffix -ne "")
 		{
-			Exec { & $dotNetExecutable pack $project.ProjectJsonPath -c $configuration --version-suffix $project.VersionSuffix --no-build -o "$artifactsDir\Packages"  }
+			Exec { & $dotNetExecutable pack $project.ProjectXmlPath -c $configuration --version-suffix $project.VersionSuffix --no-build -o "$artifactsDir\Packages"  }
 
 		} else {
 			if ($versions.Production.SemanticVersion.Version -lt $project.SemanticVersion.Version)
 			{
-				Exec { & $dotNetExecutable pack $project.ProjectJsonPath -c $configuration --no-build -o "$artifactsDir\Packages" }
+				Exec { & $dotNetExecutable pack $project.ProjectXmlPath -c $configuration --no-build -o "$artifactsDir\Packages" }
 			}
 		}
 	}
@@ -235,7 +222,7 @@ task Test-Solution -depends Resolve-Projects {
 	{
 		if ($project.RunTests)
 		{
-			Exec { & $openCoverExecutable "-target:$dotNetExecutable" $("`"-targetargs:test " + $project.ProjectJsonPath + " -c $configuration --no-build`"") -nodefaultfilters $("`"-filter:+[System.Data.HashFunction.*]* -[" + $project.Name + "]*`"") $("`"-output:$artifactsDir\Coverage\" + $project.Name + ".xml`"") -register:user -oldStyle }
+			Exec { & $openCoverExecutable "-target:$dotNetExecutable" $("`"-targetargs:test " + $project.ProjectXmlPath + " -c $configuration --no-build`"") -nodefaultfilters $("`"-filter:+[System.Data.HashFunction.*]* -[" + $project.Name + "]*`"") $("`"-output:$artifactsDir\Coverage\" + $project.Name + ".xml`"") -register:user -oldStyle }
 		}
 	}
 }

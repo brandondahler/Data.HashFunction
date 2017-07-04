@@ -8,17 +8,39 @@ namespace System.Data.HashFunction.Utilities
 {
 
     /// <summary>Structure to store 128-bit integer as two 64-bit integers.</summary>
-    public struct UInt128
-        : IComparable, 
+    internal class UInt128
+        : IComparable,
             IComparable<UInt128>,
             IEquatable<UInt128>
     {
+        internal static UInt128 Zero { get => new UInt128(0, 0); }
+        internal static UInt128 One { get => new UInt128(1, 0); }
+
+
         /// <summary>Low-order 64-bits.</summary>
         public UInt64 Low { get; set; }
 
         /// <summary>High-order 64-bits.</summary>
         public UInt64 High { get; set; }
 
+
+        public UInt128()
+            : this(0)
+        {
+
+        }
+
+        public UInt128(UInt64 low)
+            : this(low, 0)
+        {
+
+        }
+
+        public UInt128(UInt64 low, UInt64 high)
+        {
+            Low = low;
+            High = high;
+        }
 
 
         #region Object overrides
@@ -28,7 +50,7 @@ namespace System.Data.HashFunction.Utilities
         /// <returns>true if the specified value is equal to the current value; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            return obj is UInt128 && this == (UInt128) obj;
+            return obj is UInt128 && this == (UInt128)obj;
         }
 
         /// <inheritdoc/>
@@ -46,10 +68,7 @@ namespace System.Data.HashFunction.Utilities
         /// </returns>
         public override string ToString()
         {
-            return string.Format(
-                "{{ High = {0}, Low = {1} }}",
-                High,
-                Low);
+            return $"{{ Low = {Low}, High = {High} }}";
         }
 
         #endregion
@@ -81,9 +100,9 @@ namespace System.Data.HashFunction.Utilities
                 return 1;
 
             if (!(value is UInt128))
-                throw new ArgumentException("value is not a UInt128.", "value");
+                throw new ArgumentException("value is not a UInt128.", nameof(value));
 
-            return CompareTo((UInt128) value);
+            return CompareTo((UInt128)value);
         }
 
         #endregion
@@ -114,7 +133,7 @@ namespace System.Data.HashFunction.Utilities
 
             if (value > this)
                 return 1;
-            
+
             return 0;
         }
 
@@ -140,61 +159,13 @@ namespace System.Data.HashFunction.Utilities
         #region Static Operators
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="UInt16"/> to <see cref="UInt128"/>.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>
-        /// The result of the conversion.
-        /// </returns>
-        public static implicit operator UInt128(UInt16 value)
-        {
-            return new UInt128() {
-                Low = value,
-                High = 0
-            };
-        }
-
-        /// <summary>
-        /// Performs an implicit conversion from <see cref="UInt32"/> to <see cref="UInt128"/>.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>
-        /// The result of the conversion.
-        /// </returns>
-        public static implicit operator UInt128(UInt32 value)
-        {
-            return new UInt128()
-            {
-                Low = value,
-                High = 0
-            };
-        }
-
-        /// <summary>
-        /// Performs an implicit conversion from <see cref="UInt64"/> to <see cref="UInt128"/>.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>
-        /// The result of the conversion.
-        /// </returns>
-        public static implicit operator UInt128(UInt64 value)
-        {
-            return new UInt128()
-            {
-                Low = value,
-                High = 0
-            };
-        }
-
-
-        /// <summary>
         /// Implements the increment operator.
         /// </summary>
         /// <param name="value">The instance to increment.</param>
         /// <returns>A new instance representing the value incremented by 1.</returns>
         public static UInt128 operator ++(UInt128 value)
         {
-            return value + 1;
+            return value + One;
         }
 
         /// <summary>
@@ -214,7 +185,7 @@ namespace System.Data.HashFunction.Utilities
         /// <returns>A new instance representing the value decremented by 1.</returns>
         public static UInt128 operator --(UInt128 value)
         {
-            return value - 1;
+            return value - One;
         }
 
         /// <summary>
@@ -240,9 +211,9 @@ namespace System.Data.HashFunction.Utilities
         /// <param name="a">The first object to compare.</param>
         /// <param name="b">The second object to compare.</param>
         /// <returns>true if the specified value is not equal to the current value; otherwise, false.</returns>
-        public static bool operator !=(UInt128 a, UInt128 b) 
-        { 
-            return !(a == b); 
+        public static bool operator !=(UInt128 a, UInt128 b)
+        {
+            return !(a == b);
         }
 
         /// <summary>
@@ -260,13 +231,9 @@ namespace System.Data.HashFunction.Utilities
                 carryOver = 1UL;
 
 
-            return new UInt128()
-            {
-                Low = lowResult,
-                High = a.High + b.High + carryOver
-            };
+            return new UInt128(lowResult, a.High + b.High + carryOver);
         }
-        
+
         /// <summary>
         /// Implements the add operator.
         /// </summary>
@@ -293,10 +260,7 @@ namespace System.Data.HashFunction.Utilities
                 borrow = 1UL;
 
 
-            return new UInt128() {
-                Low = lowResult,
-                High = a.High - b.High - borrow
-            };
+            return new UInt128(lowResult, a.High - b.High - borrow);
         }
 
         /// <summary>

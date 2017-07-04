@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Utilities;
-using System.Data.HashFunction.Utilities.IntegerManipulation;
-using System.Data.HashFunction.Utilities.UnifiedData;
+using System.Data.HashFunction.Core;
+using System.Data.HashFunction.Core.Utilities;
+using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
@@ -107,129 +108,157 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(UnifiedData data)
+        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {
             byte[] hash = null;
 
             switch (HashSize)
             {
                 case 8:
-                {
-                    byte h = (byte) InitVal;
-            
-                    data.ForEachRead((dataBytes, position, length) => {
-                        ProcessBytes(ref h, dataBytes, position, length);
-                    });
-            
-                    hash = new byte[] { h };
-                    break;
-                }
+                    {
+                        byte h = (byte)InitVal;
+
+                        data.ForEachRead(
+                            (dataBytes, position, length) =>
+                            {
+                                ProcessBytes(ref h, dataBytes, position, length);
+                            },
+                            cancellationToken);
+
+                        hash = new byte[] { h };
+                        break;
+                    }
 
                 case 16:
-                { 
-                    UInt16 h = (UInt16) InitVal;
-            
-                    data.ForEachRead((dataBytes, position, length) => {
-                        ProcessBytes(ref h, dataBytes, position, length);
-                    });
+                    {
+                        UInt16 h = (UInt16)InitVal;
 
-                    hash = BitConverter.GetBytes(h);
-                    break;
-                }
+                        data.ForEachRead(
+                            (dataBytes, position, length) =>
+                            {
+                                ProcessBytes(ref h, dataBytes, position, length);
+                            },
+                            cancellationToken);
+
+                        hash = BitConverter.GetBytes(h);
+                        break;
+                    }
 
                 case 32:
-                {
-                    UInt32 h = (UInt32) InitVal;
-            
-                    data.ForEachRead((dataBytes, position, length) => {
-                        ProcessBytes(ref h, dataBytes, position, length);
-                    });
-            
-                    hash = BitConverter.GetBytes(h);
-                    break;
-                }
-                
+                    {
+                        UInt32 h = (UInt32)InitVal;
+
+                        data.ForEachRead(
+                            (dataBytes, position, length) =>
+                            {
+                                ProcessBytes(ref h, dataBytes, position, length);
+                            },
+                            cancellationToken);
+
+                        hash = BitConverter.GetBytes(h);
+                        break;
+                    }
+
                 case 64:
-                {
-                    UInt64 h = InitVal;
-            
-                    data.ForEachRead((dataBytes, position, length) => {
-                        ProcessBytes(ref h, dataBytes, position, length);
-                    });
-            
-                    hash = BitConverter.GetBytes(h);
-                    break;
-                }
+                    {
+                        UInt64 h = InitVal;
+
+                        data.ForEachRead(
+                            (dataBytes, position, length) =>
+                            {
+                                ProcessBytes(ref h, dataBytes, position, length);
+                            },
+                            cancellationToken);
+
+                        hash = BitConverter.GetBytes(h);
+                        break;
+                    }
 
                 default:
-                {
-                    throw new NotImplementedException();
-                }
+                    {
+                        throw new NotImplementedException();
+                    }
             }
 
             return hash;
         }
-        
+
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
         {
             byte[] hash = null;
 
             switch (HashSize)
             {
                 case 8:
-                {
-                    byte h = (byte) InitVal;
-            
-                    await data.ForEachReadAsync((dataBytes, position, length) => {
-                        ProcessBytes(ref h, dataBytes, position, length);
-                    }).ConfigureAwait(false);
+                    {
+                        byte h = (byte)InitVal;
 
-                    hash = new byte[] { h };
-                    break;
-                }
+                        await data.ForEachReadAsync(
+                                (dataBytes, position, length) =>
+                                {
+                                    ProcessBytes(ref h, dataBytes, position, length);
+                                },
+                                cancellationToken)
+                            .ConfigureAwait(false);
+
+                        hash = new byte[] { h };
+                        break;
+                    }
 
                 case 16:
-                { 
-                    UInt16 h = (UInt16) InitVal;
-            
-                    await data.ForEachReadAsync((dataBytes, position, length) => {
-                        ProcessBytes(ref h, dataBytes, position, length);
-                    }).ConfigureAwait(false);
+                    {
+                        UInt16 h = (UInt16)InitVal;
 
-                    hash = BitConverter.GetBytes(h);
-                    break;
-                }
+                        await data.ForEachReadAsync(
+                                (dataBytes, position, length) =>
+                                {
+                                    ProcessBytes(ref h, dataBytes, position, length);
+                                },
+                                cancellationToken)
+                            .ConfigureAwait(false);
+
+                        hash = BitConverter.GetBytes(h);
+                        break;
+                    }
 
                 case 32:
-                {
-                    UInt32 h = (UInt32) InitVal;
-            
-                    await data.ForEachReadAsync((dataBytes, position, length) => {
-                        ProcessBytes(ref h, dataBytes, position, length);
-                    }).ConfigureAwait(false);
+                    {
+                        UInt32 h = (UInt32)InitVal;
 
-                    hash = BitConverter.GetBytes(h);
-                    break;
-                }
-                
+                        await data.ForEachReadAsync(
+                                (dataBytes, position, length) =>
+                                {
+                                    ProcessBytes(ref h, dataBytes, position, length);
+                                },
+                                cancellationToken)
+                            .ConfigureAwait(false);
+
+                        hash = BitConverter.GetBytes(h);
+                        break;
+                    }
+
                 case 64:
-                {
-                    UInt64 h = InitVal;
-            
-                    await data.ForEachReadAsync((dataBytes, position, length) => {
-                        ProcessBytes(ref h, dataBytes, position, length);
-                    }).ConfigureAwait(false);
-            
-                    hash = BitConverter.GetBytes(h);
-                    break;
-                }
+                    {
+                        UInt64 h = InitVal;
+
+                        await data.ForEachReadAsync(
+                                (dataBytes, position, length) =>
+                                {
+                                    ProcessBytes(ref h, dataBytes, position, length);
+                                },
+                                cancellationToken)
+                            .ConfigureAwait(false);
+
+                        hash = BitConverter.GetBytes(h);
+                        break;
+                    }
 
                 default:
-                {
-                    throw new NotImplementedException();
-                }
+                    {
+                        throw new NotImplementedException();
+                    }
             }
 
             return hash;
@@ -240,19 +269,19 @@ namespace System.Data.HashFunction
         private void ProcessBytes(ref byte h, byte[] dataBytes, int position, int length)
         {
             for (var x = position; x < position + length; ++x)
-                h = (byte) (CShift(h, 1) ^ (byte) Rtab[dataBytes[x]]);
+                h = (byte)(CShift(h, 1) ^ (byte)Rtab[dataBytes[x]]);
         }
 
         private void ProcessBytes(ref UInt16 h, byte[] dataBytes, int position, int length)
         {
             for (var x = position; x < position + length; ++x)
-                h = (UInt16) (CShift(h, 1) ^ (UInt16) Rtab[dataBytes[x]]);
+                h = (UInt16)(CShift(h, 1) ^ (UInt16)Rtab[dataBytes[x]]);
         }
 
         private void ProcessBytes(ref UInt32 h, byte[] dataBytes, int position, int length)
         {
             for (var x = position; x < position + length; ++x)
-                h = CShift(h, 1) ^ (UInt32) Rtab[dataBytes[x]];
+                h = CShift(h, 1) ^ (UInt32)Rtab[dataBytes[x]];
         }
 
         private void ProcessBytes(ref UInt64 h, byte[] dataBytes, int position, int length)
@@ -262,6 +291,8 @@ namespace System.Data.HashFunction
         }
 
 
+        #region CShift
+
         /// <summary>
         /// Rotate bits of input byte by amount specified.  Shifts left or right based on ShiftDirection parameter.
         /// </summary>
@@ -270,13 +301,12 @@ namespace System.Data.HashFunction
         /// <returns>
         /// Byte value after rotating by the specified amount of bits.
         /// </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private byte CShift(byte n, int shiftCount)
         {
             if (ShiftDirection == CircularShiftDirection.Right)
-                return n.RotateRight(shiftCount);
+                return RotateRight(n, shiftCount);
 
-            return n.RotateLeft(shiftCount);
+            return RotateLeft(n, shiftCount);
         }
 
         /// <summary>
@@ -287,13 +317,12 @@ namespace System.Data.HashFunction
         /// <returns>
         /// UInt16 value after rotating by the specified amount of bits.
         /// </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private UInt16 CShift(UInt16 n, int shiftCount)
         {
             if (ShiftDirection == CircularShiftDirection.Right)
-                return n.RotateRight(shiftCount);
+                return RotateRight(n, shiftCount);
 
-            return n.RotateLeft(shiftCount);
+            return RotateLeft(n, shiftCount);
         }
 
         /// <summary>
@@ -304,13 +333,12 @@ namespace System.Data.HashFunction
         /// <returns>
         /// UInt32 value after rotating by the specified amount of bits.
         /// </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private UInt32 CShift(UInt32 n, int shiftCount)
         {
             if (ShiftDirection == CircularShiftDirection.Right)
-                return n.RotateRight(shiftCount);
+                return RotateRight(n, shiftCount);
 
-            return n.RotateLeft(shiftCount);
+            return RotateLeft(n, shiftCount);
         }
 
         /// <summary>
@@ -321,14 +349,95 @@ namespace System.Data.HashFunction
         /// <returns>
         /// UInt64 value after rotating by the specified amount of bits.
         /// </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private UInt64 CShift(UInt64 n, int shiftCount)
         {
             if (ShiftDirection == CircularShiftDirection.Right)
-                return n.RotateRight(shiftCount);
+                return RotateRight(n, shiftCount);
 
-            return n.RotateLeft(shiftCount);
+            return RotateLeft(n, shiftCount);
         }
+
+        #endregion
+
+        #region RotateLeft
+
+        private static byte RotateLeft(byte operand, int shiftCount)
+        {
+            shiftCount &= 0x07;
+
+            return (byte)(
+                (operand << shiftCount) |
+                (operand >> (8 - shiftCount)));
+        }
+
+        private static UInt16 RotateLeft(UInt16 operand, int shiftCount)
+        {
+            shiftCount &= 0x0f;
+
+            return (UInt16)(
+                (operand << shiftCount) |
+                (operand >> (16 - shiftCount)));
+        }
+
+        private static UInt32 RotateLeft(UInt32 operand, int shiftCount)
+        {
+            shiftCount &= 0x1f;
+
+            return
+                (operand << shiftCount) |
+                (operand >> (32 - shiftCount));
+        }
+
+        private static UInt64 RotateLeft(UInt64 operand, int shiftCount)
+        {
+            shiftCount &= 0x3f;
+
+            return
+                (operand << shiftCount) |
+                (operand >> (64 - shiftCount));
+        }
+
+        #endregion
+
+        #region RotateRight
+        
+        private static byte RotateRight(byte operand, int shiftCount)
+        {
+            shiftCount &= 0x07;
+
+            return (byte)(
+                (operand >> shiftCount) |
+                (operand << (8 - shiftCount)));
+        }
+
+        private static UInt16 RotateRight(UInt16 operand, int shiftCount)
+        {
+            shiftCount &= 0x0f;
+
+            return (UInt16)(
+                (operand >> shiftCount) |
+                (operand << (16 - shiftCount)));
+        }
+
+        private static UInt32 RotateRight(UInt32 operand, int shiftCount)
+        {
+            shiftCount &= 0x1f;
+
+            return
+                (operand >> shiftCount) |
+                (operand << (32 - shiftCount));
+        }
+
+        private static UInt64 RotateRight(UInt64 operand, int shiftCount)
+        {
+            shiftCount &= 0x3f;
+
+            return
+                (operand >> shiftCount) |
+                (operand << (64 - shiftCount));
+        }
+
+        #endregion
 
     }
 }

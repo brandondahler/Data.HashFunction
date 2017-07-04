@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Utilities;
-using System.Data.HashFunction.Utilities.IntegerManipulation;
-using System.Data.HashFunction.Utilities.UnifiedData;
+using System.Data.HashFunction.Core;
+using System.Data.HashFunction.Core.Utilities;
+using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
@@ -61,7 +62,7 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(UnifiedData data)
+        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {
             UInt32 h = Seed ^ ((UInt32) data.Length * m);
 
@@ -71,7 +72,8 @@ namespace System.Data.HashFunction
                 },
                 (remainder, position, length) => {
                     ProcessRemainder(ref h, remainder, position, length);
-                });
+                },
+                cancellationToken);
  
             h *= m;
             h ^= h >> 10;
@@ -82,17 +84,19 @@ namespace System.Data.HashFunction
         }
         
         /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
         {
             UInt32 h = Seed ^ ((UInt32) data.Length * m);
 
             await data.ForEachGroupAsync(4,
-                (dataGroup, position, length) => {
-                    ProcessGroup(ref h, dataGroup, position, length);
-                },
-                (remainder, position, length) => {
-                    ProcessRemainder(ref h, remainder, position, length);
-                }).ConfigureAwait(false);
+                    (dataGroup, position, length) => {
+                        ProcessGroup(ref h, dataGroup, position, length);
+                    },
+                    (remainder, position, length) => {
+                        ProcessRemainder(ref h, remainder, position, length);
+                    },
+                    cancellationToken)
+                .ConfigureAwait(false);
 
             h *= m;
             h ^= h >> 10;
@@ -103,7 +107,6 @@ namespace System.Data.HashFunction
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void ProcessGroup(ref UInt32 h, byte[] dataGroup, int position, int length)
         {
             for (var x = position; x < position + length; x += 4)
@@ -114,7 +117,6 @@ namespace System.Data.HashFunction
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void ProcessRemainder(ref UInt32 h, byte[] remainder, int position, int length)
         {
             switch (length)

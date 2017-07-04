@@ -8,26 +8,15 @@ using Xunit;
 
 namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
 {
-    using System.Data.HashFunction.Utilities.UnifiedData;
- 
+    using System.Data.HashFunction.Core.Utilities.UnifiedData;
+    using System.Threading;
+
     public class ArrayDataTests
     {
-        [Fact]
-        public async void ArrayData_ToArrayAsync_ThrowsAggregateExceptions()
-        {
-            var testData = new ArrayData_ThrowNonAsync(new byte[0]);
-
-            Assert.Equal("Mock Exception", 
-                (await Assert.ThrowsAsync<InvalidOperationException>(async () => 
-                    await testData.ToArrayAsync()))
-                .Message);       
-        }
-
-
         public class UnifiedDataTests_ArrayData
             : UnifiedDataTests
         {
-            protected override UnifiedData CreateTestData(int length)
+            protected override IUnifiedData CreateTestData(int length)
             {
                 var r = new Random();
 

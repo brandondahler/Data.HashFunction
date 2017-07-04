@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Utilities;
-using System.Data.HashFunction.Utilities.IntegerManipulation;
+using System.Data.HashFunction.Core.Utilities;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -43,7 +42,7 @@ namespace System.Data.HashFunction
             for (var x = position; x < position + length; ++x)
             {
                 hash[0] ^= data[x];
-                hash = hash.ExtendedMultiply(prime);
+                hash = ExtendedMultiply(hash, prime);
             }
         }
 

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Utilities;
-using System.Data.HashFunction.Utilities.IntegerManipulation;
-using System.Data.HashFunction.Utilities.UnifiedData;
+using System.Data.HashFunction.Core;
+using System.Data.HashFunction.Core.Utilities;
+using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
@@ -57,7 +58,7 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(UnifiedData data)
+        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {
             UInt32 a = 0x9e3779b9;
             UInt32 b = 0x9e3779b9;
@@ -75,7 +76,8 @@ namespace System.Data.HashFunction
                     ProcessRemainder(ref a, ref b, ref c, remainder, position, length);
 
                     dataCount += length;
-                });
+                },
+                cancellationToken);
 
             c += (UInt32) dataCount;
 
@@ -86,7 +88,7 @@ namespace System.Data.HashFunction
         }
         
         /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
         {
             UInt32 a = 0x9e3779b9;
             UInt32 b = 0x9e3779b9;
@@ -95,16 +97,18 @@ namespace System.Data.HashFunction
             int dataCount = 0;
 
             await data.ForEachGroupAsync(12, 
-                (dataGroup, position, length) => {
-                    ProcessGroup(ref a, ref b, ref c, dataGroup, position, length);
+                    (dataGroup, position, length) => {
+                        ProcessGroup(ref a, ref b, ref c, dataGroup, position, length);
 
-                    dataCount += length;
-                }, 
-                (remainder, position, length) => {
-                    ProcessRemainder(ref a, ref b, ref c, remainder, position, length);
+                        dataCount += length;
+                    }, 
+                    (remainder, position, length) => {
+                        ProcessRemainder(ref a, ref b, ref c, remainder, position, length);
 
-                    dataCount += length;
-                }).ConfigureAwait(false);
+                        dataCount += length;
+                    },
+                    cancellationToken)
+                .ConfigureAwait(false);
 
             c += (UInt32) dataCount;
 
@@ -115,7 +119,6 @@ namespace System.Data.HashFunction
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void ProcessGroup(ref UInt32 a, ref UInt32 b, ref UInt32 c, byte[] dataGroup, int position, int length)
         {
             for (var x = position; x < position + length; x += 12)
@@ -128,7 +131,6 @@ namespace System.Data.HashFunction
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void ProcessRemainder(ref UInt32 a, ref UInt32 b, ref UInt32 c, byte[] remainder, int position, int length)
         {
             // All the case statements fall through on purpose
@@ -162,7 +164,6 @@ namespace System.Data.HashFunction
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Mix(ref UInt32 a, ref UInt32 b, ref UInt32 c)
         {
             a -= b; a -= c; a ^= (c >> 13);

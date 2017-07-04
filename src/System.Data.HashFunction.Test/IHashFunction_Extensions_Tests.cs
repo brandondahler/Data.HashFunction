@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 #endif
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -174,7 +175,11 @@ namespace System.Data.HashFunction.Test
 
             private void AssertSugar(Action<IHashFunction> action, byte[] data)
             {
-                var hashFunctionMock = new Mock<HashFunctionImpl>(32) { CallBase = true }; ;
+                var hashFunctionMock = new Mock<IHashFunction>();
+
+                hashFunctionMock.SetupGet(hf => hf.HashSize)
+                    .Returns(32);
+
 
                 hashFunctionMock.Setup(hf => hf.ComputeHash(It.Is<byte[]>(d => data.SequenceEqual(d))))
                     .Verifiable();
@@ -344,10 +349,13 @@ namespace System.Data.HashFunction.Test
 
             private void AssertSugar(Action<IHashFunction, int> action, byte[] data)
             {
-                var hashFunctionMock = new Mock<HashFunctionImpl>(32) { CallBase = true };
+                var hashFunctionMock = new Mock<IHashFunction>();
+
+                hashFunctionMock.SetupGet(hf => hf.HashSize)
+                    .Returns(32);
 
                 hashFunctionMock.Setup(hf => hf.ComputeHash(It.Is<byte[]>(d => data.SequenceEqual(d))))
-                    .Returns(new byte[4])
+                    .Returns(Mock.Of<IHashValue>(hv => hv.Hash == new byte[4]))
                     .Verifiable();
 
 
@@ -386,8 +394,9 @@ namespace System.Data.HashFunction.Test
                 Assert.Equal(
                     knownValue.Value, 
                     hashFunction.ComputeHash(
-                        TestConstants.FooBar, 
-                        knownValue.Key));
+                            TestConstants.FooBar, 
+                            knownValue.Key)
+                        .Hash);
             }
         }
 

@@ -3525,30 +3525,12 @@
   },
 
   {
-    "Name": "Data.HashFunction.Core",
-    "Tests": [
-      {
-        "IHashFunctionT": "HashFunctionImpl",
-        "Async": true,
-        "ConstructionParameters": [ "hashSize" ],
-        "KnownValues": [
-          {
-            "Bits": 0,
-            "TestValue": "TestConstants.Empty",
-            "ExpectedValue": "new byte[0]"
-          }
-        ]
-      }
-    ]
-  },
-
-  {
     "Name": "Data.HashFunction.HashAlgorithm",
     "Tests": [
       {
         "IHashFunctionT": "HashAlgorithmWrapper",
         "NamePostfix": "SHA1",
-        "ConstructionParameters": [ "SHA1.Create()" ],
+        "ConstructionParameters": [ "() => SHA1.Create()" ],
         "KnownValues": [
           {
             "Bits": 160,
@@ -3581,7 +3563,7 @@
       {
         "IHashFunctionT": "HashAlgorithmWrapper",
         "NamePostfix": "SHA256",
-        "ConstructionParameters": [ "SHA256.Create()" ],
+        "ConstructionParameters": [ "() => SHA256.Create()" ],
         "KnownValues": [
           {
             "Bits": 256,
@@ -3594,7 +3576,7 @@
       {
         "IHashFunctionT": "HashAlgorithmWrapper",
         "NamePostfix": "SHA384",
-        "ConstructionParameters": [ "SHA384.Create()" ],
+        "ConstructionParameters": [ "() => SHA384.Create()" ],
         "KnownValues": [
           {
             "Bits": 384,
@@ -3607,7 +3589,7 @@
       {
         "IHashFunctionT": "HashAlgorithmWrapper",
         "NamePostfix": "SHA512",
-        "ConstructionParameters": [ "SHA512.Create()" ],
+        "ConstructionParameters": [ "() => SHA512.Create()" ],
         "KnownValues": [
           {
             "Bits": 512,
@@ -3620,7 +3602,7 @@
       {
         "IHashFunctionT": "HashAlgorithmWrapper",
         "NamePostfix": "MD5",
-        "ConstructionParameters": [ "MD5.Create()" ],
+        "ConstructionParameters": [ "() => MD5.Create()" ],
         "KnownValues": [
           {
             "Bits": 128,

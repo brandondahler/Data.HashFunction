@@ -19,6 +19,11 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>True</DebugSymbols>
+  </PropertyGroup>
+  
   <ItemGroup>
     <Compile Include="..\SolutionInfo.cs" Exclude="bin\**;obj\**;**\*.xproj;packages\**" />
     <None Include="App.config" />
@@ -45,7 +50,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
-    <PackageReference Include="Moq" Version="4.7.10" />
+    <PackageReference Include="Moq" Version="4.7.63" />
     <PackageReference Include="xunit" Version="2.2.0" />
   </ItemGroup>
 
@@ -58,6 +63,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="IHashFunctionTests_CRC.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>IHashFunctionTests_CRC.cs</LastGenOutput>
+    </None>
     <None Update="IHashFunctionTests_HashFunctionBase.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>IHashFunctionTests_HashFunctionBase.cs</LastGenOutput>
@@ -70,6 +79,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="IHashFunctionTests_CRC.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>IHashFunctionTests_CRC.tt</DependentUpon>
+    </Compile>
     <Compile Update="IHashFunctionTests_HashFunctionBase.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

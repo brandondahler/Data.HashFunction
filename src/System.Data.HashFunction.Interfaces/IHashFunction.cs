@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
 {
@@ -22,17 +23,40 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <param name="data">Array of data to hash.</param>
         /// <returns>
-        /// Hash value of the data as byte array.
+        /// Hash value of the data.
         /// </returns>
-        byte[] ComputeHash(byte[] data);
+        IHashValue ComputeHash(byte[] data);
+
+        /// <summary>
+        /// Computes hash value for given byte array.
+        /// </summary>
+        /// <param name="data">Array of data to hash.</param>
+        /// <param name="cancellationToken">A cancellation token to observe while calculating the hash value.</param>
+        /// <returns>
+        /// Hash value of the data.
+        /// </returns>
+        /// <exception cref="TaskCanceledException">The <paramref name="cancellationToken"/> was canceled.</exception>
+        IHashValue ComputeHash(byte[] data, CancellationToken cancellationToken);
+
 
         /// <summary>
         /// Computes hash value for given stream.
         /// </summary>
         /// <param name="data">Stream of data to hash.</param>
         /// <returns>
-        /// Hash value of data as byte array.
+        /// Hash value of the data.
         /// </returns>
-        byte[] ComputeHash(Stream data);
+        IHashValue ComputeHash(Stream data);
+
+        /// <summary>
+        /// Computes hash value for given stream.
+        /// </summary>
+        /// <param name="data">Stream of data to hash.</param>
+        /// <param name="cancellationToken">A cancellation token to observe while calculating the hash value.</param>
+        /// <returns>
+        /// Hash value of the data.
+        /// </returns>
+        /// <exception cref="TaskCanceledException">The <paramref name="cancellationToken"/> was canceled.</exception>
+        IHashValue ComputeHash(Stream data, CancellationToken cancellationToken);
     }
 }

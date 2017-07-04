@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Utilities;
-using System.Data.HashFunction.Utilities.IntegerManipulation;
-using System.Data.HashFunction.Utilities.UnifiedData;
+using System.Data.HashFunction.Core;
+using System.Data.HashFunction.Core.Utilities;
+using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
@@ -127,7 +128,7 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(UnifiedData data)
+        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {
             UInt64[] h = new UInt64[12];
 
@@ -145,7 +146,8 @@ namespace System.Data.HashFunction
                 (remainder, position, length) => {
                     Array.Copy(remainder, position, remainderData, 0, length);
                     remainderData[95] = (byte) length;
-                });
+                },
+                cancellationToken);
 
 
             End(h, remainderData, 0);
@@ -183,7 +185,7 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
         {
             UInt64[] h = new UInt64[12];
 
@@ -195,13 +197,15 @@ namespace System.Data.HashFunction
             var remainderData = new byte[96];
 
             await data.ForEachGroupAsync(96, 
-                (dataGroup, position, length) => {
-                    Mix(h, dataGroup, position, length);
-                },
-                (remainder, position, length) => {
-                    Array.Copy(remainder, position, remainderData, 0, length);
-                    remainderData[95] = (byte) length;
-                }).ConfigureAwait(false);
+                    (dataGroup, position, length) => {
+                        Mix(h, dataGroup, position, length);
+                    },
+                    (remainder, position, length) => {
+                        Array.Copy(remainder, position, remainderData, 0, length);
+                        remainderData[95] = (byte) length;
+                    },
+                    cancellationToken)
+                .ConfigureAwait(false);
 
 
             End(h, remainderData, 0);
@@ -243,8 +247,7 @@ namespace System.Data.HashFunction
                 11, 32, 43, 31, 17,28, 39, 57, 55, 54, 22, 46
             };
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Mix(UInt64[] h, byte[] data, int position, int length)
+        private void Mix(UInt64[] h, byte[] data, int position, int length)
         {
             for (int x = position; x < position + length; x += 96)
             {
@@ -253,7 +256,7 @@ namespace System.Data.HashFunction
                     h[i]             += BitConverter.ToUInt64(data, x + (i * 8)); 
                     h[(i +  2) % 12] ^= h[(i + 10) % 12]; 
                     h[(i + 11) % 12] ^= h[i];
-                    h[i]              = h[i].RotateLeft(_MixRotationParameters[i]); 
+                    h[i]              = RotateLeft(h[i], _MixRotationParameters[i]); 
                     h[(i + 11) % 12] += h[(i + 1) % 12];
                 }
             }
@@ -265,19 +268,17 @@ namespace System.Data.HashFunction
                 44, 15, 34, 21, 38, 33, 10, 13, 38, 53, 42, 54
             };
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void EndPartial(UInt64[] h)
+        private void EndPartial(UInt64[] h)
         {
             for (int i = 0; i < 12; ++i)
             {
                 h[(i + 11) % 12] += h[(i + 1) % 12]; 
                 h[(i +  2) % 12] ^= h[(i + 11) % 12]; 
-                h[(i +  1) % 12] = h[(i + 1) % 12].RotateLeft(_EndPartialRotationParameters[i]);
+                h[(i +  1) % 12] = RotateLeft(h[(i + 1) % 12], _EndPartialRotationParameters[i]);
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void End(UInt64[] h, byte[] data, int position)
+        private void End(UInt64[] h, byte[] data, int position)
         {
             for (int i = 0; i < 12; ++i)
             {
@@ -288,5 +289,15 @@ namespace System.Data.HashFunction
             EndPartial(h);
             EndPartial(h);
         }
+
+        private static UInt64 RotateLeft(UInt64 operand, int shiftCount)
+        {
+            shiftCount &= 0x3f;
+
+            return
+                (operand << shiftCount) |
+                (operand >> (64 - shiftCount));
+        }
+
     }
 }

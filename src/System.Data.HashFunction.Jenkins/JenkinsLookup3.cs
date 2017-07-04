@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Utilities;
-using System.Data.HashFunction.Utilities.IntegerManipulation;
-using System.Data.HashFunction.Utilities.UnifiedData;
+using System.Data.HashFunction.Core;
+using System.Data.HashFunction.Core.Utilities;
+using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
@@ -133,7 +134,7 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(UnifiedData data)
+        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {
             UInt32 a = 0xdeadbeef + (UInt32) data.Length + InitVal1;
             UInt32 b = 0xdeadbeef + (UInt32) data.Length + InitVal1;
@@ -151,7 +152,8 @@ namespace System.Data.HashFunction
                 },
                 (remainder, position, length) => {
                     ProcessRemainder(ref a, ref b, ref c, ref dataCount, remainder, position, length);
-                });
+                },
+                cancellationToken);
     
             if (dataCount > 0)
                 Final(ref a, ref b, ref c);
@@ -178,7 +180,7 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
         {
             UInt32 a = 0xdeadbeef + (UInt32) data.Length + InitVal1;
             UInt32 b = 0xdeadbeef + (UInt32) data.Length + InitVal1;
@@ -191,12 +193,14 @@ namespace System.Data.HashFunction
             int dataCount = 0;
 
             await data.ForEachGroupAsync(12, 
-                (dataGroup, position, length) => {
-                    ProcessGroup(ref a, ref b, ref c, ref dataCount, dataGroup, position, length);
-                },
-                (remainder, position, length) => {
-                    ProcessRemainder(ref a, ref b, ref c, ref dataCount, remainder, position, length);
-                }).ConfigureAwait(false);
+                    (dataGroup, position, length) => {
+                        ProcessGroup(ref a, ref b, ref c, ref dataCount, dataGroup, position, length);
+                    },
+                    (remainder, position, length) => {
+                        ProcessRemainder(ref a, ref b, ref c, ref dataCount, remainder, position, length);
+                    },
+                    cancellationToken)
+                .ConfigureAwait(false);
     
             if (dataCount > 0)
                 Final(ref a, ref b, ref c);
@@ -222,8 +226,7 @@ namespace System.Data.HashFunction
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void ProcessGroup(ref UInt32 a, ref UInt32 b, ref UInt32 c, ref int dataCount, byte[] dataGroup, int position, int length)
+        private void ProcessGroup(ref UInt32 a, ref UInt32 b, ref UInt32 c, ref int dataCount, byte[] dataGroup, int position, int length)
         {
             for (int x = position; x < position + length; x += 12)
             {
@@ -239,8 +242,7 @@ namespace System.Data.HashFunction
             dataCount += length;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void ProcessRemainder(ref UInt32 a, ref UInt32 b, ref UInt32 c, ref int dataCount, byte[] remainder, int position, int length)
+        private void ProcessRemainder(ref UInt32 a, ref UInt32 b, ref UInt32 c, ref int dataCount, byte[] remainder, int position, int length)
         {
             // Mix at beginning of subsequent group to handle special case of length <= 12
             if (dataCount > 0)
@@ -278,30 +280,38 @@ namespace System.Data.HashFunction
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Mix(ref UInt32 a, ref UInt32 b, ref UInt32 c)
+        private void Mix(ref UInt32 a, ref UInt32 b, ref UInt32 c)
         {
-            a -= c; a ^= c.RotateLeft( 4); c += b;
-            b -= a; b ^= a.RotateLeft( 6); a += c;
-            c -= b; c ^= b.RotateLeft( 8); b += a;
+            a -= c; a ^= RotateLeft(c, 4); c += b;
+            b -= a; b ^= RotateLeft(a,  6); a += c;
+            c -= b; c ^= RotateLeft(b,  8); b += a;
 
-            a -= c; a ^= c.RotateLeft(16); c += b;
-            b -= a; b ^= a.RotateLeft(19); a += c;
-            c -= b; c ^= b.RotateLeft( 4); b += a;
+            a -= c; a ^= RotateLeft(c, 16); c += b;
+            b -= a; b ^= RotateLeft(a, 19); a += c;
+            c -= b; c ^= RotateLeft(b,  4); b += a;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Final(ref UInt32 a, ref UInt32 b, ref UInt32 c)
+        private void Final(ref UInt32 a, ref UInt32 b, ref UInt32 c)
         {
-            c ^= b; c -= b.RotateLeft(14);
-            a ^= c; a -= c.RotateLeft(11);
-            b ^= a; b -= a.RotateLeft(25);
+            c ^= b; c -= RotateLeft(b, 14);
+            a ^= c; a -= RotateLeft(c, 11);
+            b ^= a; b -= RotateLeft(a, 25);
 
-            c ^= b; c -= b.RotateLeft(16);
-            a ^= c; a -= c.RotateLeft( 4);
-            b ^= a; b -= a.RotateLeft(14);
+            c ^= b; c -= RotateLeft(b, 16);
+            a ^= c; a -= RotateLeft(c,  4);
+            b ^= a; b -= RotateLeft(a, 14);
 
-            c ^= b; c -= b.RotateLeft(24);
+            c ^= b; c -= RotateLeft(b, 24);
+        }
+
+
+        private static UInt32 RotateLeft(UInt32 operand, int shiftCount)
+        {
+            shiftCount &= 0x1f;
+
+            return
+                (operand << shiftCount) |
+                (operand >> (32 - shiftCount));
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using System.Data.HashFunction.Utilities.UnifiedData;
+using System.Data.HashFunction.Core.Utilities.UnifiedData;
 
 namespace System.Data.HashFunction.Test.Blake2
 {

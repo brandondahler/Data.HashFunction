@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Utilities;
-using System.Data.HashFunction.Utilities.IntegerManipulation;
-using System.Data.HashFunction.Utilities.UnifiedData;
+using System.Data.HashFunction.Core;
+using System.Data.HashFunction.Core.Utilities;
+using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
@@ -98,7 +99,7 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(UnifiedData data)
+        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {
             byte[] hash = null;
 
@@ -126,7 +127,7 @@ namespace System.Data.HashFunction
                                 for (var y = 0; y < 4; ++y)
                                 {
                                     initValues[y] += BitConverter.ToUInt32(dataGroup, x + (y * 4)) * _primes32[1];
-                                    initValues[y] = initValues[y].RotateLeft(13);
+                                    initValues[y] = RotateLeft(initValues[y], 13);
                                     initValues[y] *= _primes32[0];
                                 }
                             }
@@ -138,7 +139,8 @@ namespace System.Data.HashFunction
                             Array.Copy(remainderData, position, remainder, 0, length);
 
                             dataCount += (ulong)length;
-                        });
+                        },
+                        cancellationToken);
 
 
                     PostProcess(ref h, initValues, dataCount, remainder);
@@ -170,7 +172,7 @@ namespace System.Data.HashFunction
                                 for (var y = 0; y < 4; ++y)
                                 {
                                     initValues[y] += BitConverter.ToUInt64(dataGroup, x + (y * 8)) * _primes64[1];
-                                    initValues[y] = initValues[y].RotateLeft(31);
+                                    initValues[y] = RotateLeft(initValues[y], 31);
                                     initValues[y] *= _primes64[0];
                                 }
                             }
@@ -182,7 +184,8 @@ namespace System.Data.HashFunction
                             Array.Copy(remainderData, position, remainder, 0, length);
 
                             dataCount += (ulong) length;
-                        });
+                        },
+                        cancellationToken);
 
 
                     PostProcess(ref h, initValues, dataCount, remainder);
@@ -202,7 +205,7 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
         {
             byte[] hash = null;
             
@@ -224,25 +227,27 @@ namespace System.Data.HashFunction
                     };
 
                     await data.ForEachGroupAsync(16, 
-                        (dataGroup, position, length) => {
-                            for (var x = position; x < position + length; x += 16)
-                            {
-                                for (var y = 0; y < 4; ++y)
+                            (dataGroup, position, length) => {
+                                for (var x = position; x < position + length; x += 16)
                                 {
-                                    initValues[y] += BitConverter.ToUInt32(dataGroup, x + (y * 4)) * _primes32[1];
-                                    initValues[y] = initValues[y].RotateLeft(13);
-                                    initValues[y] *= _primes32[0];
+                                    for (var y = 0; y < 4; ++y)
+                                    {
+                                        initValues[y] += BitConverter.ToUInt32(dataGroup, x + (y * 4)) * _primes32[1];
+                                        initValues[y] = RotateLeft(initValues[y], 13);
+                                        initValues[y] *= _primes32[0];
+                                    }
                                 }
-                            }
 
-                            dataCount += (ulong) length;
-                        },
-                        (remainderData, position, length) => {
-                            remainder = new byte[length];
-                            Array.Copy(remainderData, position, remainder, 0, length);
+                                dataCount += (ulong) length;
+                            },
+                            (remainderData, position, length) => {
+                                remainder = new byte[length];
+                                Array.Copy(remainderData, position, remainder, 0, length);
 
-                            dataCount += (ulong) length;
-                        }).ConfigureAwait(false);
+                                dataCount += (ulong) length;
+                            },
+                            cancellationToken)
+                        .ConfigureAwait(false);
 
                     PostProcess(ref h, initValues, dataCount, remainder);
 
@@ -266,25 +271,27 @@ namespace System.Data.HashFunction
 
 
                     await data.ForEachGroupAsync(32, 
-                        (dataGroup, position, length) => {
-                            for (var x = position; x < position + length; x += 32)
-                            {
-                                for (var y = 0; y < 4; ++y)
+                            (dataGroup, position, length) => {
+                                for (var x = position; x < position + length; x += 32)
                                 {
-                                    initValues[y] += BitConverter.ToUInt64(dataGroup, x + (y * 8)) * _primes64[1];
-                                    initValues[y] = initValues[y].RotateLeft(31);
-                                    initValues[y] *= _primes64[0];
+                                    for (var y = 0; y < 4; ++y)
+                                    {
+                                        initValues[y] += BitConverter.ToUInt64(dataGroup, x + (y * 8)) * _primes64[1];
+                                        initValues[y] = RotateLeft(initValues[y], 31);
+                                        initValues[y] *= _primes64[0];
+                                    }
                                 }
-                            }
 
-                            dataCount += (ulong) length;
-                        },
-                        (remainderData, position, length) => {
-                            remainder = new byte[length];
-                            Array.Copy(remainderData, position, remainder, 0, length);
+                                dataCount += (ulong) length;
+                            },
+                            (remainderData, position, length) => {
+                                remainder = new byte[length];
+                                Array.Copy(remainderData, position, remainder, 0, length);
 
-                            dataCount += (ulong) remainder.Length;
-                        }).ConfigureAwait(false);
+                                dataCount += (ulong) remainder.Length;
+                            },
+                            cancellationToken)
+                        .ConfigureAwait(false);
 
 
                     PostProcess(ref h, initValues, dataCount, remainder);
@@ -303,15 +310,14 @@ namespace System.Data.HashFunction
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void PostProcess(ref UInt32 h, UInt32[] initValues, ulong dataCount, byte[] remainder)
+        private void PostProcess(ref UInt32 h, UInt32[] initValues, ulong dataCount, byte[] remainder)
         {
             if (dataCount >= 16)
             {
-                h = initValues[0].RotateLeft(1) + 
-                    initValues[1].RotateLeft(7) + 
-                    initValues[2].RotateLeft(12) + 
-                    initValues[3].RotateLeft(18);
+                h = RotateLeft(initValues[0], 1) + 
+                    RotateLeft(initValues[1], 7) + 
+                    RotateLeft(initValues[2], 12) + 
+                    RotateLeft(initValues[3], 18);
             }
 
 
@@ -323,7 +329,7 @@ namespace System.Data.HashFunction
                 for (int x = 0; x < remainder.Length / 4; ++x)
                 {
                     h += BitConverter.ToUInt32(remainder, x * 4) * _primes32[2];
-                    h  = h.RotateLeft(17) * _primes32[3];
+                    h  = RotateLeft(h, 17) * _primes32[3];
                 }
 
 
@@ -331,7 +337,7 @@ namespace System.Data.HashFunction
                 for (int x = remainder.Length - (remainder.Length % 4); x < remainder.Length; ++x)
                 {
                     h += (UInt32) remainder[x] * _primes32[4];
-                    h  = h.RotateLeft(11) * _primes32[0];
+                    h  = RotateLeft(h, 11) * _primes32[0];
                 }
             }
 
@@ -342,21 +348,20 @@ namespace System.Data.HashFunction
             h ^= h >> 16;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void PostProcess(ref UInt64 h, UInt64[] initValues, ulong dataCount, byte[] remainder)
+        private void PostProcess(ref UInt64 h, UInt64[] initValues, ulong dataCount, byte[] remainder)
         {
             if (dataCount >= 32)
             {
-                h = initValues[0].RotateLeft(1) +
-                    initValues[1].RotateLeft(7) +
-                    initValues[2].RotateLeft(12) +
-                    initValues[3].RotateLeft(18);
+                h = RotateLeft(initValues[0], 1) +
+                    RotateLeft(initValues[1], 7) +
+                    RotateLeft(initValues[2], 12) +
+                    RotateLeft(initValues[3], 18);
 
 
                 for (var x = 0; x < initValues.Length; ++x)
                 {
                     initValues[x] *= _primes64[1];
-                    initValues[x] = initValues[x].RotateLeft(31);
+                    initValues[x] = RotateLeft(initValues[x], 31);
                     initValues[x] *= _primes64[0];
 
                     h ^= initValues[x];
@@ -371,8 +376,8 @@ namespace System.Data.HashFunction
                 // In 8-byte chunks, process all full chunks
                 for (int x = 0; x < remainder.Length / 8; ++x)
                 {
-                    h ^= (BitConverter.ToUInt64(remainder, x * 8) * _primes64[1]).RotateLeft(31) * _primes64[0];
-                    h  = (h.RotateLeft(27) * _primes64[0]) + _primes64[3];
+                    h ^= RotateLeft(BitConverter.ToUInt64(remainder, x * 8) * _primes64[1], 31) * _primes64[0];
+                    h  = (RotateLeft(h, 27) * _primes64[0]) + _primes64[3];
                 }
 
 
@@ -380,14 +385,14 @@ namespace System.Data.HashFunction
                 if ((remainder.Length % 8) >= 4)
                 {
                     h ^= ((UInt64) BitConverter.ToUInt32(remainder, remainder.Length - (remainder.Length % 8))) * _primes64[0];
-                    h  = (h.RotateLeft(23) * _primes64[1]) + _primes64[2];
+                    h  = (RotateLeft(h, 23) * _primes64[1]) + _primes64[2];
                 }
 
                 // Process last 4 bytes in 1-byte chunks (only runs if data.Length % 4 != 0)
                 for (int x = remainder.Length - (remainder.Length % 4); x < remainder.Length; ++x)
                 {
                     h ^= (UInt64) remainder[x] * _primes64[4];
-                    h  = h.RotateLeft(11) * _primes64[0];
+                    h  = RotateLeft(h, 11) * _primes64[0];
                 }
             }
 
@@ -397,6 +402,25 @@ namespace System.Data.HashFunction
             h ^= h >> 29;
             h *= _primes64[2];
             h ^= h >> 32;
+        }
+
+
+        private static UInt32 RotateLeft(UInt32 operand, int shiftCount)
+        {
+            shiftCount &= 0x1f;
+
+            return
+                (operand << shiftCount) |
+                (operand >> (32 - shiftCount));
+        }
+
+        private static UInt64 RotateLeft(UInt64 operand, int shiftCount)
+        {
+            shiftCount &= 0x3f;
+
+            return
+                (operand << shiftCount) |
+                (operand >> (64 - shiftCount));
         }
     }
 }

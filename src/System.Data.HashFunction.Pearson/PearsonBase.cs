@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Utilities;
-using System.Data.HashFunction.Utilities.UnifiedData;
+using System.Data.HashFunction.Core;
+using System.Data.HashFunction.Core.Utilities;
+using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
@@ -72,27 +74,32 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(UnifiedData data)
+        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {
             var h = new byte[HashSize / 8];
             bool firstByte = true;
 
-            data.ForEachRead((dataBytes, position, length) => {
-                ProcessBytes(ref h, ref firstByte, dataBytes, position, length);
-            });
+            data.ForEachRead(
+                (dataBytes, position, length) => {
+                    ProcessBytes(ref h, ref firstByte, dataBytes, position, length);
+                },
+                cancellationToken);
 
             return h;
         }
         
         /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
         {
             var h = new byte[HashSize / 8];
             bool firstByte = true;
 
-            await data.ForEachReadAsync((dataBytes, position, length) => {
-                ProcessBytes(ref h, ref firstByte, dataBytes, position, length);
-            }).ConfigureAwait(false);
+            await data.ForEachReadAsync(
+                    (dataBytes, position, length) => {
+                        ProcessBytes(ref h, ref firstByte, dataBytes, position, length);
+                    },
+                    cancellationToken)
+                .ConfigureAwait(false);
 
             return h;
         }

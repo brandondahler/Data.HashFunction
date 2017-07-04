@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Utilities;
-using System.Data.HashFunction.Utilities.IntegerManipulation;
+using System.Data.HashFunction.Core.Utilities;
+using System.Data.HashFunction.FNV.Utilities;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -41,9 +41,37 @@ namespace System.Data.HashFunction
         /// <param name="offset">Offset integer to be represented.</param>
         public FNVPrimeOffset(int bitSize, BigInteger prime, BigInteger offset)
         {
-            Prime = prime.ToUInt32Array(bitSize);
-            Offset = offset.ToUInt32Array(bitSize);
+            Prime = ToUInt32Array(prime, bitSize);
+            Offset = ToUInt32Array(offset, bitSize);
         }
 
-     }
+
+        private static UInt32[] ToUInt32Array(BigInteger value, int bitSize)
+        {
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
+
+            if (bitSize < 0 || bitSize % 32 != 0)
+                throw new ArgumentOutOfRangeException(nameof(bitSize), "bitSize must be a positive a multiple of 32.");
+
+
+            var uint32Values = new UInt32[bitSize / 32];
+            var bigIntegerBytes = value.ToByteArray();
+
+
+            var copyLength = uint32Values.Length * 4;
+
+            if (bigIntegerBytes.Length < copyLength)
+                copyLength = bigIntegerBytes.Length;
+
+
+            Buffer.BlockCopy(
+                bigIntegerBytes, 0,
+                uint32Values, 0,
+                copyLength);
+
+            return uint32Values;
+        }
+
+    }
 }

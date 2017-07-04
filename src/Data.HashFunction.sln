@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.4
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D0A9A68F-2401-42E4-A6E7-D9FF9F080197}"
 	ProjectSection(SolutionItems) = preProject
@@ -55,8 +55,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.xxHash", "System.Data.HashFunction.xxHash\System.Data.HashFunction.xxHash.csproj", "{048E84BE-B266-453C-96B9-D4AAAD5ABF34}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.HashAlgorithm", "System.Data.HashFunction.HashAlgorithm\System.Data.HashFunction.HashAlgorithm.csproj", "{89C43129-57DC-445C-9521-5C7A6011A878}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Test.Net462", "System.Data.HashFunction.Test.Net462\System.Data.HashFunction.Test.Net462.csproj", "{78DB1946-8AA3-4E5F-8DBB-233BF6FF2FE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -128,10 +126,6 @@ Global
 		{89C43129-57DC-445C-9521-5C7A6011A878}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89C43129-57DC-445C-9521-5C7A6011A878}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89C43129-57DC-445C-9521-5C7A6011A878}.Release|Any CPU.Build.0 = Release|Any CPU
-		{78DB1946-8AA3-4E5F-8DBB-233BF6FF2FE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{78DB1946-8AA3-4E5F-8DBB-233BF6FF2FE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{78DB1946-8AA3-4E5F-8DBB-233BF6FF2FE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{78DB1946-8AA3-4E5F-8DBB-233BF6FF2FE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

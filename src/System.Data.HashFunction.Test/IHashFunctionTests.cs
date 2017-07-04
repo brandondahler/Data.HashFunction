@@ -1,7 +1,6 @@
 ﻿using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Utilities.IntegerManipulation;
 using System.Data.HashFunction.Test.Mocks;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -12,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using System.Reflection;
+using System.Data.HashFunction.Core.Utilities;
 
 namespace System.Data.HashFunction.Test
 {
@@ -63,8 +63,8 @@ namespace System.Data.HashFunction.Test
                 var hashResults = hf.ComputeHash(knownValue.TestValue);
 
                 Assert.Equal(
-                        knownValue.ExpectedValue.Take((hf.HashSize + 7) / 8), 
-                        hashResults);
+                    new HashValue(knownValue.ExpectedValue.Take((hf.HashSize + 7) / 8), hf.HashSize), 
+                    hashResults);
             }
         }
 
@@ -80,25 +80,7 @@ namespace System.Data.HashFunction.Test
                     var hashResults = hf.ComputeHash(ms);
 
                     Assert.Equal(
-                        knownValue.ExpectedValue.Take((hf.HashSize + 7) / 8), 
-                        hashResults);
-                }
-            }
-        }
-
-        [Fact]
-        public void IHashFunction_ComputeHash_Stream_NonSeekable_MatchesKnownValues()
-        {
-            foreach (var knownValue in KnownValues)
-            {
-                var hf = CreateHashFunction(knownValue.HashSize);
-
-                using (var ms = new NonSeekableMemoryStream(knownValue.TestValue))
-                {
-                    var hashResults = hf.ComputeHash(ms);
-
-                    Assert.Equal(
-                        knownValue.ExpectedValue.Take((hf.HashSize + 7) / 8), 
+                        new HashValue(knownValue.ExpectedValue.Take((hf.HashSize + 7) / 8), hf.HashSize), 
                         hashResults);
                 }
             }
@@ -125,23 +107,45 @@ namespace System.Data.HashFunction.Test
                 : this(hashSize, utf8Value.ToBytes(), expectedValue.HexToBytes()) { }
 
             public KnownValue(int hashSize, string utf8Value, UInt32 expectedValue)
-                : this(hashSize, utf8Value.ToBytes(), expectedValue.ToBytes(32)) { }
+                : this(hashSize, utf8Value.ToBytes(), ToBytes(expectedValue, 32)) { }
 
             public KnownValue(int hashSize, string utf8Value, UInt64 expectedValue)
-                : this(hashSize, utf8Value.ToBytes(), expectedValue.ToBytes(64)) { }
+                : this(hashSize, utf8Value.ToBytes(), ToBytes(expectedValue, 64)) { }
 
 
             public KnownValue(int hashSize, IEnumerable<byte> value, string expectedValue)
                 : this(hashSize, value, expectedValue.HexToBytes()) { }
 
             public KnownValue(int hashSize, IEnumerable<byte> value, UInt32 expectedValue)
-                : this(hashSize, value, expectedValue.ToBytes(32)) { }
+                : this(hashSize, value, ToBytes(expectedValue, 32)) { }
 
             public KnownValue(int hashSize, IEnumerable<byte> value, UInt64 expectedValue)
-                : this(hashSize, value, expectedValue.ToBytes(64)) { }
+                : this(hashSize, value, ToBytes(expectedValue, 64)) { }
         }
 
 
         protected abstract IHashFunctionT CreateHashFunction(int hashSize);
+
+
+        private static byte[] ToBytes(UInt64 value, int bitLength)
+        {
+            if (bitLength <= 0 || bitLength > 64)
+                throw new ArgumentOutOfRangeException("bitLength", "bitLength but be in the range [1, 64].");
+
+
+            value &= (UInt64.MaxValue >> (64 - bitLength));
+
+
+            var valueBytes = new byte[(bitLength + 7) / 8];
+
+            for (int x = 0; x < valueBytes.Length; ++x)
+            {
+                valueBytes[x] = (byte)value;
+                value >>= 8;
+            }
+
+            return valueBytes;
+        }
+
     }
 }

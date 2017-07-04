@@ -8,7 +8,7 @@ using Xunit;
 
 namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
 {
-    using System.Data.HashFunction.Utilities.UnifiedData;
+    using System.Data.HashFunction.Core.Utilities.UnifiedData;
     public class StreamDataTests
     {
         [Fact]
@@ -26,10 +26,10 @@ namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
         }
 
 
-        public class UnifiedDataTests_StreamData
-            : UnifiedDataTests
+        public class UnifiedDataAsyncTests_StreamData
+            : UnifiedDataAsyncTests
         {
-            protected override UnifiedData CreateTestData(int length)
+            protected override IUnifiedDataAsync CreateTestDataAsync(int length)
             {
                 var r = new Random();
 

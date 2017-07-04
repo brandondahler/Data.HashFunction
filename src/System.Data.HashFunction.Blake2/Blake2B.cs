@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.Core;
+using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.Data.HashFunction.Utilities;
-using System.Data.HashFunction.Utilities.UnifiedData;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
@@ -52,7 +54,7 @@ namespace System.Data.HashFunction
             public readonly byte[] Buffer = new byte[128];
 
             public readonly UInt64[] H = new UInt64[8];
-            public UInt128 Counter;
+            public UInt128 Counter = new UInt128();
             public readonly UInt64[] FinalizationFlags = new UInt64[2];
 
 
@@ -184,7 +186,7 @@ namespace System.Data.HashFunction
 
 
 		/// <inheritdoc />
-		protected override byte[] ComputeHashInternal(UnifiedData data)
+		protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
 		{
             var internalState = new InternalState(HashSize, _originalKeyLength, _salt, _personalization);
 
@@ -195,7 +197,8 @@ namespace System.Data.HashFunction
             data.ForEachGroup(
                 BlockSizeBytes,
                 (array, start, count) => ProcessBytes(internalState, array, start, count),
-                (array, start, count) => ProcessBytes(internalState, array, start, count));
+                (array, start, count) => ProcessBytes(internalState, array, start, count),
+                cancellationToken);
 
             return Final(HashSize, internalState);
 		}
@@ -203,7 +206,7 @@ namespace System.Data.HashFunction
 
 
 		/// <inheritdoc />
-		protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+		protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
 		{
             var internalState = new InternalState(HashSize, _originalKeyLength, _salt, _personalization);
 
@@ -212,15 +215,17 @@ namespace System.Data.HashFunction
                 ProcessBytes(internalState, _key, 0, _key.Length);
 
 			await data.ForEachGroupAsync(
-                BlockSizeBytes,
-                (array, start, count) => ProcessBytes(internalState, array, start, count),
-                (array, start, count) => ProcessBytes(internalState, array, start, count));
+                    BlockSizeBytes,
+                    (array, start, count) => ProcessBytes(internalState, array, start, count),
+                    (array, start, count) => ProcessBytes(internalState, array, start, count),
+                    cancellationToken)
+                .ConfigureAwait(false);
 
 			return Final(HashSize, internalState);
 		}
 
 
-        private static void ProcessBytes(InternalState internalState, byte[] array, int start, int count)
+        private void ProcessBytes(InternalState internalState, byte[] array, int start, int count)
         {
 			int bufferRemaining = BlockSizeBytes - internalState.BufferFilled;
 
@@ -232,7 +237,7 @@ namespace System.Data.HashFunction
                     bufferRemaining);
 
 
-				internalState.Counter += BlockSizeBytes;
+				internalState.Counter += new UInt128(BlockSizeBytes);
 				
                 Compress(internalState, internalState.Buffer, 0);
 
@@ -243,7 +248,7 @@ namespace System.Data.HashFunction
 
 			while (count > BlockSizeBytes)
 			{
-				internalState.Counter += BlockSizeBytes;
+				internalState.Counter += new UInt128(BlockSizeBytes);
 				
 				Compress(internalState, array, start);
 				
@@ -263,10 +268,10 @@ namespace System.Data.HashFunction
 		}
 
 
-		private static byte[] Final(int hashSize, InternalState internalState)
+		private byte[] Final(int hashSize, InternalState internalState)
 		{
 			//Last compression
-			internalState.Counter += (UInt32) internalState.BufferFilled;
+			internalState.Counter += new UInt128((UInt32) internalState.BufferFilled);
 			internalState.FinalizationFlags[0] = UInt64.MaxValue;
 
 			for (int i = internalState.BufferFilled; i < internalState.Buffer.Length; i++)

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Utilities;
-using System.Data.HashFunction.Utilities.IntegerManipulation;
-using System.Data.HashFunction.Utilities.UnifiedData;
+using System.Data.HashFunction.Core;
+using System.Data.HashFunction.Core.Utilities;
+using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
@@ -44,14 +45,11 @@ namespace System.Data.HashFunction
             get { return _DefaultSettings; }
             set 
             {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-
-                _DefaultSettings = value;  
+                _DefaultSettings = value ?? throw new ArgumentNullException("value");  
             } 
         }
-        
-        
+
+
         private readonly Setting _Settings;
 
         private static Setting _DefaultSettings;
@@ -74,10 +72,7 @@ namespace System.Data.HashFunction
         public CRC(Setting settings)
             : base(settings != null ? settings.Bits : -1)
         {
-            if (settings == null)
-                throw new ArgumentNullException("settings");
-
-            _Settings = settings;
+            _Settings = settings ?? throw new ArgumentNullException("settings");
         }
 
 
@@ -92,14 +87,14 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(UnifiedData data)
+        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {
             // Use 64-bit variable regardless of CRC bit length
             UInt64 hash = Settings.InitialValue;
 
             // Reflect InitialValue if processing as big endian
             if (Settings.ReflectIn)
-                hash = hash.ReflectBits(HashSize);
+                hash = ReflectBits(hash, HashSize);
 
 
             // Store table reference in local variable to lower overhead.
@@ -113,30 +108,32 @@ namespace System.Data.HashFunction
                 mostSignificantShift = HashSize - 1;
 
 
-            data.ForEachRead((dataBytes, position, length) => {
-                ProcessBytes(ref hash, crcTable, mostSignificantShift, dataBytes, position, length);
-            });
+            data.ForEachRead(
+                (dataBytes, position, length) => {
+                    ProcessBytes(ref hash, crcTable, mostSignificantShift, dataBytes, position, length);
+                },
+                cancellationToken);
 
 
             // Account for mixed-endianness
             if (Settings.ReflectIn ^ Settings.ReflectOut)
-               hash = hash.ReflectBits(HashSize);
+               hash = ReflectBits(hash, HashSize);
 
 
             hash ^= Settings.XOrOut;
 
-            return hash.ToBytes(HashSize);
+            return ToBytes(hash, HashSize);
         }
         
         /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
         {
             // Use 64-bit variable regardless of CRC bit length
             UInt64 hash = Settings.InitialValue;
 
             // Reflect InitialValue if processing as big endian
             if (Settings.ReflectIn)
-                hash = hash.ReflectBits(HashSize);
+                hash = ReflectBits(hash, HashSize);
 
 
             // Store table reference in local variable to lower overhead.
@@ -150,19 +147,22 @@ namespace System.Data.HashFunction
                 mostSignificantShift = HashSize - 1;
 
 
-            await data.ForEachReadAsync((dataBytes, position, length) => {
-                ProcessBytes(ref hash, crcTable, mostSignificantShift, dataBytes, position, length);
-            }).ConfigureAwait(false);
+            await data.ForEachReadAsync(
+                    (dataBytes, position, length) => {
+                        ProcessBytes(ref hash, crcTable, mostSignificantShift, dataBytes, position, length);
+                    },
+                    cancellationToken)
+                .ConfigureAwait(false);
 
 
             // Account for mixed-endianness
             if (Settings.ReflectIn ^ Settings.ReflectOut)
-               hash = hash.ReflectBits(HashSize);
+               hash = ReflectBits(hash, HashSize);
 
 
             hash ^= Settings.XOrOut;
 
-            return hash.ToBytes(HashSize);
+            return ToBytes(hash, HashSize);
         }
 
         private void ProcessBytes(ref UInt64 hash, IReadOnlyList<UInt64> crcTable, int mostSignificantShift, byte[] dataBytes, int position, int length)
@@ -221,7 +221,7 @@ namespace System.Data.HashFunction
                 UInt64 curValue = x;
 
                 if (perBitCount > 1 && settings.ReflectIn)
-                    curValue = curValue.ReflectBits(perBitCount);
+                    curValue = ReflectBits(curValue, perBitCount);
 
 
                 curValue <<= (settings.Bits - perBitCount);
@@ -237,7 +237,7 @@ namespace System.Data.HashFunction
 
 
                 if (settings.ReflectIn)
-                    curValue = curValue.ReflectBits(settings.Bits);
+                    curValue = ReflectBits(curValue, settings.Bits);
 
 
                 curValue &= (UInt64.MaxValue >> (64 - settings.Bits));
@@ -247,6 +247,45 @@ namespace System.Data.HashFunction
 
 
             return crcTable;
+        }
+
+        private static byte[] ToBytes(UInt64 value, int bitLength)
+        {
+            if (bitLength <= 0 || bitLength > 64)
+                throw new ArgumentOutOfRangeException("bitLength", "bitLength but be in the range [1, 64].");
+
+
+            value &= (UInt64.MaxValue >> (64 - bitLength));
+
+
+            var valueBytes = new byte[(bitLength + 7) / 8];
+
+            for (int x = 0; x < valueBytes.Length; ++x)
+            {
+                valueBytes[x] = (byte)value;
+                value >>= 8;
+            }
+
+            return valueBytes;
+        }
+
+        private static UInt64 ReflectBits(UInt64 value, int bitLength)
+        {
+            if (bitLength <= 0 || bitLength > 64)
+                throw new ArgumentOutOfRangeException("bitLength", "bitLength must be in the range [1, 64].");
+
+            UInt64 reflectedValue = 0UL;
+
+            for (int x = 0; x < bitLength; ++x)
+            {
+                reflectedValue <<= 1;
+
+                reflectedValue |= (value & 1);
+
+                value >>= 1;
+            }
+
+            return reflectedValue;
         }
 
     }

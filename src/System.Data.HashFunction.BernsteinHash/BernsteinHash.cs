@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.HashFunction.Utilities;
-using System.Data.HashFunction.Utilities.IntegerManipulation;
-using System.Data.HashFunction.Utilities.UnifiedData;
-using System.IO;
-using System.Linq;
+﻿using System.Data.HashFunction.Core;
+using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.Runtime.CompilerServices;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
@@ -49,31 +44,35 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(UnifiedData data)
+        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {
             UInt32 h = 0;
 
-            data.ForEachRead((dataBytes, position, length) => {
-                ProcessBytes(ref h, dataBytes, position, length);
-            });
+            data.ForEachRead(
+                (dataBytes, position, length) => {
+                    ProcessBytes(ref h, dataBytes, position, length);
+                },
+                cancellationToken);
             
             return BitConverter.GetBytes(h);
         }
         
         /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
         {
             UInt32 h = 0;
 
-            await data.ForEachReadAsync((dataBytes, position, length) => {
-                ProcessBytes(ref h, dataBytes, position, length);
-            }).ConfigureAwait(false);
+            await data.ForEachReadAsync(
+                    (dataBytes, position, length) => {
+                        ProcessBytes(ref h, dataBytes, position, length);
+                    },
+                    cancellationToken)
+                .ConfigureAwait(false);
 
             return BitConverter.GetBytes(h);
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void ProcessBytes(ref UInt32 h, byte[] dataBytes, int position, int length)
         {
             for (var x = position; x < position + length; ++x)

@@ -2,28 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.Utilities.UnifiedData
+namespace System.Data.HashFunction.Core.Utilities.UnifiedData
 {
-    internal class ArrayData
+    internal sealed class ArrayData
         : UnifiedData
     {
         /// <inheritdoc />
-        public override long Length
-        {
-            get
-            {
-#if NET45
-                return _Data.LongLength;
-#else
-                return _Data.Length;
-#endif
-            }
-        }
+        public override long Length { get => _data.Length; }
 
         
-        protected readonly byte[] _Data;
+        private readonly byte[] _data;
 
 
         /// <summary>
@@ -32,79 +23,55 @@ namespace System.Data.HashFunction.Utilities.UnifiedData
         /// <param name="data">The data to represent.</param>
         public ArrayData(byte[] data)
         {
-            _Data = data;
-            BufferSize = (
-                _Data.Length > 0 ?
-                _Data.Length :
-                1);
+            _data = data;
         }
 
 
 
         /// <inheritdoc />
-        public override void ForEachRead(Action<byte[], int, int> action)
+        public override void ForEachRead(Action<byte[], int, int> action, CancellationToken cancellationToken)
         {
             if (action == null)
                 throw new ArgumentNullException("action");
+            
+            cancellationToken.ThrowIfCancellationRequested();
 
 
-            action(_Data, 0, _Data.Length);
-        }
-
-        /// <inheritdoc />
-        public override Task ForEachReadAsync(Action<byte[], int, int> action)
-        {
-            ForEachRead(action);
-
-            return Task.FromResult(true);
+            action(_data, 0, _data.Length);
         }
 
 
-
         /// <inheritdoc />
-        public override void ForEachGroup(int groupSize, Action<byte[], int, int> action, Action<byte[], int, int> remainderAction)
+        public override void ForEachGroup(int groupSize, Action<byte[], int, int> action, Action<byte[], int, int> remainderAction, CancellationToken cancellationToken)
         {
             if (groupSize <= 0)
-                throw new ArgumentOutOfRangeException("groupSize", "bufferSize must be greater than 0.");
+                throw new ArgumentOutOfRangeException(nameof(groupSize), "bufferSize must be greater than 0.");
 
             if (action == null)
-                throw new ArgumentNullException("action");
+                throw new ArgumentNullException(nameof(action));
 
 
-            var remainderLength = _Data.Length % groupSize;
+            cancellationToken.ThrowIfCancellationRequested();
 
-            if (_Data.Length - remainderLength > 0)
-                action(_Data, 0, _Data.Length - remainderLength);
 
-            if (remainderAction != null)
+            var remainderLength = _data.Length % groupSize;
+
+            if (_data.Length - remainderLength > 0)
+                action(_data, 0, _data.Length - remainderLength);
+
+            
+            if (remainderAction != null && remainderLength > 0)
             {
-                if (remainderLength > 0)
-                    remainderAction(_Data, _Data.Length - remainderLength, remainderLength);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                remainderAction(_data, _data.Length - remainderLength, remainderLength);
             }
         }
 
         /// <inheritdoc />
-        public override Task ForEachGroupAsync(int groupSize, Action<byte[], int, int> action, Action<byte[], int, int> remainderAction)
+        public override byte[] ToArray(CancellationToken cancellationToken)
         {
-            ForEachGroup(groupSize, action, remainderAction);
-
-            return Task.FromResult(true);
+            return _data;
         }
-
-
-
-        /// <inheritdoc />
-        public override byte[] ToArray()
-        {
-            return _Data;
-        }
-
-        /// <inheritdoc />
-        public override Task<byte[]> ToArrayAsync()
-        {
-            return Task.FromResult(
-                ToArray());
-        }
-
     }
 }

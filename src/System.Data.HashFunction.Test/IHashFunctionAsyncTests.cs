@@ -1,7 +1,6 @@
 ﻿using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Utilities.IntegerManipulation;
 using System.Data.HashFunction.Test.Mocks;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -12,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using System.Reflection;
+using System.Data.HashFunction.Core.Utilities;
 
 namespace System.Data.HashFunction.Test
 {
@@ -31,29 +31,8 @@ namespace System.Data.HashFunction.Test
                     var hashResults = await hf.ComputeHashAsync(ms);
 
                     Assert.Equal(
-                        knownValue.ExpectedValue.Take((hf.HashSize + 7) / 8),
+                        new HashValue(knownValue.ExpectedValue.Take((hf.HashSize + 7) / 8), hf.HashSize),
                         hashResults);
-                }
-            }
-        }
-
-        [Fact]
-        public async void IHashFunctionAsync_ComputeHashAsync_Stream_NonSeekable_MatchesKnownValues()
-        {
-            foreach (var knownValueGroup in KnownValues.GroupBy(kv => kv.HashSize))
-            {
-                var hf = CreateHashFunction(knownValueGroup.Key);
-
-                foreach (var knownValue in knownValueGroup)
-                {
-                    using (var ms = new SlowAsyncStream(new NonSeekableMemoryStream(knownValue.TestValue)))
-                    {
-                        var hashResults = await hf.ComputeHashAsync(ms);
-
-                        Assert.Equal(
-                            knownValue.ExpectedValue.Take((hf.HashSize + 7) / 8),
-                            hashResults);
-                    }
                 }
             }
         }
@@ -72,7 +51,7 @@ namespace System.Data.HashFunction.Test
                     var hashResults = await hf.ComputeHashAsync(ms);
 
                     Assert.Equal(
-                        knownValue.ExpectedValue.Take((hf.HashSize + 7) / 8),
+                        new HashValue(knownValue.ExpectedValue.Take((hf.HashSize + 7) / 8), hf.HashSize),
                         hashResults);
                 }
             }

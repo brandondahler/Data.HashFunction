@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.HashFunction.Utilities;
+using System.Data.HashFunction.Core.Utilities;
 
 namespace System.Data.HashFunction.Test
 {

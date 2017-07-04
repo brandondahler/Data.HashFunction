@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data.HashFunction.Utilities;
-using System.Data.HashFunction.Utilities.IntegerManipulation;
-using System.Data.HashFunction.Utilities.UnifiedData;
+using System.Data.HashFunction.Core;
+using System.Data.HashFunction.Core.Utilities;
+using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
@@ -134,7 +135,7 @@ namespace System.Data.HashFunction
 
 
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(UnifiedData data)
+        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {
             var prime = HashParameters[HashSize].Prime;
             var offset = HashParameters[HashSize].Offset;
@@ -144,9 +145,11 @@ namespace System.Data.HashFunction
             {
                 var hash = offset[0];
 
-                data.ForEachRead((dataBytes, position, length) => {
-                    ProcessBytes32(ref hash, prime[0], dataBytes, position, length);
-                });
+                data.ForEachRead(
+                    (dataBytes, position, length) => {
+                        ProcessBytes32(ref hash, prime[0], dataBytes, position, length);
+                    },
+                    cancellationToken);
 
                 return BitConverter.GetBytes(hash);
 
@@ -155,9 +158,11 @@ namespace System.Data.HashFunction
                 var prime64 = ((UInt64) prime[1] << 32) | prime[0];
 
 
-                data.ForEachRead((dataBytes, position, length) => {
-                    ProcessBytes64(ref hash, prime64, dataBytes, position, length);
-                });
+                data.ForEachRead(
+                    (dataBytes, position, length) => {
+                        ProcessBytes64(ref hash, prime64, dataBytes, position, length);
+                    },
+                    cancellationToken);
 
                 return BitConverter.GetBytes(hash);
             }
@@ -168,17 +173,19 @@ namespace System.Data.HashFunction
                 var hash = offset.ToArray();
 
 
-                data.ForEachRead((dataBytes, position, length) => {
-                    ProcessBytes(ref hash, prime, dataBytes, position, length);
-                });
+                data.ForEachRead(
+                    (dataBytes, position, length) => {
+                        ProcessBytes(ref hash, prime, dataBytes, position, length);
+                    },
+                    cancellationToken);
 
-                return hash.ToBytes()
+                return UInt32ArrayToBytes(hash)
                     .ToArray();
             }
         }
         
         /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
         {
             var prime = HashParameters[HashSize].Prime;
             var offset = HashParameters[HashSize].Offset;
@@ -189,9 +196,11 @@ namespace System.Data.HashFunction
                 var hash = offset[0];
 
                 await data.ForEachReadAsync(
-                    (dataBytes, position, length) => {
-                        ProcessBytes32(ref hash, prime[0], dataBytes, position, length);
-                    }).ConfigureAwait(false);
+                        (dataBytes, position, length) => {
+                            ProcessBytes32(ref hash, prime[0], dataBytes, position, length);
+                        },
+                        cancellationToken)
+                    .ConfigureAwait(false);
 
                 return BitConverter.GetBytes(hash);
 
@@ -201,9 +210,11 @@ namespace System.Data.HashFunction
 
 
                 await data.ForEachReadAsync(
-                    (dataBytes, position, length) => {
-                        ProcessBytes64(ref hash, prime64, dataBytes, position, length);
-                    }).ConfigureAwait(false);
+                        (dataBytes, position, length) => {
+                            ProcessBytes64(ref hash, prime64, dataBytes, position, length);
+                        },
+                        cancellationToken)
+                    .ConfigureAwait(false);
 
                 return BitConverter.GetBytes(hash);
             }
@@ -215,11 +226,13 @@ namespace System.Data.HashFunction
 
 
                 await data.ForEachReadAsync(
-                    (dataBytes, position, length) => {
-                        ProcessBytes(ref hash, prime, dataBytes, position, length);
-                    }).ConfigureAwait(false);
+                        (dataBytes, position, length) => {
+                            ProcessBytes(ref hash, prime, dataBytes, position, length);
+                        },
+                        cancellationToken)
+                    .ConfigureAwait(false);
 
-                return hash.ToBytes()
+                return UInt32ArrayToBytes(hash)
                     .ToArray();
             }
         }
@@ -255,5 +268,47 @@ namespace System.Data.HashFunction
         /// <param name="position">The starting index of the data array.</param>
         /// <param name="length">The length of the data in the data array, starting from the position parameter.</param>
         protected abstract void ProcessBytes(ref UInt32[] hash, IReadOnlyList<UInt32> prime, byte[] data, int position, int length);
+
+
+        /// <summary>
+        /// Multiplies operand1 by operand2 as if both operand1 and operand2 were single large integers.
+        /// </summary>
+        /// <param name="operand1">Array of UInt32 values to be multiplied.</param>
+        /// <param name="operand2">Array of UInt32 values to multiply by.</param>
+        /// <returns></returns>
+        protected static UInt32[] ExtendedMultiply(IReadOnlyList<UInt32> operand1, IReadOnlyList<UInt32> operand2)
+        {
+            // Temporary array to hold the results of 32-bit multiplication.
+            var product = new UInt32[(operand1.Count >= operand2.Count ? operand1.Count : operand2.Count)];
+
+            // Bottom of equation
+            for (int y = 0; y < operand2.Count; ++y)
+            {
+                // Skip multiplying things by zero
+                if (operand2[y] == 0)
+                    continue;
+
+                UInt32 carryOver = 0;
+
+                // Top of equation
+                for (int x = 0; x < operand2.Count; ++x)
+                {
+                    if (x + y >= product.Length)
+                        break;
+
+                    var productResult = product[x + y] + (((UInt64)operand2[y]) * operand1[x]) + carryOver;
+                    product[x + y] = (UInt32)productResult;
+
+                    carryOver = (UInt32)(productResult >> 32);
+                }
+            }
+
+            return product;
+        }
+        
+        private static IEnumerable<byte> UInt32ArrayToBytes(IEnumerable<UInt32> values)
+        {
+            return values.SelectMany(v => BitConverter.GetBytes(v));
+        }
     }
 }

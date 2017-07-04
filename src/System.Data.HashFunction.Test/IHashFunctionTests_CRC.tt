@@ -6,7 +6,7 @@
 <#@ import namespace="System.Web.Script.Serialization" #>
 <#@ output extension=".cs" #>
 <#
-    var standards = ReadDefinedStandards(Host.ResolvePath("..\\CRC\\Standards.t4"));
+    var standards = ReadDefinedStandards(Host.ResolvePath("..\\System.Data.HashFunction.CRC\\Standards.t4"));
 #>
 //! Automatically generated from IHashFunctionTests_CRC.tt
 //! Direct modifications to this file will be lost.
@@ -14,7 +14,7 @@
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.CRCStandards;
+using System.Data.HashFunction.CRC.CRCStandards;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,4 +48,4 @@ namespace System.Data.HashFunction.Test
 
 
 
-<#@ include file="../CRC/Standards.t4" #>
+<#@ include file="../System.Data.HashFunction.CRC/Standards.t4" #>

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.HashFunction.Utilities;
-using System.Data.HashFunction.Utilities.IntegerManipulation;
-using System.Data.HashFunction.Utilities.UnifiedData;
+using System.Data.HashFunction.Core;
+using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.Data.HashFunction
@@ -96,10 +97,10 @@ namespace System.Data.HashFunction
         
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(UnifiedData data)
+        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {
             byte[] hash = null;
-            var dataArray = data.ToArray();
+            var dataArray = data.ToArray(cancellationToken);
             
             switch (HashSize)
             {
@@ -138,10 +139,10 @@ namespace System.Data.HashFunction
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(UnifiedData data)
+        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
         {
             byte[] hash = null;
-            var dataArray = await data.ToArrayAsync()
+            var dataArray = await data.ToArrayAsync(cancellationToken)
                 .ConfigureAwait(false);
 
             switch (HashSize)
@@ -201,85 +202,84 @@ namespace System.Data.HashFunction
             UInt32 f = g;
 
             {
-                UInt32 a0 = (BitConverter.ToUInt32(data, data.Length - 4) * c1).RotateRight(17) * c2;
-                UInt32 a1 = (BitConverter.ToUInt32(data, data.Length - 8) * c1).RotateRight(17) * c2;
-                UInt32 a2 = (BitConverter.ToUInt32(data, data.Length - 16) * c1).RotateRight(17) * c2;
-                UInt32 a3 = (BitConverter.ToUInt32(data, data.Length - 12) * c1).RotateRight(17) * c2;
-                UInt32 a4 = (BitConverter.ToUInt32(data, data.Length - 20) * c1).RotateRight(17) * c2;
+                UInt32 a0 = RotateRight(BitConverter.ToUInt32(data, data.Length - 4) * c1, 17) * c2;
+                UInt32 a1 = RotateRight(BitConverter.ToUInt32(data, data.Length - 8) * c1, 17) * c2;
+                UInt32 a2 = RotateRight(BitConverter.ToUInt32(data, data.Length - 16) * c1, 17) * c2;
+                UInt32 a3 = RotateRight(BitConverter.ToUInt32(data, data.Length - 12) * c1, 17) * c2;
+                UInt32 a4 = RotateRight(BitConverter.ToUInt32(data, data.Length - 20) * c1, 17) * c2;
 
                 h ^= a0;
-                h = h.RotateRight(19);
+                h = RotateRight(h, 19);
                 h = h * 5 + 0xe6546b64;
                 h ^= a2;
-                h = h.RotateRight(19);
+                h = RotateRight(h, 19);
                 h = h * 5 + 0xe6546b64;
 
                 g ^= a1;
-                g = g.RotateRight(19);
+                g = RotateRight(g, 19);
                 g = g * 5 + 0xe6546b64;
                 g ^= a3;
-                g = g.RotateRight(19);
+                g = RotateRight(g, 19);
                 g = g * 5 + 0xe6546b64;
 
                 f += a4;
-                f = f.RotateRight(19);
+                f = RotateRight(f, 19);
                 f = f * 5 + 0xe6546b64;
             }
 
             for (int x = 0; x < (data.Length - 1) / 20; ++x)
             {
-                UInt32 a0 = (BitConverter.ToUInt32(data, 20 * x + 0) * c1).RotateRight(17) * c2;
+                UInt32 a0 = RotateRight(BitConverter.ToUInt32(data, 20 * x + 0) * c1, 17) * c2;
                 UInt32 a1 =  BitConverter.ToUInt32(data, 20 * x + 4);
-                UInt32 a2 = (BitConverter.ToUInt32(data, 20 * x + 8) * c1).RotateRight(17) * c2;
-                UInt32 a3 = (BitConverter.ToUInt32(data, 20 * x + 12) * c1).RotateRight(17) * c2;
+                UInt32 a2 = RotateRight(BitConverter.ToUInt32(data, 20 * x + 8) * c1, 17) * c2;
+                UInt32 a3 = RotateRight(BitConverter.ToUInt32(data, 20 * x + 12) * c1, 17) * c2;
                 UInt32 a4 =  BitConverter.ToUInt32(data, 20 * x + 16);
 
                 h ^= a0;
-                h = h.RotateRight(18);
+                h = RotateRight(h, 18);
                 h = h * 5 + 0xe6546b64;
 
                 f += a1;
-                f = f.RotateRight(19);
+                f = RotateRight(f, 19);
                 f = f * c1;
 
                 g += a2;
-                g = g.RotateRight(18);
+                g = RotateRight(g, 18);
                 g = g * 5 + 0xe6546b64;
 
                 h ^= a3 + a1;
-                h = h.RotateRight(19);
+                h = RotateRight(h, 19);
                 h = h * 5 + 0xe6546b64;
 
                 g ^= a4;
-                g = g.ReverseByteOrder() * 5;
+                g = ReverseByteOrder(g) * 5;
 
                 h += a4 * 5;
-                h = h.ReverseByteOrder();
+                h = ReverseByteOrder(h);
 
                 f += a0;
 
                 Permute3(ref f, ref h, ref g);
             }
 
-            g = g.RotateRight(11) * c1;
-            g = g.RotateRight(17) * c1;
+            g = RotateRight(g, 11) * c1;
+            g = RotateRight(g, 17) * c1;
 
-            f = f.RotateRight(11) * c1;
-            f = f.RotateRight(17) * c1;
+            f = RotateRight(f, 11) * c1;
+            f = RotateRight(f, 17) * c1;
 
-            h = (h + g).RotateRight(19);
+            h = RotateRight(h + g, 19);
             h = h * 5 + 0xe6546b64;
-            h = h.RotateRight(17) * c1;
-            h = (h + f).RotateRight(19);
+            h = RotateRight(h, 17) * c1;
+            h = RotateRight(h + f, 19);
             h = h * 5 + 0xe6546b64;
-            h = h.RotateRight(17) * c1;
+            h = RotateRight(h, 17) * c1;
 
             return h;
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static UInt32 Hash32Len0to4(byte[] data) 
+        private UInt32 Hash32Len0to4(byte[] data) 
         {
             UInt32 b = 0;
             UInt32 c = 9;
@@ -293,8 +293,7 @@ namespace System.Data.HashFunction
             return Mix(Mur(b, Mur((UInt32) data.Length, c)));
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static UInt32 Hash32Len5to12(byte[] data) 
+        private UInt32 Hash32Len5to12(byte[] data) 
         {
             UInt32 a = (UInt32) data.Length;
             UInt32 b = (UInt32) data.Length * 5;
@@ -309,8 +308,7 @@ namespace System.Data.HashFunction
             return Mix(Mur(c, Mur(b, Mur(a, d))));
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static UInt32 Hash32Len13to24(byte[] data) 
+        private UInt32 Hash32Len13to24(byte[] data) 
         {
             UInt32 a = BitConverter.ToUInt32(data, (data.Length >> 1) - 4);
             UInt32 b = BitConverter.ToUInt32(data, 4);
@@ -358,11 +356,11 @@ namespace System.Data.HashFunction
             
             for (int i = 0; i < (data.Length >> 6); ++i)
             {
-                x = (x + y + v.Low + BitConverter.ToUInt64(data, 64 * i + 8)).RotateRight(37) * k1;
-                y = (y + v.High + BitConverter.ToUInt64(data, 64 * i + 48)).RotateRight(42) * k1;
+                x = RotateRight(x + y + v.Low + BitConverter.ToUInt64(data, 64 * i + 8), 37) * k1;
+                y = RotateRight(y + v.High + BitConverter.ToUInt64(data, 64 * i + 48), 42) * k1;
                 x ^= w.High;
                 y += v.Low + BitConverter.ToUInt64(data, 64 * i + 40);
-                z = (z + w.Low).RotateRight(33) * k1;
+                z = RotateRight(z + w.Low, 33) * k1;
                 v = WeakHashLen32WithSeeds(data, 64 * i, v.High * k1, x + w.Low);
                 w = WeakHashLen32WithSeeds(data, 64 * i + 32, z + w.High, y + BitConverter.ToUInt64(data, 64 * i + 16));
                 
@@ -376,12 +374,11 @@ namespace System.Data.HashFunction
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static UInt64 HashLen16(UInt64 u, UInt64 v) {
-          return Hash128to64(new UInt128() { Low = u, High = v });
+        private UInt64 HashLen16(UInt64 u, UInt64 v) {
+          return Hash128to64(
+              new UInt128(u, v));
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static UInt64 HashLen16(UInt64 u, UInt64 v, UInt64 mul) 
         {
             UInt64 a = (u ^ v) * mul;
@@ -394,16 +391,15 @@ namespace System.Data.HashFunction
             return b;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static UInt64 HashLen0to16(byte[] data) 
+        private UInt64 HashLen0to16(byte[] data) 
         {
             if (data.Length >= 8) 
             {
                 UInt64 mul = k2 + (UInt64) data.Length * 2;
                 UInt64 a = BitConverter.ToUInt64(data, 0) + k2;
                 UInt64 b = BitConverter.ToUInt64(data, data.Length - 8);
-                UInt64 c = b.RotateRight(37) * mul + a;
-                UInt64 d = (a.RotateRight(25) + b) * mul;
+                UInt64 c = RotateRight(b, 37) * mul + a;
+                UInt64 d = (RotateRight(a, 25) + b) * mul;
 
                 return HashLen16(c, d, mul);
             }
@@ -432,40 +428,40 @@ namespace System.Data.HashFunction
 
         // This probably works well for 16-byte strings as well, but it may be overkill
         // in that case.
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static UInt64 HashLen17to32(byte[] data) 
+        private UInt64 HashLen17to32(byte[] data) 
         {
-          UInt64 mul = k2 + (UInt64) data.Length * 2;
-          UInt64 a = BitConverter.ToUInt64(data, 0) * k1;
-          UInt64 b = BitConverter.ToUInt64(data, 8);
-          UInt64 c = BitConverter.ToUInt64(data, data.Length - 8) * mul;
-          UInt64 d = BitConverter.ToUInt64(data, data.Length - 16) * k2;
+            UInt64 mul = k2 + (UInt64) data.Length * 2;
+            UInt64 a = BitConverter.ToUInt64(data, 0) * k1;
+            UInt64 b = BitConverter.ToUInt64(data, 8);
+            UInt64 c = BitConverter.ToUInt64(data, data.Length - 8) * mul;
+            UInt64 d = BitConverter.ToUInt64(data, data.Length - 16) * k2;
 
-          return HashLen16((a + b).RotateRight(43) + c.RotateRight(30) + d,
-                           a + (b + k2).RotateRight(18) + c, mul);
+            return HashLen16(
+                RotateRight(a + b, 43) +
+                    RotateRight(c, 30) + d,
+                a + RotateRight(b + k2, 18) + c, 
+                mul);
         }
 
         // Return a 16-byte hash for 48 bytes.  Quick and dirty.
         // Callers do best to use "random-looking" values for a and b.
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static UInt128 WeakHashLen32WithSeeds(
+        private UInt128 WeakHashLen32WithSeeds(
             UInt64 w, UInt64 x, UInt64 y, UInt64 z, UInt64 a, UInt64 b) 
         {
             a += w;
-            b = (b + a + z).RotateRight(21);
+            b = RotateRight(b + a + z, 21);
 
             UInt64 c = a;
             a += x;
             a += y;
 
-            b += a.RotateRight(44);
+            b += RotateRight(a, 44);
 
-            return new UInt128() { Low = a + z, High = b + c };
+            return new UInt128(a + z, b + c);
         }
 
         // Return a 16-byte hash for s[0] ... s[31], a, and b.  Quick and dirty.
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static UInt128 WeakHashLen32WithSeeds(byte[] data, int startIndex, UInt64 a, UInt64 b) 
+        private UInt128 WeakHashLen32WithSeeds(byte[] data, int startIndex, UInt64 a, UInt64 b) 
         {
             return WeakHashLen32WithSeeds(
                 BitConverter.ToUInt64(data, startIndex),
@@ -477,8 +473,7 @@ namespace System.Data.HashFunction
         }
 
         // Return an 8-byte hash for 33 to 64 bytes.
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static UInt64 HashLen33to64(byte[] data) 
+        private UInt64 HashLen33to64(byte[] data) 
         {
             UInt64 mul = k2 + (UInt64) data.Length * 2;
             UInt64 a = BitConverter.ToUInt64(data, 0) * k2;
@@ -490,14 +485,14 @@ namespace System.Data.HashFunction
             UInt64 g = BitConverter.ToUInt64(data, data.Length - 8);
             UInt64 h = BitConverter.ToUInt64(data, data.Length - 16) * mul;
 
-            UInt64 u = (a + g).RotateRight(43) + (b.RotateRight(30) + c) * 9;
+            UInt64 u = RotateRight(a + g,43) + (RotateRight(b, 30) + c) * 9;
             UInt64 v = ((a + g) ^ d) + f + 1;
-            UInt64 w = ((u + v) * mul).ReverseByteOrder() + h;
-            UInt64 x = (e + f).RotateRight(42) + c;
-            UInt64 y = (((v + w) * mul).ReverseByteOrder() + g) * mul;
+            UInt64 w = ReverseByteOrder((u + v) * mul) + h;
+            UInt64 x = RotateRight(e + f, 42) + c;
+            UInt64 y = (ReverseByteOrder((v + w) * mul) + g) * mul;
             UInt64 z = e + f + c;
 
-            a = ((x + z) * mul + y).ReverseByteOrder() + b;
+            a = ReverseByteOrder((x + z) * mul + y) + b;
             b = Mix((z + a) * mul + d + h) * mul;
             return b + x;
         }
@@ -509,28 +504,23 @@ namespace System.Data.HashFunction
         /// <summary>128-bit implementation of ComputeHash.</summary>
         /// <param name="data">Data to be hashed.</param>
         /// <returns>UInt128 value representing the hash value.</returns>
-        protected virtual UInt128 ComputeHash128(byte[] data) {
+        private UInt128 ComputeHash128(byte[] data) {
             return 
                 data.Length >= 16 ?
                 CityHash128WithSeed(
                     data.Skip(16).ToArray(), 
-                    new UInt128() { 
-                        Low = BitConverter.ToUInt64(data, 0), 
-                        High = BitConverter.ToUInt64(data, 8) + k0
-                    }) :
+                    new UInt128(
+                        BitConverter.ToUInt64(data, 0), 
+                        BitConverter.ToUInt64(data, 8) + k0)) :
                 CityHash128WithSeed(
-                    data, 
-                    new UInt128() { 
-                        Low = k0, 
-                        High = k1 
-                    });
+                    data,
+                    new UInt128(k0, k1));
         }
 
 
         // A subroutine for CityHash128().  Returns a decent 128-bit hash for strings
         // of any length representable in signed long.  Based on City and Murmur.
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static UInt128 CityMurmur(byte[] data, UInt128 seed) {
+        private UInt128 CityMurmur(byte[] data, UInt128 seed) {
             UInt64 a = seed.Low;
             UInt64 b = seed.High;
             UInt64 c = 0;
@@ -559,11 +549,10 @@ namespace System.Data.HashFunction
             }
             a = HashLen16(a, c);
             b = HashLen16(d, b);
-            return new UInt128() { Low = a ^ b, High = HashLen16(b, a) };
+            return new UInt128(a ^ b, HashLen16(b, a));
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static UInt128 CityHash128WithSeed(byte[] data, UInt128 seed)
+        
+        private UInt128 CityHash128WithSeed(byte[] data, UInt128 seed)
         {
             if (data.Length < 128) {
                 return CityMurmur(data, seed);
@@ -571,13 +560,18 @@ namespace System.Data.HashFunction
 
             // We expect len >= 128 to be the common case.  Keep 56 bytes of state:
             // v, w, x, y, and z.
-            UInt128 v = new UInt128();
-            v.Low = (seed.High ^ k1).RotateRight(49) * k1 + BitConverter.ToUInt64(data, 0);
-            v.High = (v.Low).RotateRight(42) * k1 + BitConverter.ToUInt64(data, 8);
+            UInt128 v;
+            {
+                var vLow = RotateRight(seed.High ^ k1, 49) * k1 + BitConverter.ToUInt64(data, 0);
+                v = new UInt128(
+                    vLow,
+                    RotateRight(vLow, 42) * k1 + BitConverter.ToUInt64(data, 8));
+            }
 
-            UInt128 w = new UInt128();
-            w.Low = (seed.High + ((UInt64) data.Length * k1)).RotateRight(35) * k1 + seed.Low;
-            w.High = (seed.Low + BitConverter.ToUInt64(data, 88)).RotateRight(53) * k1;
+
+            UInt128 w = new UInt128(
+                RotateRight(seed.High + ((UInt64) data.Length * k1), 35) * k1 + seed.Low,
+                RotateRight(seed.Low + BitConverter.ToUInt64(data, 88), 53) * k1);
 
             UInt64 x = seed.Low;
             UInt64 y = seed.High;
@@ -588,11 +582,11 @@ namespace System.Data.HashFunction
             // This is the same inner loop as CityHash64(), manually unrolled.
             for (int i = 0; i < data.Length / 128; ++i)
             {
-                x = (x + y + v.Low + BitConverter.ToUInt64(data, (128 * i) + 8)).RotateRight(37) * k1;
-                y = (y + v.High + BitConverter.ToUInt64(data, (128 * i) + 48)).RotateRight(42) * k1;
+                x = RotateRight(x + y + v.Low + BitConverter.ToUInt64(data, (128 * i) + 8), 37) * k1;
+                y = RotateRight(y + v.High + BitConverter.ToUInt64(data, (128 * i) + 48), 42) * k1;
                 x ^= w.High;
                 y += v.Low + BitConverter.ToUInt64(data, (128 * i) + 40);
-                z = (z + w.Low).RotateRight(33) * k1;
+                z = RotateRight(z + w.Low, 33) * k1;
                 v = WeakHashLen32WithSeeds(data, 128 * i, v.High * k1, x + w.Low);
                 w = WeakHashLen32WithSeeds(data, (128 * i) + 32, z + w.High, y + BitConverter.ToUInt64(data, (128 * i) + 16));
 
@@ -602,11 +596,11 @@ namespace System.Data.HashFunction
                     x = temp;
                 }
 
-                x = (x + y + v.Low + BitConverter.ToUInt64(data, (128 * i) + 72)).RotateRight(37) * k1;
-                y = (y + v.High + BitConverter.ToUInt64(data, (128 * i) + 112)).RotateRight(42) * k1;
+                x = RotateRight(x + y + v.Low + BitConverter.ToUInt64(data, (128 * i) + 72), 37) * k1;
+                y = RotateRight(y + v.High + BitConverter.ToUInt64(data, (128 * i) + 112), 42) * k1;
                 x ^= w.High;
                 y += v.Low + BitConverter.ToUInt64(data, (128 * i) + 104);
-                z = (z + w.Low).RotateRight(33) * k1;
+                z = RotateRight(z + w.Low, 33) * k1;
                 v = WeakHashLen32WithSeeds(data, (128 * i) + 64, v.High * k1, x + w.Low);
                 w = WeakHashLen32WithSeeds(data, (128 * i) + 96, z + w.High, y + BitConverter.ToUInt64(data, (128 * i) + 80));
 
@@ -620,9 +614,9 @@ namespace System.Data.HashFunction
             }
 
 
-            x += (v.Low + z).RotateRight(49) * k0;
-            y = y * k0 + (w.High).RotateRight(37);
-            z = z * k0 + (w.Low).RotateRight(27);
+            x += RotateRight(v.Low + z, 49) * k0;
+            y = y * k0 + RotateRight(w.High, 37);
+            z = z * k0 + RotateRight(w.Low, 27);
             w.Low *= 9;
             v.Low *= k0;
 
@@ -631,7 +625,7 @@ namespace System.Data.HashFunction
             // If 0 < len < 128, hash up to 4 chunks of 32 bytes each from the end of s.
             for (int i = 1; i <= (((data.Length % 128) + 31) / 32); ++i) 
             {
-                y = (x + y).RotateRight(42) * k0 + v.High;
+                y = RotateRight(x + y, 42) * k0 + v.High;
                 w.Low += BitConverter.ToUInt64(data, data.Length - (32 * i) + 16);
                 x = x * k0 + w.Low;
                 z += w.High + BitConverter.ToUInt64(data, data.Length - (32 * i));
@@ -646,17 +640,15 @@ namespace System.Data.HashFunction
             x = HashLen16(x, v.Low);
             y = HashLen16(y + z, w.Low);
 
-            return new UInt128() {
-                Low = HashLen16(x + v.High, w.High) + y,
-                High = HashLen16(x + w.High, y + v.High)
-            };
+            return new UInt128(
+                HashLen16(x + v.High, w.High) + y,
+                HashLen16(x + w.High, y + v.High));
         }
 
         #endregion
 
         #region Shared Utilities
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static UInt32 Mix(UInt32 h)
         {
             h ^= h >> 16;
@@ -667,26 +659,23 @@ namespace System.Data.HashFunction
             return h;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static UInt64 Mix(UInt64 val)
         {
             return val ^ (val >> 47);
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static UInt32 Mur(UInt32 a, UInt32 h)
+        private UInt32 Mur(UInt32 a, UInt32 h)
         {
             // Helper from Murmur3 for combining two 32-bit values.
             a *= c1;
-            a = a.RotateRight(17);
+            a = RotateRight(a, 17);
             a *= c2;
             h ^= a;
-            h = h.RotateRight(19);
+            h = RotateRight(h, 19);
             return h * 5 + 0xe6546b64;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Permute3(ref UInt32 a, ref UInt32 b, ref UInt32 c)
         {
             UInt32 temp = a;
@@ -696,7 +685,6 @@ namespace System.Data.HashFunction
             b = temp;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static UInt64 Hash128to64(UInt128 x)
         {
             const UInt64 kMul = 0x9ddfea08eb382d69;
@@ -710,6 +698,49 @@ namespace System.Data.HashFunction
 
             return b;
         }
+
+
+        private static UInt32 RotateRight(UInt32 operand, int shiftCount)
+        {
+            shiftCount &= 0x1f;
+
+            return
+                (operand >> shiftCount) |
+                (operand << (32 - shiftCount));
+        }
+
+        private static UInt64 RotateRight(UInt64 operand, int shiftCount)
+        {
+            shiftCount &= 0x3f;
+
+            return
+                (operand >> shiftCount) |
+                (operand << (64 - shiftCount));
+        }
+
+
+        private static UInt32 ReverseByteOrder(UInt32 operand)
+        {
+            return
+                (operand >> 24) |
+                ((operand & 0x00ff0000) >> 8) |
+                ((operand & 0x0000ff00) << 8) |
+                (operand << 24);
+        }
+
+        private static UInt64 ReverseByteOrder(UInt64 operand)
+        {
+            return
+                (operand >> 56) |
+                ((operand & 0x00ff000000000000) >> 40) |
+                ((operand & 0x0000ff0000000000) >> 24) |
+                ((operand & 0x000000ff00000000) >> 8) |
+                ((operand & 0x00000000ff000000) << 8) |
+                ((operand & 0x0000000000ff0000) << 24) |
+                ((operand & 0x000000000000ff00) << 40) |
+                (operand << 56);
+        }
+
 
         #endregion
 

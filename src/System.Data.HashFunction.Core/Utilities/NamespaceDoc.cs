@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.Utilities
+namespace System.Data.HashFunction.Core.Utilities
 {
     /// <summary>
-    /// Contains extension functions to be shared only within Data.HashFunction.* assemblies.
+    /// Contains utilities to be shared with implementers of <see cref="HashFunctionBase" /> or <see cref="HashFunctionAsyncBase" />.
     /// </summary>
     internal static class NamespaceDoc
     {
