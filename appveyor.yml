@@ -15,7 +15,7 @@ init:
   - ps: $Env:APPVEYOR_BUILD_NUMBER_PADDED = $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
 before_build:
   - appveyor-retry tools\nuget.exe restore src
-  - appveyor-retry dotnet restore -v Minimal
+  - appveyor-retry dotnet restore -v Minimal src
   - ps: .\build\build.ps1 -taskList 'Validate' -configuration 'Debug' -preReleaseTag 'ci' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
 build_script:
   - ps: .\build\build.ps1 -taskList 'Build' -configuration 'Debug' -preReleaseTag 'ci' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
