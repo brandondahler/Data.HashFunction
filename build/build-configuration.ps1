@@ -1,4 +1,4 @@
-$baseDir  = Resolve-Path $PSScriptRoot\.. -Relative
+$baseDir  = Resolve-Path $PSScriptRoot\..
 $currentYear = [DateTime]::Today.Year
 
 properties {
@@ -193,12 +193,12 @@ task Pack-Solution -depends Resolve-Projects,Resolve-Production-Versions {
 		
 		if ($versionSuffix -ne "")
 		{
-			Exec { & $dotNetExecutable pack $project.ProjectXmlPath -c $configuration --version-suffix $versionSuffix --no-build -o "$artifactsDir\Packages"  }
+			Exec { & $dotNetExecutable pack $project.ProjectXmlPath -c $configuration --version-suffix $versionSuffix -o "$artifactsDir\Packages"  }
 
 		} else {
 			if ($versions.Production.SemanticVersion.Version -lt $project.SemanticVersion.Version)
 			{
-				Exec { & $dotNetExecutable pack $project.ProjectXmlPath -c $configuration --no-build -o "$artifactsDir\Packages" }
+				Exec { & $dotNetExecutable pack $project.ProjectXmlPath -c $configuration -o "$artifactsDir\Packages" }
 			}
 		}
 	}
@@ -222,7 +222,7 @@ task Test-Solution -depends Resolve-Projects {
 	{
 		if ($project.RunTests)
 		{
-			Exec { & $openCoverExecutable "-target:$dotNetExecutable" $("`"-targetargs:test " + $project.ProjectXmlPath + " -c $configuration --no-build`"") -nodefaultfilters $("`"-filter:+[System.Data.HashFunction.*]* -[" + $project.Name + "]*`"") $("`"-output:$artifactsDir\Coverage\" + $project.Name + ".xml`"") -register:user -oldStyle }
+			Exec { & $openCoverExecutable "-target:$dotNetExecutable" $("`"-targetargs:test " + $project.ProjectXmlPath + " -c $configuration`"") -nodefaultfilters $("`"-filter:+[System.Data.HashFunction.*]* -[" + $project.Name + "]*`"") $("`"-output:$artifactsDir\Coverage\" + $project.Name + ".xml`"") -register:user -oldStyle }
 		}
 	}
 }
