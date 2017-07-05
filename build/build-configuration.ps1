@@ -19,13 +19,6 @@ properties {
 	$openCoverExecutable = "$sourceDir\packages\OpenCover.4.6.519\tools\OpenCover.Console.exe"
 
 	$buildNumber = Read-BuildNumber "$buildDir\BuildNumber.txt"
-	
-	$versionSuffix = ""
-
-	if ($preReleaseTag -ne "")
-	{
-		$versionSuffix = "$preReleaseTag-$buildNumber"
-	}
 }
 
 
@@ -40,7 +33,16 @@ Task Load-Powershell-Dependencies {
 	Add-Type -Path "$sourceDir\packages\NuGet.Core.2.14.0\lib\net40-Client\NuGet.Core.dll"
 }
 
-Task Resolve-Projects -depends Load-Powershell-Dependencies {
+Task Determine-Version-Suffix {
+	$script:versionSuffix = ""
+
+	if ($preReleaseTag -ne "")
+	{
+		$script:versionSuffix = "$preReleaseTag-$buildNumber"
+	}
+}
+
+Task Resolve-Projects -depends Load-Powershell-Dependencies,Determine-Version-Suffix {
 	$script:projects = [System.Collections.ArrayList]::new()
 	
 	$projectDirectories = Get-ChildItem "$sourceDir\System.Data.HashFunction.*" -Directory
@@ -57,7 +59,7 @@ Task Resolve-Projects -depends Load-Powershell-Dependencies {
 			Name = $name
 			Path = $path
 			ProjectXmlPath = $projectXmlPath
-			SemanticVersion = [NuGet.SemanticVersion]::new($(Select-Xml "/Project/PropertyGroup/VersionPrefix/text()" $projectObject).ToString() + "-$versionSuffix")
+			SemanticVersion = [NuGet.SemanticVersion]::new($(Select-Xml "/Project/PropertyGroup/VersionPrefix/text()" $projectObject).ToString() + "-$script:versionSuffix")
 			NuGetPath = "$nuGetDir\$name"
 			NuGetPackageName = $name
 			SkipPackaging = $name.StartsWith("System.Data.HashFunction.Test")
@@ -157,20 +159,20 @@ Task Validate-Versions -depends Resolve-Production-Versions {
 	}
 }
 
-task Build-Solution -depends Resolve-Projects {	
+task Build-Solution -depends Resolve-Projects,Determine-Version-Suffix {	
 	Exec { & $dotNetExecutable restore "$sourceDir" }
 	
 	if ($preReleaseTag -ne "")
 	{
-		Exec { & $dotNetExecutable build "$sourceDir" -c $configuration --version-suffix $versionSuffix }
+		Exec { & $dotNetExecutable build "$sourceDir" -c $configuration --version-suffix $script:versionSuffix }
 
 	} else {
 		Exec { & $dotNetExecutable build "$sourceDir" -c $configuration }
 	}
 }
 
-task Pack-Solution -depends Resolve-Projects,Resolve-Production-Versions {
-
+task Pack-Solution -depends Resolve-Projects,Resolve-Production-Versions,Determine-Version-Suffix {
+	Write-Host "Build Number: $buildNumber"
 	if (-Not (Test-Path $artifactsDir))
 	{
 		New-Item $artifactsDir -ItemType Directory > $null
@@ -191,9 +193,9 @@ task Pack-Solution -depends Resolve-Projects,Resolve-Production-Versions {
 		}
 		
 		
-		if ($versionSuffix -ne "")
+		if ($script:versionSuffix -ne "")
 		{
-			Exec { & $dotNetExecutable pack $project.ProjectXmlPath -c $configuration --version-suffix $versionSuffix -o "$artifactsDir\Packages"  }
+			Exec { & $dotNetExecutable pack $project.ProjectXmlPath -c $configuration --version-suffix $script:versionSuffix -o "$artifactsDir\Packages"  }
 
 		} else {
 			if ($versions.Production.SemanticVersion.Version -lt $project.SemanticVersion.Version)
