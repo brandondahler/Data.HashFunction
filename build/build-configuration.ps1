@@ -127,22 +127,17 @@ Task Validate-Versions -depends Resolve-Production-Versions {
 		Write-Host $("Validating version for " + $project.Name + ".")
 
 
-		$packageRevision = $project.NewestVersionVcsRevision
+		$packageRevision = $project.Production.VcsRevision
 
-		if ($versions.Production.Version -ne $null -and $versions.Production.SemanticVersion.Version -gt $project.SemanticVersion.Version)
+		if ($project.Versions.Production.Version -ne $null -and $project.Versions.Production.SemanticVersion.Version -gt $project.SemanticVersion.Version)
 		{
 			Write-Host "Newer production version already exists, version bump required." -ForegroundColor Red
 			$anyVersionBumpRequired = $true;
 
 		} else  {
-			if ($project.NewestVersionVcsRevision -ne $null)
+			if ($packageRevision -ne $null)
 			{
-				$fileChanges = @()
-
-				if ($packageRevision -ne $null)
-				{
-					$fileChanges = $(& $gitExecutable diff $packageRevision $project.Path)
-				}
+				$fileChanges = $(& $gitExecutable diff $packageRevision $project.Path)
 
 				if ($fileChanges.Count -gt 0)
 				{
@@ -198,7 +193,7 @@ task Pack-Solution -depends Resolve-Projects,Resolve-Production-Versions,Determi
 			Exec { & $dotNetExecutable pack $project.ProjectXmlPath -c $configuration --version-suffix $script:versionSuffix -o "$artifactsDir\Packages"  }
 
 		} else {
-			if ($versions.Production.SemanticVersion.Version -lt $project.SemanticVersion.Version)
+			if ($project.Versions.Production.SemanticVersion.Version -lt $project.SemanticVersion.Version)
 			{
 				Exec { & $dotNetExecutable pack $project.ProjectXmlPath -c $configuration -o "$artifactsDir\Packages" }
 			}
