@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction
+namespace System.Data.HashFunction.BuzHash
 {
     /// <summary>
     /// Base implementation of BuzHash as specified at http://www.serve.net/buz/hash.adt/java.002.html.
@@ -18,73 +18,34 @@ namespace System.Data.HashFunction
     /// Relies on a random table of 256 (preferably distinct) 64-bit integers.
     /// Also can be set to use left or right rotation when running the rotate step.
     /// </summary>
-    public abstract class BuzHashBase
-        : HashFunctionAsyncBase
+    /// <seealso cref="HashFunctionAsyncBase" />
+    /// <seealso cref="IBuzHash" />
+    public abstract class BuzHash_ImplementationBase
+        : HashFunctionAsyncBase,
+            IBuzHash
     {
         /// <summary>Table of 256 (preferably random and distinct) UInt64 values.</summary>
-        public IReadOnlyList<UInt64> Rtab { get { return _Rtab; } }
+        public IReadOnlyList<UInt64> Rtab => _Rtab;
 
         /// <summary>Direction that the circular shift step should use.</summary>
-        public CircularShiftDirection ShiftDirection { get { return _ShiftDirection; } }
+        public CircularShiftDirection ShiftDirection => _ShiftDirection;
 
         /// <summary>Initialization value to use for the hash.</summary>
-        public UInt64 InitVal { get { return _InitVal; } }
+        public UInt64 InitVal => _InitVal;
 
 
-        /// <summary>The list of possible hash sizes that can be provided to the <see cref="BuzHashBase"/> constructor.</summary>
-        public static IEnumerable<int> ValidHashSizes { get { return _ValidHashSizes; } }
-
-
-        /// <summary>Enumeration of possible directions a circular shift can be defined for.</summary>
-        public enum CircularShiftDirection
-        {
-            /// <summary>Shift bits left.</summary>
-            Left,
-            /// <summary>Shift bits right.</summary>
-            Right
-        }
+        /// <summary>The list of possible hash sizes that can be provided to the <see cref="BuzHash_ImplementationBase"/> constructor.</summary>
+        public static IEnumerable<int> ValidHashSizes { get; } = new[] { 8, 16, 32, 64 };
+        
 
 
         private readonly IReadOnlyList<UInt64> _Rtab;
         private readonly CircularShiftDirection _ShiftDirection;
         private readonly UInt64 _InitVal;
 
-        private static readonly IEnumerable<int> _ValidHashSizes = new[] { 8, 16, 32, 64 };
-
-
-
-        /// <remarks>
-        /// Defaults <see cref="HashFunctionBase.HashSize"/> to 64. <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, int)"/>
-        /// </remarks>
-        /// <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, int)"/>
-        protected BuzHashBase(IReadOnlyList<UInt64> rtab, CircularShiftDirection shiftDirection)
-            : this(rtab, shiftDirection, 64)
-        {
-
-        }
-
-        /// <remarks>
-        /// Defaults <see cref="InitVal"/> to 0. <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, UInt64, int)"/>
-        /// </remarks>
-        /// <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, UInt64, int)"/>
-        protected BuzHashBase(IReadOnlyList<UInt64> rtab, CircularShiftDirection shiftDirection, int hashSize)
-            : this(rtab, shiftDirection, 0U, hashSize)
-        {
-
-        }
-
-        /// <remarks>
-        /// Defaults <see cref="HashFunctionBase.HashSize"/> to 64.
-        /// </remarks>
-        /// <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, UInt64, int)"/>
-        protected BuzHashBase(IReadOnlyList<UInt64> rtab, CircularShiftDirection shiftDirection, UInt64 initVal)
-            : this(rtab, shiftDirection, initVal, 64)
-        {
-
-        }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BuzHashBase" /> class.
+        /// Initializes a new instance of the <see cref="BuzHash_ImplementationBase" /> class.
         /// </summary>
         /// <param name="rtab"><inheritdoc cref="Rtab" /></param>
         /// <param name="shiftDirection"><inheritdoc cref="ShiftDirection" /></param>
@@ -92,7 +53,7 @@ namespace System.Data.HashFunction
         /// <param name="hashSize"><inheritdoc cref="HashFunctionBase(int)" select="param[name=hashSize]" /></param>
         /// <exception cref="System.ArgumentOutOfRangeException">hashSize;hashSize must be contained within <see cref="ValidHashSizes" />.</exception>
         /// <inheritdoc cref="HashFunctionBase(int)" />
-        protected BuzHashBase(IReadOnlyList<UInt64> rtab, CircularShiftDirection shiftDirection, UInt64 initVal, int hashSize)
+        protected BuzHash_ImplementationBase(IReadOnlyList<UInt64> rtab, CircularShiftDirection shiftDirection, UInt64 initVal, int hashSize)
             : base(hashSize)
         {
             if (!ValidHashSizes.Contains(hashSize))

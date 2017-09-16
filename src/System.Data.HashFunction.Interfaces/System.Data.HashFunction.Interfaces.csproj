@@ -21,6 +21,7 @@
     <RepositoryUrl>https://github.com/brandondahler/Data.HashFunction/</RepositoryUrl>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <RootNamespace>System.Data.HashFunction</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -35,6 +36,15 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="FNV\" />
+    <Folder Include="Jenkins\" />
+    <Folder Include="MurmurHash\" />
+    <Folder Include="xxHash\" />
+    <Folder Include="SpookyHash\" />
+    <Folder Include="Pearson\" />
   </ItemGroup>
 
 </Project>

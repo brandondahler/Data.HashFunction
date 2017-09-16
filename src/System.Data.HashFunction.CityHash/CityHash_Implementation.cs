@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Utilities;
+using System.Data.HashFunction.CityHash.Utilities;
 using System.Data.HashFunction.Core;
 using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
@@ -10,23 +10,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction
+namespace System.Data.HashFunction.CityHash
 {
-    /// <summary>
-    /// Implementation of CityHash as specified at https://code.google.com/p/cityhash/.
-    /// 
-    /// "
-    /// CityHash provides hash functions for strings. The functions mix the 
-    ///   input bits thoroughly but are not suitable for cryptography. 
-    ///  
-    /// [Hash size of 128-bits is] tuned for strings of at least a few hundred bytes. 
-    /// Depending on your compiler and hardware, it's likely faster than [the hash size of 64-bits] on 
-    ///   sufficiently long strings. 
-    /// It's slower than necessary on shorter strings, but we expect that case to be relatively unimportant.
-    /// "
-    /// </summary>
-    public class CityHash 
-        : HashFunctionAsyncBase
+    internal class CityHash_Implementation
+        : HashFunctionAsyncBase,
+            ICityHash
     {
         /// <summary>
         /// The list of possible hash sizes that can be provided to the <see cref="CityHash" /> constructor.
@@ -69,25 +57,14 @@ namespace System.Data.HashFunction
 
         private static readonly IEnumerable<int> _ValidHashSizes = new[] { 32, 64, 128 };
 
-
-
-        /// <remarks>
-        /// Defaults <see cref="HashFunctionBase.HashSize" /> to 32. <inheritdoc cref="CityHash(int)" />
-        /// </remarks>
-        /// <inheritdoc cref="CityHash(int)" />
-        public CityHash()
-            : this(32)
-        { 
         
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CityHash"/> class.
         /// </summary>
         /// <param name="hashSize"><inheritdoc cref="HashFunctionBase(int)" select="param[name=hashSize]" /></param>
         /// <exception cref="System.ArgumentOutOfRangeException">hashSize;hashSize must be contained within CityHash.ValidHashSizes.</exception>
         /// <inheritdoc cref="HashFunctionBase(int)" />
-        public CityHash(int hashSize)
+        public CityHash_Implementation(int hashSize)
             : base(hashSize)
         {
             if (!ValidHashSizes.Contains(hashSize))

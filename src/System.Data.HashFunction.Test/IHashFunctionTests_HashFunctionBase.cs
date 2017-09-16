@@ -970,7 +970,7 @@ namespace System.Data.HashFunction.Test
 
         protected override DefaultBuzHash CreateHashFunction(int hashSize)
         {
-            return new DefaultBuzHash(BuzHashBase.CircularShiftDirection.Right, hashSize);
+            return new DefaultBuzHash(BuzHash_ImplementationBase.CircularShiftDirection.Right, hashSize);
         }
     }
     
@@ -992,7 +992,7 @@ namespace System.Data.HashFunction.Test
 
         protected override DefaultBuzHash CreateHashFunction(int hashSize)
         {
-            return new DefaultBuzHash(BuzHashBase.CircularShiftDirection.Right);
+            return new DefaultBuzHash(BuzHash_ImplementationBase.CircularShiftDirection.Right);
         }
     }
     
@@ -2207,23 +2207,23 @@ namespace System.Data.HashFunction.Test
                 },
                 { 
                     @"DefaultBuzHash(BuzHashBase.CircularShiftDirection.Right, 8)", 
-                    new DefaultBuzHash(BuzHashBase.CircularShiftDirection.Right, 8) 
+                    new DefaultBuzHash(BuzHash_ImplementationBase.CircularShiftDirection.Right, 8) 
                 },
                 { 
                     @"DefaultBuzHash(BuzHashBase.CircularShiftDirection.Right, 16)", 
-                    new DefaultBuzHash(BuzHashBase.CircularShiftDirection.Right, 16) 
+                    new DefaultBuzHash(BuzHash_ImplementationBase.CircularShiftDirection.Right, 16) 
                 },
                 { 
                     @"DefaultBuzHash(BuzHashBase.CircularShiftDirection.Right, 32)", 
-                    new DefaultBuzHash(BuzHashBase.CircularShiftDirection.Right, 32) 
+                    new DefaultBuzHash(BuzHash_ImplementationBase.CircularShiftDirection.Right, 32) 
                 },
                 { 
                     @"DefaultBuzHash(BuzHashBase.CircularShiftDirection.Right, 64)", 
-                    new DefaultBuzHash(BuzHashBase.CircularShiftDirection.Right, 64) 
+                    new DefaultBuzHash(BuzHash_ImplementationBase.CircularShiftDirection.Right, 64) 
                 },
                 { 
                     @"DefaultBuzHash(BuzHashBase.CircularShiftDirection.Right)", 
-                    new DefaultBuzHash(BuzHashBase.CircularShiftDirection.Right) 
+                    new DefaultBuzHash(BuzHash_ImplementationBase.CircularShiftDirection.Right) 
                 },
                 { 
                     @"BuzHashBaseImpl(8)", 

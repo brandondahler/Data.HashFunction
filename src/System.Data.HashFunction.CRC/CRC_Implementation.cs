@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.HashFunction.Core;
 using System.Data.HashFunction.Core.Utilities;
@@ -9,96 +10,67 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction
+namespace System.Data.HashFunction.CRC
 {
     /// <summary>
     /// Implementation of the cyclic redundancy check error-detecting code as defined at http://en.wikipedia.org/wiki/Cyclic_redundancy_check.
     /// This implementation is generalized to encompass all possible CRC parameters from 1 to 64 bits.
     /// </summary>
-    public partial class CRC
-        : HashFunctionAsyncBase
+    internal class CRC_Implementation
+        : HashFunctionAsyncBase,
+            ICRC
     {
-        /// <summary>
-        /// The CRC parameters to use when calculating the hash value.
-        /// </summary>
-        /// <value>
-        /// The CRC parameters that will be used to calculate hash values.
-        /// </value>
-        public Setting Settings
+        private readonly int _hashSizeInBits;
+
+        private readonly UInt64 _polynomial;
+        private readonly UInt64 _initialValue;
+
+        private readonly bool _reflectIn;
+        private readonly bool _reflectOut;
+        
+        private readonly UInt64 _xOrOut;
+
+
+        private static readonly ConcurrentDictionary<Tuple<int, UInt64, bool>, IReadOnlyList<UInt64>> _dataDivisionTableCache =
+            new ConcurrentDictionary<Tuple<int, ulong, bool>, IReadOnlyList<ulong>>();
+
+
+        public CRC_Implementation(ICRCConfig config)
+            : base(config != null ? config.HashSizeInBits : -1)
         {
-            get { return _Settings; }
+            if (config == null)
+                throw new ArgumentNullException(nameof(config));
+
+            if (config.HashSizeInBits <= 0 || config.HashSizeInBits > 64)
+                throw new ArgumentException("config.HashSizeInBits must be >= 1 and <= 64", nameof(config));
+
+
+            _hashSizeInBits = config.HashSizeInBits;
+
+            _polynomial = config.Polynomial;
+            _initialValue = config.InitialValue;
+
+            _reflectIn = config.ReflectIn;
+            _reflectOut = config.ReflectOut;
+
+            _xOrOut = config.XOrOut;
         }
-
-
-        /// <summary>
-        /// The set of CRC parameters to use when constructing <see cref="CRC" /> via the default constructor.
-        /// </summary>
-        /// <value>
-        /// The current CRC parameters that will be used when a new <see cref="CRC" /> instance is created via its default constructor.
-        /// </value>
-        /// <exception cref="System.ArgumentNullException">value</exception>
-        /// <remarks>
-        /// Defaults to the settings for <see cref="CRCStandards.CRC32" />.
-        /// </remarks>
-        public static Setting DefaultSettings 
-        {
-            get { return _DefaultSettings; }
-            set 
-            {
-                _DefaultSettings = value ?? throw new ArgumentNullException("value");  
-            } 
-        }
-
-
-        private readonly Setting _Settings;
-
-        private static Setting _DefaultSettings;
-
-
-        /// <remarks>Uses CRC settings set at <see cref="CRC.DefaultSettings"/>.</remarks>
-        /// <inheritdoc cref="CRC(Setting)" />
-        public CRC()
-            : this(DefaultSettings)
-        {
-
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CRC"/> class.
-        /// </summary>
-        /// <param name="settings"><inheritdoc cref="Settings" /></param>
-        /// <exception cref="System.ArgumentNullException">settings</exception>
-        /// <inheritdoc cref="HashFunctionBase(int)" />
-        public CRC(Setting settings)
-            : base(settings != null ? settings.Bits : -1)
-        {
-            _Settings = settings ?? throw new ArgumentNullException("settings");
-        }
-
-
-        /// <summary>
-        /// Initializes static, dependent fields of the <see cref="CRC"/> class.
-        /// </summary>
-        static CRC()
-        {
-            _DefaultSettings = Standards[Standard.CRC32];
-        }
-
+        
 
 
         /// <inheritdoc />
         protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {
             // Use 64-bit variable regardless of CRC bit length
-            UInt64 hash = Settings.InitialValue;
+            UInt64 hash = _initialValue;
 
             // Reflect InitialValue if processing as big endian
-            if (Settings.ReflectIn)
+            if (_reflectIn)
                 hash = ReflectBits(hash, HashSize);
 
 
             // Store table reference in local variable to lower overhead.
-            var crcTable = Settings.DataDivisionTable;
+            var crcTable = GetDataDivisionTable(_hashSizeInBits, _polynomial, _reflectIn);
 
 
             // How much hash must be right-shifted to get the most significant byte (HashSize >= 8) or bit (HashSize < 8)
@@ -116,11 +88,11 @@ namespace System.Data.HashFunction
 
 
             // Account for mixed-endianness
-            if (Settings.ReflectIn ^ Settings.ReflectOut)
+            if (_reflectIn ^ _reflectOut)
                hash = ReflectBits(hash, HashSize);
 
 
-            hash ^= Settings.XOrOut;
+            hash ^= _xOrOut;
 
             return ToBytes(hash, HashSize);
         }
@@ -129,15 +101,15 @@ namespace System.Data.HashFunction
         protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
         {
             // Use 64-bit variable regardless of CRC bit length
-            UInt64 hash = Settings.InitialValue;
+            UInt64 hash = _initialValue;
 
             // Reflect InitialValue if processing as big endian
-            if (Settings.ReflectIn)
+            if (_reflectIn)
                 hash = ReflectBits(hash, HashSize);
 
 
             // Store table reference in local variable to lower overhead.
-            var crcTable = Settings.DataDivisionTable;
+            var crcTable = GetDataDivisionTable(_hashSizeInBits, _polynomial, _reflectIn);
 
 
             // How much hash must be right-shifted to get the most significant byte (HashSize >= 8) or bit (HashSize < 8)
@@ -156,11 +128,11 @@ namespace System.Data.HashFunction
 
 
             // Account for mixed-endianness
-            if (Settings.ReflectIn ^ Settings.ReflectOut)
+            if (_reflectIn ^ _reflectOut)
                hash = ReflectBits(hash, HashSize);
 
 
-            hash ^= Settings.XOrOut;
+            hash ^= _xOrOut;
 
             return ToBytes(hash, HashSize);
         }
@@ -172,7 +144,7 @@ namespace System.Data.HashFunction
                 if (HashSize >= 8)
                 {
                     // Process per byte, treating hash differently based on input endianness
-                    if (Settings.ReflectIn)
+                    if (_reflectIn)
                         hash = (hash >> 8) ^ crcTable[(byte) hash ^ dataBytes[x]];
                     else
                         hash = (hash << 8) ^ crcTable[((byte) (hash >> mostSignificantShift)) ^ dataBytes[x]];
@@ -181,7 +153,7 @@ namespace System.Data.HashFunction
                     // Process per bit, treating hash differently based on input endianness
                     for (int y = 0; y < 8; ++y)
                     {
-                        if (Settings.ReflectIn)
+                        if (_reflectIn)
                             hash = (hash >> 1) ^ crcTable[(byte) (hash & 1) ^ ((byte) (dataBytes[x] >> y) & 1)];
                         else
                             hash =  (hash << 1) ^ crcTable[(byte) ((hash >> mostSignificantShift) & 1) ^ ((byte) (dataBytes[x] >> (7 - y)) & 1)];
@@ -194,7 +166,9 @@ namespace System.Data.HashFunction
         /// <summary>
         /// Calculates the data-division table for the CRC parameters provided.
         /// </summary>
-        /// <param name="settings">CRC parameters to calculate the table for.</param>
+        /// <param name="hashSizeInBits">Length of the produced CRC value, in bits.</param>
+        /// <param name="polynomial">Divisor to use when calculating the CRC.</param>
+        /// <param name="reflectIn">If true, the CRC calculation processes input as big endian bit order.</param>
         /// <returns>
         /// Array of UInt64 values that allows a CRC implementation to look up the result
         /// of dividing the index (data) by the polynomial.
@@ -204,50 +178,63 @@ namespace System.Data.HashFunction
         /// The table accounts for reflecting the index bits to fix the input endianness,
         /// but it is not possible completely account for the output endianness if the CRC is mixed-endianness.
         /// </remarks>
-        internal static UInt64[] CalculateTable(Setting settings)
+        private static IReadOnlyList<UInt64> GetDataDivisionTable(int hashSizeInBits, UInt64 polynomial, bool reflectIn)
         {
+            return _dataDivisionTableCache.GetOrAdd(
+                new Tuple<int, UInt64, bool>(hashSizeInBits, polynomial, reflectIn), 
+                GetDataDivisionTableInternal);
+        }
+
+        private static IReadOnlyList<UInt64> GetDataDivisionTableInternal(Tuple<int, UInt64, bool> cacheKey)
+        {
+            var hashSizeInBits = cacheKey.Item1;
+            var polynomial = cacheKey.Item2;
+            var reflectIn = cacheKey.Item3;
+
+
             var perBitCount = 8;
 
-            if (settings.Bits < 8)
+            if (hashSizeInBits < 8)
                 perBitCount = 1;
 
 
             var crcTable = new UInt64[1 << perBitCount];
-            var mostSignificantBit = 1UL << (settings.Bits - 1);
+            var mostSignificantBit = 1UL << (hashSizeInBits - 1);
 
 
             for (uint x = 0; x < crcTable.Length; ++x)
             {
                 UInt64 curValue = x;
 
-                if (perBitCount > 1 && settings.ReflectIn)
+                if (perBitCount > 1 && reflectIn)
                     curValue = ReflectBits(curValue, perBitCount);
 
 
-                curValue <<= (settings.Bits - perBitCount);
+                curValue <<= (hashSizeInBits - perBitCount);
 
 
                 for (int y = 0; y < perBitCount; ++y)
                 {
                     if ((curValue & mostSignificantBit) > 0UL)
-                        curValue = (curValue << 1) ^ settings.Polynomial;
+                        curValue = (curValue << 1) ^ polynomial;
                     else
                         curValue <<= 1;
                 }
 
 
-                if (settings.ReflectIn)
-                    curValue = ReflectBits(curValue, settings.Bits);
+                if (reflectIn)
+                    curValue = ReflectBits(curValue, hashSizeInBits);
 
 
-                curValue &= (UInt64.MaxValue >> (64 - settings.Bits));
-                
+                curValue &= (UInt64.MaxValue >> (64 - hashSizeInBits));
+
                 crcTable[x] = curValue;
             }
 
 
             return crcTable;
         }
+
 
         private static byte[] ToBytes(UInt64 value, int bitLength)
         {

@@ -4,15 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction
+namespace System.Data.HashFunction.BuzHash
 {
     /// <summary>
-    /// Basic implementation of <see cref="BuzHashBase" /> class.  
+    /// Basic implementation of <see cref="BuzHash_ImplementationBase" /> class.  
     /// 
-    /// Uses randomly generated table and left circular shift.
+    /// Uses randomly generated table.
     /// </summary>
-    public class DefaultBuzHash
-        : BuzHashBase
+    internal class DefaultBuzHash_Implementation
+        : BuzHash_ImplementationBase,
+            IDefaultBuzHash
     {
         /// <summary>
         /// Array of 256 random and distinct UInt64 values.
@@ -85,50 +86,15 @@ namespace System.Data.HashFunction
                 0x7B79E1EC83874C2A, 0x6B2FFD2662DA5E68, 0xCF3EEBA20B383BCE, 0x4503C00A838F9989
             };
 
-
         
-        /// <remarks>
-        /// Defaults <see cref="BuzHashBase.ShiftDirection" /> to <see cref="BuzHashBase.CircularShiftDirection.Left" />.
-        /// <inheritdoc cref="DefaultBuzHash(CircularShiftDirection)" />
-        /// </remarks>
-        /// <inheritdoc cref="DefaultBuzHash(CircularShiftDirection)" />
-        public DefaultBuzHash()
-            : this(CircularShiftDirection.Left)
-        {
-
-        }
-
-        /// <param name="shiftDirection">The shift direction.</param>
-        /// <remarks>
-        /// Defaults <see cref="BuzHashBase.InitVal" /> to 0x3CD05367FD0337D3.
-        /// <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, UInt64)" />
-        /// </remarks>
-        /// <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, UInt64)" />
-        public DefaultBuzHash(CircularShiftDirection shiftDirection)
-            : base(_Rtab, shiftDirection, 0x3CD05367FD0337D3)
-        {
-
-        }
-
-        /// <remarks>
-        /// Defaults <see cref="BuzHashBase.ShiftDirection" /> to <see cref="BuzHashBase.CircularShiftDirection.Left" />.
-        /// <inheritdoc cref="DefaultBuzHash(CircularShiftDirection, int)" />
-        /// </remarks>
-        /// <inheritdoc cref="DefaultBuzHash(CircularShiftDirection, int)" />
-        public DefaultBuzHash(int hashSize)
-            : this(CircularShiftDirection.Left, hashSize)
-        {
-
-        }
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultBuzHash"/> class.
+        /// Initializes a new instance of the <see cref="DefaultBuzHash_Implementation"/> class.
         /// </summary>
         /// <remarks>
-        /// Defaults <see cref="BuzHashBase.InitVal" /> to 0x3CD05367FD0337D3.
+        /// Defaults <see cref="BuzHash_ImplementationBase.InitVal" /> to 0x3CD05367FD0337D3.
         /// </remarks>
-        /// <inheritdoc cref="BuzHashBase(IReadOnlyList{UInt64}, CircularShiftDirection, UInt64, int)" />
-        public DefaultBuzHash(CircularShiftDirection shiftDirection, int hashSize)
+        /// <inheritdoc cref="BuzHash_ImplementationBase(IReadOnlyList{UInt64}, CircularShiftDirection, UInt64, int)" />
+        public DefaultBuzHash_Implementation(CircularShiftDirection shiftDirection, int hashSize)
             : base(_Rtab, shiftDirection, 0x3CD05367FD0337D3, hashSize)
         {
 

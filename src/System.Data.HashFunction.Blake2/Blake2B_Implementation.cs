@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.Blake2.Utilities;
 using System.Data.HashFunction.Core;
 using System.Data.HashFunction.Core.Utilities.UnifiedData;
-using System.Data.HashFunction.Utilities;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction
+namespace System.Data.HashFunction.Blake2
 {
-	/// <summary>
-	/// Implementation of BLAKE2b as specified at https://blake2.net/.  Modified from the canonical C# port at 
-    /// https://blake2.net/blake2_code_20140114.zip. Supports a hash output size of 8 through 512 bits in 8-bit increments 
-    /// and allows seeding with a key, salt, and/or personalization sequence.
-	/// </summary>
-	public partial class Blake2B
-		: HashFunctionAsyncBase
-	{
+	internal partial class Blake2B_Implementation
+		: HashFunctionAsyncBase,
+            IBlake2B
+    {
         private readonly uint _originalKeyLength;
         private readonly byte[] _key;
         private readonly byte[] _salt;
@@ -78,59 +74,7 @@ namespace System.Data.HashFunction
 
 
 		/// <summary>
-		/// Initializes an instance of the <see cref="Blake2B"/> class with the default settings
-		/// (no key, no salt, no personalization, and 512 output length).
-		/// </summary>
-		public Blake2B()
-			: this(DefaultHashSizeBits)
-		{
-
-		}
-
-		/// <summary>
-		/// Initializes an instance of the <see cref="Blake2B"/> class with the provided
-		/// <paramref name="hashSize"/> (no key, no salt, no personalization). 
-		/// 
-		/// The <paramref name="hashSize"/> must be 8 bits at the least and 512 bits at most, and 
-		/// the size in bits must be a multiple of 8.
-		/// </summary>
-		/// <param name="hashSize">Hash size to use for the output</param>
-		/// <exception cref="ArgumentOutOfRangeException">
-		/// The provided <paramref name="hashSize"/> is invalid.
-		/// </exception>
-		public Blake2B(int hashSize)
-            : this(hashSize, null, null, null)
-		{
-
-		}
-
-        
-		/// <summary>
-		/// Initializes an instance of the <see cref="Blake2B"/> class with the default hash size. 
-        /// If not null, the <paramref name="key"/>, <paramref name="salt"/>, and 
-        /// <paramref name="personalization"/> arguments will be applied to the hashing algorithm. 
-		/// 
-		/// The <paramref name="key"/> parameter must be a byte sequence of at most 64 bytes.
-		/// The <paramref name="salt"/> parameter must be a byte sequence of exactly 16 bytes.
-		/// The <paramref name="personalization"/> parameter must be a byte sequence of exactly 16 
-		/// bytes.
-		/// </summary>
-		/// <param name="key">Key to seed the hash with</param>
-		/// <param name="salt">Salt to seed the hash with</param>
-		/// <param name="personalization">Personalization to seed the hash with</param>
-		/// <exception cref="ArgumentOutOfRangeException">
-		/// Either the provided <paramref name="key"/> length, <paramref name="salt"/> length, 
-        /// or <paramref name="personalization"/> length is invalid.
-		/// </exception>
-        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Default values only for named parameter usage.")]
-        public Blake2B(byte[] key = null, byte[] salt = null, byte[] personalization = null)
-            : this(DefaultHashSizeBits, key, salt, personalization)
-        {
-
-        }
-
-		/// <summary>
-		/// Initializes an instance of the <see cref="Blake2B"/> class with the provided
+		/// Initializes an instance of the <see cref="Blake2B_Implementation"/> class with the provided
 		/// <paramref name="hashSize"/>. If not null, the <paramref name="key"/>, 
 		/// <paramref name="salt"/>, and <paramref name="personalization"/> arguments will be 
 		/// applied to the hashing algorithm. 
@@ -150,8 +94,7 @@ namespace System.Data.HashFunction
 		/// Either the provided <paramref name="hashSize"/>, <paramref name="key"/> length, 
 		/// <paramref name="salt"/> length, or <paramref name="personalization"/> length is invalid.
 		/// </exception>
-        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Default values only for named parameter usage.")]
-        public Blake2B(int hashSize, IEnumerable<byte> key = null, IEnumerable<byte> salt = null, IEnumerable<byte> personalization = null)
+        public Blake2B_Implementation(int hashSize, IEnumerable<byte> key, IEnumerable<byte> salt, IEnumerable<byte> personalization)
 			: base(hashSize)
         {
             if (hashSize < MinHashSizeBits || hashSize > MaxHashSizeBits)

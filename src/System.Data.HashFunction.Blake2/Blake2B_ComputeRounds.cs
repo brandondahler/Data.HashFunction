@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 
-namespace System.Data.HashFunction
+namespace System.Data.HashFunction.Blake2
 {
-	public partial class Blake2B
-	{
+	internal partial class Blake2B_Implementation
+    {
 		private static void ComputeRounds(UInt64[] v, UInt64[] m)
 		{
 			// Rounds

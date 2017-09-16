@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.Utilities
+namespace System.Data.HashFunction.Blake2.Utilities
 {
 
     /// <summary>Structure to store 128-bit integer as two 64-bit integers.</summary>

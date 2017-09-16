@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.BuzHash;
 using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 namespace System.Data.HashFunction.Test.Mocks
 {
     public class BuzHashBaseImpl
-        : BuzHashBase
+        : BuzHash_ImplementationBase
     {
         private static readonly IReadOnlyList<UInt64> _Rtab = new UInt64[256] {
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

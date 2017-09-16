@@ -21,7 +21,7 @@
     <RepositoryUrl>https://github.com/brandondahler/Data.HashFunction/</RepositoryUrl>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <RootNamespace>System.Data.HashFunction</RootNamespace>
+    <RootNamespace>System.Data.HashFunction.Blake2</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -43,5 +43,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\System.Data.HashFunction.Core\System.Data.HashFunction.Core.csproj" />
+    <ProjectReference Include="..\System.Data.HashFunction.Interfaces\System.Data.HashFunction.Interfaces.csproj" />
   </ItemGroup>
 </Project>
