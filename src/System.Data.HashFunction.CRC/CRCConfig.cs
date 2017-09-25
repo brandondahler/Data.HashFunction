@@ -8,7 +8,7 @@ namespace System.Data.HashFunction.CRC
     /// Defines a configuration for a <see cref="ICRC"/> implementation.
     /// </summary>
     /// <seealso cref="ICRCConfig" />
-    public partial class CRCConfig
+    public class CRCConfig
         : ICRCConfig
     {
         /// <summary>
@@ -25,7 +25,7 @@ namespace System.Data.HashFunction.CRC
         /// <value>
         /// The divisor that will be used when calculating the CRC value.
         /// </value>
-        public ulong Polynomial { get; set; }
+        public UInt64 Polynomial { get; set; }
 
         /// <summary>
         /// Value to initialize the CRC register to before calculating the CRC.
@@ -33,7 +33,7 @@ namespace System.Data.HashFunction.CRC
         /// <value>
         /// The value that will be used to initialize the CRC register before the calculation of the CRC value.
         /// </value>
-        public ulong InitialValue { get; set; }
+        public UInt64 InitialValue { get; set; }
 
         /// <summary>
         /// If true, the CRC calculation processes input as big endian bit order.
@@ -1341,5 +1341,20 @@ namespace System.Data.HashFunction.CRC
 
         #endregion
 
+
+
+        /// <summary>
+        /// Makes a deep clone of current instance.
+        /// </summary>
+        /// <returns>A deep clone of the current instance.</returns>
+        public ICRCConfig Clone() =>
+            new CRCConfig() {
+                HashSizeInBits = HashSizeInBits,
+                Polynomial = Polynomial,
+                InitialValue = InitialValue,
+                ReflectIn = ReflectIn,
+                ReflectOut = ReflectOut,
+                XOrOut = XOrOut
+            };
     }
 }

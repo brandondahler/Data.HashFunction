@@ -20,40 +20,39 @@ namespace System.Data.HashFunction.CRC
         : HashFunctionAsyncBase,
             ICRC
     {
-        private readonly int _hashSizeInBits;
-
-        private readonly UInt64 _polynomial;
-        private readonly UInt64 _initialValue;
-
-        private readonly bool _reflectIn;
-        private readonly bool _reflectOut;
-        
-        private readonly UInt64 _xOrOut;
+        /// <summary>
+        /// Configuration used when creating this instance.
+        /// </summary>
+        /// <value>
+        /// A clone of configuration that was used when creating this instance.
+        /// </value>
+        public ICRCConfig Config => _config.Clone();
 
 
-        private static readonly ConcurrentDictionary<Tuple<int, UInt64, bool>, IReadOnlyList<UInt64>> _dataDivisionTableCache =
-            new ConcurrentDictionary<Tuple<int, ulong, bool>, IReadOnlyList<ulong>>();
+        private readonly ICRCConfig _config;
 
 
+        private static readonly ConcurrentDictionary<(int, UInt64, bool), IReadOnlyList<UInt64>> _dataDivisionTableCache =
+            new ConcurrentDictionary<(int, ulong, bool), IReadOnlyList<ulong>>();
+
+
+        /// <summary>
+        /// Creates a new <see cref="CRC_Implementation" /> instance with given configuration.
+        /// </summary>
+        /// <param name="config">The configuration to use.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
+        /// <exception cref="ArgumentException"><paramref name="config"/>.<see cref="ICRCConfig.HashSizeInBits"/> must be &gt;= <c>1</c> and &lt;= <c>64</c>;<paramref name="config"/>.<see cref="ICRCConfig.HashSizeInBits"/></exception>
         public CRC_Implementation(ICRCConfig config)
             : base(config != null ? config.HashSizeInBits : -1)
         {
             if (config == null)
                 throw new ArgumentNullException(nameof(config));
 
-            if (config.HashSizeInBits <= 0 || config.HashSizeInBits > 64)
-                throw new ArgumentException("config.HashSizeInBits must be >= 1 and <= 64", nameof(config));
+            _config = config.Clone();
 
 
-            _hashSizeInBits = config.HashSizeInBits;
-
-            _polynomial = config.Polynomial;
-            _initialValue = config.InitialValue;
-
-            _reflectIn = config.ReflectIn;
-            _reflectOut = config.ReflectOut;
-
-            _xOrOut = config.XOrOut;
+            if (_config.HashSizeInBits <= 0 || _config.HashSizeInBits > 64)
+                throw new ArgumentException($"{nameof(config)}.{nameof(config.HashSizeInBits)} must be >= 1 and <= 64", $"{nameof(config)}.{nameof(config.HashSizeInBits)}");
         }
         
 
@@ -62,22 +61,22 @@ namespace System.Data.HashFunction.CRC
         protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {
             // Use 64-bit variable regardless of CRC bit length
-            UInt64 hash = _initialValue;
+            UInt64 hash = _config.InitialValue;
 
             // Reflect InitialValue if processing as big endian
-            if (_reflectIn)
-                hash = ReflectBits(hash, HashSize);
+            if (_config.ReflectIn)
+                hash = ReflectBits(hash, HashSizeInBits);
 
 
             // Store table reference in local variable to lower overhead.
-            var crcTable = GetDataDivisionTable(_hashSizeInBits, _polynomial, _reflectIn);
+            var crcTable = GetDataDivisionTable(_config.HashSizeInBits, _config.Polynomial, _config.ReflectIn);
 
 
             // How much hash must be right-shifted to get the most significant byte (HashSize >= 8) or bit (HashSize < 8)
-            int mostSignificantShift = HashSize - 8;
+            int mostSignificantShift = _config.HashSizeInBits - 8;
 
-            if (HashSize < 8)
-                mostSignificantShift = HashSize - 1;
+            if (_config.HashSizeInBits < 8)
+                mostSignificantShift = _config.HashSizeInBits - 1;
 
 
             data.ForEachRead(
@@ -88,35 +87,35 @@ namespace System.Data.HashFunction.CRC
 
 
             // Account for mixed-endianness
-            if (_reflectIn ^ _reflectOut)
-               hash = ReflectBits(hash, HashSize);
+            if (_config.ReflectIn ^ _config.ReflectOut)
+               hash = ReflectBits(hash, HashSizeInBits);
 
 
-            hash ^= _xOrOut;
+            hash ^= _config.XOrOut;
 
-            return ToBytes(hash, HashSize);
+            return ToBytes(hash, HashSizeInBits);
         }
         
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
         {
             // Use 64-bit variable regardless of CRC bit length
-            UInt64 hash = _initialValue;
+            UInt64 hash = _config.InitialValue;
 
             // Reflect InitialValue if processing as big endian
-            if (_reflectIn)
-                hash = ReflectBits(hash, HashSize);
+            if (_config.ReflectIn)
+                hash = ReflectBits(hash, HashSizeInBits);
 
 
             // Store table reference in local variable to lower overhead.
-            var crcTable = GetDataDivisionTable(_hashSizeInBits, _polynomial, _reflectIn);
+            var crcTable = GetDataDivisionTable(_config.HashSizeInBits, _config.Polynomial, _config.ReflectIn);
 
 
             // How much hash must be right-shifted to get the most significant byte (HashSize >= 8) or bit (HashSize < 8)
-            int mostSignificantShift = HashSize - 8;
+            int mostSignificantShift = _config.HashSizeInBits - 8;
 
-            if (HashSize < 8)
-                mostSignificantShift = HashSize - 1;
+            if (_config.HashSizeInBits < 8)
+                mostSignificantShift = _config.HashSizeInBits - 1;
 
 
             await data.ForEachReadAsync(
@@ -128,23 +127,23 @@ namespace System.Data.HashFunction.CRC
 
 
             // Account for mixed-endianness
-            if (_reflectIn ^ _reflectOut)
-               hash = ReflectBits(hash, HashSize);
+            if (_config.ReflectIn ^ _config.ReflectOut)
+               hash = ReflectBits(hash, HashSizeInBits);
 
 
-            hash ^= _xOrOut;
+            hash ^= _config.XOrOut;
 
-            return ToBytes(hash, HashSize);
+            return ToBytes(hash, HashSizeInBits);
         }
 
         private void ProcessBytes(ref UInt64 hash, IReadOnlyList<UInt64> crcTable, int mostSignificantShift, byte[] dataBytes, int position, int length)
         {
             for (var x = position; x < position + length; ++x)
             {
-                if (HashSize >= 8)
+                if (HashSizeInBits >= 8)
                 {
                     // Process per byte, treating hash differently based on input endianness
-                    if (_reflectIn)
+                    if (_config.ReflectIn)
                         hash = (hash >> 8) ^ crcTable[(byte) hash ^ dataBytes[x]];
                     else
                         hash = (hash << 8) ^ crcTable[((byte) (hash >> mostSignificantShift)) ^ dataBytes[x]];
@@ -153,7 +152,7 @@ namespace System.Data.HashFunction.CRC
                     // Process per bit, treating hash differently based on input endianness
                     for (int y = 0; y < 8; ++y)
                     {
-                        if (_reflectIn)
+                        if (_config.ReflectIn)
                             hash = (hash >> 1) ^ crcTable[(byte) (hash & 1) ^ ((byte) (dataBytes[x] >> y) & 1)];
                         else
                             hash =  (hash << 1) ^ crcTable[(byte) ((hash >> mostSignificantShift) & 1) ^ ((byte) (dataBytes[x] >> (7 - y)) & 1)];
@@ -181,11 +180,11 @@ namespace System.Data.HashFunction.CRC
         private static IReadOnlyList<UInt64> GetDataDivisionTable(int hashSizeInBits, UInt64 polynomial, bool reflectIn)
         {
             return _dataDivisionTableCache.GetOrAdd(
-                new Tuple<int, UInt64, bool>(hashSizeInBits, polynomial, reflectIn), 
+                (hashSizeInBits, polynomial, reflectIn), 
                 GetDataDivisionTableInternal);
         }
 
-        private static IReadOnlyList<UInt64> GetDataDivisionTableInternal(Tuple<int, UInt64, bool> cacheKey)
+        private static IReadOnlyList<UInt64> GetDataDivisionTableInternal((int, UInt64, bool) cacheKey)
         {
             var hashSizeInBits = cacheKey.Item1;
             var polynomial = cacheKey.Item2;
@@ -239,7 +238,7 @@ namespace System.Data.HashFunction.CRC
         private static byte[] ToBytes(UInt64 value, int bitLength)
         {
             if (bitLength <= 0 || bitLength > 64)
-                throw new ArgumentOutOfRangeException("bitLength", "bitLength but be in the range [1, 64].");
+                throw new ArgumentOutOfRangeException(nameof(bitLength), $"{nameof(bitLength)} but be in the range [1, 64].");
 
 
             value &= (UInt64.MaxValue >> (64 - bitLength));
@@ -259,7 +258,7 @@ namespace System.Data.HashFunction.CRC
         private static UInt64 ReflectBits(UInt64 value, int bitLength)
         {
             if (bitLength <= 0 || bitLength > 64)
-                throw new ArgumentOutOfRangeException("bitLength", "bitLength must be in the range [1, 64].");
+                throw new ArgumentOutOfRangeException(nameof(bitLength), $"{nameof(bitLength)} must be in the range [1, 64].");
 
             UInt64 reflectedValue = 0UL;
 

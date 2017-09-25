@@ -495,7 +495,7 @@ namespace System.Data.HashFunction
             var seededData = new byte[data.Length + 4];
             Array.Copy(data, 0, seededData, 4, data.Length);
 
-            var hashesNeeded = (desiredHashSize + (hashFunction.HashSize - 1)) / hashFunction.HashSize;
+            var hashesNeeded = (desiredHashSize + (hashFunction.HashSizeInBits - 1)) / hashFunction.HashSizeInBits;
 
             // Compute as many hashes as needed
             for (int x = 0; x < Math.Max(hashesNeeded, 1); ++x)
@@ -521,12 +521,12 @@ namespace System.Data.HashFunction
                         .Concat(new[] { (byte) 0 })
                         .ToArray());
 
-                hash |= elementHash << (x * hashFunction.HashSize);
+                hash |= elementHash << (x * hashFunction.HashSizeInBits);
             }
 
 
             // XOr-fold the extra bits
-            if (hashesNeeded * hashFunction.HashSize != desiredHashSize)
+            if (hashesNeeded * hashFunction.HashSizeInBits != desiredHashSize)
             {
                 var mask = ((new BigInteger(1) << desiredHashSize) - 1);
 

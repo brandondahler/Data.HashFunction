@@ -19,5 +19,16 @@ namespace System.Data.HashFunction.CityHash
         /// </value>
         /// <remarks>Defaults to <c>64</c>.</remarks>
         public int HashSizeInBits { get; set; } = 32;
+
+
+
+        /// <summary>
+        /// Makes a deep clone of current instance.
+        /// </summary>
+        /// <returns>A deep clone of the current instance.</returns>
+        public ICityHashConfig Clone() =>
+            new CityHashConfig() {
+                HashSizeInBits = HashSizeInBits
+            };
     }
 }

@@ -21,7 +21,7 @@ namespace System.Data.HashFunction.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="HashFunctionAsyncBase"/> class.
         /// </summary>
-        /// <param name="hashSize"><inheritdoc cref="HashFunctionBase.HashSize" /></param>
+        /// <param name="hashSize"><inheritdoc cref="HashFunctionBase.HashSizeInBits" /></param>
         protected HashFunctionAsyncBase(int hashSize)
             : base(hashSize)
         {
@@ -40,17 +40,13 @@ namespace System.Data.HashFunction.Core
             if (!data.CanRead)
                 throw new ArgumentException("Stream \"data\" must be readable.", "data");
 
-
-            if (!data.CanSeek && RequiresSeekableStream)
-                throw new ArgumentException("Seekable stream \"data\" required for this type of hash function.", "data");
-
             cancellationToken.ThrowIfCancellationRequested();
 
 
             return new HashValue(
                 await ComputeHashAsyncInternal(new StreamData(data), cancellationToken)
                     .ConfigureAwait(false),
-                HashSize);
+                HashSizeInBits);
         }
 
         /// <summary>

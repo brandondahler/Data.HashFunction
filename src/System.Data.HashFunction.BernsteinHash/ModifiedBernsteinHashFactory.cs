@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.BernsteinHash;
 using System.Text;
 
-namespace System.Data.HashFunction
+namespace System.Data.HashFunction.BernsteinHash
 {
     /// <summary>
     /// Provides instances of implementations of <see cref="IModifiedBernsteinHash"/>.

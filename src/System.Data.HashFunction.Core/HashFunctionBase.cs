@@ -19,25 +19,16 @@ namespace System.Data.HashFunction.Core
     {
 
         /// <inheritdoc />
-        public int HashSize { get; }
-
-        /// <summary>
-        /// Flag to determine if a hash function needs a seekable stream in order to calculate the hash.
-        /// Override to true to make <see cref="ComputeHash(Stream)" /> pass a seekable stream to <see cref="ComputeHashInternal(IUnifiedData, CancellationToken)" />.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if a seekable stream; otherwise, <c>false</c>.
-        /// </value>
-        protected virtual bool RequiresSeekableStream { get; } = false;
+        public int HashSizeInBits { get; }
         
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HashFunctionBase"/> class.
         /// </summary>
-        /// <param name="hashSize"><inheritdoc cref="HashSize" /></param>
+        /// <param name="hashSize"><inheritdoc cref="HashSizeInBits" /></param>
         protected HashFunctionBase(int hashSize)
         {
-           HashSize = hashSize;
+           HashSizeInBits = hashSize;
         }
 
 
@@ -58,7 +49,7 @@ namespace System.Data.HashFunction.Core
 
             return new HashValue(
                 ComputeHashInternal(new ArrayData(data), cancellationToken),
-                HashSize);
+                HashSizeInBits);
         }
 
 
@@ -78,12 +69,10 @@ namespace System.Data.HashFunction.Core
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
-
+            
             if (!data.CanRead)
                 throw new ArgumentException("Stream must be readable.", nameof(data));
 
-            if (!data.CanSeek && RequiresSeekableStream)
-                throw new ArgumentException("Stream must be seekable for this type of hash function.", nameof(data));
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -92,7 +81,7 @@ namespace System.Data.HashFunction.Core
                 ComputeHashInternal(
                     new StreamData(data),
                     cancellationToken),
-                HashSize);
+                HashSizeInBits);
         }
 
 

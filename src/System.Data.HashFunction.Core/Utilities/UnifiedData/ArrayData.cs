@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace System.Data.HashFunction.Core.Utilities.UnifiedData
 {
     internal sealed class ArrayData
-        : UnifiedData
+        : UnifiedDataBase
     {
         /// <inheritdoc />
         public override long Length { get => _data.Length; }

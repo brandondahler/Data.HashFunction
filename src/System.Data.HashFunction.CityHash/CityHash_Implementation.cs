@@ -16,59 +16,68 @@ namespace System.Data.HashFunction.CityHash
         : HashFunctionAsyncBase,
             ICityHash
     {
+
         /// <summary>
-        /// The list of possible hash sizes that can be provided to the <see cref="CityHash" /> constructor.
+        /// Configuration used when creating this instance.
         /// </summary>
         /// <value>
-        /// The list of valid hash sizes.
+        /// A clone of configuration that was used when creating this instance.
         /// </value>
-        public static IEnumerable<int> ValidHashSizes { get { return _ValidHashSizes; } }
+        public ICityHashConfig Config => _config.Clone();
 
 
-        /// <inheritdoc />
-        protected override bool RequiresSeekableStream { get { return true; } }
 
         /// <summary>
         /// Constant k0 as defined by CityHash specification.
         /// </summary>
-        protected const UInt64 k0 = 0xc3a5c85c97cb3127;
+        private const UInt64 k0 = 0xc3a5c85c97cb3127;
 
         /// <summary>
         /// Constant k1 as defined by CityHash specification.
         /// </summary>
-        protected const UInt64 k1 = 0xb492b66fbe98f273;
+        private const UInt64 k1 = 0xb492b66fbe98f273;
 
         /// <summary>
         /// Constant k2 as defined by CityHash specification.
         /// </summary>
-        protected const UInt64 k2 = 0x9ae16a3b2f90404f;
+        private const UInt64 k2 = 0x9ae16a3b2f90404f;
 
 
         /// <summary>
         /// Constant c1 as defined by CityHash specification.
         /// </summary>
-        protected const UInt32 c1 = 0xcc9e2d51;
+        private const UInt32 c1 = 0xcc9e2d51;
 
         /// <summary>
         /// Constant c2 as defined by CityHash specification.
         /// </summary>
-        protected const UInt32 c2 = 0x1b873593;
+        private const UInt32 c2 = 0x1b873593;
 
 
-        private static readonly IEnumerable<int> _ValidHashSizes = new[] { 32, 64, 128 };
+        private readonly ICityHashConfig _config;
 
-        
+
+        private static readonly IEnumerable<int> _validHashSizes = new HashSet<int>() { 32, 64, 128 };
+
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="CityHash"/> class.
+        /// Initializes a new instance of the <see cref="CityHash_Implementation"/> class.
         /// </summary>
-        /// <param name="hashSize"><inheritdoc cref="HashFunctionBase(int)" select="param[name=hashSize]" /></param>
-        /// <exception cref="System.ArgumentOutOfRangeException">hashSize;hashSize must be contained within CityHash.ValidHashSizes.</exception>
+        /// <param name="config">Configuration for this instance</param>
+        /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
+        /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="ICityHashConfig.HashSizeInBits">HashSizeInBits</see>;<paramref name="config"/>.<see cref="ICityHashConfig.HashSizeInBits">HashSizeInBits</see> must be contained within CityHash.ValidHashSizes.</exception>
         /// <inheritdoc cref="HashFunctionBase(int)" />
-        public CityHash_Implementation(int hashSize)
-            : base(hashSize)
+        public CityHash_Implementation(ICityHashConfig config)
+            : base((config?.HashSizeInBits).GetValueOrDefault())
         {
-            if (!ValidHashSizes.Contains(hashSize))
-                throw new ArgumentOutOfRangeException("hashSize", "hashSize must be contained within CityHash.ValidHashSizes.");
+            if (config == null)
+                throw new ArgumentNullException(nameof(config));
+
+            if (!_validHashSizes.Contains(config.HashSizeInBits))
+                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be contained within CityHash.ValidHashSizes.");
+
+
+            _config = config.Clone();
         }
 
         
@@ -79,7 +88,7 @@ namespace System.Data.HashFunction.CityHash
             byte[] hash = null;
             var dataArray = data.ToArray(cancellationToken);
             
-            switch (HashSize)
+            switch (_config.HashSizeInBits)
             {
                 case 32:
                     hash = BitConverter.GetBytes(
@@ -122,7 +131,7 @@ namespace System.Data.HashFunction.CityHash
             var dataArray = await data.ToArrayAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            switch (HashSize)
+            switch (_config.HashSizeInBits)
             {
                 case 32:
                     hash = BitConverter.GetBytes(

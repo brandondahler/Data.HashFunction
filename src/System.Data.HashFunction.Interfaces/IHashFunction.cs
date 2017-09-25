@@ -15,7 +15,7 @@ namespace System.Data.HashFunction
         /// <value>
         /// The size of the hash, in bits.
         /// </value>
-        int HashSize { get; }
+        int HashSizeInBits { get; }
 
 
         /// <summary>

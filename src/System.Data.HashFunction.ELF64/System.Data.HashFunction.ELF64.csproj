@@ -7,7 +7,6 @@
     <VersionPrefix>2.0.0</VersionPrefix>
     <Authors>Data.HashFunction Developers</Authors>
     <TargetFrameworks>netstandard1.1</TargetFrameworks>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>System.Data.HashFunction.ELF64</AssemblyName>
     <AssemblyOriginatorKeyFile>../Data.HashFunction.Production.snk</AssemblyOriginatorKeyFile>
@@ -29,16 +28,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\SolutionInfo.cs" Exclude="bin\**;obj\**;**\*.xproj;packages\**" />
+    <Compile Include="..\FriendAssemblies.cs" Link="Properties\FriendAssemblies.cs" />
+    <Compile Include="..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\System.Data.HashFunction.Core\System.Data.HashFunction.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
 </Project>

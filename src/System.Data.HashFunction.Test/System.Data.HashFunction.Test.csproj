@@ -23,9 +23,13 @@
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="results.xml" />
+  </ItemGroup>
   
   <ItemGroup>
-    <Compile Include="..\SolutionInfo.cs" Exclude="bin\**;obj\**;**\*.xproj;packages\**" />
+    <Compile Include="..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
     <None Include="App.config" />
   </ItemGroup>
 
@@ -63,32 +67,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="IHashFunctionTests_CRC.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>IHashFunctionTests_CRC.cs</LastGenOutput>
-    </None>
-    <None Update="IHashFunctionTests_HashFunctionBase.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>IHashFunctionTests_HashFunctionBase.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="IHashFunctionTests_CRC.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>IHashFunctionTests_CRC.tt</DependentUpon>
-    </Compile>
-    <Compile Update="IHashFunctionTests_HashFunctionBase.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>IHashFunctionTests_HashFunctionBase.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
 
 </Project>

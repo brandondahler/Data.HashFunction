@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace System.Data.HashFunction.Core.Utilities.UnifiedData
 {
     internal sealed class StreamData
-        : UnifiedDataAsync, 
+        : UnifiedDataAsyncBase, 
             IDisposable
     {
         /// <inheritdoc />

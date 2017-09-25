@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.HashFunction.Core.Utilities.UnifiedData;
+using System.Data.HashFunction.Jenkins;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -28,7 +29,11 @@ namespace System.Data.HashFunction.Test.Jenkins
             }
 
 
-            var jenkinsLookup3 = new JenkinsLookup3(32);
+            var jenkinsLookup3 = new JenkinsLookup3_Implementation(
+                new JenkinsLookup3Config() { 
+                    HashSizeInBits = 32 
+                });
+
             using (var ms = new MemoryStream(knownValue))
             {
                 var resultBytes = jenkinsLookup3.ComputeHash(ms);

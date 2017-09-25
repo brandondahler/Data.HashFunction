@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace System.Data.HashFunction.Blake2
 {
@@ -20,6 +21,7 @@ namespace System.Data.HashFunction.Blake2
         /// </remarks>
         public int HashSizeInBits { get; set; } = 512;
 
+
         /// <summary>
         /// Gets the key.
         /// </summary>
@@ -29,7 +31,7 @@ namespace System.Data.HashFunction.Blake2
         /// <remarks>
         /// Defaults to <c>null</c>.
         /// </remarks>
-        public byte[] Key { get; set; }
+        public IReadOnlyList<byte> Key { get; set; } = null;
 
         /// <summary>
         /// Gets the salt.
@@ -40,7 +42,7 @@ namespace System.Data.HashFunction.Blake2
         /// <remarks>
         /// Defaults to <c>null</c>.
         /// </remarks>
-        public byte[] Salt { get; set; }
+        public IReadOnlyList<byte> Salt { get; set; } = null;
 
         /// <summary>
         /// Gets the personalization sequence.
@@ -51,6 +53,20 @@ namespace System.Data.HashFunction.Blake2
         /// <remarks>
         /// Defaults to <c>null</c>.
         /// </remarks>
-        public byte[] Personalization { get; set; }
+        public IReadOnlyList<byte> Personalization { get; set; } = null;
+
+
+
+        /// <summary>
+        /// Makes a deep clone of current instance.
+        /// </summary>
+        /// <returns>A deep clone of the current instance.</returns>
+        public IBlake2BConfig Clone() =>
+            new Blake2BConfig() {
+                HashSizeInBits = HashSizeInBits,
+                Key = Key?.ToArray(),
+                Salt = Salt?.ToArray(),
+                Personalization = Personalization?.ToArray(),
+            };
     }
 }

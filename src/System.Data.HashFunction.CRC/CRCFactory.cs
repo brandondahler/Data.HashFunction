@@ -8,9 +8,20 @@ namespace System.Data.HashFunction.CRC
     /// Provides instances of implementations of <see cref="ICRC"/>.
     /// </summary>
     /// <seealso cref="ICRCFactory" />
-    class CRCFactory
+    public sealed class CRCFactory
         : ICRCFactory
     {
+        /// <summary>
+        /// Gets the singleton instance of this factory.
+        /// </summary>
+        public static ICRCFactory Instance { get; } = new CRCFactory();
+
+
+        private CRCFactory()
+        {
+
+        }
+
         /// <summary>
         /// Creates a new <see cref="ICRC" /> instance with the default configuration.
         /// </summary>

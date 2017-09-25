@@ -1,7 +1,7 @@
 ﻿using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Test.Mocks;
+using System.Data.HashFunction.Test._Mocks;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;

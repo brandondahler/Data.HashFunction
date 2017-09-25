@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.HashFunction.Core;
 using System.Data.HashFunction.Core.Utilities;
 using System.Data.HashFunction.Core.Utilities.UnifiedData;
+using System.Data.HashFunction.FNV.Utilities;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -13,135 +14,71 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction
+namespace System.Data.HashFunction.FNV
 {
     /// <summary>
     /// Abstract implementation of Fowler–Noll–Vo hash function (FNV-1 and FNV-1a) as specified at http://www.isthe.com/chongo/tech/comp/fnv/index.html.
     /// </summary>
     public abstract class FNV1Base
-        : HashFunctionAsyncBase
+        : HashFunctionAsyncBase,
+            IFNV
     {
+
         /// <summary>
-        /// The list of possible hash sizes that can be provided to the <see cref="FNV1Base" /> constructor.
+        /// Configuration used when creating this instance.
         /// </summary>
         /// <value>
-        /// The enumerable set of valid hash sizes.
+        /// A clone of configuration that was used when creating this instance.
         /// </value>
-        public static IEnumerable<int> ValidHashSizes { get { return HashParameters.Keys; } }
+        public IFNVConfig Config => _config.Clone();
 
 
-        /// <summary>
-        /// Dictionary with keys matching the possible hash sizes and values of FNV_prime and offset_basis.
-        /// </summary>
-        /// <value>
-        /// The concurrent dictionary of hash parameters.
-        /// </value>
-        /// <remarks>
-        /// <para>
-        /// It is acceptable to add, remove, or change items contained within this dictionary.
-        /// Changes will only apply to instances constructed after the change.
-        /// </para>
-        /// <para>
-        /// Dictionary is guaranteed to be thread-safe.
-        /// </para>
-        /// </remarks>
-        public static IDictionary<int, FNVPrimeOffset> HashParameters { get { return _HashParameters; }}
 
+        private readonly IFNVConfig _config;
 
-        /// <summary>
-        /// Parameters as defined by the FNV specifications.
-        /// </summary>
-        private static readonly ConcurrentDictionary<int, FNVPrimeOffset> _HashParameters =
-            new ConcurrentDictionary<int, FNVPrimeOffset>(
-                new Dictionary<int, FNVPrimeOffset>() { 
-                    { 
-                        32, 
-                        new FNVPrimeOffset(32,
-                            new BigInteger(16777619), 
-                            new BigInteger(2166136261))
-                    },
-                    { 
-                        64, 
-                        new FNVPrimeOffset(64,
-                            new BigInteger(1099511628211), 
-                            new BigInteger(14695981039346656037))
-                    },
-                    { 
-                        128, 
-                        new FNVPrimeOffset(128,
-                            BigInteger.Parse("309485009821345068724781371"), 
-                            BigInteger.Parse("144066263297769815596495629667062367629"))
-                    },
-                    { 
-                        256, 
-                        new FNVPrimeOffset(256,
-                            BigInteger.Parse("374144419156711147060143317175368453031918731002211"), 
-                            BigInteger.Parse("100029257958052580907070968620625704837092796014241193945225284501741471925557"))
-                    },
-                    { 
-                        512, 
-                        new FNVPrimeOffset(512,
-                            BigInteger.Parse("35835915874844867368919076489095108449946327955754392558399825615420669938882575126094039892345713852759"), 
-                            BigInteger.Parse("9659303129496669498009435400716310466090418745672637896108374329434462657994582932197716438449813051892206539805784495328239340083876191928701583869517785"))
-                    },
-                    { 
-                        1024, 
-                        new FNVPrimeOffset(1024,
-                            BigInteger.Parse("5016456510113118655434598811035278955030765345404790744303017523831112055108147451509157692220295382716162651878526895249385292291816524375083746691371804094271873160484737966720260389217684476157468082573"), 
-                            BigInteger.Parse("14197795064947621068722070641403218320880622795441933960878474914617582723252296732303717722150864096521202355549365628174669108571814760471015076148029755969804077320157692458563003215304957150157403644460363550505412711285966361610267868082893823963790439336411086884584107735010676915"))
-                    }
-                });
+        private readonly FNVPrimeOffset _fnvPrimeOffset;
 
-
-        /// <inheritdoc class="FNV1Base(int)" />
-        protected FNV1Base()
-            : this(64)
-        {
-
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FNV1Base"/> class.
         /// </summary>
-        /// <exception cref="System.ArgumentOutOfRangeException">hashSize;hashSize must be contained within FNV1Base.ValidHashSizes, no hash parameters for that length specified.</exception>
-        /// <exception cref="System.ArgumentException">
-        /// </exception>
+        /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
+        /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IFNVConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IFNVConfig.HashSizeInBits"/> must be a positive a multiple of 32.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IFNVConfig.Prime"/>;<paramref name="config"/>.<see cref="IFNVConfig.Prime"/> must be non-zero.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IFNVConfig.Offset"/>;<paramref name="config"/>.<see cref="IFNVConfig.Offset"/> must be non-zero.</exception>
         /// <inheritdoc cref="HashFunctionBase(int)" />
-        protected FNV1Base(int hashSize)
-            : base(hashSize)
+        protected FNV1Base(IFNVConfig config)
+            : base(config.HashSizeInBits)
         {
-            if (!ValidHashSizes.Contains(hashSize))
-            {
-                throw new ArgumentOutOfRangeException(
-                    "hashSize", 
-                    "hashSize must be contained within FNV1Base.ValidHashSizes, no hash parameters for that length specified.");
-            }
+            if (config == null)
+                throw new ArgumentNullException(nameof(config));
 
 
-            if (HashParameters[hashSize].Prime.Count != hashSize / 32)
-            {
-                throw new ArgumentException(
-                    string.Format("HashParameters[{0}].Prime should contain exactly {1} items.", hashSize, hashSize / 32),
-                    string.Format("HashParameters[{0}].Prime", hashSize));
-            }
-                    
-            if (HashParameters[hashSize].Offset.Count != hashSize / 32)
-            {
-                throw new ArgumentException(
-                    string.Format("HashParameters[{0}].Offset should contain exactly {1} items.", hashSize, hashSize / 32),
-                    string.Format("HashParameters[{0}].Offset", hashSize));
-            }
+            _config = config.Clone();
+            
+
+            if (_config.HashSizeInBits <= 0 || _config.HashSizeInBits % 32 != 0)
+                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", _config.HashSizeInBits, $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be a positive a multiple of 32.");
+
+            if (_config.Prime == BigInteger.Zero)
+                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.Prime)}", _config.Prime, $"{nameof(config)}.{nameof(config.Prime)} must be non-zero.");
+
+            if (_config.Offset == BigInteger.Zero)
+                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.Offset)}", _config.Offset, $"{nameof(config)}.{nameof(config.Offset)} must be non-zero.");
+
+
+            _fnvPrimeOffset = FNVPrimeOffset.Create(config.HashSizeInBits, config.Prime, config.Offset);
         }
 
 
         /// <inheritdoc />
         protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {
-            var prime = HashParameters[HashSize].Prime;
-            var offset = HashParameters[HashSize].Offset;
+            var prime = _fnvPrimeOffset.Prime;
+            var offset = _fnvPrimeOffset.Offset;
 
             // Handle 32-bit and 64-bit cases in a strongly-typed manner for performance
-            if (HashSize == 32)
+            if (_config.HashSizeInBits == 32)
             {
                 var hash = offset[0];
 
@@ -153,7 +90,7 @@ namespace System.Data.HashFunction
 
                 return BitConverter.GetBytes(hash);
 
-            } else if (HashSize == 64) {
+            } else if (_config.HashSizeInBits == 64) {
                 var hash = ((UInt64) offset[1] << 32) | offset[0];
                 var prime64 = ((UInt64) prime[1] << 32) | prime[0];
 
@@ -187,11 +124,11 @@ namespace System.Data.HashFunction
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
         {
-            var prime = HashParameters[HashSize].Prime;
-            var offset = HashParameters[HashSize].Offset;
+            var prime = _fnvPrimeOffset.Prime;
+            var offset = _fnvPrimeOffset.Offset;
 
             // Handle 32-bit and 64-bit cases in a strongly-typed manner for performance
-            if (HashSize == 32)
+            if (HashSizeInBits == 32)
             {
                 var hash = offset[0];
 
@@ -204,7 +141,7 @@ namespace System.Data.HashFunction
 
                 return BitConverter.GetBytes(hash);
 
-            } else if (HashSize == 64) {
+            } else if (HashSizeInBits == 64) {
                 var hash = ((UInt64) offset[1] << 32) | offset[0];
                 var prime64 = ((UInt64) prime[1] << 32) | prime[0];
 

@@ -11,7 +11,7 @@ namespace System.Data.HashFunction.Core.Utilities
     /// 
     /// </summary>
     /// <seealso cref="System.Data.HashFunction.IHashValue" />
-    public class HashValue
+    public sealed class HashValue
         : IHashValue
     {
         /// <inheritdoc />
@@ -126,9 +126,47 @@ namespace System.Data.HashFunction.Core.Utilities
             if (other.BitLength != BitLength)
                 return false;
 
-            for (var x = 0; x < Math.Min(Hash.Length, other.Hash.Length); ++x)
+            var byteLength = ((BitLength + 7) / 8);
+            var finalByteIndex = byteLength - 1;
+
+            byte finalByteMask = (byte) ((1 << (BitLength % 8)) - 1);
             {
-                if (other.Hash[x] != Hash[x])
+                if (finalByteMask == 0)
+                    finalByteMask = 255;
+            }
+
+
+            var myHash = Hash;
+            var otherHash = other.Hash;
+
+            var myHashLength = myHash.Length;
+            var otherHashLength = otherHash.Length;
+
+            var checkBytesCount = Math.Min(byteLength, Math.Max(myHashLength, otherHashLength));
+
+            for (var x = 0; x < checkBytesCount; ++x)
+            {
+                byte myByte = 0;
+                byte otherByte = 0;
+
+                if (myHashLength > x)
+                {
+                    myByte = myHash[x];
+
+                    if (x == finalByteIndex)
+                        myByte = (byte) (myByte & finalByteMask);
+                }
+
+                if (otherHashLength > x)
+                {
+                    otherByte = otherHash[x];
+
+                    if (x == finalByteIndex)
+                        otherByte = (byte)(otherByte & finalByteMask);
+                }
+
+
+                if (myByte != otherByte)
                     return false;
             }
 

@@ -15,6 +15,11 @@ namespace System.Data.HashFunction.Blake2
 		: HashFunctionAsyncBase,
             IBlake2B
     {
+        public IBlake2BConfig Config => _config.Clone();
+
+
+        private readonly IBlake2BConfig _config;
+
         private readonly uint _originalKeyLength;
         private readonly byte[] _key;
         private readonly byte[] _salt;
@@ -41,7 +46,6 @@ namespace System.Data.HashFunction.Blake2
             0x1F83D9ABFB41BD6BUL,
             0x5BE0CD19137E2179UL
         };
-
 
 
         private class InternalState
@@ -94,27 +98,36 @@ namespace System.Data.HashFunction.Blake2
 		/// Either the provided <paramref name="hashSize"/>, <paramref name="key"/> length, 
 		/// <paramref name="salt"/> length, or <paramref name="personalization"/> length is invalid.
 		/// </exception>
-        public Blake2B_Implementation(int hashSize, IEnumerable<byte> key, IEnumerable<byte> salt, IEnumerable<byte> personalization)
-			: base(hashSize)
+        public Blake2B_Implementation(IBlake2BConfig config)
+			: base((config?.HashSizeInBits).GetValueOrDefault())
         {
-            if (hashSize < MinHashSizeBits || hashSize > MaxHashSizeBits)
-                throw new ArgumentOutOfRangeException("hashSize", hashSize, String.Format("Expected: {0} >= hashSize <= {1}", MinHashSizeBits, MaxHashSizeBits));
+            if (config == null)
+                throw new ArgumentNullException(nameof(config));
+            
 
-			if (hashSize % 8 != 0)
-				throw new ArgumentOutOfRangeException("hashSize", hashSize, "The hash size must be a multiple of 8");
+            if (config.HashSizeInBits < MinHashSizeBits || config.HashSizeInBits > MaxHashSizeBits)
+                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", config.HashSizeInBits, $"Expected: {MinHashSizeBits} >= {nameof(config)}.{nameof(config.HashSizeInBits)} <= {MaxHashSizeBits}");
 
-            var keyArray = (key ?? new byte[0]).ToArray();
-            var saltArray = (salt ?? new byte[16]).ToArray();
-            var personalizationArray = (personalization ?? new byte[16]).ToArray();
+			if (config.HashSizeInBits % 8 != 0)
+				throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", config.HashSizeInBits, $"{ nameof(config) }.{ nameof(config.HashSizeInBits)} must be a multiple of 8.");
+
+
+
+            _config = config.Clone();
+
+
+            var keyArray = (config.Key ?? new byte[0]).ToArray();
+            var saltArray = (config.Salt ?? new byte[16]).ToArray();
+            var personalizationArray = (config.Personalization ?? new byte[16]).ToArray();
 
 			if (keyArray.Length > MaxKeySizeBytes)
-				throw new ArgumentOutOfRangeException("key", key, String.Format("Expected: key.Length <= {0}", MaxKeySizeBytes));
+				throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.Key)}", config.Key, $"Expected: {nameof(config)}.{nameof(config.Key)}.Count <= {MaxKeySizeBytes}");
 
 			if (saltArray.Length != SaltSizeBytes)
-				throw new ArgumentOutOfRangeException("salt", salt, String.Format("Expected: salt.Length == {0}", SaltSizeBytes));
+				throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.Salt)}", config.Key, $"Expected: {nameof(config)}.{nameof(config.Salt)}.Count == {SaltSizeBytes}");
 
 			if (personalizationArray.Length != PersonalizationSizeBytes)
-				throw new ArgumentOutOfRangeException("personalization", personalization, String.Format("Expected: personalization.Length == {0}", PersonalizationSizeBytes));
+				throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.Personalization)}", config.Personalization, $"Expected: {nameof(config)}.{nameof(config.Personalization)}.Count == {PersonalizationSizeBytes}");
 
 
 
@@ -131,7 +144,7 @@ namespace System.Data.HashFunction.Blake2
 		/// <inheritdoc />
 		protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
 		{
-            var internalState = new InternalState(HashSize, _originalKeyLength, _salt, _personalization);
+            var internalState = new InternalState(_config.HashSizeInBits, _originalKeyLength, _salt, _personalization);
 
 
 			if (_originalKeyLength > 0)
@@ -143,7 +156,7 @@ namespace System.Data.HashFunction.Blake2
                 (array, start, count) => ProcessBytes(internalState, array, start, count),
                 cancellationToken);
 
-            return Final(HashSize, internalState);
+            return Final(_config.HashSizeInBits, internalState);
 		}
 
 
@@ -151,7 +164,7 @@ namespace System.Data.HashFunction.Blake2
 		/// <inheritdoc />
 		protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
 		{
-            var internalState = new InternalState(HashSize, _originalKeyLength, _salt, _personalization);
+            var internalState = new InternalState(_config.HashSizeInBits, _originalKeyLength, _salt, _personalization);
 
 
             if (_originalKeyLength > 0)
@@ -164,7 +177,7 @@ namespace System.Data.HashFunction.Blake2
                     cancellationToken)
                 .ConfigureAwait(false);
 
-			return Final(HashSize, internalState);
+			return Final(_config.HashSizeInBits, internalState);
 		}
 
 

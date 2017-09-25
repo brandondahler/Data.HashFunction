@@ -8,9 +8,20 @@ namespace System.Data.HashFunction.Blake2
     /// Provides instances of implementations of <see cref="IBlake2B"/>.
     /// </summary>
     /// <seealso cref="IBlake2BFactory" />
-    public class Blake2BFactory
+    public sealed class Blake2BFactory
         : IBlake2BFactory
     {
+        /// <summary>
+        /// Gets the singleton instance of this factory.
+        /// </summary>
+        public static IBlake2BFactory Instance { get; } = new Blake2BFactory();
+
+
+        private Blake2BFactory()
+        {
+
+        }
+
         /// <summary>
         /// Creates a new <see cref="IBlake2B" /> instance with the default configuration.
         /// </summary>
@@ -35,7 +46,7 @@ namespace System.Data.HashFunction.Blake2
             if (config == null)
                 throw new ArgumentNullException(nameof(config));
 
-            return new Blake2B_Implementation(config.HashSizeInBits, config.Key, config.Salt, config.Personalization);
+            return new Blake2B_Implementation(config);
         }
     }
 }
