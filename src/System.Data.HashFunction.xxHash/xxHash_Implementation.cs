@@ -25,6 +25,9 @@ namespace System.Data.HashFunction.xxHash
         /// </value>
         public IxxHashConfig Config => _config.Clone();
 
+        public override int HashSizeInBits => _config.HashSizeInBits;
+        
+
 
         private readonly IxxHashConfig _config;
 
@@ -56,9 +59,7 @@ namespace System.Data.HashFunction.xxHash
         /// <param name="hashSize"><inheritdoc cref="HashFunctionBase.HashSizeInBits" /></param>
         /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IxxHashConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IxxHashConfig.HashSizeInBits"/> must be contained within xxHash.ValidHashSizes</exception>
-        /// <inheritdoc cref="HashFunctionBase(int)" />
         public xxHash_Implementation(IxxHashConfig config)
-            : base((config?.HashSizeInBits).GetValueOrDefault())
         {
             if (config == null)
                 throw new ArgumentNullException(nameof(config));
@@ -67,7 +68,7 @@ namespace System.Data.HashFunction.xxHash
 
 
             if (!_validHashSizes.Contains(_config.HashSizeInBits))
-                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be contained within xxHash.ValidHashSizes");
+                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", _config.HashSizeInBits, $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be contained within xxHash.ValidHashSizes");
         }
 
 

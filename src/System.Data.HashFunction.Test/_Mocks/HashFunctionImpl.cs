@@ -14,22 +14,34 @@ namespace System.Data.HashFunction.Test._Mocks
     public class HashFunctionImpl
             : HashFunctionAsyncBase
     {
-        public HashFunctionImpl(int hashSize)
-            : base(hashSize)
+        public Func<IUnifiedData, CancellationToken, byte[]> OnComputeHashInternal { get; set; } = (_, __) => new byte[0];
+        public Func<IUnifiedData, CancellationToken, Task<byte[]>> OnComputeHashAsyncInternal { get; set; } = (_, __) => Task.FromResult(new byte[0]);
+
+
+        public override int HashSizeInBits { get; }
+
+
+
+        public HashFunctionImpl()
+            : this(0)
         {
 
+        }
+
+        public HashFunctionImpl(int hashSize)
+        {
+            HashSizeInBits = hashSize;
         }
 
 
         protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {
-            return new byte[0];
+            return OnComputeHashInternal(data, cancellationToken);
         }
         
-        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
+        protected override Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
         {
-            return await Task.FromResult(new byte[0])
-                .ConfigureAwait(false);
+            return OnComputeHashAsyncInternal(data, cancellationToken);
         }
     }
 }

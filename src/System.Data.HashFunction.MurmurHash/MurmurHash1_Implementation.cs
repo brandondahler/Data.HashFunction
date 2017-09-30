@@ -31,6 +31,8 @@ namespace System.Data.HashFunction.MurmurHash
         /// </value>
         public IMurmurHash1Config Config => _config.Clone();
 
+        public override int HashSizeInBits { get; } = 32;
+
 
         /// <summary>
         /// Constant m as defined by MurmurHash1 specification.
@@ -46,9 +48,7 @@ namespace System.Data.HashFunction.MurmurHash
         /// </summary>
         /// <param name="seed"><inheritdoc cref="Seed" /></param>
         /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
-        /// <inheritdoc cref="HashFunctionBase(int)" />
         public MurmurHash1_Implementation(IMurmurHash1Config config)
-            : base(32)
         {
             if (config == null)
                 throw new ArgumentNullException(nameof(config));

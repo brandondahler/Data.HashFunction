@@ -17,6 +17,9 @@ namespace System.Data.HashFunction.Blake2
     {
         public IBlake2BConfig Config => _config.Clone();
 
+        public override int HashSizeInBits => _config.HashSizeInBits;
+
+
 
         private readonly IBlake2BConfig _config;
 
@@ -99,35 +102,34 @@ namespace System.Data.HashFunction.Blake2
 		/// <paramref name="salt"/> length, or <paramref name="personalization"/> length is invalid.
 		/// </exception>
         public Blake2B_Implementation(IBlake2BConfig config)
-			: base((config?.HashSizeInBits).GetValueOrDefault())
         {
             if (config == null)
                 throw new ArgumentNullException(nameof(config));
-            
-
-            if (config.HashSizeInBits < MinHashSizeBits || config.HashSizeInBits > MaxHashSizeBits)
-                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", config.HashSizeInBits, $"Expected: {MinHashSizeBits} >= {nameof(config)}.{nameof(config.HashSizeInBits)} <= {MaxHashSizeBits}");
-
-			if (config.HashSizeInBits % 8 != 0)
-				throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", config.HashSizeInBits, $"{ nameof(config) }.{ nameof(config.HashSizeInBits)} must be a multiple of 8.");
-
-
 
             _config = config.Clone();
 
 
-            var keyArray = (config.Key ?? new byte[0]).ToArray();
-            var saltArray = (config.Salt ?? new byte[16]).ToArray();
-            var personalizationArray = (config.Personalization ?? new byte[16]).ToArray();
+
+            if (_config.HashSizeInBits < MinHashSizeBits || _config.HashSizeInBits > MaxHashSizeBits)
+                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", _config.HashSizeInBits, $"Expected: {MinHashSizeBits} >= {nameof(config)}.{nameof(config.HashSizeInBits)} <= {MaxHashSizeBits}");
+
+            if (_config.HashSizeInBits % 8 != 0)
+                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", _config.HashSizeInBits, $"{ nameof(config) }.{ nameof(config.HashSizeInBits)} must be a multiple of 8.");
+
+
+
+            var keyArray = (_config.Key ?? new byte[0]).ToArray();
+            var saltArray = (_config.Salt ?? new byte[16]).ToArray();
+            var personalizationArray = (_config.Personalization ?? new byte[16]).ToArray();
 
 			if (keyArray.Length > MaxKeySizeBytes)
-				throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.Key)}", config.Key, $"Expected: {nameof(config)}.{nameof(config.Key)}.Count <= {MaxKeySizeBytes}");
+				throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.Key)}", _config.Key, $"Expected: {nameof(config)}.{nameof(config.Key)}.Count <= {MaxKeySizeBytes}");
 
 			if (saltArray.Length != SaltSizeBytes)
-				throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.Salt)}", config.Key, $"Expected: {nameof(config)}.{nameof(config.Salt)}.Count == {SaltSizeBytes}");
+				throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.Salt)}", _config.Salt, $"Expected: {nameof(config)}.{nameof(config.Salt)}.Count == {SaltSizeBytes}");
 
 			if (personalizationArray.Length != PersonalizationSizeBytes)
-				throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.Personalization)}", config.Personalization, $"Expected: {nameof(config)}.{nameof(config.Personalization)}.Count == {PersonalizationSizeBytes}");
+				throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.Personalization)}", _config.Personalization, $"Expected: {nameof(config)}.{nameof(config.Personalization)}.Count == {PersonalizationSizeBytes}");
 
 
 
@@ -141,8 +143,8 @@ namespace System.Data.HashFunction.Blake2
 		}
 
 
-		/// <inheritdoc />
-		protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
+        /// <inheritdoc />
+        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
 		{
             var internalState = new InternalState(_config.HashSizeInBits, _originalKeyLength, _salt, _personalization);
 
@@ -227,7 +229,7 @@ namespace System.Data.HashFunction.Blake2
 		private byte[] Final(int hashSize, InternalState internalState)
 		{
 			//Last compression
-			internalState.Counter += new UInt128((UInt32) internalState.BufferFilled);
+			internalState.Counter += new UInt128((UInt64) internalState.BufferFilled);
 			internalState.FinalizationFlags[0] = UInt64.MaxValue;
 
 			for (int i = internalState.BufferFilled; i < internalState.Buffer.Length; i++)

@@ -28,7 +28,8 @@ namespace System.Data.HashFunction.MurmurHash
         /// A clone of configuration that was used when creating this instance.
         /// </value>
         public IMurmurHash3Config Config => _config.Clone();
-        
+
+        public override int HashSizeInBits => _config.HashSizeInBits;
 
 
         /// <summary>
@@ -66,9 +67,7 @@ namespace System.Data.HashFunction.MurmurHash
         /// <param name="seed"><inheritdoc cref="Seed" /></param>
         /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IMurmurHash3Config.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IMurmurHash3Config.HashSizeInBits"/> must be contained within MurmurHash3.ValidHashSizes.</exception>
-        /// <inheritdoc cref="HashFunctionBase(int)" />
         public MurmurHash3_Implementation(IMurmurHash3Config config)
-            : base((config?.HashSizeInBits).GetValueOrDefault())
         {
             if (config == null)
                 throw new ArgumentNullException(nameof(config));
@@ -77,7 +76,7 @@ namespace System.Data.HashFunction.MurmurHash
 
 
             if (!_validHashSizes.Contains(_config.HashSizeInBits))
-                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be contained within MurmurHash3.ValidHashSizes.");
+                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", _config.HashSizeInBits, $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be contained within MurmurHash3.ValidHashSizes.");
         }
 
 

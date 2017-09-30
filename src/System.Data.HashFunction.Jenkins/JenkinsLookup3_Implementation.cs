@@ -22,6 +22,9 @@ namespace System.Data.HashFunction.Jenkins
 
         public IJenkinsLookup3Config Config => _config.Clone();
 
+        public override int HashSizeInBits => _config.HashSizeInBits;
+
+
         private readonly IJenkinsLookup3Config _config;
 
         private static readonly IEnumerable<int> _validHashSizes = new HashSet<int>() { 32, 64 };
@@ -34,9 +37,7 @@ namespace System.Data.HashFunction.Jenkins
         /// <param name="initVal1"><inheritdoc cref="InitVal1"/></param>
         /// <param name="initVal2"><inheritdoc cref="InitVal2"/></param>
         /// <exception cref="System.ArgumentOutOfRangeException">hashSize;hashSize must be contained within SpookyHashV2.ValidHashSizes.</exception>
-        /// <inheritdoc cref="HashFunctionBase(int)"/>
         public JenkinsLookup3_Implementation(IJenkinsLookup3Config config)
-            : base(config.HashSizeInBits)
         {
             if (config == null)
                 throw new ArgumentNullException(nameof(config));
@@ -45,7 +46,7 @@ namespace System.Data.HashFunction.Jenkins
 
 
             if (!_validHashSizes.Contains(_config.HashSizeInBits))
-                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be contained within JenkinsLookup3.ValidHashSizes.");
+                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", _config.HashSizeInBits, $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be contained within JenkinsLookup3.ValidHashSizes.");
         }
 
 

@@ -11,6 +11,18 @@ namespace System.Data.HashFunction.BernsteinHash
     public class ModifiedBernsteinHashFactory
         : IModifiedBernsteinHashFactory
     {
+
+        /// <summary>
+        /// Gets the singleton instance of this factory.
+        /// </summary>
+        public static IModifiedBernsteinHashFactory Instance { get; } = new ModifiedBernsteinHashFactory();
+
+
+        private ModifiedBernsteinHashFactory()
+        {
+
+        }
+
         /// <summary>
         /// Creates a new <see cref="IModifiedBernsteinHash" /> instance with the default configuration.
         /// </summary>

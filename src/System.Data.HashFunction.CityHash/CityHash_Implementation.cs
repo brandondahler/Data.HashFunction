@@ -26,6 +26,9 @@ namespace System.Data.HashFunction.CityHash
         public ICityHashConfig Config => _config.Clone();
 
 
+        public override int HashSizeInBits => _config.HashSizeInBits;
+
+
 
         /// <summary>
         /// Constant k0 as defined by CityHash specification.
@@ -66,21 +69,20 @@ namespace System.Data.HashFunction.CityHash
         /// <param name="config">Configuration for this instance</param>
         /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="ICityHashConfig.HashSizeInBits">HashSizeInBits</see>;<paramref name="config"/>.<see cref="ICityHashConfig.HashSizeInBits">HashSizeInBits</see> must be contained within CityHash.ValidHashSizes.</exception>
-        /// <inheritdoc cref="HashFunctionBase(int)" />
         public CityHash_Implementation(ICityHashConfig config)
-            : base((config?.HashSizeInBits).GetValueOrDefault())
         {
             if (config == null)
                 throw new ArgumentNullException(nameof(config));
 
-            if (!_validHashSizes.Contains(config.HashSizeInBits))
-                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be contained within CityHash.ValidHashSizes.");
-
-
             _config = config.Clone();
+
+
+            if (!_validHashSizes.Contains(_config.HashSizeInBits))
+                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", _config.HashSizeInBits, $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be contained within CityHash.ValidHashSizes.");
+
         }
 
-        
+
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)

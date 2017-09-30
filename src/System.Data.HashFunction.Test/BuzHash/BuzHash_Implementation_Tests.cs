@@ -2,12 +2,51 @@
 using System;
 using System.Collections.Generic;
 using System.Data.HashFunction.BuzHash;
+using System.Data.HashFunction.Test._Utilities;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace System.Data.HashFunction.Test.BuzHash
 {
     public class BuzHash_Implementation_Tests
     {
+        [Fact]
+        public async Task BuzHash_Implementation_ComputeHashInternal_WhenInvalidHashSize_Throws()
+        {
+            var shouldReturnValidHashSize = true;
+
+            var buzHashConfigMock = new Mock<IBuzHashConfig>();
+            {
+                buzHashConfigMock.SetupGet(bhc => bhc.HashSizeInBits)
+                    .Returns(() => shouldReturnValidHashSize ? 32 : 1);
+
+                buzHashConfigMock.SetupGet(bhc => bhc.Rtab)
+                    .Returns(new UInt64[256]);
+
+                buzHashConfigMock.Setup(bhc => bhc.Clone())
+                    .Returns(() => buzHashConfigMock.Object);
+            }
+
+
+            var buzHash = new BuzHash_Implementation(buzHashConfigMock.Object);
+
+            shouldReturnValidHashSize = false;
+
+            Assert.Throws<NotImplementedException>(
+                () => buzHash.ComputeHash(new byte[0]));
+
+            using (var memoryStream = new MemoryStream(new byte[0]))
+            {
+                Assert.Throws<NotImplementedException>(
+                    () => buzHash.ComputeHash(memoryStream));
+
+                await Assert.ThrowsAsync<NotImplementedException>(
+                    () => buzHash.ComputeHashAsync(memoryStream));
+            }
+        }
+
         
         public class IHashFunctionAsync_Tests
             : IHashFunctionAsync_TestBase<IBuzHash>

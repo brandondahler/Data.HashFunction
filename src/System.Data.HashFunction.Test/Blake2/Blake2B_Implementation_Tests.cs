@@ -8,6 +8,7 @@ using Xunit;
 using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.Data.HashFunction.Blake2;
 using Moq;
+using System.Data.HashFunction.Test._Utilities;
 
 namespace System.Data.HashFunction.Test.Blake2
 {
@@ -16,28 +17,70 @@ namespace System.Data.HashFunction.Test.Blake2
 
         #region Constructor
 
+        #region Config
+
+        [Fact]
+        public void Blake2B_Implementation_Config_IsNull_Throws()
+        {
+            Assert.Equal(
+                "config",
+                Assert.Throws<ArgumentNullException>(
+                        () => new Blake2B_Implementation(null))
+                    .ParamName);
+        }
+
+        [Fact]
+        public void Blake2B_Implementation_Config_IsCloned()
+        {
+            var blake2BConfigMock = new Mock<IBlake2BConfig>();
+            {
+                blake2BConfigMock.Setup(bc => bc.Clone())
+                    .Returns(new Blake2BConfig());
+            }
+
+            GC.KeepAlive(
+                new Blake2B_Implementation(blake2BConfigMock.Object));
+
+
+            blake2BConfigMock.Verify(bc => bc.Clone(), Times.Once);
+
+            blake2BConfigMock.VerifyGet(bc => bc.HashSizeInBits, Times.Never);
+            blake2BConfigMock.VerifyGet(bc => bc.Key, Times.Never);
+            blake2BConfigMock.VerifyGet(bc => bc.Salt, Times.Never);
+            blake2BConfigMock.VerifyGet(bc => bc.Personalization, Times.Never);
+        }
+
+
         #region HashSize
 
         [Fact]
-        public void Blake2B_Constructor_InvalidHashSize_Throws()
+        public void Blake2B_Constructor_Config_HashSize_IsInvalid_Throws()
         {
             var invalidHashSizes = new[] { -1, 0, 7, 9, 10, 11, 12, 13, 14, 15, 513, 520 };
 
             foreach (var invalidHashSize in invalidHashSizes)
             {
-                var blake2bConfig = Mock.Of<IBlake2BConfig>(bc => bc.HashSizeInBits == invalidHashSize);
+                var blake2bConfigMock = new Mock<IBlake2BConfig>();
+                {
+                    blake2bConfigMock.SetupGet(bc => bc.HashSizeInBits)
+                        .Returns(invalidHashSize);
+
+                    blake2bConfigMock.Setup(bc => bc.Clone())
+                        .Returns(() => blake2bConfigMock.Object);
+                }
+
 
                 Assert.Equal(
                     "config.HashSizeInBits",
                     Assert.Throws<ArgumentOutOfRangeException>(() =>
                             new Blake2B_Implementation(
-                                blake2bConfig))
+                                blake2bConfigMock.Object))
                         .ParamName);
             }
         }
 
         [Fact]
-        public void Blake2B_Constructor_ValidHashSize_Works()
+        public void Blake2B_Constructor_Config_ValidHashSize_Works()
         {
             // 8, 16, 24, 32, ..., 488, 496, 504, 512
             var validHashSizes = Enumerable.Range(1, 64)
@@ -45,11 +88,18 @@ namespace System.Data.HashFunction.Test.Blake2
 
             foreach (var validHashSize in validHashSizes)
             {
-                var blake2bConfig = Mock.Of<IBlake2BConfig>(bc => bc.HashSizeInBits == validHashSize);
+                var blake2bConfigMock = new Mock<IBlake2BConfig>();
+                {
+                    blake2bConfigMock.SetupGet(bc => bc.HashSizeInBits)
+                        .Returns(validHashSize);
+
+                    blake2bConfigMock.Setup(bc => bc.Clone())
+                        .Returns(() => blake2bConfigMock.Object);
+                }
 
                 GC.KeepAlive(
                     new Blake2B_Implementation(
-                        blake2bConfig));
+                        blake2bConfigMock.Object));
             }
         }
 
@@ -58,7 +108,7 @@ namespace System.Data.HashFunction.Test.Blake2
         #region Key
 
         [Fact]
-        public void Blake2B_Constructor_InvalidKeyLength_Throws()
+        public void Blake2B_Constructor_Config_InvalidKeyLength_Throws()
         {
             var blake2bConfigMock = new Mock<IBlake2BConfig>();
             {
@@ -67,6 +117,9 @@ namespace System.Data.HashFunction.Test.Blake2
 
                 blake2bConfigMock.SetupGet(bc => bc.Key)
                     .Returns(new byte[65]);
+
+                blake2bConfigMock.Setup(bc => bc.Clone())
+                    .Returns(() => blake2bConfigMock.Object);
             }
 
 
@@ -78,7 +131,7 @@ namespace System.Data.HashFunction.Test.Blake2
         }
 
         [Fact]
-        public void Blake2B_Constructor_ValidKeyLength_Works()
+        public void Blake2B_Constructor_Config_ValidKeyLength_Works()
         {
             // 0, 1, ..., 63, 64
             var validKeyLengths = Enumerable.Range(0, 65);
@@ -92,6 +145,9 @@ namespace System.Data.HashFunction.Test.Blake2
 
                     blake2bConfigMock.SetupGet(bc => bc.Key)
                         .Returns(new byte[validKeyLength]);
+                    
+                    blake2bConfigMock.Setup(bc => bc.Clone())
+                        .Returns(() => blake2bConfigMock.Object);
                 }
 
                 GC.KeepAlive(
@@ -105,7 +161,7 @@ namespace System.Data.HashFunction.Test.Blake2
         #region Salt
 
         [Fact]
-        public void Blake2B_Constructor_InvalidSaltLength_Throws()
+        public void Blake2B_Constructor_Config_InvalidSaltLength_Throws()
         {
             var invalidSaltLengths = new[] { 0, 15, 17, 32, 64 };
 
@@ -118,6 +174,9 @@ namespace System.Data.HashFunction.Test.Blake2
 
                     blake2bConfigMock.SetupGet(bc => bc.Salt)
                         .Returns(new byte[invalidSaltLength]);
+                    
+                    blake2bConfigMock.Setup(bc => bc.Clone())
+                        .Returns(() => blake2bConfigMock.Object);
                 }
 
                 Assert.Equal("config.Salt",
@@ -129,7 +188,7 @@ namespace System.Data.HashFunction.Test.Blake2
         }
 
         [Fact]
-        public void Blake2B_Constructor_ValidSaltLength_Works()
+        public void Blake2B_Constructor_Config_ValidSaltLength_Works()
         {
             var blake2bConfigMock = new Mock<IBlake2BConfig>();
             {
@@ -138,6 +197,9 @@ namespace System.Data.HashFunction.Test.Blake2
 
                 blake2bConfigMock.SetupGet(bc => bc.Salt)
                     .Returns(new byte[16]);
+                
+                blake2bConfigMock.Setup(bc => bc.Clone())
+                    .Returns(() => blake2bConfigMock.Object);
             }
 
             GC.KeepAlive(
@@ -150,7 +212,7 @@ namespace System.Data.HashFunction.Test.Blake2
         #region Personalization
 
         [Fact]
-        public void Blake2B_Constructor_InvalidPersonalizationLength_Throws()
+        public void Blake2B_Constructor_Config_InvalidPersonalizationLength_Throws()
         {
             var invalidPersonalizationLengths = new[] { 0, 15, 17, 32, 64 };
 
@@ -163,6 +225,9 @@ namespace System.Data.HashFunction.Test.Blake2
 
                     blake2bConfigMock.SetupGet(bc => bc.Personalization)
                         .Returns(new byte[invalidPersonalizationLength]);
+                    
+                    blake2bConfigMock.Setup(bc => bc.Clone())
+                        .Returns(() => blake2bConfigMock.Object);
                 }
 
                 Assert.Equal("config.Personalization",
@@ -174,7 +239,7 @@ namespace System.Data.HashFunction.Test.Blake2
         }
 
         [Fact]
-        public void Blake2B_Constructor_ValidPersonalizationLength_Works()
+        public void Blake2B_Constructor_Config_ValidPersonalizationLength_Works()
         {
             var blake2bConfigMock = new Mock<IBlake2BConfig>();
             {
@@ -183,6 +248,9 @@ namespace System.Data.HashFunction.Test.Blake2
 
                 blake2bConfigMock.SetupGet(bc => bc.Personalization)
                     .Returns(new byte[16]);
+
+                blake2bConfigMock.Setup(bc => bc.Clone())
+                    .Returns(() => blake2bConfigMock.Object);
             }
 
             GC.KeepAlive(
@@ -191,6 +259,41 @@ namespace System.Data.HashFunction.Test.Blake2
         }
 
         #endregion
+
+        #endregion
+
+        #endregion
+
+        #region Config
+
+        [Fact]
+        public void Blake2B_Implementation_Config_IsCloneOfClone()
+        {
+            var blake2BConfig3 = Mock.Of<IBlake2BConfig>();
+            var blake2BConfig2 = Mock.Of<IBlake2BConfig>(bc => bc.HashSizeInBits == 8 && bc.Clone() == blake2BConfig3);
+            var blake2BConfig = Mock.Of<IBlake2BConfig>(bc => bc.Clone() == blake2BConfig2);
+
+
+            var blake2BHash = new Blake2B_Implementation(blake2BConfig);
+
+            Assert.Equal(blake2BConfig3, blake2BHash.Config);
+        }
+
+        #endregion
+
+        #region HashSizeInBits
+
+        [Fact]
+        public void Blake2B_Implementation_HashSizeInBits_IsFromConfig()
+        {
+            var blake2BConfig2 = Mock.Of<IBlake2BConfig>(bc => bc.HashSizeInBits == 8);
+            var blake2BConfig = Mock.Of<IBlake2BConfig>(bc => bc.Clone() == blake2BConfig2);
+
+
+            var blake2BHash = new Blake2B_Implementation(blake2BConfig);
+
+            Assert.Equal(8, blake2BHash.HashSizeInBits);
+        }
 
         #endregion
 

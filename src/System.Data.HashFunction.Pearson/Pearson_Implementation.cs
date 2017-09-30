@@ -28,6 +28,10 @@ namespace System.Data.HashFunction.Pearson
         /// A clone of configuration that was used when creating this instance.
         /// </value>
         public IPearsonConfig Config => _config.Clone();
+        
+
+        public override int HashSizeInBits => _config.HashSizeInBits;
+
 
 
         private readonly IPearsonConfig _config;
@@ -44,7 +48,6 @@ namespace System.Data.HashFunction.Pearson
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IPearsonConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IPearsonConfig.HashSizeInBits"/> must be a positive multiple of <c>8</c>.</exception>
         /// <inheritdoc cref="HashFunctionBase(int)" />
         public Pearson_Implementation(IPearsonConfig config)
-            : base((config?.HashSizeInBits).GetValueOrDefault())
         {
             if (config == null)
                 throw new ArgumentNullException(nameof(config));
@@ -60,7 +63,7 @@ namespace System.Data.HashFunction.Pearson
 
 
             if (_config.HashSizeInBits <= 0 || _config.HashSizeInBits % 8 != 0)
-                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be a positive integer that is divisible by 8.");
+                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", _config.HashSizeInBits, $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be a positive integer that is divisible by 8.");
         }
 
 

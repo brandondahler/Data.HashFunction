@@ -32,6 +32,8 @@ namespace System.Data.HashFunction.FNV
         /// </value>
         public IFNVConfig Config => _config.Clone();
 
+        public override int HashSizeInBits => _config.HashSizeInBits;
+
 
 
         private readonly IFNVConfig _config;
@@ -48,7 +50,6 @@ namespace System.Data.HashFunction.FNV
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IFNVConfig.Offset"/>;<paramref name="config"/>.<see cref="IFNVConfig.Offset"/> must be non-zero.</exception>
         /// <inheritdoc cref="HashFunctionBase(int)" />
         protected FNV1Base(IFNVConfig config)
-            : base(config.HashSizeInBits)
         {
             if (config == null)
                 throw new ArgumentNullException(nameof(config));

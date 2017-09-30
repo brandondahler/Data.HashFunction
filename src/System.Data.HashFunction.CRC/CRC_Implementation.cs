@@ -28,6 +28,8 @@ namespace System.Data.HashFunction.CRC
         /// </value>
         public ICRCConfig Config => _config.Clone();
 
+        public override int HashSizeInBits => _config.HashSizeInBits;
+
 
         private readonly ICRCConfig _config;
 
@@ -43,7 +45,6 @@ namespace System.Data.HashFunction.CRC
         /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
         /// <exception cref="ArgumentException"><paramref name="config"/>.<see cref="ICRCConfig.HashSizeInBits"/> must be &gt;= <c>1</c> and &lt;= <c>64</c>;<paramref name="config"/>.<see cref="ICRCConfig.HashSizeInBits"/></exception>
         public CRC_Implementation(ICRCConfig config)
-            : base(config != null ? config.HashSizeInBits : -1)
         {
             if (config == null)
                 throw new ArgumentNullException(nameof(config));
@@ -52,7 +53,7 @@ namespace System.Data.HashFunction.CRC
 
 
             if (_config.HashSizeInBits <= 0 || _config.HashSizeInBits > 64)
-                throw new ArgumentException($"{nameof(config)}.{nameof(config.HashSizeInBits)} must be >= 1 and <= 64", $"{nameof(config)}.{nameof(config.HashSizeInBits)}");
+                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", _config.HashSizeInBits, $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be >= 1 and <= 64");
         }
         
 

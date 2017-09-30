@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.HashFunction.ELF64;
+using System.Data.HashFunction.Test._Utilities;
 using System.Text;
 
 namespace System.Data.HashFunction.Test.ELF64

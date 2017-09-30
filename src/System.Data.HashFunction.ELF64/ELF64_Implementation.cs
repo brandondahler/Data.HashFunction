@@ -21,16 +21,8 @@ namespace System.Data.HashFunction.ELF64
         : HashFunctionAsyncBase,
             IELF64
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ELF64_Implementation"/> class.
-        /// </summary>
-        /// <inheritdoc cref="HashFunctionBase(int)" />
-        public ELF64_Implementation()
-            : base(32)
-        {
-
-        }
-
+        public override int HashSizeInBits { get; } = 32;
+        
 
         /// <inheritdoc />
         protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)

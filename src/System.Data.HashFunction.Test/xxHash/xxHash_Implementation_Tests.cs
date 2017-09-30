@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.Test._Utilities;
 using System.Data.HashFunction.xxHash;
 using System.Linq;
 using System.Text;

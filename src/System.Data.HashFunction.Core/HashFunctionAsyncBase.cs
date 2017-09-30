@@ -18,16 +18,6 @@ namespace System.Data.HashFunction.Core
         : HashFunctionBase, 
             IHashFunctionAsync
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HashFunctionAsyncBase"/> class.
-        /// </summary>
-        /// <param name="hashSize"><inheritdoc cref="HashFunctionBase.HashSizeInBits" /></param>
-        protected HashFunctionAsyncBase(int hashSize)
-            : base(hashSize)
-        {
-            
-        }
-
 
         /// <exception cref="System.ArgumentException">Stream \data\ must be readable.;data</exception>
         /// <inheritdoc />

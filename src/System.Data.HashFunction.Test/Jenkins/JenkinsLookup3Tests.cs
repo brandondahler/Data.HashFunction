@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.Data.HashFunction.Jenkins;
+using System.Data.HashFunction.Test._Utilities;
 using System.IO;
 using System.Linq;
 using System.Text;

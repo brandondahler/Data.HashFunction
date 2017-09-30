@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.HashFunction.SpookyHash;
+using System.Data.HashFunction.Test._Utilities;
 using System.Text;
+
+#pragma warning disable CS0618 // SpookyHashV1_Implementation' is obsolete: 'SpookyHashV1 has known issues, use SpookyHashV2.'
 
 namespace System.Data.HashFunction.Test.SpookyHash
 {
@@ -80,4 +83,7 @@ namespace System.Data.HashFunction.Test.SpookyHash
         }
     
     }
+
 }
+
+#pragma warning restore CS0618 // SpookyHashV1_Implementation' is obsolete: 'SpookyHashV1 has known issues, use SpookyHashV2.'

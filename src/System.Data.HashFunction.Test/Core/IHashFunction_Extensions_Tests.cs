@@ -3,11 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Data.HashFunction.Jenkins;
 using System.Data.HashFunction.Test._Mocks;
+using System.Data.HashFunction.Test._Utilities;
 using System.IO;
 using System.Linq;
-#if !NETCOREAPP1_1
-using System.Runtime.Serialization.Formatters.Binary;
-#endif
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;

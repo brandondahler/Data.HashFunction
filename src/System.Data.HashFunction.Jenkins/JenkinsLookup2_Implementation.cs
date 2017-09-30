@@ -24,6 +24,8 @@ namespace System.Data.HashFunction.Jenkins
     {
         public IJenkinsLookup2Config Config => _config.Clone();
 
+        public override int HashSizeInBits { get; } = 32;
+
 
         private IJenkinsLookup2Config _config;
 
@@ -34,9 +36,7 @@ namespace System.Data.HashFunction.Jenkins
         /// </summary>
         /// <param name="config">Configuration</param>
         /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
-        /// <inheritdoc cref="HashFunctionBase(int)" />
         public JenkinsLookup2_Implementation(IJenkinsLookup2Config config)
-            : base(32)
         {
             if (config == null)
                 throw new ArgumentNullException(nameof(config));

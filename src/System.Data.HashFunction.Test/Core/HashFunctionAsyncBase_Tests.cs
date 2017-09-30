@@ -20,7 +20,7 @@ namespace System.Data.HashFunction.Test.Core
             msMock.SetupGet(ms => ms.CanRead)
                 .Returns(false);
 
-            var hf = new HashFunctionImpl(0);
+            var hf = new HashFunctionImpl();
 
 
             Assert.Equal("data",

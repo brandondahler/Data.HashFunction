@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.HashFunction.Core.Utilities;
 
-namespace System.Data.HashFunction.Test
+namespace System.Data.HashFunction.Test._Utilities
 {
     internal sealed class TestConstants
     {

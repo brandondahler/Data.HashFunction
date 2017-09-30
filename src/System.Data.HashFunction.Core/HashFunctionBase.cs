@@ -19,17 +19,8 @@ namespace System.Data.HashFunction.Core
     {
 
         /// <inheritdoc />
-        public int HashSizeInBits { get; }
+        public abstract int HashSizeInBits { get; }
         
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HashFunctionBase"/> class.
-        /// </summary>
-        /// <param name="hashSize"><inheritdoc cref="HashSizeInBits" /></param>
-        protected HashFunctionBase(int hashSize)
-        {
-           HashSizeInBits = hashSize;
-        }
 
 
         /// <exception cref="ArgumentNullException">;<paramref name="data"/></exception>

@@ -28,6 +28,8 @@ namespace System.Data.HashFunction.SpookyHash
         /// </value>
         public ISpookyHashConfig Config => _config.Clone();
 
+        public override int HashSizeInBits => _config.HashSizeInBits;
+
 
         private readonly ISpookyHashConfig _config;
         
@@ -43,9 +45,7 @@ namespace System.Data.HashFunction.SpookyHash
         /// <param name="initVal2"><inheritdoc cref="InitVal2" /></param>
         /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="ISpookyHashConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="ISpookyHashConfig.HashSizeInBits"/> must be contained within SpookyHashV1.ValidHashSizes.</exception>
-        /// <inheritdoc cref="HashFunctionBase(int)" />
         public SpookyHashV2_Implementation(ISpookyHashConfig config)
-            : base((config?.HashSizeInBits).GetValueOrDefault())
         {
             if (config == null)
                 throw new ArgumentNullException(nameof(config));
@@ -54,7 +54,7 @@ namespace System.Data.HashFunction.SpookyHash
 
 
             if (!_validHashSizes.Contains(config.HashSizeInBits))
-                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be contained within SpookyHashV2.ValidHashSizes.");
+                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", _config.HashSizeInBits, $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be contained within SpookyHashV2.ValidHashSizes.");
         }
 
 

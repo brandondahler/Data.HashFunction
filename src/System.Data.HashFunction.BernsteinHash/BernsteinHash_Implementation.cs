@@ -11,12 +11,8 @@ namespace System.Data.HashFunction.BernsteinHash
         : HashFunctionAsyncBase,
             IBernsteinHash
     {
-        public BernsteinHash_Implementation()
-            : base(32)
-        {
-
-        }
-
+        public override int HashSizeInBits { get; } = 32;
+        
 
         protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {

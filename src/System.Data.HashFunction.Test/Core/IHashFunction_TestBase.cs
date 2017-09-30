@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Xunit;
 using System.Reflection;
 using System.Data.HashFunction.Core.Utilities;
+using System.Data.HashFunction.Test._Utilities;
 
 namespace System.Data.HashFunction.Test
 {

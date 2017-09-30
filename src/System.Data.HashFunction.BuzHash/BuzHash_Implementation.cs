@@ -26,6 +26,8 @@ namespace System.Data.HashFunction.BuzHash
     {
         public IBuzHashConfig Config => _config.Clone();
 
+        public override int HashSizeInBits => _config.HashSizeInBits;
+
 
         private readonly IBuzHashConfig _config;
 
@@ -41,9 +43,7 @@ namespace System.Data.HashFunction.BuzHash
         /// <param name="config">The configuration to use for this instance.</param>
         /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
         /// <exception cref="System.ArgumentOutOfRangeException">hashSize;hashSize must be contained within <see cref="ValidHashSizes" />.</exception>
-        /// <inheritdoc cref="HashFunctionBase(int)" />
         public BuzHash_Implementation(IBuzHashConfig config)
-            : base((config?.HashSizeInBits).GetValueOrDefault())
         {
             if (config == null)
                 throw new ArgumentNullException(nameof(config));
@@ -132,9 +132,7 @@ namespace System.Data.HashFunction.BuzHash
                     }
 
                 default:
-                    {
-                        throw new NotImplementedException();
-                    }
+                    throw new NotImplementedException();
             }
 
             return hash;

@@ -21,17 +21,8 @@ namespace System.Data.HashFunction.Jenkins
         : HashFunctionAsyncBase,
             IJenkinsOneAtATime
     {
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="JenkinsOneAtATime_Implementation" /> class.
-        /// </summary>
-        /// <inheritdoc cref="HashFunctionBase(int)" />
-        public JenkinsOneAtATime_Implementation()
-            : base(32)
-        {
-
-        }
-
+        public override int HashSizeInBits { get; } = 32;
+        
 
         /// <inheritdoc />
         protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)

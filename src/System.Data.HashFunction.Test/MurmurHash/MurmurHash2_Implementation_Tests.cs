@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.HashFunction.MurmurHash;
+using System.Data.HashFunction.Test._Utilities;
 using System.Linq;
 using System.Text;
 
