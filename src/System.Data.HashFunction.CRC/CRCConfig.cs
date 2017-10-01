@@ -57,7 +57,7 @@ namespace System.Data.HashFunction.CRC
         /// <value>
         /// The value to xor with the final CRC value.
         /// </value>
-        public ulong XOrOut { get; set; }
+        public UInt64 XOrOut { get; set; }
 
 
         #region Standards

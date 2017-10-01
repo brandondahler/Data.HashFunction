@@ -3,11 +3,26 @@ using System.Collections.Generic;
 using System.Data.HashFunction.ELF64;
 using System.Data.HashFunction.Test._Utilities;
 using System.Text;
+using Xunit;
 
 namespace System.Data.HashFunction.Test.ELF64
 {
     public class ELF64_Implementation_Tests
     {
+
+        #region HashSizeInBits
+
+        [Fact]
+        public void ELF64_Implementation_HashSizeInBits_IsNotChanged()
+        {
+            var elf64 = new ELF64_Implementation();
+
+            Assert.Equal(64, elf64.HashSizeInBits);
+        }
+
+        #endregion
+
+
 
         public class IHashFunctionAsync_Tests_ELF64
             : IHashFunctionAsync_TestBase<IELF64>

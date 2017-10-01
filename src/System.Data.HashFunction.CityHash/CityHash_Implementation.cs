@@ -605,8 +605,8 @@ namespace System.Data.HashFunction.CityHash
             x += RotateRight(v.Low + z, 49) * k0;
             y = y * k0 + RotateRight(w.High, 37);
             z = z * k0 + RotateRight(w.Low, 27);
-            w.Low *= 9;
-            v.Low *= k0;
+            w = new UInt128(w.Low * 9, w.High);
+            v = new UInt128(v.Low * k0, v.High);
 
 
             
@@ -614,12 +614,12 @@ namespace System.Data.HashFunction.CityHash
             for (int i = 1; i <= (((data.Length % 128) + 31) / 32); ++i) 
             {
                 y = RotateRight(x + y, 42) * k0 + v.High;
-                w.Low += BitConverter.ToUInt64(data, data.Length - (32 * i) + 16);
+                w = new UInt128(w.Low + BitConverter.ToUInt64(data, data.Length - (32 * i) + 16), w.High);
                 x = x * k0 + w.Low;
                 z += w.High + BitConverter.ToUInt64(data, data.Length - (32 * i));
-                w.High += v.Low;
+                w = new UInt128(w.Low, w.High + v.Low);
                 v = WeakHashLen32WithSeeds(data, data.Length - (32 * i), v.Low + z, v.High);
-                v.Low *= k0;
+                v = new UInt128(v.Low * k0, v.High);
             }
 
             // At this point our 56 bytes of state should contain more than

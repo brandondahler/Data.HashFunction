@@ -7,7 +7,7 @@ namespace System.Data.HashFunction.Jenkins
     public class JenkinsLookup3Factory
         : IJenkinsLookup3Factory
     {
-        public IJenkinsLookup3Factory Instance { get; } = new JenkinsLookup3Factory();
+        public static IJenkinsLookup3Factory Instance { get; } = new JenkinsLookup3Factory();
 
 
         private JenkinsLookup3Factory()

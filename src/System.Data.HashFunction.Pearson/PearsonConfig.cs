@@ -8,9 +8,9 @@ namespace System.Data.HashFunction.Pearson
     public class PearsonConfig
         : IPearsonConfig
     {
-        public int HashSizeInBits { get; set; } = 8;
-
         public IReadOnlyList<byte> Table { get; set; } = null;
+
+        public int HashSizeInBits { get; set; } = 8;
 
 
 
@@ -20,8 +20,8 @@ namespace System.Data.HashFunction.Pearson
         /// <returns>A deep clone of the current instance.</returns>
         public IPearsonConfig Clone() => 
             new PearsonConfig() {
-                HashSizeInBits = HashSizeInBits,
-                Table = Table?.ToArray()
+                Table = Table?.ToArray(),
+                HashSizeInBits = HashSizeInBits
             };
     }
 }

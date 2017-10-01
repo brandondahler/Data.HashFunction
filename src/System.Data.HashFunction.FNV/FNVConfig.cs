@@ -20,8 +20,7 @@ namespace System.Data.HashFunction.FNV
         /// </summary>
         /// <returns>A deep clone of the current instance.</returns>
         public IFNVConfig Clone() =>
-            new FNVConfig()
-            {
+            new FNVConfig() {
                 HashSizeInBits = HashSizeInBits,
                 Prime = Prime,
                 Offset = Offset
@@ -86,7 +85,7 @@ namespace System.Data.HashFunction.FNV
         public static IFNVConfig GetPredefinedConfig(int hashSizeInBits)
         {
             if (!_predefinedConfigs.TryGetValue(hashSizeInBits, out var config))
-                throw new ArgumentOutOfRangeException(nameof(hashSizeInBits), $"{nameof(hashSizeInBits)} must be a positive power of 2 between 32 and 1024.");
+                throw new ArgumentOutOfRangeException(nameof(hashSizeInBits), hashSizeInBits, $"{nameof(hashSizeInBits)} must be a positive power of 2 between 32 and 1024.");
 
             return config;
         }

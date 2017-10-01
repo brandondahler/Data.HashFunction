@@ -1,15 +1,184 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Collections.Generic;
 using System.Data.HashFunction.CityHash;
 using System.Data.HashFunction.Test._Utilities;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace System.Data.HashFunction.Test.CityHash
 {
     public class CityHash_Implementation_Tests
     {
+        #region Constructor
+
+        #region  Config
+
+        [Fact]
+        public void CityHash_Implementation_Constructor_Config_IsNull_Throws()
+        {
+            Assert.Equal(
+                "config",
+                Assert.Throws<ArgumentNullException>(
+                        () => new CityHash_Implementation(null))
+                    .ParamName);
+        }
+
+        [Fact]
+        public void CityHash_Implementation_Constructor_Config_IsCloned()
+        {
+            var cityHashConfigMock = new Mock<ICityHashConfig>();
+            {
+                cityHashConfigMock.Setup(bc => bc.Clone())
+                    .Returns(new CityHashConfig());
+            }
+
+            GC.KeepAlive(
+                new CityHash_Implementation(cityHashConfigMock.Object));
+
+
+            cityHashConfigMock.Verify(bc => bc.Clone(), Times.Once);
+
+            cityHashConfigMock.VerifyGet(bc => bc.HashSizeInBits, Times.Never);
+        }
+
+        #endregion
+
+        #region HashSizeInBits
         
+        [Fact]
+        public void CityHash_Implementation_Constructor_Config_HashSizeInBits_IsInvalid_Throws()
+        {
+            var invalidLengths = new[] { 0, 1, 8, 16, 31, 33, 63, 65, 127, 129, 256 };
+
+            foreach (var length in invalidLengths)
+            {
+                var cityHashConfigMock = new Mock<ICityHashConfig>();
+                {
+                    cityHashConfigMock.SetupGet(chc => chc.HashSizeInBits)
+                        .Returns(length);
+
+                    cityHashConfigMock.Setup(chc => chc.Clone())
+                        .Returns(() => cityHashConfigMock.Object);
+                }
+
+
+                Assert.Equal(
+                    "config.HashSizeInBits",
+                    Assert.Throws<ArgumentOutOfRangeException>(
+                            () => new CityHash_Implementation(cityHashConfigMock.Object))
+                        .ParamName);
+            }
+        }
+
+        [Fact]
+        public void CityHash_Implementation_Constructor_Config_HashSizeInBits_IsValid_Works()
+        {
+            var validLengths = new[] { 32, 64, 128 };
+
+            foreach (var length in validLengths)
+            {
+                var cityHashConfigMock = new Mock<ICityHashConfig>();
+                {
+                    cityHashConfigMock.SetupGet(chc => chc.HashSizeInBits)
+                        .Returns(length);
+
+                    cityHashConfigMock.Setup(chc => chc.Clone())
+                        .Returns(() => cityHashConfigMock.Object);
+                }
+
+
+                GC.KeepAlive(
+                    new CityHash_Implementation(cityHashConfigMock.Object));
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Config
+
+        [Fact]
+        public void CityHash_Implementation_Config_IsCloneOfClone()
+        {
+            var cityHashConfig3 = Mock.Of<ICityHashConfig>();
+            var cityHashConfig2 = Mock.Of<ICityHashConfig>(chc => chc.HashSizeInBits == 32 && chc.Clone() == cityHashConfig3);
+            var cityHashConfig = Mock.Of<ICityHashConfig>(chc => chc.Clone() == cityHashConfig2);
+
+
+            var cityHashHash = new CityHash_Implementation(cityHashConfig);
+
+            Assert.Equal(cityHashConfig3, cityHashHash.Config);
+        }
+
+        #endregion
+
+        #region HashSizeInBits
+
+        public void CityHash_Implementation_HashSizeInBits_MatchesConfig()
+        {
+            var validHashSizes = new[] { 8, 16, 32, 64 };
+
+            foreach (var hashSize in validHashSizes)
+            {
+                var cityHashConfigMock = new Mock<ICityHashConfig>();
+                {
+                    cityHashConfigMock.SetupGet(chc => chc.HashSizeInBits)
+                        .Returns(hashSize);
+
+                    cityHashConfigMock.Setup(chc => chc.Clone())
+                        .Returns(() => cityHashConfigMock.Object);
+                }
+
+
+                var cityHash = new CityHash_Implementation(cityHashConfigMock.Object);
+
+                Assert.Equal(hashSize, cityHash.HashSizeInBits);
+            }
+        }
+
+        #endregion
+
+        #region ComputeHash{,Async}Internal
+
+        [Fact]
+        public async Task CityHash_Implementation_ComputeHashInternal_WhenInvalidHashSize_Throws()
+        {
+            var shouldReturnValidHashSize = true;
+
+            var cityHashConfigMock = new Mock<ICityHashConfig>();
+            {
+                cityHashConfigMock.SetupGet(chc => chc.HashSizeInBits)
+                    .Returns(() => shouldReturnValidHashSize ? 32 : 1);
+
+                cityHashConfigMock.Setup(chc => chc.Clone())
+                    .Returns(() => cityHashConfigMock.Object);
+            }
+
+
+            var cityHash = new CityHash_Implementation(cityHashConfigMock.Object);
+
+            shouldReturnValidHashSize = false;
+
+            Assert.Throws<NotImplementedException>(
+                () => cityHash.ComputeHash(new byte[0]));
+
+            using (var memoryStream = new MemoryStream(new byte[0]))
+            {
+                Assert.Throws<NotImplementedException>(
+                    () => cityHash.ComputeHash(memoryStream));
+
+                await Assert.ThrowsAsync<NotImplementedException>(
+                    () => cityHash.ComputeHashAsync(memoryStream));
+            }
+        }
+
+        #endregion
+
         public class IHashFunctionAsync_Tests
             : IHashFunctionAsync_TestBase<ICityHash>
         {

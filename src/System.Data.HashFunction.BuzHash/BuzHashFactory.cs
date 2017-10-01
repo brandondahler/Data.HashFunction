@@ -5,7 +5,7 @@ using System.Text;
 namespace System.Data.HashFunction.BuzHash
 {
     /// <summary>
-    /// Provides instances of implementations of <see cref="IDefaultBuzHash"/>.
+    /// Provides instances of implementations of <see cref="IBuzHash"/>.
     /// </summary>
     /// <seealso cref="IBuzHashFactory" />
     public sealed class BuzHashFactory
@@ -24,10 +24,10 @@ namespace System.Data.HashFunction.BuzHash
 
 
         /// <summary>
-        /// Creates a new <see cref="IDefaultBuzHash" /> instance with the default configuration.
+        /// Creates a new <see cref="IBuzHash" /> instance with the default configuration.
         /// </summary>
         /// <returns>
-        /// A <see cref="IDefaultBuzHash" /> instance.
+        /// A <see cref="IBuzHash" /> instance.
         /// </returns>
         public IBuzHash Create()
         {
@@ -35,11 +35,11 @@ namespace System.Data.HashFunction.BuzHash
         }
 
         /// <summary>
-        /// Creates a new <see cref="IDefaultBuzHash" /> instance with given configuration.
+        /// Creates a new <see cref="IBuzHash" /> instance with given configuration.
         /// </summary>
         /// <param name="config">The configuration to use.</param>
         /// <returns>
-        /// A <see cref="IDefaultBuzHash" /> instance.
+        /// A <see cref="IBuzHash" /> instance.
         /// </returns>
         /// <exception cref="ArgumentNullException">config</exception>
         public IBuzHash Create(IBuzHashConfig config)

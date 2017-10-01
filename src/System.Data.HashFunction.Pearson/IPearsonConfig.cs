@@ -6,9 +6,9 @@ namespace System.Data.HashFunction.Pearson
 {
     public interface IPearsonConfig
     {
-        int HashSizeInBits { get; }
-
         IReadOnlyList<byte> Table { get; }
+
+        int HashSizeInBits { get; }
 
 
 

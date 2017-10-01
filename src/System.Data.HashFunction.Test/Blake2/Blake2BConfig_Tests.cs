@@ -32,6 +32,8 @@ namespace System.Data.HashFunction.Test.Blake2
 
             var blake2BConfigClone = blake2BConfig.Clone();
 
+            Assert.IsType<Blake2BConfig>(blake2BConfigClone);
+
             Assert.Equal(blake2BConfig.HashSizeInBits, blake2BConfigClone.HashSizeInBits);
 
             Assert.Equal(blake2BConfig.Key, blake2BConfigClone.Key);
@@ -50,6 +52,8 @@ namespace System.Data.HashFunction.Test.Blake2
 
 
             var blake2BConfigClone = blake2BConfig.Clone();
+
+            Assert.IsType<Blake2BConfig>(blake2BConfigClone);
 
             Assert.Null(blake2BConfigClone.Key);
             Assert.Null(blake2BConfigClone.Salt);

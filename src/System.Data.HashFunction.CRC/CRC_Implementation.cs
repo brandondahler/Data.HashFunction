@@ -238,10 +238,6 @@ namespace System.Data.HashFunction.CRC
 
         private static byte[] ToBytes(UInt64 value, int bitLength)
         {
-            if (bitLength <= 0 || bitLength > 64)
-                throw new ArgumentOutOfRangeException(nameof(bitLength), $"{nameof(bitLength)} but be in the range [1, 64].");
-
-
             value &= (UInt64.MaxValue >> (64 - bitLength));
 
 
@@ -258,9 +254,6 @@ namespace System.Data.HashFunction.CRC
 
         private static UInt64 ReflectBits(UInt64 value, int bitLength)
         {
-            if (bitLength <= 0 || bitLength > 64)
-                throw new ArgumentOutOfRangeException(nameof(bitLength), $"{nameof(bitLength)} must be in the range [1, 64].");
-
             UInt64 reflectedValue = 0UL;
 
             for (int x = 0; x < bitLength; ++x)

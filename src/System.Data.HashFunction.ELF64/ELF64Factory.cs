@@ -7,7 +7,7 @@ namespace System.Data.HashFunction.ELF64
     public class ELF64Factory
         : IELF64Factory
     {
-        public IELF64Factory Instance { get; } = new ELF64Factory();
+        public static IELF64Factory Instance { get; } = new ELF64Factory();
 
 
         private ELF64Factory()

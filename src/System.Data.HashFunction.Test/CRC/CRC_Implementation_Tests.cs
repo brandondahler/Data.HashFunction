@@ -1,13 +1,175 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Collections.Generic;
 using System.Data.HashFunction.CRC;
+using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace System.Data.HashFunction.Test.CRC
 {
     public class CRC_Implementation_Tests
     {
         
+        #region Constructor
+        
+        [Fact]
+        public void CRC_Implementation_Constructor_ValidInputs_Work()
+        {
+            var crcConfigMock = new Mock<ICRCConfig>();
+            {
+                crcConfigMock.SetupGet(cc => cc.HashSizeInBits)
+                    .Returns(64);
+                
+                crcConfigMock.Setup(cc => cc.Clone())
+                    .Returns(() => crcConfigMock.Object);
+            }
+
+
+            GC.KeepAlive(
+                new CRC_Implementation(crcConfigMock.Object));
+        }
+
+
+        #region Config
+
+        [Fact]
+        public void CRC_Implementation_Constructor_Config_IsNull_Throws()
+        {
+            Assert.Equal(
+                "config",
+                Assert.Throws<ArgumentNullException>(
+                        () => new CRC_Implementation(null))
+                    .ParamName);
+        }
+
+        [Fact]
+        public void CRC_Implementation_Constructor_Config_IsCloned()
+        {
+            var crcConfigMock = new Mock<ICRCConfig>();
+            {
+                crcConfigMock.Setup(cc => cc.Clone())
+                    .Returns(
+                        new CRCConfig() {
+                            HashSizeInBits = 64
+                        });
+            }
+
+            GC.KeepAlive(
+                new CRC_Implementation(crcConfigMock.Object));
+
+
+            crcConfigMock.Verify(cc => cc.Clone(), Times.Once);
+
+            crcConfigMock.VerifyGet(cc => cc.HashSizeInBits, Times.Never);
+            crcConfigMock.VerifyGet(cc => cc.InitialValue, Times.Never);
+            crcConfigMock.VerifyGet(cc => cc.Polynomial, Times.Never);
+            crcConfigMock.VerifyGet(cc => cc.ReflectIn, Times.Never);
+            crcConfigMock.VerifyGet(cc => cc.ReflectOut, Times.Never);
+            crcConfigMock.VerifyGet(cc => cc.XOrOut, Times.Never);
+        }
+        
+        #region HashSizeInBits
+
+        [Fact]
+        public void CRC_Implementation_Constructor_Config_HashSizeInBits_IsInvalid_Throws()
+        {
+            var invalidLengths = new[] { -1, 0, 65, 128 };
+
+            foreach (var length in invalidLengths)
+            {
+                var crcConfigMock = new Mock<ICRCConfig>();
+                {
+                    crcConfigMock.SetupGet(cc => cc.HashSizeInBits)
+                        .Returns(length);
+
+                    crcConfigMock.Setup(cc => cc.Clone())
+                        .Returns(() => crcConfigMock.Object);
+                }
+
+
+                Assert.Equal(
+                    "config.HashSizeInBits",
+                    Assert.Throws<ArgumentOutOfRangeException>(
+                            () => new CRC_Implementation(crcConfigMock.Object))
+                        .ParamName);
+            }
+        }
+
+        [Fact]
+        public void CRC_Implementation_Constructor_Config_HashSizeInBits_IsValid_Works()
+        {
+            var validLengths = Enumerable.Range(1, 64);
+
+            foreach (var length in validLengths)
+            {
+                var crcConfigMock = new Mock<ICRCConfig>();
+                {
+                    crcConfigMock.SetupGet(cc => cc.HashSizeInBits)
+                        .Returns(length);
+                    
+                    crcConfigMock.Setup(cc => cc.Clone())
+                        .Returns(() => crcConfigMock.Object);
+                }
+
+
+                GC.KeepAlive(
+                    new CRC_Implementation(crcConfigMock.Object));
+            }
+        }
+
+        #endregion
+        
+        #endregion
+
+        #endregion
+
+        #region Config
+
+        [Fact]
+        public void CRC_Implementation_Config_IsCloneOfClone()
+        {
+            var crcConfig3 = Mock.Of<ICRCConfig>();
+            var crcConfig2 = Mock.Of<ICRCConfig>(cc => cc.HashSizeInBits == 32 && cc.Clone() == crcConfig3);
+            var crcConfig = Mock.Of<ICRCConfig>(cc => cc.Clone() == crcConfig2);
+
+
+            var crcHash = new CRC_Implementation(crcConfig);
+
+            Assert.Equal(crcConfig3, crcHash.Config);
+        }
+
+        #endregion
+
+        #region HashSizeInBits
+
+        public void CRC_Implementation_HashSizeInBits_MatchesConfig()
+        {
+            var validHashSizes = Enumerable.Range(1, 64);
+
+            foreach (var hashSize in validHashSizes)
+            {
+                var crcConfigMock = new Mock<ICRCConfig>();
+                {
+                    crcConfigMock.SetupGet(cc => cc.HashSizeInBits)
+                        .Returns(hashSize);
+
+                    crcConfigMock.Setup(cc => cc.Clone())
+                        .Returns(() => crcConfigMock.Object);
+                }
+
+
+                var crc = new CRC_Implementation(crcConfigMock.Object);
+
+                Assert.Equal(hashSize, crc.HashSizeInBits);
+            }
+        }
+
+        #endregion
+        
+
         public class IHashFunctionAsync_Tests_CRC3_ROHC
             : IHashFunctionAsync_TestBase<ICRC>
         {

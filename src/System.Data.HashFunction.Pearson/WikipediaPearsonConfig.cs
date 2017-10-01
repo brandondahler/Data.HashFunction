@@ -15,9 +15,9 @@ namespace System.Data.HashFunction.Pearson
     public class WikipediaPearsonConfig
         : IPearsonConfig
     {
-        public int HashSizeInBits { get; set; } = 8;
-
         public IReadOnlyList<byte> Table { get; } = _table;
+
+        public int HashSizeInBits { get; set; } = 8;
 
 
         private static readonly IReadOnlyList<byte> _table = new byte[] {

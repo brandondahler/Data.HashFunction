@@ -20,7 +20,7 @@ namespace System.Data.HashFunction.Test.Blake2
         #region Config
 
         [Fact]
-        public void Blake2B_Implementation_Config_IsNull_Throws()
+        public void Blake2B_Implementation_Constructor_Config_IsNull_Throws()
         {
             Assert.Equal(
                 "config",
@@ -30,7 +30,7 @@ namespace System.Data.HashFunction.Test.Blake2
         }
 
         [Fact]
-        public void Blake2B_Implementation_Config_IsCloned()
+        public void Blake2B_Implementation_Constructor_Config_IsCloned()
         {
             var blake2BConfigMock = new Mock<IBlake2BConfig>();
             {
@@ -54,7 +54,7 @@ namespace System.Data.HashFunction.Test.Blake2
         #region HashSize
 
         [Fact]
-        public void Blake2B_Constructor_Config_HashSize_IsInvalid_Throws()
+        public void Blake2B_Implementation_Constructor_Config_HashSize_IsInvalid_Throws()
         {
             var invalidHashSizes = new[] { -1, 0, 7, 9, 10, 11, 12, 13, 14, 15, 513, 520 };
 
@@ -80,7 +80,7 @@ namespace System.Data.HashFunction.Test.Blake2
         }
 
         [Fact]
-        public void Blake2B_Constructor_Config_ValidHashSize_Works()
+        public void Blake2B_Implementation_Constructor_Config_ValidHashSize_Works()
         {
             // 8, 16, 24, 32, ..., 488, 496, 504, 512
             var validHashSizes = Enumerable.Range(1, 64)
@@ -108,7 +108,7 @@ namespace System.Data.HashFunction.Test.Blake2
         #region Key
 
         [Fact]
-        public void Blake2B_Constructor_Config_InvalidKeyLength_Throws()
+        public void Blake2B_Implementation_Constructor_Config_InvalidKeyLength_Throws()
         {
             var blake2bConfigMock = new Mock<IBlake2BConfig>();
             {
@@ -131,7 +131,7 @@ namespace System.Data.HashFunction.Test.Blake2
         }
 
         [Fact]
-        public void Blake2B_Constructor_Config_ValidKeyLength_Works()
+        public void Blake2B_Implementation_Constructor_Config_ValidKeyLength_Works()
         {
             // 0, 1, ..., 63, 64
             var validKeyLengths = Enumerable.Range(0, 65);
@@ -161,7 +161,7 @@ namespace System.Data.HashFunction.Test.Blake2
         #region Salt
 
         [Fact]
-        public void Blake2B_Constructor_Config_InvalidSaltLength_Throws()
+        public void Blake2B_Implementation_Constructor_Config_InvalidSaltLength_Throws()
         {
             var invalidSaltLengths = new[] { 0, 15, 17, 32, 64 };
 
@@ -188,7 +188,7 @@ namespace System.Data.HashFunction.Test.Blake2
         }
 
         [Fact]
-        public void Blake2B_Constructor_Config_ValidSaltLength_Works()
+        public void Blake2B_Implementation_Constructor_Config_ValidSaltLength_Works()
         {
             var blake2bConfigMock = new Mock<IBlake2BConfig>();
             {
@@ -212,7 +212,7 @@ namespace System.Data.HashFunction.Test.Blake2
         #region Personalization
 
         [Fact]
-        public void Blake2B_Constructor_Config_InvalidPersonalizationLength_Throws()
+        public void Blake2B_Implementation_Constructor_Config_InvalidPersonalizationLength_Throws()
         {
             var invalidPersonalizationLengths = new[] { 0, 15, 17, 32, 64 };
 
@@ -239,7 +239,7 @@ namespace System.Data.HashFunction.Test.Blake2
         }
 
         [Fact]
-        public void Blake2B_Constructor_Config_ValidPersonalizationLength_Works()
+        public void Blake2B_Implementation_Constructor_Config_ValidPersonalizationLength_Works()
         {
             var blake2bConfigMock = new Mock<IBlake2BConfig>();
             {

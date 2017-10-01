@@ -11,7 +11,7 @@ namespace System.Data.HashFunction.BuzHash
 
         public int HashSizeInBits { get; set; } = 64;
 
-        public UInt64 Seed { get; set; } = 0x3CD05367FD0337D3;
+        public UInt64 Seed { get; set; } = 0x3CD05367FD0337D3UL;
 
         public CircularShiftDirection ShiftDirection { get; set; } = CircularShiftDirection.Left;
 

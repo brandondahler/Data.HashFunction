@@ -18,7 +18,8 @@ namespace System.Data.HashFunction.FNV
 
         public IFNV1 Create()
         {
-            return Create(new FNVConfig());
+            return Create(
+                FNVConfig.GetPredefinedConfig(64));
         }
 
         public IFNV1 Create(IFNVConfig config)
