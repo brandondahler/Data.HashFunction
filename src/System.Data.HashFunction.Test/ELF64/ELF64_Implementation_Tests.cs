@@ -17,7 +17,7 @@ namespace System.Data.HashFunction.Test.ELF64
         {
             var elf64 = new ELF64_Implementation();
 
-            Assert.Equal(64, elf64.HashSizeInBits);
+            Assert.Equal(32, elf64.HashSizeInBits);
         }
 
         #endregion
