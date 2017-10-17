@@ -5,6 +5,7 @@ using System.Data.HashFunction.Core;
 using System.Data.HashFunction.Core.Utilities;
 using System.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.Data.HashFunction.FNV.Utilities;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -61,14 +62,14 @@ namespace System.Data.HashFunction.FNV
             if (_config.HashSizeInBits <= 0 || _config.HashSizeInBits % 32 != 0)
                 throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", _config.HashSizeInBits, $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be a positive a multiple of 32.");
 
-            if (_config.Prime == BigInteger.Zero)
-                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.Prime)}", _config.Prime, $"{nameof(config)}.{nameof(config.Prime)} must be non-zero.");
+            if (_config.Prime <= BigInteger.Zero)
+                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.Prime)}", _config.Prime, $"{nameof(config)}.{nameof(config.Prime)} must be greater than zero.");
 
-            if (_config.Offset == BigInteger.Zero)
-                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.Offset)}", _config.Offset, $"{nameof(config)}.{nameof(config.Offset)} must be non-zero.");
+            if (_config.Offset <= BigInteger.Zero)
+                throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.Offset)}", _config.Offset, $"{nameof(config)}.{nameof(config.Offset)} must be greater than zero.");
 
 
-            _fnvPrimeOffset = FNVPrimeOffset.Create(config.HashSizeInBits, config.Prime, config.Offset);
+            _fnvPrimeOffset = FNVPrimeOffset.Create(_config.HashSizeInBits, _config.Prime, _config.Offset);
         }
 
 
@@ -214,10 +215,12 @@ namespace System.Data.HashFunction.FNV
         /// <param name="operand1">Array of UInt32 values to be multiplied.</param>
         /// <param name="operand2">Array of UInt32 values to multiply by.</param>
         /// <returns></returns>
-        protected static UInt32[] ExtendedMultiply(IReadOnlyList<UInt32> operand1, IReadOnlyList<UInt32> operand2)
+        protected static UInt32[] ExtendedMultiply(IReadOnlyList<UInt32> operand1, IReadOnlyList<UInt32> operand2, int hashSizeInBytes)
         {
+            Debug.Assert(hashSizeInBytes % 4 == 0);
+
             // Temporary array to hold the results of 32-bit multiplication.
-            var product = new UInt32[(operand1.Count >= operand2.Count ? operand1.Count : operand2.Count)];
+            var product = new UInt32[hashSizeInBytes / 4];
 
             // Bottom of equation
             for (int y = 0; y < operand2.Count; ++y)
@@ -229,7 +232,7 @@ namespace System.Data.HashFunction.FNV
                 UInt32 carryOver = 0;
 
                 // Top of equation
-                for (int x = 0; x < operand2.Count; ++x)
+                for (int x = 0; x < operand1.Count; ++x)
                 {
                     if (x + y >= product.Length)
                         break;

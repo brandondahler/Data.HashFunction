@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.HashFunction.Core;
 using System.Data.HashFunction.Core.Utilities;
 using System.Data.HashFunction.Core.Utilities.UnifiedData;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -236,6 +237,9 @@ namespace System.Data.HashFunction.MurmurHash
 
         private static void ProcessRemainder(ref UInt32 h, UInt32 m, byte[] remainder, int position, int length)
         {
+            Debug.Assert(length > 0);
+            Debug.Assert(length < 4);
+
             switch (length)
             {
                 case 3: h ^= (UInt32) remainder[position + 2] << 16;   goto case 2;
@@ -243,9 +247,6 @@ namespace System.Data.HashFunction.MurmurHash
                 case 1:
                     h ^= remainder[position];
                     break;
-
-                default:
-                    throw new NotImplementedException();
             };
 
             h *= m;
@@ -254,6 +255,9 @@ namespace System.Data.HashFunction.MurmurHash
 
         private static void ProcessRemainder(ref UInt64 h, UInt64 m, byte[] remainder, int position, int length)
         {
+            Debug.Assert(length > 0);
+            Debug.Assert(length < 8);
+
             switch (length)
             {
                 case 7: h ^= (UInt64) remainder[position + 6] << 48;  goto case 6;
@@ -268,9 +272,6 @@ namespace System.Data.HashFunction.MurmurHash
                 case 1: 
                     h ^= (UInt64) remainder[position];
                     break;
-
-                default:
-                    throw new NotImplementedException();
             };
 
             h *= m;

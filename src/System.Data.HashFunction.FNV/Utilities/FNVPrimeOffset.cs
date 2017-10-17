@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -44,8 +45,11 @@ namespace System.Data.HashFunction.FNV.Utilities
         /// <param name="offset">Offset value to be represented.</param>
         private FNVPrimeOffset(IReadOnlyList<UInt32> prime, IReadOnlyList<UInt32> offset)
         {
-            Prime = prime ?? throw new ArgumentNullException(nameof(prime));
-            Offset = offset ?? throw new ArgumentNullException(nameof(offset));
+            Debug.Assert(prime != null);
+            Debug.Assert(offset != null);
+
+            Prime = prime;
+            Offset = offset;
         }
 
 
@@ -57,14 +61,14 @@ namespace System.Data.HashFunction.FNV.Utilities
         /// <param name="offset">Offset integer to be represented.</param>
         public static FNVPrimeOffset Create(int bitSize, BigInteger prime, BigInteger offset)
         { 
-            if (bitSize < 0 || bitSize % 32 != 0)
+            if (bitSize <= 0 || bitSize % 32 != 0)
                 throw new ArgumentOutOfRangeException(nameof(bitSize), $"{nameof(bitSize)} must be a positive a multiple of 32.");
 
-            if (prime == BigInteger.Zero)
-                throw new ArgumentException($"{nameof(prime)} must be non-zero.", nameof(prime));
+            if (prime <= BigInteger.Zero)
+                throw new ArgumentOutOfRangeException(nameof(prime), $"{nameof(prime)} must greater than zero.");
 
-            if (offset == BigInteger.Zero)
-                throw new ArgumentException($"{nameof(offset)} must be non-zero.", nameof(offset));
+            if (offset <= BigInteger.Zero)
+                throw new ArgumentOutOfRangeException(nameof(offset), $"{nameof(offset)} must greater than zero.");
 
 
             return new FNVPrimeOffset(
@@ -79,11 +83,8 @@ namespace System.Data.HashFunction.FNV.Utilities
 
         private static IReadOnlyList<UInt32> ToUInt32Array(BigInteger value, int bitSize)
         {
-            if (value == null)
-                throw new ArgumentNullException(nameof(value));
-
-            if (bitSize < 0 || bitSize % 32 != 0)
-                throw new ArgumentOutOfRangeException(nameof(bitSize), $"{nameof(bitSize)} must be a positive a multiple of 32.");
+            Debug.Assert(bitSize > 0);
+            Debug.Assert(bitSize % 32 == 0);
 
 
             var uint32Values = new UInt32[bitSize / 32];

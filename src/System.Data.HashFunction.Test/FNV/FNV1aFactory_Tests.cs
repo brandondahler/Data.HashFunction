@@ -6,7 +6,7 @@ using Xunit;
 
 namespace System.Data.HashFunction.Test.FNV
 {
-    class FNV1aaFactory_Tests
+    public class FNV1aFactory_Tests
     {
         [Fact]
         public void FNV1aFactory_Instance_IsDefined()

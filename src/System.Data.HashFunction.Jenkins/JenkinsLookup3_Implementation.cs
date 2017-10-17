@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.HashFunction.Core;
 using System.Data.HashFunction.Core.Utilities;
 using System.Data.HashFunction.Core.Utilities.UnifiedData;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -167,6 +168,10 @@ namespace System.Data.HashFunction.Jenkins
             if (dataCount > 0)
                 Mix(ref a, ref b, ref c);
 
+
+            Debug.Assert(length > 0);
+            Debug.Assert(length < 12);
+
             switch (length)
             {
                 case 11: c += (UInt32) remainder[position + 10] << 16;  goto case 10;
@@ -190,9 +195,6 @@ namespace System.Data.HashFunction.Jenkins
                 case 1: 
                     a += (UInt32) remainder[position]; 
                     break;
-                    
-                default:
-                    throw new NotImplementedException();
             }
 
             dataCount += length;

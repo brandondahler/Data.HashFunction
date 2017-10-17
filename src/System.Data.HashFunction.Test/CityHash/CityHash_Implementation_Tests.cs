@@ -119,9 +119,10 @@ namespace System.Data.HashFunction.Test.CityHash
 
         #region HashSizeInBits
 
+        [Fact]
         public void CityHash_Implementation_HashSizeInBits_MatchesConfig()
         {
-            var validHashSizes = new[] { 8, 16, 32, 64 };
+            var validHashSizes = new[] { 32, 64, 128 };
 
             foreach (var hashSize in validHashSizes)
             {

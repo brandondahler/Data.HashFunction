@@ -122,6 +122,9 @@ namespace System.Data.HashFunction.Jenkins
 
         private static void ProcessRemainder(ref UInt32 a, ref UInt32 b, ref UInt32 c, byte[] remainder, int position, int length)
         {
+            Debug.Assert(length > 0);
+            Debug.Assert(length < 12);
+
             // All the case statements fall through on purpose
             switch (length)
             {
@@ -147,9 +150,6 @@ namespace System.Data.HashFunction.Jenkins
                 case 1:
                     a += (UInt32) remainder[position];
                     break;
-
-                default:
-                    throw new NotImplementedException();
             }
         }
 

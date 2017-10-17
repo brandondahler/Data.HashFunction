@@ -145,6 +145,7 @@ namespace System.Data.HashFunction.Test.CRC
 
         #region HashSizeInBits
 
+        [Fact]
         public void CRC_Implementation_HashSizeInBits_MatchesConfig()
         {
             var validHashSizes = Enumerable.Range(1, 64);

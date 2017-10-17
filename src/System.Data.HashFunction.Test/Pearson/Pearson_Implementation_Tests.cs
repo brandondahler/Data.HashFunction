@@ -1,13 +1,223 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Collections.Generic;
 using System.Data.HashFunction.Pearson;
 using System.Data.HashFunction.Test._Utilities;
+using System.Linq;
 using System.Text;
+using Xunit;
 
 namespace System.Data.HashFunction.Test.Pearson
 {
     public class Pearson_Implementation_Tests
     {
+
+        #region Constructor
+
+        [Fact]
+        public void Pearson_Implementation_Constructor_ValidInputs_Works()
+        {
+            var pearsonConfigMock = new Mock<IPearsonConfig>();
+            {
+                pearsonConfigMock.SetupGet(pc => pc.Table)
+                    .Returns(
+                        Enumerable.Range(0, 256)
+                            .Select(i => (byte) i)
+                            .ToArray());
+
+                pearsonConfigMock.SetupGet(pc => pc.HashSizeInBits)
+                    .Returns(8);
+
+                pearsonConfigMock.Setup(pc => pc.Clone())
+                    .Returns(() => pearsonConfigMock.Object);
+            }
+
+            GC.KeepAlive(
+                new Pearson_Implementation(pearsonConfigMock.Object));
+        }
+
+
+        #region Config
+
+        [Fact]
+        public void Pearson_Implementation_Constructor_Config_IsNull_Throws()
+        {
+            Assert.Equal(
+                "config",
+                Assert.Throws<ArgumentNullException>(
+                        () => new Pearson_Implementation(null))
+                    .ParamName);
+        }
+
+        [Fact]
+        public void Pearson_Implementation_Constructor_Config_IsCloned()
+        {
+            var pearsonConfigMock = new Mock<IPearsonConfig>();
+            {
+                pearsonConfigMock.Setup(pc => pc.Clone())
+                    .Returns(() => new WikipediaPearsonConfig() {
+                        HashSizeInBits = 8
+                    });
+            }
+
+            GC.KeepAlive(
+                new Pearson_Implementation(pearsonConfigMock.Object));
+
+
+            pearsonConfigMock.Verify(pc => pc.Clone(), Times.Once);
+
+            pearsonConfigMock.VerifyGet(pc => pc.Table, Times.Never);
+            pearsonConfigMock.VerifyGet(pc => pc.HashSizeInBits, Times.Never);
+        }
+
+        #region Table
+
+        [Fact]
+        public void Pearson_Implementation_Constructor_Config_Table_IsNull_Throws()
+        {
+            var pearsonConfigMock = new Mock<IPearsonConfig>();
+            {
+                pearsonConfigMock.SetupGet(pc => pc.Table)
+                    .Returns((IReadOnlyList<byte>) null);
+
+                pearsonConfigMock.SetupGet(pc => pc.HashSizeInBits)
+                    .Returns(8);
+
+                pearsonConfigMock.Setup(pc => pc.Clone())
+                    .Returns(() => pearsonConfigMock.Object);
+            }
+
+            Assert.Equal(
+                "config.Table",
+                Assert.Throws<ArgumentException>(
+                        () => new Pearson_Implementation(pearsonConfigMock.Object))
+                    .ParamName);
+        }
+
+        [Fact]
+        public void Pearson_Implementation_Constructor_Config_Table_IsInvalidLength_Throws()
+        {
+            var invalidLengths = new[] { 1, 64, 128, 255, 257, 512 };
+
+            foreach (var invalidLength in invalidLengths)
+            {
+                var pearsonConfigMock = new Mock<IPearsonConfig>();
+                {
+                    pearsonConfigMock.SetupGet(pc => pc.Table)
+                        .Returns(
+                            Enumerable.Range(0, invalidLength)
+                                .Select(i => (byte) (i % 256))
+                                .ToArray());
+
+                    pearsonConfigMock.SetupGet(pc => pc.HashSizeInBits)
+                        .Returns(8);
+
+                    pearsonConfigMock.Setup(pc => pc.Clone())
+                        .Returns(() => pearsonConfigMock.Object);
+                }
+
+                Assert.Equal(
+                    "config.Table",
+                    Assert.Throws<ArgumentException>(
+                            () => new Pearson_Implementation(pearsonConfigMock.Object))
+                        .ParamName);
+            }
+        }
+
+        [Fact]
+        public void Pearson_Implementation_Constructor_Config_Table_IsNotDistinct_Throws()
+        {
+            var pearsonConfigMock = new Mock<IPearsonConfig>();
+            {
+                pearsonConfigMock.SetupGet(pc => pc.Table)
+                    .Returns(
+                        Enumerable.Range(0, 255)
+                            .Concat(new[] { 0 })
+                            .Select(i => (byte) i)
+                            .ToArray());
+
+                pearsonConfigMock.SetupGet(pc => pc.HashSizeInBits)
+                    .Returns(8);
+
+                pearsonConfigMock.Setup(pc => pc.Clone())
+                    .Returns(() => pearsonConfigMock.Object);
+            }
+
+            Assert.Equal(
+                "config.Table",
+                Assert.Throws<ArgumentException>(
+                        () => new Pearson_Implementation(pearsonConfigMock.Object))
+                    .ParamName);
+        }
+
+        #endregion
+
+        #region HashSizeInBits
+
+        [Fact]
+        public void Pearson_Implementation_Constructor_Config_HashSizeInBits_IsInvalid_Throws()
+        {
+            var invalidHashSizes = new[] { -1, 0, 1, 2, 3, 4, 5, 6, 7, 9, 15, 17, 31, 33, 63, 65, 127, 65535 };
+
+            foreach (var invalidHashSize in invalidHashSizes)
+            {
+                var pearsonConfigMock = new Mock<IPearsonConfig>();
+                {
+                    pearsonConfigMock.SetupGet(pc => pc.Table)
+                        .Returns(
+                            Enumerable.Range(0, 256)
+                                .Select(i => (byte) i)
+                                .ToArray());
+
+                    pearsonConfigMock.SetupGet(pc => pc.HashSizeInBits)
+                        .Returns(invalidHashSize);
+
+                    pearsonConfigMock.Setup(pc => pc.Clone())
+                        .Returns(() => pearsonConfigMock.Object);
+                }
+
+                Assert.Equal(
+                    "config.HashSizeInBits",
+                    Assert.Throws<ArgumentOutOfRangeException>(
+                            () => new Pearson_Implementation(pearsonConfigMock.Object))
+                        .ParamName);
+            }
+        }
+
+        [Fact]
+        public void Pearson_Implementation_Constructor_Config_HashSizeInBits_IsValid_Works()
+        {
+            var validHashSizes = new[] { 8, 16, 24, 32, 64, 128, 256, 65536 };
+
+            foreach (var validHashSize in validHashSizes)
+            {
+                var pearsonConfigMock = new Mock<IPearsonConfig>();
+                {
+                    pearsonConfigMock.SetupGet(pc => pc.Table)
+                        .Returns(
+                            Enumerable.Range(0, 256)
+                                .Select(i => (byte) i)
+                                .ToArray());
+
+                    pearsonConfigMock.SetupGet(pc => pc.HashSizeInBits)
+                        .Returns(validHashSize);
+
+                    pearsonConfigMock.Setup(pc => pc.Clone())
+                        .Returns(() => pearsonConfigMock.Object);
+                }
+
+                GC.KeepAlive(
+                    new Pearson_Implementation(pearsonConfigMock.Object));
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+
         public class IHashFunctionAsync_Tests_WikipediaPearson
             : IHashFunctionAsync_TestBase<IPearson>
         {

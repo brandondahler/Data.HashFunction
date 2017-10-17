@@ -32,9 +32,11 @@ namespace System.Data.HashFunction.FNV
         protected override void ProcessBytes(
             ref UInt32[] hash, IReadOnlyList<UInt32> prime, byte[] data, int position, int length)
         {
+            var hashSizeInBytes = HashSizeInBits / 8;
+
             for (var x = position; x < position + length; ++x)
             {
-                hash = ExtendedMultiply(hash, prime);
+                hash = ExtendedMultiply(hash, prime, hashSizeInBytes);
                 hash[0] ^= data[x];
             }
 

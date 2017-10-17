@@ -5,6 +5,7 @@ using System.Data.HashFunction.HashAlgorithm;
 using System.Data.HashFunction.Test._Utilities;
 using System.Security.Cryptography;
 using System.Text;
+using Xunit;
 
 namespace System.Data.HashFunction.Test.HashAlgorithm
 {
@@ -12,6 +13,88 @@ namespace System.Data.HashFunction.Test.HashAlgorithm
 
     public class HashAlgorithmWrapper_Implementation_Tests
     {
+
+        #region Constructor
+
+        [Fact]
+        public void HashAlgorithmWrapper_Implementation_Constructor_ValidInputs_Works()
+        {
+            var hashAlgorithmWrapperConfigMock = new Mock<IHashAlgorithmWrapperConfig>();
+            {
+                hashAlgorithmWrapperConfigMock.SetupGet(hawc => hawc.InstanceFactory)
+                    .Returns(new Func<HashAlgorithm>(SHA256.Create));
+
+                hashAlgorithmWrapperConfigMock.Setup(hawc => hawc.Clone())
+                    .Returns(() => hashAlgorithmWrapperConfigMock.Object);
+            }
+
+
+            GC.KeepAlive(
+                new HashAlgorithmWrapper_Implementation(hashAlgorithmWrapperConfigMock.Object));
+        }
+
+        #region Config
+
+        [Fact]
+        public void HashAlgorithmWrapper_Implementation_Constructor_Config_IsNull_Throws()
+        {
+            Assert.Equal(
+                "config",
+                Assert.Throws<ArgumentNullException>(
+                    () => new HashAlgorithmWrapper_Implementation(null))
+                .ParamName);
+        }
+
+        [Fact]
+        public void HashAlgorithmWrapper_Implementation_Constructor_Config_IsCloned()
+        {
+            var hashAlgorithmWrapperConfigMock = new Mock<IHashAlgorithmWrapperConfig>();
+            {
+                hashAlgorithmWrapperConfigMock.Setup(hawc => hawc.Clone())
+                    .Returns(
+                        new HashAlgorithmWrapperConfig() {
+                            InstanceFactory = SHA256.Create
+                        });
+            }
+
+            GC.KeepAlive(
+                new HashAlgorithmWrapper_Implementation(hashAlgorithmWrapperConfigMock.Object));
+
+
+            hashAlgorithmWrapperConfigMock.Verify(fc => fc.Clone(), Times.Once);
+
+            hashAlgorithmWrapperConfigMock.VerifyGet(hawc => hawc.InstanceFactory, Times.Never);
+        }
+
+        #region InstanceFactory
+
+        [Fact]
+        public void HashAlgorithmWrapper_Implementation_Constructor_Config_InstanceFactory_IsNull_Throws()
+        {
+            var hashAlgorithmWrapperConfigMock = new Mock<IHashAlgorithmWrapperConfig>();
+            {
+                hashAlgorithmWrapperConfigMock.Setup(hawc => hawc.Clone())
+                    .Returns(
+                        new HashAlgorithmWrapperConfig() {
+                            InstanceFactory = null
+                        });
+            }
+
+
+            Assert.Equal(
+                "config.InstanceFactory",
+                Assert.Throws<ArgumentException>(
+                    () => new HashAlgorithmWrapper_Implementation(hashAlgorithmWrapperConfigMock.Object))
+                .ParamName);
+        }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+
         public class IHashFunction_Tests_SHA1
             : IHashFunction_TestBase<IHashAlgorithmWrapper>
         {

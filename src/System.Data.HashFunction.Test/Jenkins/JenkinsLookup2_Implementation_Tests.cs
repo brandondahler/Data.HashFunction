@@ -1,15 +1,68 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Collections.Generic;
 using System.Data.HashFunction.Jenkins;
 using System.Data.HashFunction.Test._Utilities;
 using System.Linq;
 using System.Text;
+using Xunit;
 
 namespace System.Data.HashFunction.Test.Jenkins
 {
     public class JenkinsLookup2_Implementation_Tests
     {
-        
+
+        #region Constructor
+
+        [Fact]
+        public void JenkinsLookup2_Implementation_Constructor_ValidInputs_Works()
+        {
+            var jenkinsLookupConfigMock = new Mock<IJenkinsLookup2Config>();
+            {
+                jenkinsLookupConfigMock.Setup(jlc => jlc.Clone())
+                    .Returns(() => jenkinsLookupConfigMock.Object);
+            }
+
+            GC.KeepAlive(
+                new JenkinsLookup2_Implementation(jenkinsLookupConfigMock.Object));
+        }
+
+
+        #region Config
+
+        [Fact]
+        public void JenkinsLookup2_Implementation_Constructor_Config_IsNull_Throws()
+        {
+            Assert.Equal(
+                "config",
+                Assert.Throws<ArgumentNullException>(
+                        () => new JenkinsLookup2_Implementation(null))
+                    .ParamName);
+        }
+
+        [Fact]
+        public void JenkinsLookup2_Implementation_Constructor_Config_IsCloned()
+        {
+            var jenkinsLookupConfigMock = new Mock<IJenkinsLookup2Config>();
+            {
+                jenkinsLookupConfigMock.Setup(jlc => jlc.Clone())
+                    .Returns(() => new JenkinsLookup2Config());
+            }
+
+            GC.KeepAlive(
+                new JenkinsLookup2_Implementation(jenkinsLookupConfigMock.Object));
+
+
+            jenkinsLookupConfigMock.Verify(jlc => jlc.Clone(), Times.Once);
+
+            jenkinsLookupConfigMock.VerifyGet(jlc => jlc.Seed, Times.Never);
+        }
+
+        #endregion
+
+        #endregion
+
+
         public class IHashFunctionAsync_Tests
             : IHashFunctionAsync_TestBase<IJenkinsLookup2>
         {
