@@ -4,8 +4,12 @@ using System.Data.HashFunction.SpookyHash;
 using System.Text;
 using Xunit;
 
+#pragma warning disable CS0618 // SpookyHashV1_Implementation' is obsolete: 'SpookyHashV1 has known issues, use SpookyHashV2.'
+
 namespace System.Data.HashFunction.Test.SpookyHash
 {
+
+
     public class SpookyHashV1Factory_Tests
     {
         [Fact]
@@ -71,3 +75,5 @@ namespace System.Data.HashFunction.Test.SpookyHash
         }
     }
 }
+
+#pragma warning restore CS1573

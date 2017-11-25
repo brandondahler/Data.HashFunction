@@ -116,6 +116,7 @@ namespace System.Data.HashFunction.Test.Test._Utilities
             Assert.Equal(expected, testString.HexToBytes());
         }
 
+        [Fact]
         public void UtilityExtension_HexToBytes_EmptyString_Works()
         {
             Assert.Equal(new byte[0], "".HexToBytes());

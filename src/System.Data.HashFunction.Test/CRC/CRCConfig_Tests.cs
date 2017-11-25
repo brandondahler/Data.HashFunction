@@ -17,8 +17,8 @@ namespace System.Data.HashFunction.Test.CRC
             Assert.Equal(0, crcConfig.HashSizeInBits);
             Assert.Equal(0UL, crcConfig.InitialValue);
             Assert.Equal(0UL, crcConfig.Polynomial);
-            Assert.Equal(false, crcConfig.ReflectIn);
-            Assert.Equal(false, crcConfig.ReflectOut);
+            Assert.False(crcConfig.ReflectIn);
+            Assert.False(crcConfig.ReflectOut);
             Assert.Equal(0UL, crcConfig.XOrOut);
         }
 

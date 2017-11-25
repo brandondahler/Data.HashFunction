@@ -288,6 +288,7 @@ namespace System.Data.HashFunction.Test.FNV
 
         #region HashSizeInBits
 
+        [Fact]
         public void FNV1_Implementation_HashSizeInBits_MatchesConfig()
         {
             var validHashSizes = Enumerable.Range(1, 1024).Select(i => i * 32);

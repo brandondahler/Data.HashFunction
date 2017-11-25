@@ -94,6 +94,7 @@ namespace System.Data.HashFunction.Test.Core.Utilities
 
         #region Hash
 
+        [Fact]
         public void HashValue_Hash_IsCopyOfConstructorValue()
         {
             // Underlying Enumerable
@@ -121,6 +122,7 @@ namespace System.Data.HashFunction.Test.Core.Utilities
 
         #region BitLength
 
+        [Fact]
         public void HashValue_BitLength_IsSameAsConstructorValue()
         {
             var validBitLengths = Enumerable.Range(1, 16);
