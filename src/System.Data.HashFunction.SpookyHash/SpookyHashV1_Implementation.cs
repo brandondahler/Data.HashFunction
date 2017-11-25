@@ -37,6 +37,8 @@ namespace System.Data.HashFunction.SpookyHash
 
 
         private readonly ISpookyHashConfig _config;
+        private readonly UInt64 _seed1;
+        private readonly UInt64 _seed2;
 
         private static readonly IEnumerable<int> _validHashSizes = new HashSet<int>() { 32, 64, 128 };
 
@@ -61,6 +63,25 @@ namespace System.Data.HashFunction.SpookyHash
 
             if (!_validHashSizes.Contains(_config.HashSizeInBits))
                 throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", _config.HashSizeInBits, $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be contained within SpookyHashV1.ValidHashSizes.");
+
+
+            switch (_config.HashSizeInBits)
+            {
+                case 32:
+                    _seed1 = _config.Seed & 0xFFFFFFFF;
+                    _seed2 = _seed1;
+                    break;
+
+                case 64:
+                    _seed1 = _config.Seed;
+                    _seed2 = _seed1;
+                    break;
+
+                case 128:
+                    _seed1 = _config.Seed;
+                    _seed2 = _config.Seed2;
+                    break;
+            }
         }
 
 
@@ -70,10 +91,14 @@ namespace System.Data.HashFunction.SpookyHash
         /// <inheritdoc />
         protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
         {
+            if (data.Length < 192)
+                return ComputeShortHashInternal(data, cancellationToken);
+
+
             UInt64[] h = new UInt64[12];
             
-            h[0]=h[3]=h[6]=h[9]  = _config.Seed;
-            h[1]=h[4]=h[7]=h[10] = (HashSizeInBits == 128 ? _config.Seed2 : _config.Seed);
+            h[0]=h[3]=h[6]=h[9]  = _seed1;
+            h[1]=h[4]=h[7]=h[10] = _seed2;
             h[2]=h[5]=h[8]=h[11] = 0XDEADBEEFDEADBEEF;
 
 
@@ -123,14 +148,113 @@ namespace System.Data.HashFunction.SpookyHash
             return hash;
         }
 
+        
+        private byte[] ComputeShortHashInternal(IUnifiedData data, CancellationToken cancellationToken)
+        {
+            var h = new UInt64[4] {
+                _seed1,
+                _seed2,
+                0XDEADBEEFDEADBEEF,
+                0XDEADBEEFDEADBEEF
+            };
+
+            var remainderData = new byte[16];
+            var remainderLength = 0;
+
+            data.ForEachGroup(32,
+                (dataGroup, position, length) => {
+                    for (int x = position; x < position + length; x += 32)
+                    {
+                        h[2] += BitConverter.ToUInt64(dataGroup, x);
+                        h[3] += BitConverter.ToUInt64(dataGroup, x + 8);
+
+                        ShortMix(h);
+
+                        h[0] += BitConverter.ToUInt64(dataGroup, x + 16);
+                        h[1] += BitConverter.ToUInt64(dataGroup, x + 24);
+                    }
+                },
+                (remainder, position, length) => {
+                    if (length >= 16)
+                    {
+                        h[2] += BitConverter.ToUInt64(remainder, position);
+                        h[3] += BitConverter.ToUInt64(remainder, position + 8);
+
+                        ShortMix(h);
+
+                        position += 16;
+                        length -= 16;
+                    }
+
+                    if (length > 0)
+                    {
+                        Array.Copy(remainder, position, remainderData, 0, length);
+                        remainderLength = length;
+                    }
+                },
+                cancellationToken);
+
+            h[3] = ((UInt64) data.Length) << 56;
+
+
+            if (remainderLength > 0)
+            {
+                h[3] += BitConverter.ToUInt64(remainderData, 8);
+                h[2] += BitConverter.ToUInt64(remainderData, 0);
+            } else {
+                h[3] += 0XDEADBEEFDEADBEEF;
+                h[2] += 0XDEADBEEFDEADBEEF;
+            }
+
+            ShortEnd(h);
+
+
+            byte[] hash;
+
+            switch (_config.HashSizeInBits)
+            {
+                case 32:
+                    hash = BitConverter.GetBytes((UInt32)h[0]);
+                    break;
+
+                case 64:
+                    hash = BitConverter.GetBytes(h[0]);
+                    break;
+
+                case 128:
+                    hash = new byte[16];
+
+                    BitConverter.GetBytes(h[0])
+                        .CopyTo(hash, 0);
+
+                    BitConverter.GetBytes(h[1])
+                        .CopyTo(hash, 8);
+
+                    break;
+
+                default:
+                    throw new NotImplementedException();
+            }
+
+            return hash;
+        }
+
+
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
         protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
         {
+            if (data.Length < 192)
+            {
+                return await ComputeShortHashAsyncInternal(data, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+
+
             UInt64[] h = new UInt64[12];
             
-            h[0]=h[3]=h[6]=h[9]  = _config.Seed;
-            h[1]=h[4]=h[7]=h[10] = (HashSizeInBits == 128 ? _config.Seed2 : _config.Seed);
+            h[0]=h[3]=h[6]=h[9]  = _seed1;
+            h[1]=h[4]=h[7]=h[10] = _seed2;
             h[2]=h[5]=h[8]=h[11] = 0XDEADBEEFDEADBEEF;
 
 
@@ -180,6 +304,98 @@ namespace System.Data.HashFunction.SpookyHash
 
             return hash;
         }
+        
+        private async Task<byte[]> ComputeShortHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
+        {
+            var h = new UInt64[4] {
+                _seed1,
+                _seed2,
+                0XDEADBEEFDEADBEEF,
+                0XDEADBEEFDEADBEEF
+            };
+
+            var remainderData = new byte[16];
+            var remainderLength = 0;
+
+            await data.ForEachGroupAsync(32,
+                    (dataGroup, position, length) => {
+                        for (int x = position; x < position + length; x += 32)
+                        {
+                            h[2] += BitConverter.ToUInt64(dataGroup, x);
+                            h[3] += BitConverter.ToUInt64(dataGroup, x + 8);
+
+                            ShortMix(h);
+
+                            h[0] += BitConverter.ToUInt64(dataGroup, x + 16);
+                            h[1] += BitConverter.ToUInt64(dataGroup, x + 24);
+                        }
+                    },
+                    (remainder, position, length) => {
+                        if (length >= 16)
+                        {
+                            h[2] += BitConverter.ToUInt64(remainder, position);
+                            h[3] += BitConverter.ToUInt64(remainder, position + 8);
+
+                            ShortMix(h);
+
+                            position += 16;
+                            length -= 16;
+                        }
+
+                        if (length > 0)
+                        {
+                            Array.Copy(remainder, position, remainderData, 0, length);
+                            remainderLength = length;
+                        }
+                    },
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+            h[3] = ((UInt64) data.Length) << 56;
+
+
+            if (remainderLength > 0)
+            {
+                h[2] += BitConverter.ToUInt64(remainderData, 0);
+                h[3] += BitConverter.ToUInt64(remainderData, 8);
+
+            } else {
+                h[2] += 0XDEADBEEFDEADBEEF;
+                h[3] += 0XDEADBEEFDEADBEEF;
+            }
+
+            ShortEnd(h);
+
+
+            byte[] hash;
+
+            switch (_config.HashSizeInBits)
+            {
+                case 32:
+                    hash = BitConverter.GetBytes((UInt32)h[0]);
+                    break;
+
+                case 64:
+                    hash = BitConverter.GetBytes(h[0]);
+                    break;
+
+                case 128:
+                    hash = new byte[16];
+
+                    BitConverter.GetBytes(h[0])
+                        .CopyTo(hash, 0);
+
+                    BitConverter.GetBytes(h[1])
+                        .CopyTo(hash, 8);
+
+                    break;
+
+                default:
+                    throw new NotImplementedException();
+            }
+
+            return hash;
+        }
 
 
         private static readonly IReadOnlyList<int> _MixRotationParameters = 
@@ -201,7 +417,22 @@ namespace System.Data.HashFunction.SpookyHash
                 }
             }
         }
+        
+        private static readonly IReadOnlyList<int> _ShortMixRotationParameters =
+            new[] {
+                50, 52, 30, 41, 54, 48, 38, 37, 62, 34, 5, 36
+            };
 
+        private void ShortMix(UInt64[] h)
+        {
+            for (var i = 0; i < 12; ++i)
+            {
+
+                h[(i + 2) % 4] = RotateLeft(h[(i + 2) % 4], _ShortMixRotationParameters[i]);
+                h[(i + 2) % 4] += h[(i + 3) % 4];
+                h[i % 4] ^= h[(i + 2) % 4];
+            }
+        }
 
         private static readonly IReadOnlyList<int> _EndPartialRotationParameters = 
             new[] {
@@ -225,6 +456,21 @@ namespace System.Data.HashFunction.SpookyHash
             EndPartial(h);
         }
 
+
+        private static readonly IReadOnlyList<int> _ShortEndRotationParameters =
+            new[] {
+                15, 52, 26, 51, 28, 9, 47, 54, 32, 25, 63
+            };
+
+        private void ShortEnd(UInt64[] h)
+        {
+            for (int i = 0; i < 11; ++i)
+            {
+                h[(i + 3) % 4] ^= h[(i + 2) % 4];
+                h[(i + 2) % 4] = RotateLeft(h[(i + 2) % 4], _ShortEndRotationParameters[i]);
+                h[(i + 3) % 4] += h[(i + 2) % 4];
+            }
+        }
 
         private static UInt64 RotateLeft(UInt64 operand, int shiftCount)
         {

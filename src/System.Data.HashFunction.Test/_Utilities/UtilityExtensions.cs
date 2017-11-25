@@ -15,6 +15,12 @@ namespace System.Data.HashFunction.Test._Utilities
         /// <returns>Byte array of the binary representation of the hexString.</returns>
         public static byte[] HexToBytes(this string hexString)
         {
+            bool reverse = hexString.StartsWith("0x", StringComparison.OrdinalIgnoreCase);
+
+            if (reverse)
+                hexString = hexString.Substring(2);
+
+
             var chars = hexString
                 .Replace(" ", "")
                 .Replace("-", "")
@@ -23,7 +29,7 @@ namespace System.Data.HashFunction.Test._Utilities
 
             if (chars.Length % 2 == 1)
                 throw new ArgumentException("hexString's length must be divisible by 2 after removing spaces, underscores, and dashes.", "hexString");
-
+            
             var bytes = new byte[chars.Length / 2];
 
             for (int x = 0; x < chars.Length; ++x)
@@ -43,6 +49,9 @@ namespace System.Data.HashFunction.Test._Utilities
                 else
                     throw new ArgumentException("hexString contains an invalid character, only [0-9a-fA-F _-] expected", "hexString");
             }
+
+            if (reverse)
+                bytes = bytes.Reverse().ToArray();
 
             return bytes;
         }
