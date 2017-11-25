@@ -27,6 +27,9 @@ namespace System.Data.HashFunction
         /// <value>
         /// The hash value.
         /// </value>
+        /// <remarks>
+        /// Implementations should coerce the input hash value to be <see cref="BitLength"/> size in bits.
+        /// </remarks>
         byte[] Hash { get; }
 
 
@@ -41,6 +44,13 @@ namespace System.Data.HashFunction
         /// </summary>
         /// <returns>A hex string representing this hash value.</returns>
         string AsHexString();
+
+        /// <summary>
+        /// Converts the hash value to a hexadecimal string.
+        /// </summary>
+        /// <param name="uppercase"><c>true</c> if the result should use uppercase hex values; otherwise <c>false</c>.</param>
+        /// <returns>A hex string representing this hash value.</returns>
+        string AsHexString(bool uppercase);
 
         /// <summary>
         /// Converts the hash value to a the base64 string.

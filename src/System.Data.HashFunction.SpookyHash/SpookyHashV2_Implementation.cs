@@ -53,7 +53,7 @@ namespace System.Data.HashFunction.SpookyHash
             _config = config.Clone();
 
 
-            if (!_validHashSizes.Contains(config.HashSizeInBits))
+            if (!_validHashSizes.Contains(_config.HashSizeInBits))
                 throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", _config.HashSizeInBits, $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be contained within SpookyHashV2.ValidHashSizes.");
         }
 

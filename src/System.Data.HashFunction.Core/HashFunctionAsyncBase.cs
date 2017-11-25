@@ -27,6 +27,9 @@ namespace System.Data.HashFunction.Core
         /// <inheritdoc />
         public async Task<IHashValue> ComputeHashAsync(Stream data, CancellationToken cancellationToken)
         {
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+
             if (!data.CanRead)
                 throw new ArgumentException("Stream \"data\" must be readable.", "data");
 

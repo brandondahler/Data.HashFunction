@@ -35,8 +35,7 @@ namespace System.Data.HashFunction.Core.Utilities
             if (bitLength < 1)
                 throw new ArgumentOutOfRangeException(nameof(bitLength), "bitLength must be greater than or equal to 1.");
 
-
-            Hash = hash.ToArray();
+            Hash = CoerceToArray(hash, bitLength);
             BitLength = bitLength;
         }
 
@@ -71,9 +70,24 @@ namespace System.Data.HashFunction.Core.Utilities
         /// <returns>
         /// A hex string representing this hash value.
         /// </returns>
-        public string AsHexString()
+        public string AsHexString() => AsHexString(false);
+
+        /// <summary>
+        /// Converts the hash value to a hexadecimal string.
+        /// </summary>
+        /// <param name="uppercase"><c>true</c> if the result should use uppercase hex values; otherwise <c>false</c>.</param>
+        /// <returns>
+        /// A hex string representing this hash value.
+        /// </returns>
+        public string AsHexString(bool uppercase)
         {
-            throw new NotImplementedException();
+            var stringBuilder = new StringBuilder(Hash.Length);
+            var formatString = uppercase ? "X2" : "x2";
+
+            foreach (var byteValue in Hash)
+                stringBuilder.Append(byteValue.ToString(formatString));
+
+            return stringBuilder.ToString();
         }
 
 
@@ -95,7 +109,7 @@ namespace System.Data.HashFunction.Core.Utilities
                     foreach (var value in Hash)
                         hashCode = (hashCode * 31) ^ value.GetHashCode();
                 } else {
-                    hashCode = (hashCode * 31) ^ 0;
+                    hashCode *= 31;
                 }
 
                 return hashCode;
@@ -126,53 +140,59 @@ namespace System.Data.HashFunction.Core.Utilities
             if (other.BitLength != BitLength)
                 return false;
 
-            var byteLength = ((BitLength + 7) / 8);
-            var finalByteIndex = byteLength - 1;
+            return Hash.SequenceEqual(other.Hash);
+        }
 
-            byte finalByteMask = (byte) ((1 << (BitLength % 8)) - 1);
+
+        private static byte[] CoerceToArray(IEnumerable<byte> hash, int bitLength)
+        {
+            var byteLength = (bitLength + 7) / 8;
+
+            if ((bitLength % 8) == 0)
+            {
+                if (hash is IReadOnlyCollection<byte> hashByteCollection)
+                {
+                    if (hashByteCollection.Count == byteLength)
+                        return hash.ToArray();
+                }
+
+                if (hash is byte[] hashByteArray)
+                {
+                    var newHashArray = new byte[byteLength];
+                    {
+                        Array.Copy(hashByteArray, newHashArray, Math.Min(byteLength, hashByteArray.Length));
+                    }
+
+                    return newHashArray;
+                }
+            }
+
+
+            byte finalByteMask = (byte)((1 << (bitLength % 8)) - 1);
             {
                 if (finalByteMask == 0)
                     finalByteMask = 255;
             }
 
 
-            var myHash = Hash;
-            var otherHash = other.Hash;
+            var coercedArray = new byte[byteLength];
 
-            var myHashLength = myHash.Length;
-            var otherHashLength = otherHash.Length;
+            var currentIndex = 0;
+            var hashEnumerator = hash.GetEnumerator();
 
-            var checkBytesCount = Math.Min(byteLength, Math.Max(myHashLength, otherHashLength));
-
-            for (var x = 0; x < checkBytesCount; ++x)
+            while (currentIndex < byteLength && hashEnumerator.MoveNext())
             {
-                byte myByte = 0;
-                byte otherByte = 0;
-
-                if (myHashLength > x)
-                {
-                    myByte = myHash[x];
-
-                    if (x == finalByteIndex)
-                        myByte = (byte) (myByte & finalByteMask);
-                }
-
-                if (otherHashLength > x)
-                {
-                    otherByte = otherHash[x];
-
-                    if (x == finalByteIndex)
-                        otherByte = (byte)(otherByte & finalByteMask);
-                }
+                if (currentIndex == (byteLength - 1))
+                    coercedArray[currentIndex] = (byte) (hashEnumerator.Current & finalByteMask);
+                else
+                    coercedArray[currentIndex] = hashEnumerator.Current;
 
 
-                if (myByte != otherByte)
-                    return false;
+                currentIndex += 1;
             }
 
-            return true;
+            return coercedArray;
         }
-
 
     }
 }
