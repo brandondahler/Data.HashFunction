@@ -14,10 +14,10 @@ namespace System.Data.HashFunction.Test.SpookyHash
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
-                    new KnownValue(32, TestConstants.FooBar, 0xcef04070),
-                    new KnownValue(64, TestConstants.FooBar, 0x1f9b9f79cef04070),
-                    new KnownValue(128, TestConstants.FooBar, "7040f0ce799f9b1f22020c7b2be86797"),
-                    new KnownValue(32, TestConstants.LoremIpsum, 0xded54c84),
+                    new KnownValue(32, TestConstants.FooBar, 0x03edde99),
+                    new KnownValue(64, TestConstants.FooBar, 0x86c057a503edde99),
+                    new KnownValue(128, TestConstants.FooBar, "65178fe24e37629a86c057a503edde99"),
+                    new KnownValue(32, TestConstants.LoremIpsum, 0xded54c84U),
                     new KnownValue(64, TestConstants.LoremIpsum, 0xbb6b988bded54c84),
                     new KnownValue(128, TestConstants.LoremIpsum, "844cd5de8b986bbb1062913785ea1fa2"),
                 };
