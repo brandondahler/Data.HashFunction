@@ -190,7 +190,14 @@ namespace System.Data.HashFunction.Test.Core.Utilities
             Assert.Equal(
                 "ad00ff",
                 hashValue.AsHexString());
-            
+
+            Assert.Equal(
+                "ad00ff",
+                hashValue.AsHexString(false));
+
+            Assert.Equal(
+                "AD00FF",
+                hashValue.AsHexString(true));
         }
         #endregion
 
@@ -218,13 +225,21 @@ namespace System.Data.HashFunction.Test.Core.Utilities
 
         #region Equals
 
+        [Fact]
         public void HashValue_Equals_Works()
         {
             {
                 var hashValue = new HashValue(new byte[] { 173, 0, 255 }, 24);
+
+                Assert.False(hashValue.Equals(null));
+                Assert.False(hashValue.Equals((object) null));
+                Assert.False(hashValue.Equals("abc"));
+
+
                 var mockValue = Mock.Of<IHashValue>(hv => hv.BitLength == 24 && hv.Hash == new byte[] { 173, 0, 255 });
 
                 Assert.True(hashValue.Equals(mockValue));
+                Assert.True(hashValue.Equals((object) mockValue));
             }
 
             {
@@ -236,7 +251,7 @@ namespace System.Data.HashFunction.Test.Core.Utilities
 
             {
                 var hashValue = new HashValue(new byte[] { 173, 0, 254 }, 23);
-                var mockValue = Mock.Of<IHashValue>(hv => hv.BitLength == 24 && hv.Hash == new byte[] { 173, 0, 255 });
+                var mockValue = Mock.Of<IHashValue>(hv => hv.BitLength == 24 && hv.Hash == new byte[] { 173, 0, 254 });
 
                 Assert.False(hashValue.Equals(mockValue));
             }

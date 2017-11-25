@@ -102,15 +102,11 @@ namespace System.Data.HashFunction.Core.Utilities
             unchecked
             {
                 var hashCode = 17;
+
                 hashCode = (hashCode * 31) ^ BitLength.GetHashCode();
 
-                if (Hash != null)
-                {
-                    foreach (var value in Hash)
-                        hashCode = (hashCode * 31) ^ value.GetHashCode();
-                } else {
-                    hashCode *= 31;
-                }
+                foreach (var value in Hash)
+                    hashCode = (hashCode * 31) ^ value.GetHashCode();
 
                 return hashCode;
             }
@@ -137,7 +133,7 @@ namespace System.Data.HashFunction.Core.Utilities
         /// </returns>
         public bool Equals(IHashValue other)
         {
-            if (other.BitLength != BitLength)
+            if (other == null || other.BitLength != BitLength)
                 return false;
 
             return Hash.SequenceEqual(other.Hash);
