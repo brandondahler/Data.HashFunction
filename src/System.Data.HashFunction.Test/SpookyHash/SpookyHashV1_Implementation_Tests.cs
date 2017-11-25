@@ -159,6 +159,9 @@ namespace System.Data.HashFunction.Test.SpookyHash
             
             Assert.Throws<NotImplementedException>(
                 () => spookyHashV1.ComputeHash(new byte[1]));
+
+            Assert.Throws<NotImplementedException>(
+                () => spookyHashV1.ComputeHash(new byte[200]));
         }
 
         #endregion
@@ -194,6 +197,12 @@ namespace System.Data.HashFunction.Test.SpookyHash
                 await Assert.ThrowsAsync<NotImplementedException>(
                     () => spookyHashV1.ComputeHashAsync(memoryStream));
             }
+
+            using (var memoryStream = new MemoryStream(new byte[200]))
+            {
+                await Assert.ThrowsAsync<NotImplementedException>(
+                    () => spookyHashV1.ComputeHashAsync(memoryStream));
+            }
         }
 
         #endregion
@@ -207,6 +216,10 @@ namespace System.Data.HashFunction.Test.SpookyHash
                     new KnownValue(32, TestConstants.FooBar, 0xeade5f81),
                     new KnownValue(64, TestConstants.FooBar, 0xf998152deade5f81),
                     new KnownValue(128, TestConstants.FooBar, "0x7346a4738d6e73c1f998152deade5f81"),
+
+                    new KnownValue(32, TestConstants.LoremIpsum.Take(32), 0x16720302),
+                    new KnownValue(64, TestConstants.LoremIpsum.Take(32), 0x17736e9f16720302),
+                    new KnownValue(128, TestConstants.LoremIpsum.Take(32), "0x34ab0a4fc2b7c38b17736e9f16720302"),
 
                     new KnownValue(32, TestConstants.LoremIpsum, 0xa63cfe42),
                     new KnownValue(64, TestConstants.LoremIpsum, 0x24e936e7a63cfe42),
@@ -235,6 +248,7 @@ namespace System.Data.HashFunction.Test.SpookyHash
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
                     new KnownValue(128, TestConstants.FooBar, "0x7346a4738d6e73c1f998152deade5f81"),
+                    new KnownValue(128, TestConstants.LoremIpsum.Take(32), "0x34ab0a4fc2b7c38b17736e9f16720302"),
                     new KnownValue(128, TestConstants.LoremIpsum, "0x71bed3339591abd424e936e7a63cfe42"),
                     new KnownValue(128, TestConstants.LoremIpsum.Repeat(2).Take(192), "0x786ba1f4af67dd09893195cbdb3e967e"),
                     new KnownValue(128, TestConstants.LoremIpsum.Repeat(2), "0x74f5bc2ea0c3f5fa81b8c9d9bfc4d1ba"),
@@ -254,6 +268,10 @@ namespace System.Data.HashFunction.Test.SpookyHash
                     new KnownValue(32, TestConstants.FooBar, 0xf17a1610),
                     new KnownValue(64, TestConstants.FooBar, 0x6d9f61e13758729f),
                     new KnownValue(128, TestConstants.FooBar, "0xb75012e143d73c2f130a88c31545d9eb"),
+
+                    new KnownValue(32, TestConstants.LoremIpsum.Take(32), 0xdfea73f6),
+                    new KnownValue(64, TestConstants.LoremIpsum.Take(32), 0x79f5b1436aa8c030),
+                    new KnownValue(128, TestConstants.LoremIpsum.Take(32), "0x808dcc692499aab6d4df426610efb171"),
 
                     new KnownValue(32, TestConstants.LoremIpsum, 0x781c0698),
                     new KnownValue(64, TestConstants.LoremIpsum, 0x6850697d7c6fd140),
@@ -284,6 +302,7 @@ namespace System.Data.HashFunction.Test.SpookyHash
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
                     new KnownValue(128, TestConstants.FooBar, "0xb75012e143d73c2f130a88c31545d9eb"),
+                    new KnownValue(128, TestConstants.LoremIpsum.Take(32), "0x808dcc692499aab6d4df426610efb171"),
                     new KnownValue(128, TestConstants.LoremIpsum, "0x69fe25ed1c58a3c41af2d85f5c123c33"),
                     new KnownValue(128, TestConstants.LoremIpsum.Repeat(2).Take(192), "0xf541594c2392a36c2de991720ceeb287"),
                     new KnownValue(128, TestConstants.LoremIpsum.Repeat(2), "0x99c24b1636a379f784888337ee023e52"),
