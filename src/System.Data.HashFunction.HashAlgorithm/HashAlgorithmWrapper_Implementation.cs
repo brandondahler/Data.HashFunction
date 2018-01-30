@@ -44,7 +44,9 @@ namespace System.Data.HashFunction.HashAlgorithm
         /// <summary>
         /// Initializes a new instance of the <see cref="HashAlgorithmWrapper_Implementation"/> class.
         /// </summary>
-        /// <param name="config">Configuration</param>
+        /// <param name="config">The configuration to use for this instance.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
+        /// <exception cref="ArgumentException"><paramref name="config"/>.<see cref="IHashAlgorithmWrapperConfig.InstanceFactory"/> has not been set.;<paramref name="config"/>.<see cref="IHashAlgorithmWrapperConfig.InstanceFactory"/></exception>
         public HashAlgorithmWrapper_Implementation(IHashAlgorithmWrapperConfig config)
         {
             if (config == null)

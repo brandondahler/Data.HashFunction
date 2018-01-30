@@ -30,12 +30,12 @@ namespace System.Data.HashFunction.Jenkins
         private IJenkinsLookup2Config _config;
 
 
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="JenkinsLookup2_Implementation"/> class.
         /// </summary>
-        /// <param name="config">Configuration</param>
-        /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
+        /// <param name="config">The configuration to use for this instance.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
         public JenkinsLookup2_Implementation(IJenkinsLookup2Config config)
         {
             if (config == null)

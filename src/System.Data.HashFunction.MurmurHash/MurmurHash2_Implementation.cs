@@ -52,9 +52,9 @@ namespace System.Data.HashFunction.MurmurHash
         /// <summary>
         /// Initializes a new instance of the <see cref="MurmurHash2_Implementation"/> class.
         /// </summary>
-        /// <param name="config">Configuration</param>
-        /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
-        /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IMurmurHash2Config.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IMurmurHash2Config.HashSizeInBits"/> must be contained within MurmurHash2.ValidHashSizes.</exception>
+        /// <param name="config">The configuration to use for this instance.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IMurmurHash2Config.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IMurmurHash2Config.HashSizeInBits"/> must be contained within MurmurHash2.ValidHashSizes.</exception>
         public MurmurHash2_Implementation(IMurmurHash2Config config)
         {
             if (config == null)

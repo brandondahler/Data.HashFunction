@@ -47,8 +47,8 @@ namespace System.Data.HashFunction.MurmurHash
         /// <summary>
         /// Initializes a new instance of the <see cref="MurmurHash1_Implementation"/> class.
         /// </summary>
-        /// <param name="config">Configuration</param>
-        /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
+        /// <param name="config">The configuration to use for this instance.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
         public MurmurHash1_Implementation(IMurmurHash1Config config)
         {
             if (config == null)

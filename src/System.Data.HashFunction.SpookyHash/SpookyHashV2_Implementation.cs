@@ -44,9 +44,9 @@ namespace System.Data.HashFunction.SpookyHash
         /// <summary>
         /// Initializes a new instance of the <see cref="SpookyHashV2_Implementation"/> class.
         /// </summary>
-        /// <param name="config">Configuration</param>
-        /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
-        /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="ISpookyHashConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="ISpookyHashConfig.HashSizeInBits"/> must be contained within SpookyHashV1.ValidHashSizes.</exception>
+        /// <param name="config">The configuration to use for this instance.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="ISpookyHashConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="ISpookyHashConfig.HashSizeInBits"/> must be contained within SpookyHashV1.ValidHashSizes.</exception>
         public SpookyHashV2_Implementation(ISpookyHashConfig config)
         {
             if (config == null)
