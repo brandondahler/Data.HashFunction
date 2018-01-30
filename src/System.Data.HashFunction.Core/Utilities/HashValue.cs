@@ -8,32 +8,46 @@ using System.Threading.Tasks;
 namespace System.Data.HashFunction.Core.Utilities
 {
     /// <summary>
-    /// 
+    /// Implementation of <see cref="IHashValue"/>
     /// </summary>
-    /// <seealso cref="System.Data.HashFunction.IHashValue" />
     public sealed class HashValue
         : IHashValue
     {
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the length of the hash value in bits.
+        /// </summary>
+        /// <value>
+        /// The length of the hash value bit.
+        /// </value>
         public byte[] Hash { get; }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets resulting byte array.
+        /// </summary>
+        /// <value>
+        /// The hash value.
+        /// </value>
+        /// <remarks>
+        /// Implementations should coerce the input hash value to be <see cref="BitLength"/> size in bits.
+        /// </remarks>
         public int BitLength { get; }
 
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HashValue"/> class.
+        /// Initializes a new instance of <see cref="HashValue"/>.
         /// </summary>
         /// <param name="hash">The hash.</param>
-        /// <param name="bitLength">Length of the hash in bits.</param>
+        /// <param name="bitLength">Length of the hash, in bits.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="hash"/></exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="bitLength"/>;bitLength must be greater than or equal to 1.</exception>
         public HashValue(IEnumerable<byte> hash, int bitLength)
         {
             if (hash == null)
                 throw new ArgumentNullException(nameof(hash));
 
             if (bitLength < 1)
-                throw new ArgumentOutOfRangeException(nameof(bitLength), "bitLength must be greater than or equal to 1.");
+                throw new ArgumentOutOfRangeException(nameof(bitLength), $"{nameof(bitLength)} must be greater than or equal to 1.");
 
             Hash = CoerceToArray(hash, bitLength);
             BitLength = bitLength;
@@ -113,11 +127,11 @@ namespace System.Data.HashFunction.Core.Utilities
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// Determines whether the specified <see cref="Object" />, is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="Object" /> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        ///   <c>true</c> if the specified <see cref="Object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {
@@ -129,7 +143,7 @@ namespace System.Data.HashFunction.Core.Utilities
         /// </summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>
-        /// true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
+        /// <c>true</c> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <c>false</c>.
         /// </returns>
         public bool Equals(IHashValue other)
         {
@@ -140,6 +154,12 @@ namespace System.Data.HashFunction.Core.Utilities
         }
 
 
+        /// <summary>
+        /// Coerces the given <paramref name="hash"/> to a byte array with <paramref name="bitLength"/> significant bits.
+        /// </summary>
+        /// <param name="hash">The hash.</param>
+        /// <param name="bitLength">Length of the hash, in bits.</param>
+        /// <returns>A byte array that has been coerced to the proper length.</returns>
         private static byte[] CoerceToArray(IEnumerable<byte> hash, int bitLength)
         {
             var byteLength = (bitLength + 7) / 8;

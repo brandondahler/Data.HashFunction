@@ -12,6 +12,10 @@ using System.Threading.Tasks;
 
 namespace System.Data.HashFunction.xxHash
 {
+    /// <summary>
+    /// Implements xxHash as specified at https://github.com/Cyan4973/xxHash/blob/dev/xxhash.c and 
+    ///   https://github.com/Cyan4973/xxHash.
+    /// </summary>
     internal class xxHash_Implementation
         : HashFunctionAsyncBase,
             IxxHash
@@ -56,7 +60,7 @@ namespace System.Data.HashFunction.xxHash
         /// <summary>
         /// Initializes a new instance of the <see cref="xxHash_Implementation" /> class.
         /// </summary>
-        /// <param name="hashSize"><inheritdoc cref="HashFunctionBase.HashSizeInBits" /></param>
+        /// <param name="config">Configuration</param>
         /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IxxHashConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IxxHashConfig.HashSizeInBits"/> must be contained within xxHash.ValidHashSizes</exception>
         public xxHash_Implementation(IxxHashConfig config)

@@ -22,8 +22,6 @@ namespace System.Data.HashFunction.CityHash
     public interface ICityHash
         : IHashFunctionAsync
     {
-
-
         /// <summary>
         /// Configuration used when creating this instance.
         /// </summary>

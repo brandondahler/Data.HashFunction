@@ -4,9 +4,18 @@ using System.Text;
 
 namespace System.Data.HashFunction.Jenkins
 {
+    /// <summary>
+    /// Defines a configuration for a <see cref="IJenkinsLookup2"/> implementation.
+    /// </summary>
     public class JenkinsLookup2Config
         : IJenkinsLookup2Config
     {
+        /// <summary>
+        /// Gets the seed.
+        /// </summary>
+        /// <value>
+        /// The seed.
+        /// </value>
         public UInt32 Seed { get; set; } = 0U;
 
 

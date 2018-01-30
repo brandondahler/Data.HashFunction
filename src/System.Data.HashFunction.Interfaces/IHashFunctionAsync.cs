@@ -21,6 +21,9 @@ namespace System.Data.HashFunction
         /// <remarks>
         /// All stream IO is done via ReadAsync.
         /// </remarks>
+        /// <exception cref="ArgumentNullException">;<paramref name="data"/></exception>
+        /// <exception cref="ArgumentException">Stream must be readable.;<paramref name="data"/></exception>
+        /// <exception cref="ArgumentException">Stream must be seekable for this type of hash function.;<paramref name="data"/></exception>
         Task<IHashValue> ComputeHashAsync(Stream data);
 
         /// <summary>
@@ -34,6 +37,9 @@ namespace System.Data.HashFunction
         /// <remarks>
         /// All stream IO is done via ReadAsync.
         /// </remarks>
+        /// <exception cref="ArgumentNullException">;<paramref name="data"/></exception>
+        /// <exception cref="ArgumentException">Stream must be readable.;<paramref name="data"/></exception>
+        /// <exception cref="ArgumentException">Stream must be seekable for this type of hash function.;<paramref name="data"/></exception>
         /// <exception cref="TaskCanceledException">The <paramref name="cancellationToken"/> was canceled.</exception>
         Task<IHashValue> ComputeHashAsync(Stream data, CancellationToken cancellationToken);
     }

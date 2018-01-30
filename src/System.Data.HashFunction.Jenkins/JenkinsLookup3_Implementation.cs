@@ -30,14 +30,13 @@ namespace System.Data.HashFunction.Jenkins
 
         private static readonly IEnumerable<int> _validHashSizes = new HashSet<int>() { 32, 64 };
 
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="JenkinsLookup3_Implementation"/> class.
         /// </summary>
-        /// <param name="hashSize"><inheritdoc cref="HashFunctionBase(int)"/></param>
-        /// <param name="initVal1"><inheritdoc cref="InitVal1"/></param>
-        /// <param name="initVal2"><inheritdoc cref="InitVal2"/></param>
-        /// <exception cref="System.ArgumentOutOfRangeException">hashSize;hashSize must be contained within SpookyHashV2.ValidHashSizes.</exception>
+        /// <param name="config">The configuration to use for this instance.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IJenkinsLookup3Config.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IJenkinsLookup3Config.HashSizeInBits"/> must be contained within JenkinsLookup3.ValidHashSizes.</exception>
         public JenkinsLookup3_Implementation(IJenkinsLookup3Config config)
         {
             if (config == null)

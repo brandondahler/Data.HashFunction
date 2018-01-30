@@ -4,6 +4,10 @@ using System.Text;
 
 namespace System.Data.HashFunction.MurmurHash
 {
+    /// <summary>
+    /// Implementation of MurmurHash3 as specified at https://github.com/aappleby/smhasher/blob/master/src/MurmurHash3.cpp 
+    ///   and https://github.com/aappleby/smhasher/wiki/MurmurHash3.
+    /// </summary>
     public interface IMurmurHash3
         : IMurmurHash
     {

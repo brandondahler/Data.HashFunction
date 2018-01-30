@@ -5,8 +5,10 @@ using System.Text;
 namespace System.Data.HashFunction.Pearson
 {
     /// <summary>
-    /// Configuration for Pearson hashing using the lookup table given in the article at
-    /// http://en.wikipedia.org/wiki/Pearson_hashing as of 2014-04-21.
+    /// Defines a configuration for a <see cref="IPearson"/> implementation.
+    /// 
+    /// Specifically contains a configuration for Pearson hashing using the lookup table 
+    /// given in the article at http://en.wikipedia.org/wiki/Pearson_hashing as of 2014-04-21.
     /// </summary>
     /// <remarks>
     /// There is nothing special about this configuration's lookup table that makes it explicitly
@@ -15,8 +17,23 @@ namespace System.Data.HashFunction.Pearson
     public class WikipediaPearsonConfig
         : IPearsonConfig
     {
+        /// <summary>
+        /// A 256-length lookup table that is a defined permutation of [0, 255].
+        /// </summary>
+        /// <value>
+        /// The table.
+        /// </value>
+        /// <remarks>
+        /// Uses the lookup table given in the article at http://en.wikipedia.org/wiki/Pearson_hashing as of 2014-04-21.
+        /// </remarks>
         public IReadOnlyList<byte> Table { get; } = _table;
 
+        /// <summary>
+        /// Gets the desired hash size, in bits.
+        /// </summary>
+        /// <value>
+        /// The desired hash size, in bits.
+        /// </value>
         public int HashSizeInBits { get; set; } = 8;
 
 

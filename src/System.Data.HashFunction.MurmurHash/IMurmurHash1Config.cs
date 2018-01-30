@@ -4,8 +4,17 @@ using System.Text;
 
 namespace System.Data.HashFunction.MurmurHash
 {
+    /// <summary>
+    /// Defines a configuration for a <see cref="IMurmurHash1"/> implementation.
+    /// </summary>
     public interface IMurmurHash1Config
     {
+        /// <summary>
+        /// Gets the seed.
+        /// </summary>
+        /// <value>
+        /// The seed.
+        /// </value>
         UInt32 Seed { get; }
 
 

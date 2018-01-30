@@ -4,6 +4,10 @@ using System.Text;
 
 namespace System.Data.HashFunction.Pearson
 {
+    /// <summary>
+    /// Implementation of Pearson hashing as specified at http://en.wikipedia.org/wiki/Pearson_hashing and
+    ///   http://cs.mwsu.edu/~griffin/courses/2133/downloads/Spring11/p677-pearson.pdf.
+    /// </summary>
     public interface IPearson
         : IHashFunctionAsync
     {

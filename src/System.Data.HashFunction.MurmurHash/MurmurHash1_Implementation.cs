@@ -14,10 +14,10 @@ using System.Threading.Tasks;
 namespace System.Data.HashFunction.MurmurHash
 {
     /// <summary>
-    /// Implementation of MurmurHash1 as specified at https://code.google.com/p/smhasher/source/browse/trunk/MurmurHash1.cpp 
-    ///   and https://code.google.com/p/smhasher/wiki/MurmurHash1.
+    /// Implementation of MurmurHash1 as specified at https://github.com/aappleby/smhasher/blob/master/src/MurmurHash1.cpp 
+    ///   and https://github.com/aappleby/smhasher/wiki/MurmurHash1.
     /// 
-    /// This hash function has been superseded by MurmurHash2 and MurmurHash3.
+    /// This hash function has been superseded by <seealso cref="IMurmurHash2">MurmurHash2</seealso> and <seealso cref="IMurmurHash3">MurmurHash3</seealso>.
     /// </summary>
     internal class MurmurHash1_Implementation
         : HashFunctionAsyncBase,
@@ -42,12 +42,12 @@ namespace System.Data.HashFunction.MurmurHash
 
 
         private readonly IMurmurHash1Config _config;
-        
-        
+
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MurmurHash1_Implementation"/> class.
         /// </summary>
-        /// <param name="seed"><inheritdoc cref="Seed" /></param>
+        /// <param name="config">Configuration</param>
         /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
         public MurmurHash1_Implementation(IMurmurHash1Config config)
         {

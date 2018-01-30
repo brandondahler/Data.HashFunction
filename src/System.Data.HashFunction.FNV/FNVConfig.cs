@@ -5,12 +5,35 @@ using System.Text;
 
 namespace System.Data.HashFunction.FNV
 {
+    /// <summary>
+    /// Defines a configuration for a <see cref="IFNV"/> implementation.
+    /// </summary>
     public class FNVConfig
         : IFNVConfig
     {
+
+        /// <summary>
+        /// Length of the produced hash, in bits.
+        /// </summary>
+        /// <value>
+        /// The length of the produced hash, in bits
+        /// </value>
         public int HashSizeInBits { get; set; }
 
+        /// <summary>
+        /// The prime integer to use when calculating the FNV value.
+        /// </summary>
+        /// <value>
+        /// The prime value.
+        /// </value>
         public BigInteger Prime { get; set; }
+
+        /// <summary>
+        /// The offset integer to use when calculating the FNV value.
+        /// </summary>
+        /// <value>
+        /// The offset value.
+        /// </value>
         public BigInteger Offset { get; set; }
 
 
@@ -82,6 +105,11 @@ namespace System.Data.HashFunction.FNV
             };
 
 
+        /// <summary>
+        /// Gets one of the predefined configurations as defined at http://www.isthe.com/chongo/tech/comp/fnv/index.html.
+        /// </summary>
+        /// <param name="hashSizeInBits">The desired hash length, in bits.</param>
+        /// <returns>The predefined configuration instance.</returns>
         public static IFNVConfig GetPredefinedConfig(int hashSizeInBits)
         {
             if (!_predefinedConfigs.TryGetValue(hashSizeInBits, out var config))

@@ -14,8 +14,8 @@ using System.Threading.Tasks;
 namespace System.Data.HashFunction.MurmurHash
 {
     /// <summary>
-    /// Implementation of MurmurHash3 as specified at https://code.google.com/p/smhasher/source/browse/trunk/MurmurHash3.cpp 
-    ///   and https://code.google.com/p/smhasher/wiki/MurmurHash3.
+    /// Implementation of MurmurHash3 as specified at https://github.com/aappleby/smhasher/blob/master/src/MurmurHash3.cpp 
+    ///   and https://github.com/aappleby/smhasher/wiki/MurmurHash3.
     /// </summary>
     internal class MurmurHash3_Implementation
         : HashFunctionAsyncBase,
@@ -64,8 +64,7 @@ namespace System.Data.HashFunction.MurmurHash
         /// <summary>
         /// Initializes a new instance of the <see cref="MurmurHash3_Implementation"/> class.
         /// </summary>
-        /// <param name="hashSize"><inheritdoc cref="HashFunctionBase(int)" /></param>
-        /// <param name="seed"><inheritdoc cref="Seed" /></param>
+        /// <param name="config">Configuration</param>
         /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IMurmurHash3Config.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IMurmurHash3Config.HashSizeInBits"/> must be contained within MurmurHash3.ValidHashSizes.</exception>
         public MurmurHash3_Implementation(IMurmurHash3Config config)

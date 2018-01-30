@@ -42,7 +42,9 @@ namespace System.Data.HashFunction.BuzHash
         /// </summary>
         /// <param name="config">The configuration to use for this instance.</param>
         /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
-        /// <exception cref="System.ArgumentOutOfRangeException">hashSize;hashSize must be contained within <see cref="ValidHashSizes" />.</exception>
+        /// <exception cref="ArgumentException"><paramref name="config"/>.<see cref="IBuzHashConfig.Rtab"/>;<paramref name="config"/>.<see cref="IBuzHashConfig.Rtab"/> must be non-null list of 256 <see cref="UInt64"/> values.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IBuzHashConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IBuzHashConfig.HashSizeInBits"/> must be contained within BuzHashBase.ValidHashSizes</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IBuzHashConfig.ShiftDirection"/>;<paramref name="config"/>.<see cref="IBuzHashConfig.ShiftDirection"/> must be a valid <see cref="CircularShiftDirection"/> value</exception>
         public BuzHash_Implementation(IBuzHashConfig config)
         {
             if (config == null)

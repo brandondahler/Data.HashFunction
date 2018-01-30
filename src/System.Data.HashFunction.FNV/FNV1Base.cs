@@ -20,7 +20,7 @@ namespace System.Data.HashFunction.FNV
     /// <summary>
     /// Abstract implementation of Fowler–Noll–Vo hash function (FNV-1 and FNV-1a) as specified at http://www.isthe.com/chongo/tech/comp/fnv/index.html.
     /// </summary>
-    public abstract class FNV1Base
+    internal abstract class FNV1Base
         : HashFunctionAsyncBase,
             IFNV
     {
@@ -49,7 +49,6 @@ namespace System.Data.HashFunction.FNV
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IFNVConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IFNVConfig.HashSizeInBits"/> must be a positive a multiple of 32.</exception>
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IFNVConfig.Prime"/>;<paramref name="config"/>.<see cref="IFNVConfig.Prime"/> must be non-zero.</exception>
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IFNVConfig.Offset"/>;<paramref name="config"/>.<see cref="IFNVConfig.Offset"/> must be non-zero.</exception>
-        /// <inheritdoc cref="HashFunctionBase(int)" />
         protected FNV1Base(IFNVConfig config)
         {
             if (config == null)
@@ -214,6 +213,7 @@ namespace System.Data.HashFunction.FNV
         /// </summary>
         /// <param name="operand1">Array of UInt32 values to be multiplied.</param>
         /// <param name="operand2">Array of UInt32 values to multiply by.</param>
+        /// <param name="hashSizeInBytes">Hash size, in bytes, to truncate products at.</param>
         /// <returns></returns>
         protected static UInt32[] ExtendedMultiply(IReadOnlyList<UInt32> operand1, IReadOnlyList<UInt32> operand2, int hashSizeInBytes)
         {

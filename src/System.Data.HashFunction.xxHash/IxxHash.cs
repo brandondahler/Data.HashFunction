@@ -5,8 +5,8 @@ using System.Text;
 namespace System.Data.HashFunction.xxHash
 {
     /// <summary>
-    /// Implements xxHash as specified at https://code.google.com/p/xxhash/source/browse/trunk/xxhash.c and 
-    ///   https://code.google.com/p/xxhash/.
+    /// Implements xxHash as specified at https://github.com/Cyan4973/xxHash/blob/dev/xxhash.c and 
+    ///   https://github.com/Cyan4973/xxHash.
     /// </summary>
     public interface IxxHash
         : IHashFunctionAsync

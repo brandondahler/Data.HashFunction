@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace System.Data.HashFunction.Pearson
 {
     /// <summary>
-    /// Abstract implementation of Pearson hashing as specified at http://en.wikipedia.org/wiki/Pearson_hashing and
+    /// Implementation of Pearson hashing as specified at http://en.wikipedia.org/wiki/Pearson_hashing and
     ///   http://cs.mwsu.edu/~griffin/courses/2133/downloads/Spring11/p677-pearson.pdf.
     /// </summary>
     internal class Pearson_Implementation
@@ -41,12 +41,11 @@ namespace System.Data.HashFunction.Pearson
         /// <summary>
         /// Initializes a new instance of the <see cref="Pearson_Implementation"/> class.
         /// </summary>
-        /// <param name="t"><inheritdoc cref="T" /></param>
+        /// <param name="config">The configuration to use for this instance.</param>
         /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
-        /// <exception cref="System.ArgumentException"><paramref name="config"/>.<see cref="IPearsonConfig.Table"/> must be non-null.<see cref="IPearsonConfig.Table"/></exception>
+        /// <exception cref="System.ArgumentException"><paramref name="config"/>.<see cref="IPearsonConfig.Table"/> must be non-null.;<paramref name="config"/>.<see cref="IPearsonConfig.Table"/></exception>
         /// <exception cref="System.ArgumentException"><paramref name="config"/>.<see cref="IPearsonConfig.Table"/> must be a permutation of [<c>0</c>, <c>255</c>].;<paramref name="config"/>.<see cref="IPearsonConfig.Table"/></exception>
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IPearsonConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IPearsonConfig.HashSizeInBits"/> must be a positive multiple of <c>8</c>.</exception>
-        /// <inheritdoc cref="HashFunctionBase(int)" />
         public Pearson_Implementation(IPearsonConfig config)
         {
             if (config == null)

@@ -4,10 +4,25 @@ using System.Text;
 
 namespace System.Data.HashFunction.MurmurHash
 {
+    /// <summary>
+    /// Defines a configuration for a <see cref="IMurmurHash3"/> implementation.
+    /// </summary>
     public interface IMurmurHash3Config
     {
+        /// <summary>
+        /// Gets the desired hash size, in bits.
+        /// </summary>
+        /// <value>
+        /// The desired hash size, in bits.
+        /// </value>
         int HashSizeInBits { get; }
 
+        /// <summary>
+        /// Gets the seed.
+        /// </summary>
+        /// <value>
+        /// The seed.
+        /// </value>
         UInt32 Seed { get; }
 
 

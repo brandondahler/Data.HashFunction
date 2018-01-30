@@ -25,6 +25,7 @@ namespace System.Data.HashFunction
         /// <returns>
         /// Hash value of the data.
         /// </returns>
+        /// <exception cref="ArgumentNullException">;<paramref name="data"/></exception>
         IHashValue ComputeHash(byte[] data);
 
         /// <summary>
@@ -35,6 +36,7 @@ namespace System.Data.HashFunction
         /// <returns>
         /// Hash value of the data.
         /// </returns>
+        /// <exception cref="ArgumentNullException">;<paramref name="data"/></exception>
         /// <exception cref="TaskCanceledException">The <paramref name="cancellationToken"/> was canceled.</exception>
         IHashValue ComputeHash(byte[] data, CancellationToken cancellationToken);
 
@@ -46,6 +48,9 @@ namespace System.Data.HashFunction
         /// <returns>
         /// Hash value of the data.
         /// </returns>
+        /// <exception cref="ArgumentNullException">;<paramref name="data"/></exception>
+        /// <exception cref="ArgumentException">Stream must be readable.;<paramref name="data"/></exception>
+        /// <exception cref="ArgumentException">Stream must be seekable for this type of hash function.;<paramref name="data"/></exception>
         IHashValue ComputeHash(Stream data);
 
         /// <summary>
@@ -56,6 +61,9 @@ namespace System.Data.HashFunction
         /// <returns>
         /// Hash value of the data.
         /// </returns>
+        /// <exception cref="ArgumentNullException">;<paramref name="data"/></exception>
+        /// <exception cref="ArgumentException">Stream must be readable.;<paramref name="data"/></exception>
+        /// <exception cref="ArgumentException">Stream must be seekable for this type of hash function.;<paramref name="data"/></exception>
         /// <exception cref="TaskCanceledException">The <paramref name="cancellationToken"/> was canceled.</exception>
         IHashValue ComputeHash(Stream data, CancellationToken cancellationToken);
     }

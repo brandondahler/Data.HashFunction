@@ -13,6 +13,20 @@ namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
 
     public class ArrayData_Tests
     {
+        #region Constructor
+
+        [Fact]
+        public void ArrayData_Constructor_Data_IsNull_Throws()
+        {
+            Assert.Equal(
+                "data",
+                Assert.Throws<ArgumentNullException>(
+                        () => new ArrayData(null))
+                    .ParamName);
+        }
+
+        #endregion
+
         public class UnifiedDataTests_ArrayData
             : UnifiedDataBase_Tests
         {

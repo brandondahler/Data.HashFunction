@@ -15,7 +15,7 @@ namespace System.Data.HashFunction.SpookyHash
     /// <summary>
     /// Implementation of SpookyHash V1 as specified at http://burtleburtle.net/bob/hash/spooky.html.
     /// 
-    /// This hash function has been superseded by <see cref="SpookyHashV2_Implementation"/> due to a loss of entropy from a 
+    /// This hash function has been superseded by <see cref="ISpookyHashV2"/> due to a loss of entropy from a 
     ///   coding error in the original specification.  It still passes the hash function tests the creator set for it,
     ///   but it is preferred that SpookyHash V2 is used.
     /// </summary>
@@ -48,9 +48,7 @@ namespace System.Data.HashFunction.SpookyHash
         /// <summary>
         /// Initializes a new instance of the <see cref="SpookyHashV1_Implementation"/> class.
         /// </summary>
-        /// <param name="hashSize"><inheritdoc cref="HashFunctionBase(int)" select="param[name=hashSize]" /></param>
-        /// <param name="initVal1"><inheritdoc cref="InitVal1" /></param>
-        /// <param name="initVal2"><inheritdoc cref="InitVal2" /></param>
+        /// <param name="config">Configuration</param>
         /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="ISpookyHashConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="ISpookyHashConfig.HashSizeInBits"/> must be contained within SpookyHashV1.ValidHashSizes.</exception>
         public SpookyHashV1_Implementation(ISpookyHashConfig config)

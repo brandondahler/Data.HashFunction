@@ -4,12 +4,18 @@ using System.Linq;
 namespace System.Data.HashFunction.BuzHash
 {
     /// <summary>
-    /// Defines a configuration for a <see cref="IDefaultBuzHash"/> implementation.
+    /// Defines a configuration for a <see cref="IBuzHash"/> implementation.
     /// </summary>
     /// <seealso cref="IBuzHashConfig" />
     public class BuzHashConfig
         : IBuzHashConfig
     {
+        /// <summary>
+        /// Gets a list of <c>256</c> (preferably random and distinct) <see cref="UInt64"/> values.
+        /// </summary>
+        /// <value>
+        /// List of 256 <see cref="UInt64"/> values.
+        /// </value>
         public IReadOnlyList<UInt64> Rtab { get; set; } = null;
 
 
@@ -30,6 +36,9 @@ namespace System.Data.HashFunction.BuzHash
         /// <value>
         /// The seed value.
         /// </value>
+        /// <remarks>
+        /// Defaults to <c>0UL</c>
+        /// </remarks>
         public UInt64 Seed { get; set; } = 0UL;
 
         /// <summary>
@@ -39,7 +48,7 @@ namespace System.Data.HashFunction.BuzHash
         /// The shift direction.
         /// </value>
         /// <remarks>
-        /// Defaults to <c>CircularShiftDirection.Left</c>
+        /// Defaults to <seealso cref="CircularShiftDirection.Left"/>.
         /// </remarks>
         public CircularShiftDirection ShiftDirection { get; set; } = CircularShiftDirection.Left;
 

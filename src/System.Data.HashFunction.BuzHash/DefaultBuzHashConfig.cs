@@ -4,15 +4,57 @@ using System.Text;
 
 namespace System.Data.HashFunction.BuzHash
 {
+    /// <summary>
+    /// Defines a default configuration for a <see cref="IBuzHash"/> implementation.
+    /// </summary>
+    /// <seealso cref="IBuzHashConfig" />
     public class DefaultBuzHashConfig
         : IBuzHashConfig
     {
+        /// <summary>
+        /// Gets a list of <c>256</c> (preferably random and distinct) <see cref="UInt64"/> values.
+        /// </summary>
+        /// <value>
+        /// List of 256 <see cref="UInt64"/> values.
+        /// </value>
+        /// <remarks>
+        /// Defaults to a statically defined, random chosen of values.
+        /// </remarks>
         public IReadOnlyList<UInt64> Rtab { get; } = _Rtab;
 
+
+        /// <summary>
+        /// Gets the desired hash size, in bits.
+        /// </summary>
+        /// <value>
+        /// The desired hash size, in bits.
+        /// </value>
+        /// <remarks>
+        /// Defaults to <c>64</c>.
+        /// </remarks>
         public int HashSizeInBits { get; set; } = 64;
 
+        /// <summary>
+        /// Gets the seed value.
+        /// </summary>
+        /// <value>
+        /// The seed value.
+        /// </value>
+        /// <remarks>
+        /// Defaults to <c>0x3CD05367FD0337D3UL</c>
+        /// </remarks>
         public UInt64 Seed { get; set; } = 0x3CD05367FD0337D3UL;
 
+
+        /// <summary>
+        /// Gets the shift direction.
+        /// </summary>
+        /// <value>
+        /// The shift direction.
+        /// </value>
+        /// <remarks>
+        /// Defaults to <seealso cref="CircularShiftDirection.Left"/>.
+        /// </remarks>
         public CircularShiftDirection ShiftDirection { get; set; } = CircularShiftDirection.Left;
 
 
@@ -86,6 +128,11 @@ namespace System.Data.HashFunction.BuzHash
             };
 
 
+
+        /// <summary>
+        /// Makes a deep clone of current instance.
+        /// </summary>
+        /// <returns>A deep clone of the current instance.</returns>
         public IBuzHashConfig Clone() =>
             new DefaultBuzHashConfig() {
                 HashSizeInBits = HashSizeInBits,

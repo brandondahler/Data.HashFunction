@@ -6,8 +6,17 @@ namespace System.Data.HashFunction.HashAlgorithm
 {
     using HashAlgorithm = System.Security.Cryptography.HashAlgorithm;
 
+    /// <summary>
+    /// Defines a configuration for a <see cref="IHashAlgorithmWrapper"/> implementation.
+    /// </summary>
     public interface IHashAlgorithmWrapperConfig
     {
+        /// <summary>
+        /// A delegate that produces <see cref="HashAlgorithm"/> instances.
+        /// </summary>
+        /// <value>
+        /// The delegate.
+        /// </value>
         Func<HashAlgorithm> InstanceFactory { get; }
 
         

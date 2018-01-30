@@ -4,12 +4,35 @@ using System.Text;
 
 namespace System.Data.HashFunction.Jenkins
 {
+    /// <summary>
+    /// Defines a configuration for a <see cref="IJenkinsLookup2"/> implementation.
+    /// </summary>
     public class JenkinsLookup3Config
         : IJenkinsLookup3Config
     {
+
+        /// <summary>
+        /// Gets the desired hash size, in bits.
+        /// </summary>
+        /// <value>
+        /// The desired hash size, in bits.
+        /// </value>
         public int HashSizeInBits { get; set; } = 32;
 
+        /// <summary>
+        /// Gets the seed.
+        /// </summary>
+        /// <value>
+        /// The seed.
+        /// </value>
         public UInt32 Seed { get; set; } = 0U;
+
+        /// <summary>
+        /// Gets the second seed.
+        /// </summary>
+        /// <value>
+        /// The second seed.
+        /// </value>
         public UInt32 Seed2 { get; set; } = 0U;
 
 

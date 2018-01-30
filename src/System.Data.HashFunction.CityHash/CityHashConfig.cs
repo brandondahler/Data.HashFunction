@@ -17,7 +17,7 @@ namespace System.Data.HashFunction.CityHash
         /// <value>
         /// The desired hash size, in bits.
         /// </value>
-        /// <remarks>Defaults to <c>64</c>.</remarks>
+        /// <remarks>Defaults to <c>32</c>.</remarks>
         public int HashSizeInBits { get; set; } = 32;
 
 

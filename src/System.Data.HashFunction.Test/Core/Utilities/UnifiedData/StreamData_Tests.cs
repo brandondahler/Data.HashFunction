@@ -11,6 +11,21 @@ namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
     using System.Data.HashFunction.Core.Utilities.UnifiedData;
     public class StreamData_Tests
     {
+        #region Constructor
+
+        [Fact]
+        public void StreamData_Constructor_Data_IsNull_Throws()
+        {
+            Assert.Equal(
+                "data",
+                Assert.Throws<ArgumentNullException>(
+                        () => new StreamData(null))
+                    .ParamName);
+        }
+
+        #endregion
+
+
         [Fact]
         public void StreamData_Dispose_Works()
         {

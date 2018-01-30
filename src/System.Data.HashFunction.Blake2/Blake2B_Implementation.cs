@@ -80,27 +80,17 @@ namespace System.Data.HashFunction.Blake2
 
 
 
-		/// <summary>
-		/// Initializes an instance of the <see cref="Blake2B_Implementation"/> class with the provided
-		/// <paramref name="hashSize"/>. If not null, the <paramref name="key"/>, 
-		/// <paramref name="salt"/>, and <paramref name="personalization"/> arguments will be 
-		/// applied to the hashing algorithm. 
-		/// 
-		/// The <paramref name="hashSize"/> must be 8 bits at the least and 512 bits at most, and 
-		/// the size in bits must be a multiple of 8.
-		/// The <paramref name="key"/> parameter must be a byte sequence of at most 64 bytes.
-		/// The <paramref name="salt"/> parameter must be a byte sequence of exactly 16 bytes.
-		/// The <paramref name="personalization"/> parameter must be a byte sequence of exactly 16 
-		/// bytes.
-		/// </summary>
-		/// <param name="key">Key to seed the hash with</param>
-		/// <param name="salt">Salt to seed the hash with</param>
-		/// <param name="personalization">Personalization to seed the hash with</param>
-		/// <param name="hashSize">Hash size to use for the output</param>
-		/// <exception cref="ArgumentOutOfRangeException">
-		/// Either the provided <paramref name="hashSize"/>, <paramref name="key"/> length, 
-		/// <paramref name="salt"/> length, or <paramref name="personalization"/> length is invalid.
-		/// </exception>
+        /// <summary>
+        /// Initializes an instance of the <see cref="Blake2B_Implementation"/> class with the provided
+        /// <paramref name="config"/>.
+        /// </summary>
+        /// <param name="config">The configuration to use for this instance.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IBlake2BConfig.HashSizeInBits"/>;Expected: <see cref="MinHashSizeBits"/> >= <paramref name="config"/>.<see cref="IBlake2BConfig.HashSizeInBits"/> &lt;= <see cref="MaxHashSizeBits"/></exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IBlake2BConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IBlake2BConfig.HashSizeInBits"/> must be a multiple of 8.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IBlake2BConfig.Key"/>;Expected: <paramref name="config"/>.<see cref="IBlake2BConfig.Key"/>.Count &lt;= <see cref="MaxKeySizeBytes"/></exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IBlake2BConfig.Salt"/>;Expected: <paramref name="config"/>.<see cref="IBlake2BConfig.Salt"/>.Count == <see cref="SaltSizeBytes"/></exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IBlake2BConfig.Personalization"/>;Expected: <paramref name="config"/>.<see cref="IBlake2BConfig.Personalization"/>.Count == <see cref="PersonalizationSizeBytes"/></exception>
         public Blake2B_Implementation(IBlake2BConfig config)
         {
             if (config == null)

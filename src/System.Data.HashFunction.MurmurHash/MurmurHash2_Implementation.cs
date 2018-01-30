@@ -14,10 +14,10 @@ using System.Threading.Tasks;
 namespace System.Data.HashFunction.MurmurHash
 {
     /// <summary>
-    /// Implementation of MurmurHash2 as specified at https://code.google.com/p/smhasher/source/browse/trunk/MurmurHash2.cpp 
-    ///   and https://code.google.com/p/smhasher/wiki/MurmurHash2.
+    /// Implementation of MurmurHash2 as specified at https://github.com/aappleby/smhasher/blob/master/src/MurmurHash2.cpp 
+    ///   and https://github.com/aappleby/smhasher/wiki/MurmurHash2.
     /// 
-    /// This hash function has been superseded by MurmurHash3.
+    /// This hash function has been superseded by <seealso cref="IMurmurHash3">MurmurHash3</seealso>.
     /// </summary>
     internal class MurmurHash2_Implementation
         : HashFunctionAsyncBase,
@@ -52,8 +52,7 @@ namespace System.Data.HashFunction.MurmurHash
         /// <summary>
         /// Initializes a new instance of the <see cref="MurmurHash2_Implementation"/> class.
         /// </summary>
-        /// <param name="hashSize"><inheritdoc cref="HashFunctionBase(int)" /></param>
-        /// <param name="seed"><inheritdoc cref="Seed" /></param>
+        /// <param name="config">Configuration</param>
         /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IMurmurHash2Config.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IMurmurHash2Config.HashSizeInBits"/> must be contained within MurmurHash2.ValidHashSizes.</exception>
         public MurmurHash2_Implementation(IMurmurHash2Config config)
