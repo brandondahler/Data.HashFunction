@@ -14,7 +14,7 @@ build_script:
   - ps: .\build\build.ps1 -taskList 'Build' -configuration 'Release' -preReleaseTag ''
   - ps: .\build\build.ps1 -taskList 'Pack' -configuration 'Release' -preReleaseTag ''
 test_script:
-  - ps: .\build\build.ps1 -taskList 'Test' -configuration 'Release' -preReleaseTag ''
+  - ps: .\build\build.ps1 -taskList 'Test' -configuration 'Debug' -preReleaseTag ''
 artifacts:
   - path: Artifacts\Packages\*.nupkg
     name: Packages
