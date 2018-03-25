@@ -54,12 +54,18 @@ Task Resolve-Projects -depends Load-Powershell-Dependencies,Determine-Version-Su
 
 		[xml] $projectObject = Get-Content $projectXmlPath
 
+    $dashedVersionSuffix = "";
+    
+    if ($dashedVersionSuffix -ne "")
+    {
+      $dashedVersionSuffix = "-$script:versionSuffix";
+    }
 
 		$project = New-Object –TypeName PSObject –Prop @{
 			Name = $name
 			Path = $path
 			ProjectXmlPath = $projectXmlPath
-			SemanticVersion = [NuGet.SemanticVersion]::new($(Select-Xml "/Project/PropertyGroup/VersionPrefix/text()" $projectObject).ToString() + "-$script:versionSuffix")
+			SemanticVersion = [NuGet.SemanticVersion]::new($(Select-Xml "/Project/PropertyGroup/VersionPrefix/text()" $projectObject).ToString() + $dashedVersionSuffix)
 			NuGetPath = "$nuGetDir\$name"
 			NuGetPackageName = $name
 			SkipPackaging = $name.StartsWith("System.Data.HashFunction.Test")
