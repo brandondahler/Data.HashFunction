@@ -7,8 +7,9 @@
           <CodeCoverage>
             <ModulePaths>
               <Exclude>
-                <ModulePath>.*System\.Data\.HashFunction\.Test(\..+)?\.dll</ModulePath>
-                <ModulePath>.*xunit\..*\.dll</ModulePath>
+                <ModulePath>.*\\moq\.dll$</ModulePath>
+                <ModulePath>.*\\System\.Data\.HashFunction\.Test(\..+)?\.dll$</ModulePath>
+                <ModulePath>.*\\xunit\..*\.dll$</ModulePath>
               </Exclude>
             </ModulePaths>
           </CodeCoverage>
