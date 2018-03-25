@@ -6,7 +6,7 @@
     <AssemblyTitle>Data.HashFunction.Pearson</AssemblyTitle>
     <VersionPrefix>2.0.0</VersionPrefix>
     <Authors>Data.HashFunction Developers</Authors>
-    <TargetFrameworks>netstandard1.1</TargetFrameworks>
+    <TargetFrameworks>netstandard1.1;net45</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>System.Data.HashFunction.Pearson</AssemblyName>
     <AssemblyOriginatorKeyFile>../Data.HashFunction.Production.snk</AssemblyOriginatorKeyFile>

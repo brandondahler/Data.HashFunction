@@ -207,32 +207,6 @@ namespace System.Data.HashFunction
                 BitConverter.GetBytes(data));
         }
 
-#if NET45
-        /// <summary>
-        /// Computes hash value for given data.
-        /// </summary>
-        /// <typeparam name="ModelT">Type of data to be hashed.</typeparam>
-        /// <param name="hashFunction">Hash function to use.</param>
-        /// <param name="data">Data to be hashed.</param>
-        /// <returns>
-        /// Hash value of the data as byte array.
-        /// </returns>
-        /// <remarks>
-        /// <see cref="BinaryFormatter"/> is used to turn given data into a byte array.
-        /// </remarks>
-        public static IHashValue ComputeHash<ModelT>(this IHashFunction hashFunction, ModelT data)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                var binaryFormatter = new BinaryFormatter();
-                binaryFormatter.Serialize(memoryStream, data);
-
-                return hashFunction.ComputeHash(
-                    memoryStream.ToArray());
-            }
-        }
-#endif
-
         #endregion
 
         #region Sugar with desiredSize

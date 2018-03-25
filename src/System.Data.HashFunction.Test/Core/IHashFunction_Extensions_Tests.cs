@@ -147,31 +147,6 @@ namespace System.Data.HashFunction.Test
                     BitConverter.GetBytes(value));
             }
 
-#if !NETCOREAPP1_1
-
-            [Fact]
-            public void IHashFunction_Extensions_ComputeHash_TModel()
-            {
-                var value = new Dictionary<string, int>() { 
-                    {"Test", 5 },
-                    {"Foo", 20 },
-                    {"Bar", 40 }
-                };
-            
-                using (var memoryStream = new MemoryStream())
-                {
-                    var binaryFormatter = new BinaryFormatter();
-                    binaryFormatter.Serialize(memoryStream, value);
-
-                    AssertSugar(
-                        hf => hf.ComputeHash(value),
-                        memoryStream.ToArray());
-                }
-            }
-
-#endif
-
-
             private void AssertSugar(Action<IHashFunction> action, byte[] data)
             {
                 var hashFunctionMock = new Mock<IHashFunction>();

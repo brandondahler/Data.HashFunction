@@ -31,7 +31,7 @@ namespace System.Data.HashFunction.Test.Core.Utilities
         {
             var underlyingHashValues = new IEnumerable<byte>[] {
                 Enumerable.Range(1, 2).Select(i => (byte) i),
-                Enumerable.Range(1, 2).Append(0).Select(i => (byte) i),
+                Enumerable.Range(1, 2).Concat(new[] { 0 }).Select(i => (byte) i),
                 new List<byte>() { 1, 2 },
                 new List<byte>() { 1, 2, 0 },
                 new byte[] { 1, 2 },
