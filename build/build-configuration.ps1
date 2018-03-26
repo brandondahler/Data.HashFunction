@@ -102,13 +102,16 @@ Task Resolve-Production-Versions -depends Load-Powershell-Dependencies,Resolve-P
 			$entrySemanticVersion = [NuGet.SemanticVersion]::new($entry.properties.Version)
 			$entryVcsRevision = Parse-VCS-Revision $entry.properties.ReleaseNotes
 
-			if ($entry.properties.IsLatestVersion)
+			$isLatestVersion = [Boolean]::Parse($entry.properties.IsLatestVersion.InnerText);
+			$isAbsoluteLatestVersion = [Boolean]::Parse($entry.properties.IsLatestVersion.InnerText);
+
+			if ($isLatestVersion)
 			{
 				$versions.Production.SemanticVersion = $entrySemanticVersion
 				$versions.Production.VcsRevision = $entryVcsRevision
 			}
 
-			if ($entry.properties.IsAbsoluteLatestVersion)
+			if ($isAbsoluteLatestVersion)
 			{
 				$versions.PreRelease.SemanticVersion = $entrySemanticVersion
 				$versions.PreRelease.VcsRevision = $entryVcsRevision
@@ -199,9 +202,12 @@ task Pack-Solution -depends Resolve-Projects,Resolve-Production-Versions,Determi
 			Exec { & $dotNetExecutable pack $project.ProjectXmlPath -c $configuration --version-suffix $script:versionSuffix -o "$artifactsDir\Packages"  }
 
 		} else {
-			if ($project.Versions.Production.SemanticVersion.Version -lt $project.SemanticVersion.Version)
+			if ($project.Versions.Production.SemanticVersion.Version -eq $null -Or $project.Versions.Production.SemanticVersion.Version -lt $project.SemanticVersion.Version)
 			{
 				Exec { & $dotNetExecutable pack $project.ProjectXmlPath -c $configuration -o "$artifactsDir\Packages" }
+			} else {
+				Write-Host $project.Versions.PreRelease.SemanticVersion;
+				Write-Host $project.Versions.Production.SemanticVersion;
 			}
 		}
 	}
