@@ -33,5 +33,3 @@ artifacts:
   - path: Artifacts\Coverage\*.xml
     name: CoverageResults
     type: File
-cache:
-  - '%USERPROFILE%\.nuget\packages'

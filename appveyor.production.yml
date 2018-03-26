@@ -19,5 +19,3 @@ artifacts:
   - path: Artifacts\Packages\*.nupkg
     name: Packages
     type: NuGetPackage
-cache:
-  - '%USERPROFILE%\.nuget\packages'
