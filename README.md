@@ -6,7 +6,7 @@ Data.HashFunction is a C# library to create a common interface to [non-cryptogra
 
 All functionality of the library is tested using [xUnit](https://github.com/xunit/xunit).  A primary requirement for each release is 100% code coverage by these tests.
 
-All code within the libarary is commented using Sandcastle-compatible XML comments.  Sandcastle documentation is now avaliable at http://datahashfunction.azurewebsites.net, source can be found at [Data.HashFunction.Documentation](https://github.com/brandondahler/Data.HashFunction.Documentation).
+All code within the libarary is commented using Visual Studio-compatible XML comments.
 
 Status
 ------
