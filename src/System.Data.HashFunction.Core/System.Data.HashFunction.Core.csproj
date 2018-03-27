@@ -22,6 +22,12 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(VcsRevision)'!=''">
+    <PackageReleaseNotes>$(PackageReleaseNotes)
+vcs-revision: $(VcsRevision)
+    </PackageReleaseNotes>
+  </PropertyGroup>
+
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>full</DebugType>

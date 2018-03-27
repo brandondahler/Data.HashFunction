@@ -196,18 +196,16 @@ task Pack-Solution -depends Resolve-Projects,Resolve-Production-Versions,Determi
 			continue
 		}
 		
+		$vcsRevision = $(& $gitExecutable rev-parse HEAD);
 		
 		if ($script:versionSuffix -ne "")
 		{
-			Exec { & $dotNetExecutable pack $project.ProjectXmlPath -c $configuration --version-suffix $script:versionSuffix -o "$artifactsDir\Packages"  }
+			Exec { & $dotNetExecutable pack $project.ProjectXmlPath /p:VcsRevision=$vcsRevision -c $configuration --version-suffix $script:versionSuffix -o "$artifactsDir\Packages"  }
 
 		} else {
 			if ($project.Versions.Production.SemanticVersion.Version -eq $null -Or $project.Versions.Production.SemanticVersion.Version -lt $project.SemanticVersion.Version)
 			{
-				Exec { & $dotNetExecutable pack $project.ProjectXmlPath -c $configuration -o "$artifactsDir\Packages" }
-			} else {
-				Write-Host $project.Versions.PreRelease.SemanticVersion;
-				Write-Host $project.Versions.Production.SemanticVersion;
+				Exec { & $dotNetExecutable pack $project.ProjectXmlPath /p:VcsRevision=$vcsRevision -c $configuration -o "$artifactsDir\Packages" }
 			}
 		}
 	}
