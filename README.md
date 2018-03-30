@@ -31,6 +31,7 @@ Status
 | Data.HashFunction.CRC           | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.CRC.svg)](https://www.nuget.org/packages/System.Data.HashFunction.CRC/)                     |
 | Data.HashFunction.ELF64         | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.ELF64.svg)](https://www.nuget.org/packages/System.Data.HashFunction.ELF64/)                 |
 | Data.HashFunction.FNV           | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.FNV.svg)](https://www.nuget.org/packages/System.Data.HashFunction.FNV/)                     |
+| Data.HashFunction.HashAlgorithm | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.HashAlgorithm.svg)](https://www.nuget.org/packages/System.Data.HashFunction.HashAlgorithm/) |
 | Data.HashFunction.Jenkins       | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Jenkins.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Jenkins/)             |
 | Data.HashFunction.MurmurHash    | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.MurmurHash.svg)](https://www.nuget.org/packages/System.Data.HashFunction.MurmurHash/)       |
 | Data.HashFunction.Pearson       | [![Version Status](https://img.shields.io/nuget/v/System.Data.HashFunction.Pearson.svg)](https://www.nuget.org/packages/System.Data.HashFunction.Pearson/)             |
@@ -88,7 +89,9 @@ Each family of hash functions is contained within its own project and NuGet pack
 Usage
 -----
 
-The usage for all hash functions has been standardized and is accessible via the System.Data.HashFunction.IHashFunction and System.Data.HashFunction.IHashFunctionAsync interfaces.  The core package, Data.HashFunction.Core, only contains wrappers for the .Net BCL's Cryptographic HashAlgorithm functions.  In order to use a different function, you will need to reference one of the implementation packages.
+The usage for all hash functions has been standardized and is accessible via the System.Data.HashFunction.IHashFunction and System.Data.HashFunction.IHashFunctionAsync interfaces.  The core package, Data.HashFunction.Core, only contains abstract hash function implementations and base functionality for the library.  In order to use a specific hashing algorithms, you will need to reference its implementation packages.
+
+IHashFunction implementations should be immutable and stateles.  All IHashFunction methods and members should be thread safe.
 
 ``` C#
 using System;
