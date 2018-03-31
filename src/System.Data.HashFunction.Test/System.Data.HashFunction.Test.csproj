@@ -45,6 +45,7 @@
     <ProjectReference Include="..\System.Data.HashFunction.Interfaces\System.Data.HashFunction.Interfaces.csproj" />
     <ProjectReference Include="..\System.Data.HashFunction.HashAlgorithm\System.Data.HashFunction.HashAlgorithm.csproj" />
     <ProjectReference Include="..\System.Data.HashFunction.Jenkins\System.Data.HashFunction.Jenkins.csproj" />
+    <ProjectReference Include="..\System.Data.HashFunction.MetroHash\System.Data.HashFunction.MetroHash.csproj" />
     <ProjectReference Include="..\System.Data.HashFunction.MurmurHash\System.Data.HashFunction.MurmurHash.csproj" />
     <ProjectReference Include="..\System.Data.HashFunction.Pearson\System.Data.HashFunction.Pearson.csproj" />
     <ProjectReference Include="..\System.Data.HashFunction.SpookyHash\System.Data.HashFunction.SpookyHash.csproj" />
