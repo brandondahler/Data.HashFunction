@@ -86,11 +86,9 @@ namespace System.Data.HashFunction.Test.MetroHash
                 new KnownValue[] {
                     new KnownValue(64, "012345678901234567890123456789012345678901234567890123456789012", "6b753dae06704bad"),
 
-                    //new KnownValue(64, TestConstants.Empty, 0x9ae16a3b2f90404f),
-                    //new KnownValue(64, TestConstants.FooBar, 0xc43fb29ab5effcfe),
-                    //new KnownValue(64, TestConstants.LoremIpsum, 0x764df1e17d92d1eb),
-                    //new KnownValue(64, TestConstants.RandomShort, 0x3ef8698eae651b16),
-                    //new KnownValue(64, TestConstants.RandomLong, 0x39e9fcdba69979b0),
+                    new KnownValue(64, TestConstants.Empty, 0x705fb008071e967d),
+                    new KnownValue(64, TestConstants.FooBar, 0xafdc1105b8a90a61),
+                    new KnownValue(64, TestConstants.LoremIpsum, 0xf2083d32ac311dab),
                 };
 
             protected override IMetroHash64 CreateHashFunction(int hashSize) =>
@@ -106,11 +104,9 @@ namespace System.Data.HashFunction.Test.MetroHash
                 new KnownValue[] {
                     new KnownValue(64, "012345678901234567890123456789012345678901234567890123456789012", "3b0d481cf4b9b8df"),
 
-                    //new KnownValue(64, TestConstants.Empty, 0xdc56d17a),
-                    //new KnownValue(64, TestConstants.FooBar, 0xe2f34cdf),
-                    //new KnownValue(64, TestConstants.LoremIpsum, 0xc2ebd64e),
-                    //new KnownValue(64, TestConstants.RandomShort, 0x1fcea779),
-                    //new KnownValue(64, TestConstants.RandomLong, 0x9dba44d0),
+                    new KnownValue(64, TestConstants.Empty, 0xe6f660fe36b85a05),
+                    new KnownValue(64, TestConstants.FooBar, 0xa4e1647f495bd189),
+                    new KnownValue(64, TestConstants.LoremIpsum, 0x74f8c5ccdd69b4b3),
                 };
 
             protected override IMetroHash64 CreateHashFunction(int hashSize) =>

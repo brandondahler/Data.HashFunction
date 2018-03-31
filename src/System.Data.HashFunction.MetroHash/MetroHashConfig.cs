@@ -4,6 +4,9 @@ using System.Text;
 
 namespace System.Data.HashFunction.MetroHash
 {
+    /// <summary>
+    /// Defines a configuration for a <see cref="IMetroHash"/> implementation.
+    /// </summary>
     public class MetroHashConfig
         : IMetroHashConfig
     {
@@ -13,7 +16,7 @@ namespace System.Data.HashFunction.MetroHash
         /// <value>
         /// The seed value.
         /// </value>
-        public UInt64 Seed { get; set; }
+        public UInt64 Seed { get; set; } = 0;
 
 
         /// <summary>

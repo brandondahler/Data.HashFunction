@@ -86,11 +86,9 @@ namespace System.Data.HashFunction.Test.MetroHash
                 new KnownValue[] {
                     new KnownValue(128, "012345678901234567890123456789012345678901234567890123456789012", "c77ce2bfa4ed9f9b0548b2ac5074a297"),
 
-                    //new KnownValue(128, TestConstants.Empty, 0x9ae16a3b2f90404f),
-                    //new KnownValue(128, TestConstants.FooBar, 0xc43fb29ab5effcfe),
-                    //new KnownValue(128, TestConstants.LoremIpsum, 0x764df1e17d92d1eb),
-                    //new KnownValue(128, TestConstants.RandomShort, 0x3ef8698eae651b16),
-                    //new KnownValue(128, TestConstants.RandomLong, 0x39e9fcdba69979b0),
+                    new KnownValue(128, TestConstants.Empty,      "0x4606b14684c65fb60005f3ca3d41d1cb"),
+                    new KnownValue(128, TestConstants.FooBar,     "0xe5fe590c9b99c223859bf8992882a5e3"),
+                    new KnownValue(128, TestConstants.LoremIpsum, "0x52c5e338fb7a400666e9fbabaebcb790"),
                 };
 
             protected override IMetroHash128 CreateHashFunction(int hashSize) =>
@@ -106,11 +104,9 @@ namespace System.Data.HashFunction.Test.MetroHash
                 new KnownValue[] {
                     new KnownValue(128, "012345678901234567890123456789012345678901234567890123456789012", "45a3cdb838199d7fbdd68d867a14ecef"),
 
-                    //new KnownValue(128, TestConstants.Empty, 0xdc56d17a),
-                    //new KnownValue(128, TestConstants.FooBar, 0xe2f34cdf),
-                    //new KnownValue(128, TestConstants.LoremIpsum, 0xc2ebd64e),
-                    //new KnownValue(128, TestConstants.RandomShort, 0x1fcea779),
-                    //new KnownValue(128, TestConstants.RandomLong, 0x9dba44d0),
+                    new KnownValue(128, TestConstants.Empty,      "0xf9a908797eef84017d036b44fbede600"),
+                    new KnownValue(128, TestConstants.FooBar,     "0x52ff94470b31e45dfcf0cc865889f0df"),
+                    new KnownValue(128, TestConstants.LoremIpsum, "0x7786153ea37fe00904733ec964eaeb7c"),
                 };
 
             protected override IMetroHash128 CreateHashFunction(int hashSize) =>

@@ -4,6 +4,9 @@ using System.Text;
 
 namespace System.Data.HashFunction.MetroHash
 {
+    /// <summary>
+    /// Defines a configuration for a <see cref="IMetroHash"/> implementation.
+    /// </summary>
     public interface IMetroHashConfig
     {
         /// <summary>

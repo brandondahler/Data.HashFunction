@@ -10,6 +10,19 @@ using System.Threading.Tasks;
 
 namespace System.Data.HashFunction.MetroHash
 {
+    /// <summary>
+    /// Implementation of MetroHash128 as specified at https://github.com/jandrewrogers/MetroHash.
+    /// 
+    /// "
+    /// MetroHash is a set of state-of-the-art hash functions for non-cryptographic use cases. 
+    /// They are notable for being algorithmically generated in addition to their exceptional performance. 
+    /// The set of published hash functions may be expanded in the future, 
+    /// having been selected from a very large set of hash functions that have been constructed this way.
+    /// "
+    /// </summary>
+    /// <seealso cref="IMetroHash128" />
+    /// <seealso cref="IMetroHash" />
+    /// <seealso cref="IHashFunctionAsync" />
     internal class MetroHash128_Implementation
         : HashFunctionAsyncBase,
             IMetroHash128
@@ -100,16 +113,16 @@ namespace System.Data.HashFunction.MetroHash
 
                 for (var x = 0; x < count; x += 32)
                 {
-                    _workingValues[0] += BitConverter.ToUInt64(array, start) * k0;
+                    _workingValues[0] += BitConverter.ToUInt64(array, start + x) * k0;
                     _workingValues[0] = RotateRight(_workingValues[0], 29) + _workingValues[2];
 
-                    _workingValues[1] += BitConverter.ToUInt64(array, start + 8) * k1;
+                    _workingValues[1] += BitConverter.ToUInt64(array, start + x + 8) * k1;
                     _workingValues[1] = RotateRight(_workingValues[1], 29) + _workingValues[3];
 
-                    _workingValues[2] += BitConverter.ToUInt64(array, start + 16) * k2;
+                    _workingValues[2] += BitConverter.ToUInt64(array, start + x + 16) * k2;
                     _workingValues[2] = RotateRight(_workingValues[2], 29) + _workingValues[0];
 
-                    _workingValues[3] += BitConverter.ToUInt64(array, start + 24) * k3;
+                    _workingValues[3] += BitConverter.ToUInt64(array, start + x + 24) * k3;
                     _workingValues[3] = RotateRight(_workingValues[3], 29) + _workingValues[1];
                 }
             }
