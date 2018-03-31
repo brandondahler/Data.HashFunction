@@ -14,7 +14,7 @@ before_build:
   - ps: .\build\build.ps1 -taskList 'Validate' -configuration 'Debug' -preReleaseTag 'pr' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
 build_script:
   - ps: .\build\build.ps1 -taskList 'Build' -configuration 'Debug' -preReleaseTag 'pr' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
-  - ps: .\build\build.ps1 -taskList 'Pack' -configuration 'Debug' -preReleaseTag 'ci' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
+  - ps: .\build\build.ps1 -taskList 'Pack' -configuration 'Debug' -preReleaseTag 'pr' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
 test_script:
   - ps: .\build\build.ps1 -taskList 'Test' -configuration 'Debug' -preReleaseTag 'pr' -buildNumber $Env:APPVEYOR_BUILD_NUMBER_PADDED
 artifacts:
