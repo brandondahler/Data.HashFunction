@@ -245,33 +245,6 @@ namespace System.Data.HashFunction.MetroHash
 
         #region RotateRight
 
-        private static byte RotateRight(byte operand, int shiftCount)
-        {
-            shiftCount &= 0x07;
-
-            return (byte)(
-                (operand >> shiftCount) |
-                (operand << (8 - shiftCount)));
-        }
-
-        private static UInt16 RotateRight(UInt16 operand, int shiftCount)
-        {
-            shiftCount &= 0x0f;
-
-            return (UInt16)(
-                (operand >> shiftCount) |
-                (operand << (16 - shiftCount)));
-        }
-
-        private static UInt32 RotateRight(UInt32 operand, int shiftCount)
-        {
-            shiftCount &= 0x1f;
-
-            return
-                (operand >> shiftCount) |
-                (operand << (32 - shiftCount));
-        }
-
         private static UInt64 RotateRight(UInt64 operand, int shiftCount)
         {
             shiftCount &= 0x3f;
