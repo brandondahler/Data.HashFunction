@@ -39,10 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\System.Data.HashFunction.Core\System.Data.HashFunction.Core.csproj" />
     <ProjectReference Include="..\System.Data.HashFunction.Interfaces\System.Data.HashFunction.Interfaces.csproj" />
   </ItemGroup>
