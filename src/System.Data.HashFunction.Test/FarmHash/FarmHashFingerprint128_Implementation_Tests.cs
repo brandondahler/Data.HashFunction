@@ -8,16 +8,16 @@ using Xunit;
 
 namespace System.Data.HashFunction.Test.FarmHash
 {
-    public class FarmHash128_Implementation_Tests
+    public class FarmHashFingerprint128_Implementation_Tests
     {
 
         #region Constructor
 
         [Fact]
-        public void FarmHash128_Implementation_Constructor_Works()
+        public void FarmHashFingerprint128_Implementation_Constructor_Works()
         {
             GC.KeepAlive(
-                new FarmHash128_Implementation());
+                new FarmHashFingerprint128_Implementation());
         }
 
         #endregion
@@ -25,9 +25,9 @@ namespace System.Data.HashFunction.Test.FarmHash
         #region HashSizeInBits
 
         [Fact]
-        public void FarmHash128_Implementation_HashSizeInBits_Is128()
+        public void FarmHashFingerprint128_Implementation_HashSizeInBits_Is128()
         {
-            var farmHash = new FarmHash128_Implementation();
+            var farmHash = new FarmHashFingerprint128_Implementation();
 
             Assert.Equal(128, farmHash.HashSizeInBits);
         }
@@ -37,7 +37,7 @@ namespace System.Data.HashFunction.Test.FarmHash
 
 
         public class IHashFunctionAsync_Tests
-            : IHashFunctionAsync_TestBase<IFarmHash128>
+            : IHashFunctionAsync_TestBase<IFarmHashFingerprint128>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -51,8 +51,8 @@ namespace System.Data.HashFunction.Test.FarmHash
                     new KnownValue(128, TestConstants.LoremIpsum, "0xa4f60ceb5e562608dc296c7ab55cdd31"),
                 };
 
-            protected override IFarmHash128 CreateHashFunction(int hashSize) =>
-                new FarmHash128_Implementation();
+            protected override IFarmHashFingerprint128 CreateHashFunction(int hashSize) =>
+                new FarmHashFingerprint128_Implementation();
         }
     }
 }

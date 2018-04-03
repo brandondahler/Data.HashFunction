@@ -12,9 +12,9 @@ namespace System.Data.HashFunction.FarmHash
     /// <summary>
     /// Implementation of FarmHash's Fingerprint128 method as specified at https://github.com/google/farmhash.
     /// </summary>
-    internal class FarmHash128_Implementation
+    internal class FarmHashFingerprint128_Implementation
         : HashFunctionAsyncBase,
-            IFarmHash128
+            IFarmHashFingerprint128
     {
         private const UInt64 k0 = 0xc3a5c85c97cb3127UL;
         private const UInt64 k1 = 0xb492b66fbe98f273UL;

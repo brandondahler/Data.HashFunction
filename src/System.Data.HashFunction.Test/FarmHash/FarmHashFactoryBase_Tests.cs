@@ -10,25 +10,25 @@ namespace System.Data.HashFunction.Test.FarmHash
     public class FarmHashFactoryBase_Tests
     {
         private class FarmHashFactoryBase_Implementation
-            : FarmHashFactoryBase<IFarmHash32>
+            : FarmHashFactoryBase<IFarmHashFingerprint32>
         {
-            private readonly Func<IFarmHash32> _create;
+            private readonly Func<IFarmHashFingerprint32> _create;
 
-            public FarmHashFactoryBase_Implementation(Func<IFarmHash32> create)
+            public FarmHashFactoryBase_Implementation(Func<IFarmHashFingerprint32> create)
             {
                 _create = create;
             }
 
-            public override IFarmHash32 Create() => _create();
+            public override IFarmHashFingerprint32 Create() => _create();
         }
 
         [Fact]
-        public void MetroHashFactoryBase_IMetroHashFactory_Create_CallsImplementation()
+        public void FarmHashFactoryBase_IFarmHashFactory_Create_CallsImplementation()
         {
             var timesCalled = 0;
-            var expectedFarmHash = Mock.Of<IFarmHash32>();
+            var expectedFarmHash = Mock.Of<IFarmHashFingerprint32>();
 
-            Func<IFarmHash32> create = () => {
+            Func<IFarmHashFingerprint32> create = () => {
                 timesCalled += 1;
                 return expectedFarmHash;
             };

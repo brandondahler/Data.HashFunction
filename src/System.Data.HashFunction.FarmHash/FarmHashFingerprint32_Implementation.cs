@@ -11,9 +11,9 @@ namespace System.Data.HashFunction.FarmHash
     /// <summary>
     /// Implementation of FarmHash's Fingerprint32 method as specified at https://github.com/google/farmhash.
     /// </summary>
-    internal class FarmHash32_Implementation
+    internal class FarmHashFingerprint32_Implementation
         : HashFunctionAsyncBase,
-            IFarmHash32
+            IFarmHashFingerprint32
     {
         private const UInt32 c1 = 0xcc9e2d51;
         private const UInt32 c2 = 0x1b873593;
