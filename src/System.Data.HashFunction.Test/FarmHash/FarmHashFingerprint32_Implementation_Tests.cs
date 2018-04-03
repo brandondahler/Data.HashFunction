@@ -8,16 +8,16 @@ using Xunit;
 
 namespace System.Data.HashFunction.Test.FarmHash
 {
-    public class FarmHash32_Implementation_Tests
+    public class FarmHashFingerprint32_Implementation_Tests
     {
 
         #region Constructor
 
         [Fact]
-        public void FarmHash32_Implementation_Constructor_Works()
+        public void FarmHashFingerprint32_Implementation_Constructor_Works()
         {
             GC.KeepAlive(
-                new FarmHash32_Implementation());
+                new FarmHashFingerprint32_Implementation());
         }
 
         #endregion
@@ -25,9 +25,9 @@ namespace System.Data.HashFunction.Test.FarmHash
         #region HashSizeInBits
 
         [Fact]
-        public void FarmHash32_Implementation_HashSizeInBits_Is32()
+        public void FarmHashFingerprint32_Implementation_HashSizeInBits_Is32()
         {
-            var farmHash = new FarmHash32_Implementation();
+            var farmHash = new FarmHashFingerprint32_Implementation();
 
             Assert.Equal(32, farmHash.HashSizeInBits);
         }
@@ -37,7 +37,7 @@ namespace System.Data.HashFunction.Test.FarmHash
 
 
         public class IHashFunctionAsync_Tests
-            : IHashFunctionAsync_TestBase<IFarmHash32>
+            : IHashFunctionAsync_TestBase<IFarmHashFingerprint32>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -48,8 +48,8 @@ namespace System.Data.HashFunction.Test.FarmHash
                     new KnownValue(32, TestConstants.LoremIpsum, 0x6482ed0d),
                 };
 
-            protected override IFarmHash32 CreateHashFunction(int hashSize) =>
-                new FarmHash32_Implementation();
+            protected override IFarmHashFingerprint32 CreateHashFunction(int hashSize) =>
+                new FarmHashFingerprint32_Implementation();
         }
     }
 }
