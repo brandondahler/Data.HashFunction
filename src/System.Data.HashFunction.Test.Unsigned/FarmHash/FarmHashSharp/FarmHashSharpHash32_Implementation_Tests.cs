@@ -8,16 +8,16 @@ using Xunit;
 
 namespace System.Data.HashFunction.Test.FarmHash.FarmHashSharp
 {
-    public class FarmHashSharp32_Implementation_Tests
+    public class FarmHashSharpHash32_Implementation_Tests
     {
 
         #region Constructor
 
         [Fact]
-        public void FarmHashSharp32_Implementation_Constructor_Works()
+        public void FarmHashSharpHash32_Implementation_Constructor_Works()
         {
             GC.KeepAlive(
-                new FarmHashSharp32_Implementation());
+                new FarmHashSharpHash32_Implementation());
         }
 
         #endregion
@@ -25,9 +25,9 @@ namespace System.Data.HashFunction.Test.FarmHash.FarmHashSharp
         #region HashSizeInBits
 
         [Fact]
-        public void FarmHashSharp32_Implementation_HashSizeInBits_Is32()
+        public void FarmHashSharpHash32_Implementation_HashSizeInBits_Is32()
         {
-            var farmHash = new FarmHashSharp32_Implementation();
+            var farmHash = new FarmHashSharpHash32_Implementation();
 
             Assert.Equal(32, farmHash.HashSizeInBits);
         }
@@ -37,7 +37,7 @@ namespace System.Data.HashFunction.Test.FarmHash.FarmHashSharp
 
 
         public class IHashFunctionAsync_Tests
-            : IHashFunctionAsync_TestBase<IFarmHashSharp32>
+            : IHashFunctionAsync_TestBase<IFarmHashSharpHash32>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -48,8 +48,8 @@ namespace System.Data.HashFunction.Test.FarmHash.FarmHashSharp
                     new KnownValue(32, TestConstants.LoremIpsum, 0x6482ed0d),
                 };
 
-            protected override IFarmHashSharp32 CreateHashFunction(int hashSize) =>
-                new FarmHashSharp32_Implementation();
+            protected override IFarmHashSharpHash32 CreateHashFunction(int hashSize) =>
+                new FarmHashSharpHash32_Implementation();
         }
     }
 }

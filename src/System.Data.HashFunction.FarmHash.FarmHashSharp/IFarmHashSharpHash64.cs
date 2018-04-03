@@ -5,10 +5,10 @@ using System.Text;
 namespace System.Data.HashFunction.FarmHash.FarmHashSharp
 {
     /// <summary>
-    /// Data.HashFunction implementation of <see cref="IFarmHash32"/> via FarmHash.Sharp's Hash32 method.
+    /// Data.HashFunction implementation of <see cref="IFarmHashXoHash64"/> via FarmHash.Sharp's Hash64 method.
     /// </summary>
-    public interface IFarmHashSharp32
-        : IFarmHash32
+    public interface IFarmHashSharpHash64
+        : IFarmHashXoHash64
     {
 
     }

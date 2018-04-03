@@ -8,16 +8,16 @@ using Xunit;
 
 namespace System.Data.HashFunction.Test.FarmHash.FarmHashSharp
 {
-    public class FarmHashSharp64_Implementation_Tests
+    public class FarmHashSharpHash64_Implementation_Tests
     {
 
         #region Constructor
 
         [Fact]
-        public void FarmHashSharp64_Implementation_Constructor_Works()
+        public void FarmHashSharpHash64_Implementation_Constructor_Works()
         {
             GC.KeepAlive(
-                new FarmHashSharp64_Implementation());
+                new FarmHashSharpHash64_Implementation());
         }
 
         #endregion
@@ -25,9 +25,9 @@ namespace System.Data.HashFunction.Test.FarmHash.FarmHashSharp
         #region HashSizeInBits
 
         [Fact]
-        public void FarmHashSharp64_Implementation_HashSizeInBits_Is64()
+        public void FarmHashSharpHash64_Implementation_HashSizeInBits_Is64()
         {
-            var farmHash = new FarmHashSharp64_Implementation();
+            var farmHash = new FarmHashSharpHash64_Implementation();
 
             Assert.Equal(64, farmHash.HashSizeInBits);
         }
@@ -37,7 +37,7 @@ namespace System.Data.HashFunction.Test.FarmHash.FarmHashSharp
 
 
         public class IHashFunctionAsync_Tests
-            : IHashFunctionAsync_TestBase<IFarmHashSharp64>
+            : IHashFunctionAsync_TestBase<IFarmHashSharpHash64>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -46,12 +46,13 @@ namespace System.Data.HashFunction.Test.FarmHash.FarmHashSharp
                     new KnownValue(64, TestConstants.FooBar, 0xc43fb29ab5effcfe),
                     new KnownValue(64, TestConstants.LoremIpsum.Take(13), 0x54145170e3383fcc),
                     new KnownValue(64, TestConstants.LoremIpsum.Take(17), 0xbb25bd7ca089d86),
-                    new KnownValue(64, TestConstants.LoremIpsum.Take(50), 0x5462bf74ef4729b1),
+                    new KnownValue(64, TestConstants.LoremIpsum.Take(31), 0xd96b0e9e5ce7b4ad),
+                    new KnownValue(64, TestConstants.LoremIpsum.Take(50), 0x13540d7f3372fbc8),
                     new KnownValue(64, TestConstants.LoremIpsum, 0x7975a177275d65bf),
                 };
 
-            protected override IFarmHashSharp64 CreateHashFunction(int hashSize) =>
-                new FarmHashSharp64_Implementation();
+            protected override IFarmHashSharpHash64 CreateHashFunction(int hashSize) =>
+                new FarmHashSharpHash64_Implementation();
         }
     }
 }

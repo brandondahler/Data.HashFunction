@@ -11,13 +11,13 @@ namespace System.Data.HashFunction.FarmHash.FarmHashSharp
     using Farmhash = global::Farmhash.Sharp.Farmhash;
 
     /// <summary>
-    /// Data.HashFunction implementation of <see cref="IFarmHashSharp32"/> via FarmHash.Sharp's Hash32 method.
+    /// Data.HashFunction implementation of <see cref="IFarmHashSharpHash64"/> via FarmHash.Sharp's Hash32 method.
     /// </summary>
-    internal class FarmHashSharp32_Implementation
+    internal class FarmHashSharpHash64_Implementation
         : HashFunctionAsyncBase,
-            IFarmHashSharp32
+            IFarmHashSharpHash64
     {
-        public override int HashSizeInBits { get; } = 32;
+        public override int HashSizeInBits { get; } = 64;
 
 
         protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
@@ -25,7 +25,7 @@ namespace System.Data.HashFunction.FarmHash.FarmHashSharp
             var dataArray = data.ToArray(cancellationToken);
 
             return BitConverter.GetBytes(
-                Farmhash.Hash32(dataArray, dataArray.Length));
+                Farmhash.Hash64(dataArray, dataArray.Length));
         }
 
         protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
@@ -34,7 +34,7 @@ namespace System.Data.HashFunction.FarmHash.FarmHashSharp
                 .ConfigureAwait(false);
 
             return BitConverter.GetBytes(
-                Farmhash.Hash32(dataArray, dataArray.Length));
+                Farmhash.Hash64(dataArray, dataArray.Length));
         }
     }
 }
