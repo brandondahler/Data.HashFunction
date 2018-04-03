@@ -8,7 +8,7 @@ namespace System.Data.HashFunction.FarmHash
     /// Provides instances of implementations of <see cref="IFarmHashFingerprint128"/>.
     /// </summary>
     public sealed class FarmHashFingerprint128Factory
-        : FarmHashFingerprintFactoryBase<IFarmHashFingerprint128>,
+        : FarmHash128FactoryBase<IFarmHashFingerprint128>,
             IFarmHashFingerprint128Factory
     {
         /// <summary>
@@ -29,5 +29,11 @@ namespace System.Data.HashFunction.FarmHash
         /// <returns>A <see cref="IFarmHashFingerprint128"/> instance.</returns>
         public override IFarmHashFingerprint128 Create() =>
             new FarmHashFingerprint128_Implementation();
+
+        /// <summary>
+        /// Creates a new <see cref="IFarmHashFingerprint"/> instance.
+        /// </summary>
+        /// <returns>A <see cref="IFarmHashFingerprint"/> instance.</returns>
+        IFarmHashFingerprint IFarmHashFingerprintFactory.Create() => Create();
     }
 }

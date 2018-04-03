@@ -8,7 +8,10 @@ namespace System.Data.HashFunction.FarmHash
     /// Implementation of FarmHash's Fingerprint32 method as specified at https://github.com/google/farmhash.
     /// </summary>
     public interface IFarmHashFingerprint32
-        : IFarmHashFingerprint
+        : IFarmHash32,
+            IFarmHashMkHash32,
+            IFarmHashFingerprint
+            
     {
 
     }
