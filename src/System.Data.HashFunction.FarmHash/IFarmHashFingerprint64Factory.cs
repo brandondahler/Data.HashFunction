@@ -8,7 +8,8 @@ namespace System.Data.HashFunction.FarmHash
     /// Provides instances of implementations of <see cref="IFarmHashFingerprint64"/>.
     /// </summary>
     public interface IFarmHashFingerprint64Factory
-        : IFarmHashFingerprintFactory
+        : IFarmHash64Factory,  
+            IFarmHashFingerprintFactory
     {
         /// <summary>
         /// Creates a new <see cref="IFarmHashFingerprint64"/> instance.

@@ -8,7 +8,9 @@ namespace System.Data.HashFunction.FarmHash
     /// Provides instances of implementations of <see cref="IFarmHashFingerprint32"/>.
     /// </summary>
     public interface IFarmHashFingerprint32Factory
-        : IFarmHashFingerprintFactory
+        : IFarmHash32Factory,
+            IFarmHashMkHash32Factory,
+            IFarmHashFingerprintFactory
     {
         /// <summary>
         /// Creates a new <see cref="IFarmHashFingerprint32"/> instance.

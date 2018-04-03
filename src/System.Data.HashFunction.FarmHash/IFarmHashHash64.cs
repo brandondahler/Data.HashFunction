@@ -5,11 +5,11 @@ using System.Text;
 namespace System.Data.HashFunction.FarmHash
 {
     /// <summary>
-    /// Implementation of FarmHash's Fingerprint64 method as specified at https://github.com/google/farmhash.
+    /// Implementation of one of FarmHash's Hash64 methods as specified at https://github.com/google/farmhash.
     /// </summary>
-    public interface IFarmHashFingerprint64
+    public interface IFarmHashHash64
         : IFarmHash64,
-            IFarmHashFingerprint
+            IFarmHashHash
     {
 
     }
