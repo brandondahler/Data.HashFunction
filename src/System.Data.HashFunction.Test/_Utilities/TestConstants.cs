@@ -7,7 +7,7 @@ using System.Data.HashFunction.Core.Utilities;
 
 namespace System.Data.HashFunction.Test._Utilities
 {
-    internal sealed class TestConstants
+    public sealed class TestConstants
     {
         // Constant values available for KnownValues to use.
         public static readonly byte[] Empty = new byte[0];
