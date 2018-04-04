@@ -23,7 +23,9 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(VcsRevision)'!=''">
-    <PackageReleaseNotes>$(PackageReleaseNotes)vcs-revision: $(VcsRevision)
+    <PackageReleaseNotes>$(PackageReleaseNotes)
+    
+vcs-revision: $(VcsRevision)
     </PackageReleaseNotes>
   </PropertyGroup>
 
