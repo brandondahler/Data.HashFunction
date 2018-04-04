@@ -41,6 +41,7 @@
     <ProjectReference Include="..\System.Data.HashFunction.Core\System.Data.HashFunction.Core.csproj" />
     <ProjectReference Include="..\System.Data.HashFunction.CRC\System.Data.HashFunction.CRC.csproj" />
     <ProjectReference Include="..\System.Data.HashFunction.ELF64\System.Data.HashFunction.ELF64.csproj" />
+    <ProjectReference Include="..\System.Data.HashFunction.FarmHash\System.Data.HashFunction.FarmHash.csproj" />
     <ProjectReference Include="..\System.Data.HashFunction.FNV\System.Data.HashFunction.FNV.csproj" />
     <ProjectReference Include="..\System.Data.HashFunction.Interfaces\System.Data.HashFunction.Interfaces.csproj" />
     <ProjectReference Include="..\System.Data.HashFunction.HashAlgorithm\System.Data.HashFunction.HashAlgorithm.csproj" />

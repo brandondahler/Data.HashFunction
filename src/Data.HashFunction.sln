@@ -57,6 +57,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.xx
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.HashAlgorithm", "System.Data.HashFunction.HashAlgorithm\System.Data.HashFunction.HashAlgorithm.csproj", "{89C43129-57DC-445C-9521-5C7A6011A878}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Data.HashFunction.FarmHash", "System.Data.HashFunction.FarmHash\System.Data.HashFunction.FarmHash.csproj", "{62D94F50-2DDD-4F81-B4AF-9D1A53C1404C}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Data.HashFunction.MetroHash", "System.Data.HashFunction.MetroHash\System.Data.HashFunction.MetroHash.csproj", "{F65860E9-DF4C-44F4-9AF0-3E8B2BC682FE}"
 EndProject
 Global
@@ -128,6 +130,10 @@ Global
 		{89C43129-57DC-445C-9521-5C7A6011A878}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89C43129-57DC-445C-9521-5C7A6011A878}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89C43129-57DC-445C-9521-5C7A6011A878}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62D94F50-2DDD-4F81-B4AF-9D1A53C1404C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62D94F50-2DDD-4F81-B4AF-9D1A53C1404C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62D94F50-2DDD-4F81-B4AF-9D1A53C1404C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62D94F50-2DDD-4F81-B4AF-9D1A53C1404C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F65860E9-DF4C-44F4-9AF0-3E8B2BC682FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F65860E9-DF4C-44F4-9AF0-3E8B2BC682FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F65860E9-DF4C-44F4-9AF0-3E8B2BC682FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
