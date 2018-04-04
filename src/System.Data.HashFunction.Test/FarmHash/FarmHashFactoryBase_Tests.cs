@@ -39,5 +39,5 @@ namespace System.Data.HashFunction.Test.FarmHash
             Assert.Equal(1, timesCalled);
             Assert.Equal(expectedFarmHash, farmHash);
         }
-}
+    }
 }
