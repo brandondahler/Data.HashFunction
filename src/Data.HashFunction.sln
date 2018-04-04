@@ -64,6 +64,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Data.HashFunction.Fa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Data.HashFunction.Test.Unsigned", "System.Data.HashFunction.Test.Unsigned\System.Data.HashFunction.Test.Unsigned.csproj", "{3B0B798B-AED7-4337-A470-3C7DE50314CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Data.HashFunction.MetroHash", "System.Data.HashFunction.MetroHash\System.Data.HashFunction.MetroHash.csproj", "{F65860E9-DF4C-44F4-9AF0-3E8B2BC682FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +147,10 @@ Global
 		{3B0B798B-AED7-4337-A470-3C7DE50314CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B0B798B-AED7-4337-A470-3C7DE50314CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B0B798B-AED7-4337-A470-3C7DE50314CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F65860E9-DF4C-44F4-9AF0-3E8B2BC682FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F65860E9-DF4C-44F4-9AF0-3E8B2BC682FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F65860E9-DF4C-44F4-9AF0-3E8B2BC682FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F65860E9-DF4C-44F4-9AF0-3E8B2BC682FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

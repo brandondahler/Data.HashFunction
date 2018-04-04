@@ -144,7 +144,7 @@ Task Validate-Versions -depends Resolve-Production-Versions {
 			$anyVersionBumpRequired = $true;
 
 		} else  {
-			if ($packageRevision -ne $null)
+			if ($packageRevision -ne $null -And $project.SemanticVersion.Version -eq $project.Versions.Production.SemanticVersion.Version)
 			{
 				$fileChanges = $(& $gitExecutable diff $packageRevision $project.Path)
 
@@ -198,13 +198,13 @@ task Pack-Solution -depends Resolve-Projects,Resolve-Production-Versions,Determi
 		
 		$vcsRevision = $(& $gitExecutable rev-parse HEAD);
 		
-		if ($script:versionSuffix -ne "")
+		if ($project.Versions.Production.SemanticVersion.Version -eq $null -Or $project.Versions.Production.SemanticVersion.Version -lt $project.SemanticVersion.Version)
 		{
-			Exec { & $dotNetExecutable pack $project.ProjectXmlPath /p:VcsRevision=$vcsRevision -c $configuration --version-suffix $script:versionSuffix -o "$artifactsDir\Packages"  }
+		    if ($script:versionSuffix -ne "")
+		    {
+			    Exec { & $dotNetExecutable pack $project.ProjectXmlPath /p:VcsRevision=$vcsRevision -c $configuration --version-suffix $script:versionSuffix -o "$artifactsDir\Packages"  }
 
-		} else {
-			if ($project.Versions.Production.SemanticVersion.Version -eq $null -Or $project.Versions.Production.SemanticVersion.Version -lt $project.SemanticVersion.Version)
-			{
+		    } else {
 				Exec { & $dotNetExecutable pack $project.ProjectXmlPath /p:VcsRevision=$vcsRevision -c $configuration -o "$artifactsDir\Packages" }
 			}
 		}
