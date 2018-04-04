@@ -8,7 +8,7 @@ namespace System.Data.HashFunction.FarmHash
     /// Base implementation to provide instances of implementations of <typeparamref name="TFarmHashFingerprint64"/>.
     /// </summary>
     public abstract class FarmHashFingerprint64FactoryBase<TFarmHashFingerprint64>
-        : FarmHash64FactoryBase<TFarmHashFingerprint64>,
+        : FarmHashNaHash64FactoryBase<TFarmHashFingerprint64>,
             IFarmHashFingerprint64Factory
         where TFarmHashFingerprint64 : IFarmHashFingerprint64
     {
