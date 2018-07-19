@@ -138,7 +138,9 @@ Task Validate-Versions -depends Resolve-Production-Versions {
 
 		$packageRevision = $project.Production.VcsRevision
 
-		if ($project.Versions.Production.Version -ne $null -and $project.Versions.Production.SemanticVersion.Version -gt $project.SemanticVersion.Version)
+
+
+		if ($project.Versions.Production.SemanticVersion -ne $null -and $project.Versions.Production.SemanticVersion.Version -gt $project.SemanticVersion.Version)
 		{
 			Write-Host "Newer production version already exists, version bump required." -ForegroundColor Red
 			$anyVersionBumpRequired = $true;

@@ -4,7 +4,7 @@
     <Description>Data.HashFunction implementation of a wrapper for System.Security.Cryptography.HashAlgorithm.</Description>
     <Copyright>Copyright 2016</Copyright>
     <AssemblyTitle>Data.HashFunction.HashAlgorithm</AssemblyTitle>
-    <VersionPrefix>2.0.0</VersionPrefix>
+    <VersionPrefix>2.1.0</VersionPrefix>
     <Authors>Data.HashFunction Developers</Authors>
     <TargetFrameworks>netstandard1.3;net45</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -24,7 +24,8 @@
 
   <PropertyGroup Condition="'$(VcsRevision)'!=''">
     <PackageReleaseNotes>$(PackageReleaseNotes)
-vcs-revision: $(VcsRevision)
+
+vcs-revision: $(VcsRevision)
     </PackageReleaseNotes>
   </PropertyGroup>
 
