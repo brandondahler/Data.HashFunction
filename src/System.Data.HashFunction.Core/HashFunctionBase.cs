@@ -65,36 +65,72 @@ namespace System.Data.HashFunction.Core
         /// <summary>
         /// Computes hash value for given stream.
         /// </summary>
-        /// <param name="data">Stream of data to hash.</param>
+        /// <param name="inputStream">Stream of data to hash.</param>
         /// <returns>
         /// Hash value of the data.
         /// </returns>
-        /// <exception cref="ArgumentNullException">;<paramref name="data"/></exception>
-        /// <exception cref="ArgumentException">Stream must be readable.;<paramref name="data"/></exception>
-        /// <exception cref="ArgumentException">Stream must be seekable for this type of hash function.;<paramref name="data"/></exception>
+        /// <exception cref="ArgumentNullException">;<paramref name="inputStream"/></exception>
+        /// <exception cref="ArgumentException">Stream must be readable.;<paramref name="inputStream"/></exception>
+        /// <exception cref="ArgumentException">Stream must be seekable for this type of hash function.;<paramref name="inputStream"/></exception>
         /// <inheritdoc />
-        public IHashValue ComputeHash(Stream data) => ComputeHash(data, CancellationToken.None);
+        public IHashValue ComputeHash(Stream inputStream) => ComputeHash(inputStream, null, CancellationToken.None);
 
 
         /// <summary>
         /// Computes hash value for given stream.
         /// </summary>
-        /// <param name="data">Stream of data to hash.</param>
+        /// <param name="inputStream">Stream of data to hash.</param>
         /// <param name="cancellationToken">A cancellation token to observe while calculating the hash value.</param>
         /// <returns>
         /// Hash value of the data.
         /// </returns>
-        /// <exception cref="ArgumentNullException">;<paramref name="data"/></exception>
-        /// <exception cref="ArgumentException">Stream must be readable.;<paramref name="data"/></exception>
-        /// <exception cref="ArgumentException">Stream must be seekable for this type of hash function.;<paramref name="data"/></exception>
+        /// <exception cref="ArgumentNullException">;<paramref name="inputStream"/></exception>
+        /// <exception cref="ArgumentException">Stream must be readable.;<paramref name="inputStream"/></exception>
+        /// <exception cref="ArgumentException">Stream must be seekable for this type of hash function.;<paramref name="inputStream"/></exception>
         /// <exception cref="TaskCanceledException">The <paramref name="cancellationToken"/> was canceled.</exception>
-        public IHashValue ComputeHash(Stream data, CancellationToken cancellationToken)
+        public IHashValue ComputeHash(Stream inputStream, CancellationToken cancellationToken) => ComputeHash(inputStream, null, cancellationToken);
+
+
+        /// <summary>
+        /// Computes hash value for given stream while outputting the read bytes to the second stream.
+        /// </summary>
+        /// <param name="inputStream">Stream of data to hash.</param>
+        /// <param name="outputStream">Stream to write the read data to.</param>
+        /// <returns>
+        /// Hash value of the data.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">;<paramref name="inputStream"/></exception>
+        /// <exception cref="ArgumentNullException">;<paramref name="outputStream"/></exception>
+        /// <exception cref="ArgumentException">Stream must be readable.;<paramref name="inputStream"/></exception>
+        /// <exception cref="ArgumentException">Stream must be writable.;<paramref name="outputStream"/></exception>
+        /// <exception cref="ArgumentException">Stream must be seekable for this type of hash function.;<paramref name="inputStream"/></exception>
+        public IHashValue ComputeHash(Stream inputStream, Stream outputStream) => ComputeHash(inputStream, outputStream, CancellationToken.None);
+
+        /// <summary>
+        /// Computes hash value for given stream while outputting the read bytes to the second stream.
+        /// </summary>
+        /// <param name="inputStream">Stream of data to hash.</param>
+        /// <param name="outputStream">Stream to write the read data to.</param>
+        /// <param name="cancellationToken">A cancellation token to observe while calculating the hash value.</param>
+        /// <returns>
+        /// Hash value of the data.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">;<paramref name="inputStream"/></exception>
+        /// <exception cref="ArgumentException">Stream must be readable.;<paramref name="inputStream"/></exception>
+        /// <exception cref="ArgumentException">Stream must be writable.;<paramref name="outputStream"/></exception>
+        /// <exception cref="ArgumentException">Stream must be seekable for this type of hash function.;<paramref name="inputStream"/></exception>
+        /// <exception cref="TaskCanceledException">The <paramref name="cancellationToken"/> was canceled.</exception>
+        public IHashValue ComputeHash(Stream inputStream, Stream outputStream, CancellationToken cancellationToken)
         {
-            if (data == null)
-                throw new ArgumentNullException(nameof(data));
-            
-            if (!data.CanRead)
-                throw new ArgumentException("Stream must be readable.", nameof(data));
+            if (inputStream == null)
+                throw new ArgumentNullException(nameof(inputStream));
+
+            if (!inputStream.CanRead)
+                throw new ArgumentException("Stream must be readable.", nameof(inputStream));
+
+            if (outputStream != null && !outputStream.CanWrite)
+                throw new ArgumentException("Stream must be writable.", nameof(outputStream));
+
 
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -102,7 +138,7 @@ namespace System.Data.HashFunction.Core
 
             return new HashValue(
                 ComputeHashInternal(
-                    new StreamData(data),
+                    new StreamData(inputStream, outputStream),
                     cancellationToken),
                 HashSizeInBits);
         }

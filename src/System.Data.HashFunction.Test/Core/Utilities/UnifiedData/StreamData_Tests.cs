@@ -14,10 +14,10 @@ namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
         #region Constructor
 
         [Fact]
-        public void StreamData_Constructor_Data_IsNull_Throws()
+        public void StreamData_Constructor_InputStream_IsNull_Throws()
         {
             Assert.Equal(
-                "data",
+                "inputStream",
                 Assert.Throws<ArgumentNullException>(
                         () => new StreamData(null))
                     .ParamName);
@@ -25,22 +25,7 @@ namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
 
         #endregion
 
-
-        [Fact]
-        public void StreamData_Dispose_Works()
-        {
-            var memoryStream = new MemoryStream();
-            var streamData = new StreamData(memoryStream);
-
-
-            Assert.True(memoryStream.CanRead);
-
-            streamData.Dispose();
-
-            Assert.False(memoryStream.CanRead);
-        }
-
-
+        
         public class UnifiedDataAsyncTests_StreamData
             : UnifiedDataAsyncBase_Tests
         {

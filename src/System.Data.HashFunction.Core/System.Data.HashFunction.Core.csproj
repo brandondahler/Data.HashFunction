@@ -20,6 +20,7 @@
     <RepositoryUrl>https://github.com/brandondahler/Data.HashFunction/</RepositoryUrl>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <Version>2.1.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(VcsRevision)'!=''">

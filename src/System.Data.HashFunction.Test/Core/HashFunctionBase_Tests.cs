@@ -28,7 +28,7 @@ namespace System.Data.HashFunction.Test.Core
         {
             var hashFunction = new HashFunctionImpl();
 
-            Assert.Equal("data",
+            Assert.Equal("inputStream",
                 Assert.Throws<ArgumentNullException>(() =>
                     hashFunction.ComputeHash((Stream) null))
                 .ParamName);
@@ -44,7 +44,7 @@ namespace System.Data.HashFunction.Test.Core
 
             var hashFunction = new HashFunctionImpl();
 
-            Assert.Equal("data",
+            Assert.Equal("inputStream",
                 Assert.Throws<ArgumentException>(() =>
                     hashFunction.ComputeHash(memoryStreamMock.Object))
                 .ParamName);

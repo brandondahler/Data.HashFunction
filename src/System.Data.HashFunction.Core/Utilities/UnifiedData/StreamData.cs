@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 namespace System.Data.HashFunction.Core.Utilities.UnifiedData
 {
     internal sealed class StreamData
-        : UnifiedDataAsyncBase, 
-            IDisposable
+        : UnifiedDataAsyncBase
     {
         /// <summary>
         /// Length of data provided.
@@ -19,35 +18,30 @@ namespace System.Data.HashFunction.Core.Utilities.UnifiedData
         /// Implementors are allowed throw an exception if it is not possible to resolve the length of the data.
         /// </remarks>
         /// <exception cref="NotSupportedException" />
-        public override long Length { get { return _data.Length; } }
+        public override long Length => _inputStream.Length;
 
 
-        private readonly Stream _data;
-
-        private bool _disposed = false;
+        private readonly Stream _inputStream;
+        private readonly Stream _outputStream;
 
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StreamData"/> class.
         /// </summary>
-        /// <param name="data">The stream to represent.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="data"/></exception>
-        public StreamData(Stream data)
+        /// <param name="inputStream">The stream to represent.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="inputStream"/></exception>
+        public StreamData(Stream inputStream)
+            : this(inputStream, null)
         {
-            _data = data ?? throw new ArgumentNullException(nameof(data));
+
         }
 
-
-        /// <summary>
-        /// Disposes underlying stream.
-        /// </summary>
-        public void Dispose()
+        public StreamData(Stream inputStream, Stream outputStream)
         {
-            if (!_disposed)
-            {
-                _data.Dispose();
-            }
+            _inputStream = inputStream ?? throw new ArgumentNullException(nameof(inputStream));
+            _outputStream = outputStream;
         }
+        
 
 
         /// <summary>
@@ -67,11 +61,20 @@ namespace System.Data.HashFunction.Core.Utilities.UnifiedData
             var buffer = new byte[BufferSize];
             int bytesRead;
 
-            while ((bytesRead = _data.Read(buffer, 0, buffer.Length)) > 0)
+            while ((bytesRead = _inputStream.Read(buffer, 0, buffer.Length)) > 0)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
                 action(buffer, 0, bytesRead);
+
+                if (_outputStream != null)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    _outputStream.Write(buffer, 0, bytesRead);
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
             }
         }
 
@@ -93,11 +96,21 @@ namespace System.Data.HashFunction.Core.Utilities.UnifiedData
             var buffer = new byte[BufferSize];
             int bytesRead;
 
-            while ((bytesRead = await _data.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false)) > 0)
+            while ((bytesRead = await _inputStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false)) > 0)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
                 action(buffer, 0, bytesRead);
+
+                if (_outputStream != null)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    await _outputStream.WriteAsync(buffer, 0, bytesRead, cancellationToken)
+                        .ConfigureAwait(false);
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
             }
         }
 
@@ -130,24 +143,30 @@ namespace System.Data.HashFunction.Core.Utilities.UnifiedData
 
             byte[] buffer = new byte[groupSize < bufferSize ? bufferSize : groupSize];
             int position = 0;
-            int currentLength;
+            int bytesRead;
 
             
-            while ((currentLength = _data.Read(buffer, position, buffer.Length - position)) > 0)
+            while ((bytesRead = _inputStream.Read(buffer, position, buffer.Length - position)) > 0)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-
-                position += currentLength;
+                position += bytesRead;
 
                 // If we can fulfill a group
                 if (position >= groupSize)
                 {
                     var extraBytesLength = position % groupSize;
-
+                    var invocationLength = position - extraBytesLength;
 
                     // Fulfill the group
-                    action(buffer, 0, position - extraBytesLength);
+                    action(buffer, 0, invocationLength);
+
+                    if (_outputStream != null)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        _outputStream.Write(buffer, 0, invocationLength);
+                    }
 
 
                     // Move extra bytes to beginning of array or reset position
@@ -161,16 +180,25 @@ namespace System.Data.HashFunction.Core.Utilities.UnifiedData
                     }
                 }
 
-
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
 
-            if (remainderAction != null && position > 0)
+            if (position > 0)
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                if (remainderAction != null)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                remainderAction(buffer, 0, position);
+                    remainderAction(buffer, 0, position);
+                }
+
+                if (_outputStream != null)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    _outputStream.Write(buffer, 0, position);
+                }
             }
         }
 
@@ -204,24 +232,31 @@ namespace System.Data.HashFunction.Core.Utilities.UnifiedData
 
             byte[] buffer = new byte[groupSize < bufferSize ? bufferSize : groupSize];
             int position = 0;
-            int currentLength;
+            int bytesRead;
 
 
-            while ((currentLength = await _data.ReadAsync(buffer, position, buffer.Length - position, cancellationToken).ConfigureAwait(false)) > 0)
+            while ((bytesRead = await _inputStream.ReadAsync(buffer, position, buffer.Length - position, cancellationToken).ConfigureAwait(false)) > 0)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-
-
-                position += currentLength;
+                
+                position += bytesRead;
 
                 // If we can fulfill a group
                 if (position >= groupSize)
                 {
                     var extraBytesLength = position % groupSize;
-
+                    var invocationLength = position - extraBytesLength;
 
                     // Fulfill the group
-                    action(buffer, 0, position - extraBytesLength);
+                    action(buffer, 0, invocationLength);
+
+                    if (_outputStream != null)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        await _outputStream.WriteAsync(buffer, 0, invocationLength, cancellationToken)
+                            .ConfigureAwait(false);
+                    }
 
 
                     // Move extra bytes to beginning of array or reset position
@@ -234,17 +269,27 @@ namespace System.Data.HashFunction.Core.Utilities.UnifiedData
                         position = 0;
                     }
                 }
-
-
+                
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
 
-            if (remainderAction != null && position > 0)
+            if (position > 0)
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                if (remainderAction != null && position > 0)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                remainderAction(buffer, 0, position);
+                    remainderAction(buffer, 0, position);
+                }
+
+                if (_outputStream != null)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    await _outputStream.WriteAsync(buffer, 0, position, cancellationToken)
+                        .ConfigureAwait(false);
+                }
             }
         }
 
@@ -264,11 +309,20 @@ namespace System.Data.HashFunction.Core.Utilities.UnifiedData
                 var buffer = new byte[BufferSize];
                 int bytesRead;
 
-                while ((bytesRead = _data.Read(buffer, 0, buffer.Length)) > 0)
+                while ((bytesRead = _inputStream.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
+
                     ms.Write(buffer, 0, bytesRead);
+
+                    if (_outputStream != null)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        _outputStream.Write(buffer, 0, bytesRead);
+                    }
+
 
                     cancellationToken.ThrowIfCancellationRequested();
                 }
@@ -286,10 +340,20 @@ namespace System.Data.HashFunction.Core.Utilities.UnifiedData
         {
             using (var ms = new MemoryStream())
             {
-                await _data.CopyToAsync(ms, BufferSize, cancellationToken)
+                await _inputStream.CopyToAsync(ms, BufferSize, cancellationToken)
                     .ConfigureAwait(false);
+                
+                var buffer = ms.ToArray();
 
-                return ms.ToArray();
+                if (_outputStream != null)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    await _outputStream.WriteAsync(buffer, 0, buffer.Length, cancellationToken)
+                        .ConfigureAwait(false);
+                }
+
+                return buffer;
             }
         }
     }

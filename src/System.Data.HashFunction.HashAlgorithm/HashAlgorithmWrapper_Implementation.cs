@@ -94,5 +94,36 @@ namespace System.Data.HashFunction.HashAlgorithm
                     HashSizeInBits);
             }
         }
+
+
+        /// <summary>
+        /// Computes hash value for given stream while outputting the read bytes to the second stream.
+        /// </summary>
+        /// <param name="inputStream">Stream of data to hash.</param>
+        /// <param name="outputStream">Stream to write the read data to.</param>
+        /// <returns>
+        /// Hash value of the data.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">;<paramref name="inputStream"/></exception>
+        /// <exception cref="ArgumentException">Stream must be readable.;<paramref name="inputStream"/></exception>
+        /// <exception cref="ArgumentException">Stream must be writable.;<paramref name="outputStream"/></exception>
+        /// <exception cref="ArgumentException">Stream must be seekable for this type of hash function.;<paramref name="inputStream"/></exception>
+        public IHashValue ComputeHash(Stream inputStream, Stream outputStream) => throw new NotImplementedException();
+
+        /// <summary>
+        /// Computes hash value for given stream while outputting the read bytes to the second stream.
+        /// </summary>
+        /// <param name="inputStream">Stream of data to hash.</param>
+        /// <param name="outputStream">Stream to write the read data to.</param>
+        /// <param name="cancellationToken">A cancellation token to observe while calculating the hash value.</param>
+        /// <returns>
+        /// Hash value of the data.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">;<paramref name="inputStream"/></exception>
+        /// <exception cref="ArgumentException">Stream must be readable.;<paramref name="inputStream"/></exception>
+        /// <exception cref="ArgumentException">Stream must be writable.;<paramref name="outputStream"/></exception>
+        /// <exception cref="ArgumentException">Stream must be seekable for this type of hash function.;<paramref name="inputStream"/></exception>
+        /// <exception cref="TaskCanceledException">The <paramref name="cancellationToken"/> was canceled.</exception>
+        public IHashValue ComputeHash(Stream inputStream, Stream outputStream, CancellationToken cancellationToken) => throw new NotImplementedException();
     }
 }
