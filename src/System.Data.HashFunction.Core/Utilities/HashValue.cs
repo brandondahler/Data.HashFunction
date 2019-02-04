@@ -14,14 +14,6 @@ namespace System.Data.HashFunction.Core.Utilities
         : IHashValue
     {
         /// <summary>
-        /// Gets the length of the hash value in bits.
-        /// </summary>
-        /// <value>
-        /// The length of the hash value bit.
-        /// </value>
-        public byte[] Hash { get; }
-
-        /// <summary>
         /// Gets resulting byte array.
         /// </summary>
         /// <value>
@@ -30,6 +22,14 @@ namespace System.Data.HashFunction.Core.Utilities
         /// <remarks>
         /// Implementations should coerce the input hash value to be <see cref="BitLength"/> size in bits.
         /// </remarks>
+        public byte[] Hash { get; }
+
+        /// <summary>
+        /// Gets the length of the hash value in bits.
+        /// </summary>
+        /// <value>
+        /// The length of the hash value bit.
+        /// </value>
         public int BitLength { get; }
 
 
