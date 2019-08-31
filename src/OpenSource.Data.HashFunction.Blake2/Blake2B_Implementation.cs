@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Blake2.Utilities;
-using System.Data.HashFunction.Core;
-using System.Data.HashFunction.Core.Utilities.UnifiedData;
+using OpenSource.Data.HashFunction.Blake2.Utilities;
+using OpenSource.Data.HashFunction.Core;
+using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.Blake2
+namespace OpenSource.Data.HashFunction.Blake2
 {
 	internal partial class Blake2B_Implementation
 		: HashFunctionAsyncBase,

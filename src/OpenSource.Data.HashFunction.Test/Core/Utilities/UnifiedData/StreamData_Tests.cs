@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
+namespace OpenSource.Data.HashFunction.Test.Core.Utilities.UnifiedData
 {
-    using System.Data.HashFunction.Core.Utilities.UnifiedData;
+    using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
     public class StreamData_Tests
     {
         #region Constructor

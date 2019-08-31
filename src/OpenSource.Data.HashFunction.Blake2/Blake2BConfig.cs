@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace System.Data.HashFunction.Blake2
+namespace OpenSource.Data.HashFunction.Blake2
 {
     /// <summary>
     /// Defines a configuration for a Blake2B hash function implementation.

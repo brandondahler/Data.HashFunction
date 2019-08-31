@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.ELF64;
-using System.Data.HashFunction.Test._Utilities;
+using OpenSource.Data.HashFunction.ELF64;
+using OpenSource.Data.HashFunction.Test._Utilities;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.ELF64
+namespace OpenSource.Data.HashFunction.Test.ELF64
 {
     public class ELF64_Implementation_Tests
     {

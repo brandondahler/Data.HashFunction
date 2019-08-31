@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.FarmHash
+namespace OpenSource.Data.HashFunction.FarmHash
 {
     /// <summary>
     /// Base implementation to provide instances of implementations of <typeparamref name="TFarmHashHash128"/>.

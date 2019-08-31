@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.ELF64
+namespace OpenSource.Data.HashFunction.ELF64
 {
     /// <summary>
     /// Implementation of the hash function used in the elf64 object file format as specified at 

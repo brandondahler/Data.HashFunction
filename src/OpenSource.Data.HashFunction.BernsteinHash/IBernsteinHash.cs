@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.BernsteinHash
+namespace OpenSource.Data.HashFunction.BernsteinHash
 {
     /// <summary>
     /// Implementation of Bernstein hash as specified at http://www.eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx#djb.

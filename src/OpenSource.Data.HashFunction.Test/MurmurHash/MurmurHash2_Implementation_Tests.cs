@@ -1,15 +1,15 @@
 ﻿using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.MurmurHash;
-using System.Data.HashFunction.Test._Utilities;
+using OpenSource.Data.HashFunction.MurmurHash;
+using OpenSource.Data.HashFunction.Test._Utilities;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.MurmurHash
+namespace OpenSource.Data.HashFunction.Test.MurmurHash
 {
     public class MurmurHash2_Implementation_Tests
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace System.Data.HashFunction.Blake2
+namespace OpenSource.Data.HashFunction.Blake2
 {
 	internal partial class Blake2B_Implementation
     {

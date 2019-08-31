@@ -2,12 +2,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.HashFunction.Core.Utilities;
+using OpenSource.Data.HashFunction.Core.Utilities;
 using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.Core.Utilities
+namespace OpenSource.Data.HashFunction.Test.Core.Utilities
 {
     public class HashValue_Tests
     {

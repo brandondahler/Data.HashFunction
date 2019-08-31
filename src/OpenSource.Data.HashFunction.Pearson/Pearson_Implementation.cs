@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Core;
-using System.Data.HashFunction.Core.Utilities;
-using System.Data.HashFunction.Core.Utilities.UnifiedData;
+using OpenSource.Data.HashFunction.Core;
+using OpenSource.Data.HashFunction.Core.Utilities;
+using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.Pearson
+namespace OpenSource.Data.HashFunction.Pearson
 {
     /// <summary>
     /// Implementation of Pearson hashing as specified at http://en.wikipedia.org/wiki/Pearson_hashing and

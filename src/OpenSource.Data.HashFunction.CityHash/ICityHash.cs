@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.CityHash
+namespace OpenSource.Data.HashFunction.CityHash
 {
     
     /// <summary>

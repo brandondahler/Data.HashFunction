@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.SpookyHash;
+using OpenSource.Data.HashFunction.SpookyHash;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.SpookyHash
+namespace OpenSource.Data.HashFunction.Test.SpookyHash
 {
     public class SpookyHashConfig_Tests
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.Pearson
+namespace OpenSource.Data.HashFunction.Pearson
 {
     /// <summary>
     /// Defines a configuration for a <see cref="IPearson"/> implementation.

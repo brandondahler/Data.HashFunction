@@ -1,11 +1,11 @@
 ﻿using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.MetroHash;
+using OpenSource.Data.HashFunction.MetroHash;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.MetroHash
+namespace OpenSource.Data.HashFunction.Test.MetroHash
 {
     public class MetroHashFactoryBase_Tests
     {

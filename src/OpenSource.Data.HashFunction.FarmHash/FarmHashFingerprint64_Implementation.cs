@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Core;
-using System.Data.HashFunction.Core.Utilities.UnifiedData;
-using System.Data.HashFunction.FarmHash.Utilities;
+using OpenSource.Data.HashFunction.Core;
+using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
+using OpenSource.Data.HashFunction.FarmHash.Utilities;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.FarmHash
+namespace OpenSource.Data.HashFunction.FarmHash
 {
     /// <summary>
     /// Implementation of FarmHash's Fingerprint64 method as specified at https://github.com/google/farmhash.

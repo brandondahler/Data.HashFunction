@@ -1,14 +1,14 @@
 ﻿using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.CRC;
+using OpenSource.Data.HashFunction.CRC;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.CRC
+namespace OpenSource.Data.HashFunction.Test.CRC
 {
     public class CRC_Implementation_Tests
     {

@@ -1,14 +1,14 @@
 ﻿using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Test._Mocks;
+using OpenSource.Data.HashFunction.Test._Mocks;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.Core
+namespace OpenSource.Data.HashFunction.Test.Core
 {
     public class HashFunctionBase_Tests
     {

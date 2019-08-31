@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.BuzHash;
+using OpenSource.Data.HashFunction.BuzHash;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.BuzHash
+namespace OpenSource.Data.HashFunction.Test.BuzHash
 {
     public class BuzHashFactory_Tests
     {

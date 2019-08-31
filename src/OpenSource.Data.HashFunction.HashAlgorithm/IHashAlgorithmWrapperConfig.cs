@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.HashAlgorithm
+namespace OpenSource.Data.HashFunction.HashAlgorithm
 {
     using HashAlgorithm = System.Security.Cryptography.HashAlgorithm;
 

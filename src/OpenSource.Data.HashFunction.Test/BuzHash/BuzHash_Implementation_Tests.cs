@@ -1,14 +1,14 @@
 ﻿using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.BuzHash;
-using System.Data.HashFunction.Test._Utilities;
+using OpenSource.Data.HashFunction.BuzHash;
+using OpenSource.Data.HashFunction.Test._Utilities;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.BuzHash
+namespace OpenSource.Data.HashFunction.Test.BuzHash
 {
     public class BuzHash_Implementation_Tests
     {

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.Core.Utilities.UnifiedData
+namespace OpenSource.Data.HashFunction.Core.Utilities.UnifiedData
 {
     internal sealed class StreamData
         : UnifiedDataAsyncBase, 

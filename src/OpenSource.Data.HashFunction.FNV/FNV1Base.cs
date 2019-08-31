@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data.HashFunction.Core;
-using System.Data.HashFunction.Core.Utilities;
-using System.Data.HashFunction.Core.Utilities.UnifiedData;
-using System.Data.HashFunction.FNV.Utilities;
+using OpenSource.Data.HashFunction.Core;
+using OpenSource.Data.HashFunction.Core.Utilities;
+using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
+using OpenSource.Data.HashFunction.FNV.Utilities;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -15,7 +15,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.FNV
+namespace OpenSource.Data.HashFunction.FNV
 {
     /// <summary>
     /// Abstract implementation of Fowler–Noll–Vo hash function (FNV-1 and FNV-1a) as specified at http://www.isthe.com/chongo/tech/comp/fnv/index.html.

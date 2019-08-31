@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.MurmurHash;
+using OpenSource.Data.HashFunction.MurmurHash;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.MurmurHash
+namespace OpenSource.Data.HashFunction.Test.MurmurHash
 {
     public class MurmurHash3Config_Tests
     {

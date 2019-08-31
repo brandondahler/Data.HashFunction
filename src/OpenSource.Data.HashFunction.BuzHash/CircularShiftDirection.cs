@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.BuzHash
+namespace OpenSource.Data.HashFunction.BuzHash
 {
     /// <summary>Enumeration of possible directions a circular shift can be defined for.</summary>
     public enum CircularShiftDirection

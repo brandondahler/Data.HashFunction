@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Core;
-using System.Data.HashFunction.Core.Utilities;
-using System.Data.HashFunction.Core.Utilities.UnifiedData;
+using OpenSource.Data.HashFunction.Core;
+using OpenSource.Data.HashFunction.Core.Utilities;
+using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.Test._Mocks
+namespace OpenSource.Data.HashFunction.Test._Mocks
 {
     public class HashFunctionImpl
             : HashFunctionAsyncBase

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.Blake2
+namespace OpenSource.Data.HashFunction.Blake2
 {
     /// <summary>
     /// Implementation of BLAKE2b as specified at https://blake2.net/.  Implementations are expected to support

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Core.Utilities;
+using OpenSource.Data.HashFunction.Core.Utilities;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.HashAlgorithm
+namespace OpenSource.Data.HashFunction.HashAlgorithm
 {
     using HashAlgorithm = System.Security.Cryptography.HashAlgorithm;
 

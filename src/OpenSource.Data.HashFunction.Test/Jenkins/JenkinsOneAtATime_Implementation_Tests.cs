@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Jenkins;
-using System.Data.HashFunction.Test._Utilities;
+using OpenSource.Data.HashFunction.Jenkins;
+using OpenSource.Data.HashFunction.Test._Utilities;
 using System.Text;
 
-namespace System.Data.HashFunction.Test.Jenkins
+namespace OpenSource.Data.HashFunction.Test.Jenkins
 {
     public class JenkinsOneAtATime_Implementation_Tests
     {

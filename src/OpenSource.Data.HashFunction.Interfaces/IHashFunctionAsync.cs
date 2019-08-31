@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction
+namespace OpenSource.Data.HashFunction
 {
     /// <summary>
     /// Common interface to non-cryptographic hash functions.

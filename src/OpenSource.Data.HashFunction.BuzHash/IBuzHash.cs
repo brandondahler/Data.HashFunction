@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.BuzHash
+namespace OpenSource.Data.HashFunction.BuzHash
 {
     /// <summary>
     /// Implementation of BuzHash as specified at http://www.serve.net/buz/hash.adt/java.002.html.

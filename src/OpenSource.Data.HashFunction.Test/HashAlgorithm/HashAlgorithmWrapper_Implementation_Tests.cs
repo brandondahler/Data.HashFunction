@@ -1,15 +1,15 @@
 ﻿using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.HashAlgorithm;
-using System.Data.HashFunction.Test._Utilities;
+using OpenSource.Data.HashFunction.HashAlgorithm;
+using OpenSource.Data.HashFunction.Test._Utilities;
 using System.Security.Cryptography;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.HashAlgorithm
+namespace OpenSource.Data.HashFunction.Test.HashAlgorithm
 {
-    using HashAlgorithm = Security.Cryptography.HashAlgorithm;
+    using HashAlgorithm = System.Security.Cryptography.HashAlgorithm;
 
     public class HashAlgorithmWrapper_Implementation_Tests
     {

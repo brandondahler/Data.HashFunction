@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Blake2;
+using OpenSource.Data.HashFunction.Blake2;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.Blake2
+namespace OpenSource.Data.HashFunction.Test.Blake2
 {
     public class Blake2BFactory_Tests
     {

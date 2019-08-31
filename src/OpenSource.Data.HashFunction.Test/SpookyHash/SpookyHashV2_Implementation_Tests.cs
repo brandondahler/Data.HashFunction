@@ -2,15 +2,15 @@
 using MoreLinq;
 using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.SpookyHash;
-using System.Data.HashFunction.Test._Utilities;
+using OpenSource.Data.HashFunction.SpookyHash;
+using OpenSource.Data.HashFunction.Test._Utilities;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.SpookyHash
+namespace OpenSource.Data.HashFunction.Test.SpookyHash
 {
     public class SpookyHashV2_Implementation_Tests
     {

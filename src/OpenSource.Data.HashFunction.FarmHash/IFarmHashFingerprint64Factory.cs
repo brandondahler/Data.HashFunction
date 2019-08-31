@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.FarmHash
+namespace OpenSource.Data.HashFunction.FarmHash
 {
     /// <summary>
     /// Provides instances of implementations of <see cref="IFarmHashFingerprint64"/>.

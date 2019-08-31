@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Core.Utilities.UnifiedData;
+using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.Pearson
+namespace OpenSource.Data.HashFunction.Test.Pearson
 {
     public class PearsonBaseTests
     {

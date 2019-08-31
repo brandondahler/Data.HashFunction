@@ -1,13 +1,13 @@
 ﻿using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Jenkins;
-using System.Data.HashFunction.Test._Utilities;
+using OpenSource.Data.HashFunction.Jenkins;
+using OpenSource.Data.HashFunction.Test._Utilities;
 using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.Jenkins
+namespace OpenSource.Data.HashFunction.Test.Jenkins
 {
     public class JenkinsLookup2_Implementation_Tests
     {

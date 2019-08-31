@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.FNV.Utilities;
+using OpenSource.Data.HashFunction.FNV.Utilities;
 using System.Numerics;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.FNV.Utilities
+namespace OpenSource.Data.HashFunction.Test.FNV.Utilities
 {
     public class FNVPrimeOffset_Tests
     {

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Core;
-using System.Data.HashFunction.Core.Utilities.UnifiedData;
+using OpenSource.Data.HashFunction.Core;
+using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.MetroHash
+namespace OpenSource.Data.HashFunction.MetroHash
 {
     /// <summary>
     /// Implementation of MetroHash64 as specified at https://github.com/jandrewrogers/MetroHash.

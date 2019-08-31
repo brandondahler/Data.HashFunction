@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.FarmHash.Utilities;
+using OpenSource.Data.HashFunction.FarmHash.Utilities;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.FarmHash.Utilities
+namespace OpenSource.Data.HashFunction.Test.FarmHash.Utilities
 {
     public class UInt128_Tests
     {

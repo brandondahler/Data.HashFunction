@@ -1,13 +1,13 @@
 ﻿using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Pearson;
-using System.Data.HashFunction.Test._Utilities;
+using OpenSource.Data.HashFunction.Pearson;
+using OpenSource.Data.HashFunction.Test._Utilities;
 using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.Pearson
+namespace OpenSource.Data.HashFunction.Test.Pearson
 {
     public class Pearson_Implementation_Tests
     {

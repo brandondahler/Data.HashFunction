@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.FarmHash;
-using System.Data.HashFunction.Test._Utilities;
+using OpenSource.Data.HashFunction.FarmHash;
+using OpenSource.Data.HashFunction.Test._Utilities;
 using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.FarmHash
+namespace OpenSource.Data.HashFunction.Test.FarmHash
 {
     public class FarmHashFingerprint32_Implementation_Tests
     {

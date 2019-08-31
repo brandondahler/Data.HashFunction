@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.BernsteinHash;
+using OpenSource.Data.HashFunction.BernsteinHash;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.BernsteinHash
+namespace OpenSource.Data.HashFunction.Test.BernsteinHash
 {
     public class BernsteinHashFactory_Tests
     {

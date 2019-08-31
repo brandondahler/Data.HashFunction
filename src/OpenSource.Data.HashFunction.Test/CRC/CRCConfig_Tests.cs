@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.CRC;
+using OpenSource.Data.HashFunction.CRC;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.CRC
+namespace OpenSource.Data.HashFunction.Test.CRC
 {
     public class CRCConfig_Tests
     {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Jenkins;
+using OpenSource.Data.HashFunction.Jenkins;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.Jenkins
+namespace OpenSource.Data.HashFunction.Test.Jenkins
 {
     public class JenkinsLookup3Factory_Tests
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.Blake2
+namespace OpenSource.Data.HashFunction.Blake2
 {
     /// <summary>
     /// Provides instances of implementations of <see cref="IBlake2B"/>.

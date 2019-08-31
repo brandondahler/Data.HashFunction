@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.FarmHash.Utilities
+namespace OpenSource.Data.HashFunction.FarmHash.Utilities
 {
     internal struct UInt128
     {

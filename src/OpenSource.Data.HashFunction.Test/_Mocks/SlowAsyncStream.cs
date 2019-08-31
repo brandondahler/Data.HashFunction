@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.Test._Mocks
+namespace OpenSource.Data.HashFunction.Test._Mocks
 {
     /// <summary>
     /// Forces async functions to actually run asynchronously by delaying the read.

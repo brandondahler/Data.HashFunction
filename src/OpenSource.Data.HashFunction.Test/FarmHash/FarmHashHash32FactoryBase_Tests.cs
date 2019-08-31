@@ -1,11 +1,11 @@
 ﻿using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.FarmHash;
+using OpenSource.Data.HashFunction.FarmHash;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.FarmHash
+namespace OpenSource.Data.HashFunction.Test.FarmHash
 {
     public class FarmHashHash32FactoryBase_Tests
     {

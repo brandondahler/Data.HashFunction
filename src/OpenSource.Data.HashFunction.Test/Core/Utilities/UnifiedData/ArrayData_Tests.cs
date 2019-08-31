@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Test._Mocks;
+using OpenSource.Data.HashFunction.Test._Mocks;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.Core.Utilities.UnifiedData
+namespace OpenSource.Data.HashFunction.Test.Core.Utilities.UnifiedData
 {
-    using System.Data.HashFunction.Core.Utilities.UnifiedData;
+    using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
     using System.Threading;
 
     public class ArrayData_Tests

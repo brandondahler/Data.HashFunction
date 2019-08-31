@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.HashAlgorithm;
+using OpenSource.Data.HashFunction.HashAlgorithm;
 using System.Security.Cryptography;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.HashAlgorithm
+namespace OpenSource.Data.HashFunction.Test.HashAlgorithm
 {
     public class HashAlgorithmWrapperConfig_Tests
     {

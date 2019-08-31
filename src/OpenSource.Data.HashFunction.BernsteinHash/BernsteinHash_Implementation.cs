@@ -1,11 +1,12 @@
-﻿using System.Data.HashFunction.BernsteinHash;
-using System.Data.HashFunction.Core;
-using System.Data.HashFunction.Core.Utilities.UnifiedData;
+﻿using OpenSource.Data.HashFunction.BernsteinHash;
+using OpenSource.Data.HashFunction.Core;
+using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
+using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.BernsteinHash
+namespace OpenSource.Data.HashFunction.BernsteinHash
 {
     internal class BernsteinHash_Implementation
         : HashFunctionAsyncBase,

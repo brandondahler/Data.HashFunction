@@ -45,7 +45,7 @@ Task Determine-Version-Suffix {
 Task Resolve-Projects -depends Load-Powershell-Dependencies,Determine-Version-Suffix {
 	$script:projects = [System.Collections.ArrayList]::new()
 	
-	$projectDirectories = Get-ChildItem "$sourceDir\System.Data.HashFunction.*" -Directory
+	$projectDirectories = Get-ChildItem "$sourceDir\OpenSource.Data.HashFunction.*" -Directory
 	foreach ($projectDirectory in $projectDirectories)
 	{
 		$name = $projectDirectory.Name
@@ -68,8 +68,8 @@ Task Resolve-Projects -depends Load-Powershell-Dependencies,Determine-Version-Su
 			SemanticVersion = [NuGet.SemanticVersion]::new($(Select-Xml "/Project/PropertyGroup/VersionPrefix/text()" $projectObject).ToString() + $dashedVersionSuffix)
 			NuGetPath = "$nuGetDir\$name"
 			NuGetPackageName = $name
-			SkipPackaging = $name.StartsWith("System.Data.HashFunction.Test")
-			RunTests = $name.StartsWith("System.Data.HashFunction.Test")
+			SkipPackaging = $name.StartsWith("OpenSource.Data.HashFunction.Test")
+			RunTests = $name.StartsWith("OpenSource.Data.HashFunction.Test")
 		}
 
 		$script:projects.Add($project) > $null
@@ -229,7 +229,7 @@ task Test-Solution -depends Resolve-Projects {
 	{
 		if ($project.RunTests)
 		{
-			Exec { & $openCoverExecutable "-target:$dotNetExecutable" $("`"-targetargs:test " + $project.ProjectXmlPath + " -c $configuration`"") -nodefaultfilters $("`"-filter:+[System.Data.HashFunction.*]* -[" + $project.Name + "]*`"") $("`"-output:$artifactsDir\Coverage\" + $project.Name + ".xml`"") -register:user -oldStyle }
+			Exec { & $openCoverExecutable "-target:$dotNetExecutable" $("`"-targetargs:test " + $project.ProjectXmlPath + " -c $configuration`"") -nodefaultfilters $("`"-filter:+[OpenSource.Data.HashFunction.*]* -[" + $project.Name + "]*`"") $("`"-output:$artifactsDir\Coverage\" + $project.Name + ".xml`"") -register:user -oldStyle }
 		}
 	}
 }

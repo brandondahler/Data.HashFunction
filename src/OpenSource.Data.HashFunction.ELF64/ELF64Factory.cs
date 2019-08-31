@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.ELF64
+namespace OpenSource.Data.HashFunction.ELF64
 {
     /// <summary>
     /// Provides instances of implementations of <see cref="IELF64"/>.

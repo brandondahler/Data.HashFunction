@@ -4,15 +4,15 @@
     <Description>Test suite for Data.HashFunction implementations.</Description>
     <Copyright>Copyright 2014</Copyright>
     <AssemblyTitle>Data.HashFunction.Test</AssemblyTitle>
-    <VersionPrefix>2.0.0</VersionPrefix>
+    <VersionPrefix>3.0.0</VersionPrefix>
     <Authors>Data.HashFunction Developers</Authors>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
-    <AssemblyName>System.Data.HashFunction.Test</AssemblyName>
+    <AssemblyName>OpenSource.Data.HashFunction.Test</AssemblyName>
     <AssemblyOriginatorKeyFile>../Data.HashFunction.Production.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    <PackageId>System.Data.HashFunction.Test</PackageId>
+    <PackageId>BrandonDahler.Data.HashFunction.Test</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
@@ -34,23 +34,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\System.Data.HashFunction.BernsteinHash\System.Data.HashFunction.BernsteinHash.csproj" />
-    <ProjectReference Include="..\System.Data.HashFunction.Blake2\System.Data.HashFunction.Blake2.csproj" />
-    <ProjectReference Include="..\System.Data.HashFunction.BuzHash\System.Data.HashFunction.BuzHash.csproj" />
-    <ProjectReference Include="..\System.Data.HashFunction.CityHash\System.Data.HashFunction.CityHash.csproj" />
-    <ProjectReference Include="..\System.Data.HashFunction.Core\System.Data.HashFunction.Core.csproj" />
-    <ProjectReference Include="..\System.Data.HashFunction.CRC\System.Data.HashFunction.CRC.csproj" />
-    <ProjectReference Include="..\System.Data.HashFunction.ELF64\System.Data.HashFunction.ELF64.csproj" />
-    <ProjectReference Include="..\System.Data.HashFunction.FarmHash\System.Data.HashFunction.FarmHash.csproj" />
-    <ProjectReference Include="..\System.Data.HashFunction.FNV\System.Data.HashFunction.FNV.csproj" />
-    <ProjectReference Include="..\System.Data.HashFunction.Interfaces\System.Data.HashFunction.Interfaces.csproj" />
-    <ProjectReference Include="..\System.Data.HashFunction.HashAlgorithm\System.Data.HashFunction.HashAlgorithm.csproj" />
-    <ProjectReference Include="..\System.Data.HashFunction.Jenkins\System.Data.HashFunction.Jenkins.csproj" />
-    <ProjectReference Include="..\System.Data.HashFunction.MetroHash\System.Data.HashFunction.MetroHash.csproj" />
-    <ProjectReference Include="..\System.Data.HashFunction.MurmurHash\System.Data.HashFunction.MurmurHash.csproj" />
-    <ProjectReference Include="..\System.Data.HashFunction.Pearson\System.Data.HashFunction.Pearson.csproj" />
-    <ProjectReference Include="..\System.Data.HashFunction.SpookyHash\System.Data.HashFunction.SpookyHash.csproj" />
-    <ProjectReference Include="..\System.Data.HashFunction.xxHash\System.Data.HashFunction.xxHash.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.BernsteinHash\OpenSource.Data.HashFunction.BernsteinHash.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.Blake2\OpenSource.Data.HashFunction.Blake2.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.BuzHash\OpenSource.Data.HashFunction.BuzHash.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.CityHash\OpenSource.Data.HashFunction.CityHash.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.Core\OpenSource.Data.HashFunction.Core.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.CRC\OpenSource.Data.HashFunction.CRC.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.ELF64\OpenSource.Data.HashFunction.ELF64.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.FarmHash\OpenSource.Data.HashFunction.FarmHash.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.FNV\OpenSource.Data.HashFunction.FNV.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.Interfaces\OpenSource.Data.HashFunction.Interfaces.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.HashAlgorithm\OpenSource.Data.HashFunction.HashAlgorithm.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.Jenkins\OpenSource.Data.HashFunction.Jenkins.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.MetroHash\OpenSource.Data.HashFunction.MetroHash.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.MurmurHash\OpenSource.Data.HashFunction.MurmurHash.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.Pearson\OpenSource.Data.HashFunction.Pearson.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.SpookyHash\OpenSource.Data.HashFunction.SpookyHash.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.xxHash\OpenSource.Data.HashFunction.xxHash.csproj" />
   </ItemGroup>
 
   <ItemGroup>

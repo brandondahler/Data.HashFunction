@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Test._Mocks;
+using OpenSource.Data.HashFunction.Test._Mocks;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using System.Data.HashFunction.Core.Utilities.UnifiedData;
-using System.Data.HashFunction.Blake2;
+using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
+using OpenSource.Data.HashFunction.Blake2;
 using Moq;
-using System.Data.HashFunction.Test._Utilities;
+using OpenSource.Data.HashFunction.Test._Utilities;
 
-namespace System.Data.HashFunction.Test.Blake2
+namespace OpenSource.Data.HashFunction.Test.Blake2
 {
     public class Blake2B_Implementation_Tests
     {

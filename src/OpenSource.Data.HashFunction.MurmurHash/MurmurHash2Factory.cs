@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.MurmurHash
+namespace OpenSource.Data.HashFunction.MurmurHash
 {
     /// <summary>
     /// Provides instances of implementations of <see cref="IMurmurHash2"/>.

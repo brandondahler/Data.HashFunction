@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.BernsteinHash
+namespace OpenSource.Data.HashFunction.BernsteinHash
 {
     /// <summary>
     /// Provides instances of implementations of <see cref="IBernsteinHash"/>.

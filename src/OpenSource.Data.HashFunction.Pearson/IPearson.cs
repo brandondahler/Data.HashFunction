@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.Pearson
+namespace OpenSource.Data.HashFunction.Pearson
 {
     /// <summary>
     /// Implementation of Pearson hashing as specified at http://en.wikipedia.org/wiki/Pearson_hashing and

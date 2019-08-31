@@ -7,7 +7,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.FNV.Utilities
+namespace OpenSource.Data.HashFunction.FNV.Utilities
 {
     /// <summary>
     /// Class for storing FNV prime and offset combinations.

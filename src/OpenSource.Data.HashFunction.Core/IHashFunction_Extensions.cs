@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Core.Utilities;
+using OpenSource.Data.HashFunction.Core.Utilities;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -10,7 +10,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction
+namespace OpenSource.Data.HashFunction
 {
     /// <summary>
     /// Static class to provide extension functions for IHashFunction instances.

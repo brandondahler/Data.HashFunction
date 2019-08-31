@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.BuzHash
+namespace OpenSource.Data.HashFunction.BuzHash
 {
     /// <summary>
     /// Provides instances of implementations of <see cref="IBuzHash"/>.

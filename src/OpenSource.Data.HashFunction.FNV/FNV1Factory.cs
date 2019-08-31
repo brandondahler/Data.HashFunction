@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.FNV
+namespace OpenSource.Data.HashFunction.FNV
 {
     /// <summary>
     /// Provides instances of implementations of <see cref="IFNV1"/>.

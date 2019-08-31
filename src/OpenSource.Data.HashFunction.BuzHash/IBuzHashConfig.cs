@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace System.Data.HashFunction.BuzHash
+namespace OpenSource.Data.HashFunction.BuzHash
 {
     /// <summary>
     /// Defines a configuration for a <see cref="IBuzHash"/> implementation.

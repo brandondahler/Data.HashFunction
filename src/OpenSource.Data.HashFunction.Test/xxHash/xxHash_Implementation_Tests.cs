@@ -1,15 +1,15 @@
 ﻿using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Test._Utilities;
-using System.Data.HashFunction.xxHash;
+using OpenSource.Data.HashFunction.Test._Utilities;
+using OpenSource.Data.HashFunction.xxHash;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.xxHash
+namespace OpenSource.Data.HashFunction.Test.xxHash
 {
     public class xxHash_Implementation_Tests
     {

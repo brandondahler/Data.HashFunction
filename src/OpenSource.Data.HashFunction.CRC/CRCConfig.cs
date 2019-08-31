@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.CRC
+namespace OpenSource.Data.HashFunction.CRC
 {
     /// <summary>
     /// Defines a configuration for a <see cref="ICRC"/> implementation.

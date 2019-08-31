@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.HashAlgorithm
+namespace OpenSource.Data.HashFunction.HashAlgorithm
 {
     /// <summary>
     /// Implementation of <see cref="IHashFunction" /> that wraps cryptographic hash functions known as <see cref="System.Security.Cryptography.HashAlgorithm" />.

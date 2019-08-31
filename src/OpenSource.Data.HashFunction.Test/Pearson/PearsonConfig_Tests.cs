@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Pearson;
+using OpenSource.Data.HashFunction.Pearson;
 using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.Pearson
+namespace OpenSource.Data.HashFunction.Test.Pearson
 {
     public class PearsonConfig_Tests
     {

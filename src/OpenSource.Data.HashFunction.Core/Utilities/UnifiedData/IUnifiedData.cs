@@ -1,6 +1,7 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 
-namespace System.Data.HashFunction.Core.Utilities.UnifiedData
+namespace OpenSource.Data.HashFunction.Core.Utilities.UnifiedData
 {
     /// <summary>
     /// Centralized methodology for accessing data used by Data.HashFunction asynchronously.

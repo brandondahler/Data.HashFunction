@@ -1,7 +1,7 @@
 ﻿using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.Test._Mocks;
+using OpenSource.Data.HashFunction.Test._Mocks;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -11,10 +11,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using System.Reflection;
-using System.Data.HashFunction.Core.Utilities;
-using System.Data.HashFunction.Test._Utilities;
+using OpenSource.Data.HashFunction.Core.Utilities;
+using OpenSource.Data.HashFunction.Test._Utilities;
 
-namespace System.Data.HashFunction.Test
+namespace OpenSource.Data.HashFunction.Test
 {
     public abstract class IHashFunction_TestBase<IHashFunctionT>
         where IHashFunctionT : class, IHashFunction

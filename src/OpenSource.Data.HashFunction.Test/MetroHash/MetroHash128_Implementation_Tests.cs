@@ -1,15 +1,15 @@
 ﻿using Moq;
 using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.MetroHash;
-using System.Data.HashFunction.Test._Utilities;
+using OpenSource.Data.HashFunction.MetroHash;
+using OpenSource.Data.HashFunction.Test._Utilities;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.MetroHash
+namespace OpenSource.Data.HashFunction.Test.MetroHash
 {
     public class MetroHash128_Implementation_Tests
     {

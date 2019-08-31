@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.HashAlgorithm
+namespace OpenSource.Data.HashFunction.HashAlgorithm
 {
     /// <summary>
     /// Provides instances of implementations of <see cref="IHashAlgorithmWrapper"/>.

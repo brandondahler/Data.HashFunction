@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.xxHash;
+using OpenSource.Data.HashFunction.xxHash;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.xxHash
+namespace OpenSource.Data.HashFunction.Test.xxHash
 {
     public class xxHashConfig_Tests
     {

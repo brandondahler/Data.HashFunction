@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.SpookyHash;
+using OpenSource.Data.HashFunction.SpookyHash;
 using System.Text;
 using Xunit;
 
 #pragma warning disable CS0618 // SpookyHashV1_Implementation' is obsolete: 'SpookyHashV1 has known issues, use SpookyHashV2.'
 
-namespace System.Data.HashFunction.Test.SpookyHash
+namespace OpenSource.Data.HashFunction.Test.SpookyHash
 {
 
 

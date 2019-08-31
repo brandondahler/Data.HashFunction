@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.SpookyHash
+namespace OpenSource.Data.HashFunction.SpookyHash
 {
     /// <summary>
     /// Provides instances of implementations of <see cref="ISpookyHashV2"/>.

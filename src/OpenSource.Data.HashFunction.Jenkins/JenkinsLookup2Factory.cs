@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.Jenkins
+namespace OpenSource.Data.HashFunction.Jenkins
 {
     /// <summary>
     /// Provides instances of implementations of <see cref="IJenkinsLookup2"/>.

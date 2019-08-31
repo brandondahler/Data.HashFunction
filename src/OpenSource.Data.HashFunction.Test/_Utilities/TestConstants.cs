@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.HashFunction.Core.Utilities;
+using OpenSource.Data.HashFunction.Core.Utilities;
 
-namespace System.Data.HashFunction.Test._Utilities
+namespace OpenSource.Data.HashFunction.Test._Utilities
 {
     internal sealed class TestConstants
     {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.CityHash;
+using OpenSource.Data.HashFunction.CityHash;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.CityHash
+namespace OpenSource.Data.HashFunction.Test.CityHash
 {
     public class CityHashConfig_Tests
     {

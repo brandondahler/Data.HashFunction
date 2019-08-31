@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.xxHash
+namespace OpenSource.Data.HashFunction.xxHash
 {
     /// <summary>
     /// Provides instances of implementations of <see cref="IxxHash"/>.

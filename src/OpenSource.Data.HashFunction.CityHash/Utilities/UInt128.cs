@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.CityHash.Utilities
+namespace OpenSource.Data.HashFunction.CityHash.Utilities
 {
     internal struct UInt128
     {

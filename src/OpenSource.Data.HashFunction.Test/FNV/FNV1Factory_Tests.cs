@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.FNV;
+using OpenSource.Data.HashFunction.FNV;
 using System.Text;
 using Xunit;
 
-namespace System.Data.HashFunction.Test.FNV
+namespace OpenSource.Data.HashFunction.Test.FNV
 {
     public class FNV1Factory_Tests
     {

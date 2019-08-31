@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Data.HashFunction.MetroHash
+namespace OpenSource.Data.HashFunction.MetroHash
 {
     /// <summary>
     /// Implementation of MetroHash64 as specified at https://github.com/jandrewrogers/MetroHash.

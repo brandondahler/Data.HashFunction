@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.HashFunction.BernsteinHash;
-using System.Data.HashFunction.Core;
-using System.Data.HashFunction.Core.Utilities;
-using System.Data.HashFunction.Core.Utilities.UnifiedData;
+using OpenSource.Data.HashFunction.BernsteinHash;
+using OpenSource.Data.HashFunction.Core;
+using OpenSource.Data.HashFunction.Core.Utilities;
+using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.BernsteinHash
+namespace OpenSource.Data.HashFunction.BernsteinHash
 {
     internal class ModifiedBernsteinHash_Implementation
         : HashFunctionAsyncBase,

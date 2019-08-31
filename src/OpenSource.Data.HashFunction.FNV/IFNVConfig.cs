@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 
-namespace System.Data.HashFunction.FNV
+namespace OpenSource.Data.HashFunction.FNV
 {
     /// <summary>
     /// Defines a configuration for a <see cref="IFNV"/> implementation.

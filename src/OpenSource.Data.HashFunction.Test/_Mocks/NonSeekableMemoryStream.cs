@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace System.Data.HashFunction.Test._Mocks
+namespace OpenSource.Data.HashFunction.Test._Mocks
 {
     /// <summary>
     /// Forces underlying MemoryStream to report as being non-seekable.

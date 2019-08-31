@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 #pragma warning disable CS0618 // Type or member is obsolete
-namespace System.Data.HashFunction.SpookyHash
+namespace OpenSource.Data.HashFunction.SpookyHash
 {
     /// <summary>
     /// Provides instances of implementations of <see cref="ISpookyHashV1"/>.
