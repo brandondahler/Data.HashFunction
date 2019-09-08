@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using OpenSource.Data.HashFunction.Core;
 using OpenSource.Data.HashFunction.Core.Utilities;
-using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,7 +16,7 @@ namespace OpenSource.Data.HashFunction.CRC
     /// This implementation is generalized to encompass all possible CRC parameters from 1 to 64 bits.
     /// </summary>
     internal class CRC_Implementation
-        : HashFunctionAsyncBase,
+        : StreamableHashFunctionBase,
             ICRC
     {
         /// <summary>
@@ -55,218 +54,237 @@ namespace OpenSource.Data.HashFunction.CRC
             if (_config.HashSizeInBits <= 0 || _config.HashSizeInBits > 64)
                 throw new ArgumentOutOfRangeException($"{nameof(config)}.{nameof(config.HashSizeInBits)}", _config.HashSizeInBits, $"{nameof(config)}.{nameof(config.HashSizeInBits)} must be >= 1 and <= 64");
         }
-        
 
 
-        /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
+        public override IHashFunctionBlockTransformer CreateBlockTransformer() =>
+            new BlockTransformer(_config);
+
+
+        private class BlockTransformer
+            : HashFunctionBlockTransformerBase<BlockTransformer>
         {
-            // Use 64-bit variable regardless of CRC bit length
-            UInt64 hash = _config.InitialValue;
+            private int _hashSizeInBits;
+            private IReadOnlyList<UInt64> _crcTable;
+            private int _mostSignificantShift;
+            private bool _reflectIn;
+            private bool _reflectOut;
+            private UInt64 _xOrOut;
 
-            // Reflect InitialValue if processing as big endian
-            if (_config.ReflectIn)
-                hash = ReflectBits(hash, HashSizeInBits);
+            private UInt64 _hashValue;
 
-
-            // Store table reference in local variable to lower overhead.
-            var crcTable = GetDataDivisionTable(_config.HashSizeInBits, _config.Polynomial, _config.ReflectIn);
-
-
-            // How much hash must be right-shifted to get the most significant byte (HashSize >= 8) or bit (HashSize < 8)
-            int mostSignificantShift = _config.HashSizeInBits - 8;
-
-            if (_config.HashSizeInBits < 8)
-                mostSignificantShift = _config.HashSizeInBits - 1;
-
-
-            data.ForEachRead(
-                (dataBytes, position, length) => {
-                    ProcessBytes(ref hash, crcTable, mostSignificantShift, dataBytes, position, length);
-                },
-                cancellationToken);
-
-
-            // Account for mixed-endianness
-            if (_config.ReflectIn ^ _config.ReflectOut)
-               hash = ReflectBits(hash, HashSizeInBits);
-
-
-            hash ^= _config.XOrOut;
-
-            return ToBytes(hash, HashSizeInBits);
-        }
-        
-        /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
-        {
-            // Use 64-bit variable regardless of CRC bit length
-            UInt64 hash = _config.InitialValue;
-
-            // Reflect InitialValue if processing as big endian
-            if (_config.ReflectIn)
-                hash = ReflectBits(hash, HashSizeInBits);
-
-
-            // Store table reference in local variable to lower overhead.
-            var crcTable = GetDataDivisionTable(_config.HashSizeInBits, _config.Polynomial, _config.ReflectIn);
-
-
-            // How much hash must be right-shifted to get the most significant byte (HashSize >= 8) or bit (HashSize < 8)
-            int mostSignificantShift = _config.HashSizeInBits - 8;
-
-            if (_config.HashSizeInBits < 8)
-                mostSignificantShift = _config.HashSizeInBits - 1;
-
-
-            await data.ForEachReadAsync(
-                    (dataBytes, position, length) => {
-                        ProcessBytes(ref hash, crcTable, mostSignificantShift, dataBytes, position, length);
-                    },
-                    cancellationToken)
-                .ConfigureAwait(false);
-
-
-            // Account for mixed-endianness
-            if (_config.ReflectIn ^ _config.ReflectOut)
-               hash = ReflectBits(hash, HashSizeInBits);
-
-
-            hash ^= _config.XOrOut;
-
-            return ToBytes(hash, HashSizeInBits);
-        }
-
-        private void ProcessBytes(ref UInt64 hash, IReadOnlyList<UInt64> crcTable, int mostSignificantShift, byte[] dataBytes, int position, int length)
-        {
-            for (var x = position; x < position + length; ++x)
+            public BlockTransformer()
+                : base()
             {
-                if (HashSizeInBits >= 8)
-                {
-                    // Process per byte, treating hash differently based on input endianness
-                    if (_config.ReflectIn)
-                        hash = (hash >> 8) ^ crcTable[(byte) hash ^ dataBytes[x]];
-                    else
-                        hash = (hash << 8) ^ crcTable[((byte) (hash >> mostSignificantShift)) ^ dataBytes[x]];
 
-                } else {
-                    // Process per bit, treating hash differently based on input endianness
-                    for (int y = 0; y < 8; ++y)
+            }
+
+            public BlockTransformer(ICRCConfig config)
+                : this()
+            {
+                _hashSizeInBits = config.HashSizeInBits;
+                _crcTable = GetDataDivisionTable(_hashSizeInBits, config.Polynomial, config.ReflectIn);
+
+                // _mostSignificantShift
+                {
+                    // How much hash must be right-shifted to get the most significant byte (HashSize >= 8) or bit (HashSize < 8)
+                    if (_hashSizeInBits < 8)
+                        _mostSignificantShift = _hashSizeInBits - 1;
+                     else
+                        _mostSignificantShift = _hashSizeInBits - 8;
+                }
+
+                _reflectIn = config.ReflectIn;
+                _reflectOut = config.ReflectOut;
+                _xOrOut = config.XOrOut;
+
+
+                // _hashValue
+                {
+                    var initialValue = config.InitialValue;
+
+                    if (config.ReflectIn)
+                        initialValue = ReflectBits(initialValue, _hashSizeInBits);
+
+                    _hashValue = initialValue;
+                }
+            }
+
+
+            protected override void CopyStateTo(BlockTransformer other)
+            {
+                base.CopyStateTo(other);
+
+                other._hashSizeInBits = _hashSizeInBits;
+                other._crcTable = _crcTable;
+                other._mostSignificantShift = _mostSignificantShift;
+                other._reflectIn = _reflectIn;
+                other._reflectOut = _reflectOut;
+                other._xOrOut = _xOrOut;
+
+                other._hashValue = _hashValue;
+            }
+
+
+            protected override void TransformByteGroupsInternal(ArraySegment<byte> data)
+            {
+                var dataArray = data.Array;
+                var dataOffset = data.Offset;
+                var endOffset = dataOffset + data.Count;
+
+                var tempHashValue = _hashValue;
+
+                var tempHashSizeInBits = _hashSizeInBits;
+                var tempReflectIn = _reflectIn;
+                var tempCrcTable = _crcTable;
+                var tempMostSignificantShift = _mostSignificantShift;
+
+                for (var currentOffset = dataOffset; currentOffset < endOffset; ++currentOffset)
+                {
+                    if (tempHashSizeInBits >= 8)
                     {
-                        if (_config.ReflectIn)
-                            hash = (hash >> 1) ^ crcTable[(byte) (hash & 1) ^ ((byte) (dataBytes[x] >> y) & 1)];
+                        // Process per byte, treating hash differently based on input endianness
+                        if (tempReflectIn)
+                            tempHashValue = (tempHashValue >> 8) ^ tempCrcTable[(byte) tempHashValue ^ dataArray[currentOffset]];
                         else
-                            hash =  (hash << 1) ^ crcTable[(byte) ((hash >> mostSignificantShift) & 1) ^ ((byte) (dataBytes[x] >> (7 - y)) & 1)];
+                            tempHashValue = (tempHashValue << 8) ^ tempCrcTable[((byte) (tempHashValue >> tempMostSignificantShift)) ^ dataArray[currentOffset]];
+
+                    } else {
+                        // Process per bit, treating hash differently based on input endianness
+                        for (var currentBit = 0; currentBit < 8; ++currentBit)
+                        {
+                            if (tempReflectIn)
+                                tempHashValue = (tempHashValue >> 1) ^ tempCrcTable[(byte) (tempHashValue & 1) ^ ((byte) (dataArray[currentOffset] >> currentBit) & 1)];
+                            else
+                                tempHashValue =  (tempHashValue << 1) ^ tempCrcTable[(byte) ((tempHashValue >> tempMostSignificantShift) & 1) ^ ((byte) (dataArray[currentOffset] >> (7 - currentBit)) & 1)];
+                        }
+
+                    }
+                }
+
+                _hashValue = tempHashValue;
+            }
+
+            protected override IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken)
+            {
+                var finalHashValue = _hashValue;
+
+                // Account for mixed-endianness
+                if (_reflectIn ^ _reflectOut)
+                    finalHashValue = ReflectBits(finalHashValue, _hashSizeInBits);
+
+
+                finalHashValue ^= _xOrOut;
+
+                return new HashValue(
+                    ToBytes(finalHashValue, _hashSizeInBits),
+                    _hashSizeInBits);
+            }
+
+            
+            /// <summary>
+            /// Calculates the data-division table for the CRC parameters provided.
+            /// </summary>
+            /// <param name="hashSizeInBits">Length of the produced CRC value, in bits.</param>
+            /// <param name="polynomial">Divisor to use when calculating the CRC.</param>
+            /// <param name="reflectIn">If true, the CRC calculation processes input as big endian bit order.</param>
+            /// <returns>
+            /// Array of UInt64 values that allows a CRC implementation to look up the result
+            /// of dividing the index (data) by the polynomial.
+            /// </returns>
+            /// <remarks>
+            /// Resulting array contains 256 items if settings.Bits &gt;= 8, or 2 items if settings.Bits &lt; 8.
+            /// The table accounts for reflecting the index bits to fix the input endianness,
+            /// but it is not possible completely account for the output endianness if the CRC is mixed-endianness.
+            /// </remarks>
+            private static IReadOnlyList<UInt64> GetDataDivisionTable(int hashSizeInBits, UInt64 polynomial, bool reflectIn)
+            {
+                return _dataDivisionTableCache.GetOrAdd(
+                    (hashSizeInBits, polynomial, reflectIn), 
+                    GetDataDivisionTableInternal);
+            }
+
+            private static IReadOnlyList<UInt64> GetDataDivisionTableInternal((int, UInt64, bool) cacheKey)
+            {
+                var hashSizeInBits = cacheKey.Item1;
+                var polynomial = cacheKey.Item2;
+                var reflectIn = cacheKey.Item3;
+
+
+                var perBitCount = 8;
+
+                if (hashSizeInBits < 8)
+                    perBitCount = 1;
+
+
+                var crcTable = new UInt64[1 << perBitCount];
+                var mostSignificantBit = 1UL << (hashSizeInBits - 1);
+
+
+                for (uint x = 0; x < crcTable.Length; ++x)
+                {
+                    UInt64 curValue = x;
+
+                    if (perBitCount > 1 && reflectIn)
+                        curValue = ReflectBits(curValue, perBitCount);
+
+
+                    curValue <<= (hashSizeInBits - perBitCount);
+
+
+                    for (int y = 0; y < perBitCount; ++y)
+                    {
+                        if ((curValue & mostSignificantBit) > 0UL)
+                            curValue = (curValue << 1) ^ polynomial;
+                        else
+                            curValue <<= 1;
                     }
 
+
+                    if (reflectIn)
+                        curValue = ReflectBits(curValue, hashSizeInBits);
+
+
+                    curValue &= (UInt64.MaxValue >> (64 - hashSizeInBits));
+
+                    crcTable[x] = curValue;
                 }
+
+
+                return crcTable;
             }
-        }
-
-        /// <summary>
-        /// Calculates the data-division table for the CRC parameters provided.
-        /// </summary>
-        /// <param name="hashSizeInBits">Length of the produced CRC value, in bits.</param>
-        /// <param name="polynomial">Divisor to use when calculating the CRC.</param>
-        /// <param name="reflectIn">If true, the CRC calculation processes input as big endian bit order.</param>
-        /// <returns>
-        /// Array of UInt64 values that allows a CRC implementation to look up the result
-        /// of dividing the index (data) by the polynomial.
-        /// </returns>
-        /// <remarks>
-        /// Resulting array contains 256 items if settings.Bits &gt;= 8, or 2 items if settings.Bits &lt; 8.
-        /// The table accounts for reflecting the index bits to fix the input endianness,
-        /// but it is not possible completely account for the output endianness if the CRC is mixed-endianness.
-        /// </remarks>
-        private static IReadOnlyList<UInt64> GetDataDivisionTable(int hashSizeInBits, UInt64 polynomial, bool reflectIn)
-        {
-            return _dataDivisionTableCache.GetOrAdd(
-                (hashSizeInBits, polynomial, reflectIn), 
-                GetDataDivisionTableInternal);
-        }
-
-        private static IReadOnlyList<UInt64> GetDataDivisionTableInternal((int, UInt64, bool) cacheKey)
-        {
-            var hashSizeInBits = cacheKey.Item1;
-            var polynomial = cacheKey.Item2;
-            var reflectIn = cacheKey.Item3;
 
 
-            var perBitCount = 8;
-
-            if (hashSizeInBits < 8)
-                perBitCount = 1;
-
-
-            var crcTable = new UInt64[1 << perBitCount];
-            var mostSignificantBit = 1UL << (hashSizeInBits - 1);
-
-
-            for (uint x = 0; x < crcTable.Length; ++x)
+            private static byte[] ToBytes(UInt64 value, int bitLength)
             {
-                UInt64 curValue = x;
-
-                if (perBitCount > 1 && reflectIn)
-                    curValue = ReflectBits(curValue, perBitCount);
+                value &= (UInt64.MaxValue >> (64 - bitLength));
 
 
-                curValue <<= (hashSizeInBits - perBitCount);
+                var valueBytes = new byte[(bitLength + 7) / 8];
 
-
-                for (int y = 0; y < perBitCount; ++y)
+                for (int x = 0; x < valueBytes.Length; ++x)
                 {
-                    if ((curValue & mostSignificantBit) > 0UL)
-                        curValue = (curValue << 1) ^ polynomial;
-                    else
-                        curValue <<= 1;
+                    valueBytes[x] = (byte)value;
+                    value >>= 8;
                 }
 
-
-                if (reflectIn)
-                    curValue = ReflectBits(curValue, hashSizeInBits);
-
-
-                curValue &= (UInt64.MaxValue >> (64 - hashSizeInBits));
-
-                crcTable[x] = curValue;
+                return valueBytes;
             }
 
-
-            return crcTable;
-        }
-
-
-        private static byte[] ToBytes(UInt64 value, int bitLength)
-        {
-            value &= (UInt64.MaxValue >> (64 - bitLength));
-
-
-            var valueBytes = new byte[(bitLength + 7) / 8];
-
-            for (int x = 0; x < valueBytes.Length; ++x)
+            private static UInt64 ReflectBits(UInt64 value, int bitLength)
             {
-                valueBytes[x] = (byte)value;
-                value >>= 8;
+                UInt64 reflectedValue = 0UL;
+
+                for (int x = 0; x < bitLength; ++x)
+                {
+                    reflectedValue <<= 1;
+
+                    reflectedValue |= (value & 1);
+
+                    value >>= 1;
+                }
+
+                return reflectedValue;
             }
-
-            return valueBytes;
         }
-
-        private static UInt64 ReflectBits(UInt64 value, int bitLength)
-        {
-            UInt64 reflectedValue = 0UL;
-
-            for (int x = 0; x < bitLength; ++x)
-            {
-                reflectedValue <<= 1;
-
-                reflectedValue |= (value & 1);
-
-                value >>= 1;
-            }
-
-            return reflectedValue;
-        }
-
     }
 }

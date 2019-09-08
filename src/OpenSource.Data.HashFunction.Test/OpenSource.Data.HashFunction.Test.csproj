@@ -26,19 +26,16 @@
 
   <ItemGroup>
     <Compile Remove="Blake2\**" />
-    <Compile Remove="CRC\**" />
     <Compile Remove="FarmHash\**" />
     <Compile Remove="MetroHash\**" />
     <Compile Remove="MurmurHash\**" />
     <Compile Remove="xxHash\**" />
     <EmbeddedResource Remove="Blake2\**" />
-    <EmbeddedResource Remove="CRC\**" />
     <EmbeddedResource Remove="FarmHash\**" />
     <EmbeddedResource Remove="MetroHash\**" />
     <EmbeddedResource Remove="MurmurHash\**" />
     <EmbeddedResource Remove="xxHash\**" />
     <None Remove="Blake2\**" />
-    <None Remove="CRC\**" />
     <None Remove="FarmHash\**" />
     <None Remove="MetroHash\**" />
     <None Remove="MurmurHash\**" />
