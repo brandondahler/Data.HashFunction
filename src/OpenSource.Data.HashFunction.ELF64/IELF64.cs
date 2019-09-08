@@ -11,7 +11,7 @@ namespace OpenSource.Data.HashFunction.ELF64
     /// Contrary to the name, the hash algorithm is only designed for 32-bit output hash sizes.
     /// </summary>
     public interface IELF64
-        : IHashFunctionAsync
+        : IStreamableHashFunction
     {
 
     }

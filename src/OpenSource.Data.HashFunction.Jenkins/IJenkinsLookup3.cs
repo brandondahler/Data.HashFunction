@@ -8,7 +8,7 @@ namespace OpenSource.Data.HashFunction.Jenkins
     /// Implementation of Bob Jenkins' Lookup3 hash function as specified at http://burtleburtle.net/bob/c/lookup3.c.
     /// </summary>
     public interface IJenkinsLookup3
-        : IJenkins
+        : IHashFunction
     {
 
         /// <summary>

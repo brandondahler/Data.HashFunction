@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using OpenSource.Data.HashFunction.Core;
 using OpenSource.Data.HashFunction.Core.Utilities;
-using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using OpenSource.Data.HashFunction.FNV.Utilities;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenSource.Data.HashFunction.FNV
 {
@@ -21,7 +14,7 @@ namespace OpenSource.Data.HashFunction.FNV
     /// Abstract implementation of Fowler–Noll–Vo hash function (FNV-1 and FNV-1a) as specified at http://www.isthe.com/chongo/tech/comp/fnv/index.html.
     /// </summary>
     internal abstract class FNV1Base
-        : HashFunctionAsyncBase,
+        : StreamableHashFunctionBase,
             IFNV
     {
 
@@ -37,9 +30,8 @@ namespace OpenSource.Data.HashFunction.FNV
 
 
 
-        private readonly IFNVConfig _config;
-
-        private readonly FNVPrimeOffset _fnvPrimeOffset;
+        protected readonly IFNVConfig _config;
+        protected readonly FNVPrimeOffset _fnvPrimeOffset;
 
 
         /// <summary>
@@ -72,140 +64,113 @@ namespace OpenSource.Data.HashFunction.FNV
         }
 
 
-        /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
+        protected abstract class BlockTransformer_32BitBase<TSelf>
+            : HashFunctionBlockTransformerBase<TSelf>
+            where TSelf : BlockTransformer_32BitBase<TSelf>, new()
         {
-            var prime = _fnvPrimeOffset.Prime;
-            var offset = _fnvPrimeOffset.Offset;
+            protected UInt32 _prime;
 
-            // Handle 32-bit and 64-bit cases in a strongly-typed manner for performance
-            if (_config.HashSizeInBits == 32)
+            protected UInt32 _hashValue;
+
+            public BlockTransformer_32BitBase()
             {
-                var hash = offset[0];
 
-                data.ForEachRead(
-                    (dataBytes, position, length) => {
-                        ProcessBytes32(ref hash, prime[0], dataBytes, position, length);
-                    },
-                    cancellationToken);
+            }
 
-                return BitConverter.GetBytes(hash);
+            public BlockTransformer_32BitBase(FNVPrimeOffset fnvPrimeOffset)
+                : this()
+            {
+                _prime = fnvPrimeOffset.Prime[0];
 
-            } else if (_config.HashSizeInBits == 64) {
-                var hash = ((UInt64) offset[1] << 32) | offset[0];
-                var prime64 = ((UInt64) prime[1] << 32) | prime[0];
-
-
-                data.ForEachRead(
-                    (dataBytes, position, length) => {
-                        ProcessBytes64(ref hash, prime64, dataBytes, position, length);
-                    },
-                    cancellationToken);
-
-                return BitConverter.GetBytes(hash);
+                _hashValue = fnvPrimeOffset.Offset[0];
             }
 
 
-            // Process extended-sized FNV.
+            protected override void CopyStateTo(TSelf other)
             {
-                var hash = offset.ToArray();
+                base.CopyStateTo(other);
 
+                other._prime = _prime;
 
-                data.ForEachRead(
-                    (dataBytes, position, length) => {
-                        ProcessBytes(ref hash, prime, dataBytes, position, length);
-                    },
-                    cancellationToken);
-
-                return UInt32ArrayToBytes(hash)
-                    .ToArray();
+                other._hashValue = _hashValue;
             }
+
+            protected override IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken) =>
+                new HashValue(BitConverter.GetBytes(_hashValue), 32);
         }
         
-        /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
+        protected abstract class BlockTransformer_64BitBase<TSelf>
+            : HashFunctionBlockTransformerBase<TSelf>
+            where TSelf : BlockTransformer_64BitBase<TSelf>, new()
         {
-            var prime = _fnvPrimeOffset.Prime;
-            var offset = _fnvPrimeOffset.Offset;
+            protected UInt64 _prime;
 
-            // Handle 32-bit and 64-bit cases in a strongly-typed manner for performance
-            if (HashSizeInBits == 32)
+            protected UInt64 _hashValue;
+
+            public BlockTransformer_64BitBase()
             {
-                var hash = offset[0];
 
-                await data.ForEachReadAsync(
-                        (dataBytes, position, length) => {
-                            ProcessBytes32(ref hash, prime[0], dataBytes, position, length);
-                        },
-                        cancellationToken)
-                    .ConfigureAwait(false);
+            }
 
-                return BitConverter.GetBytes(hash);
+            public BlockTransformer_64BitBase(FNVPrimeOffset fnvPrimeOffset)
+                : this()
+            {
+                _prime = ((UInt64) fnvPrimeOffset.Prime[1] << 32) | fnvPrimeOffset.Prime[0];
 
-            } else if (HashSizeInBits == 64) {
-                var hash = ((UInt64) offset[1] << 32) | offset[0];
-                var prime64 = ((UInt64) prime[1] << 32) | prime[0];
-
-
-                await data.ForEachReadAsync(
-                        (dataBytes, position, length) => {
-                            ProcessBytes64(ref hash, prime64, dataBytes, position, length);
-                        },
-                        cancellationToken)
-                    .ConfigureAwait(false);
-
-                return BitConverter.GetBytes(hash);
+                _hashValue = ((UInt64) fnvPrimeOffset.Offset[1] << 32) | fnvPrimeOffset.Offset[0];
             }
 
 
-            // Process extended-sized FNV.
+            protected override void CopyStateTo(TSelf other)
             {
-                var hash = offset.ToArray();
+                base.CopyStateTo(other);
 
+                other._prime = _prime;
 
-                await data.ForEachReadAsync(
-                        (dataBytes, position, length) => {
-                            ProcessBytes(ref hash, prime, dataBytes, position, length);
-                        },
-                        cancellationToken)
-                    .ConfigureAwait(false);
-
-                return UInt32ArrayToBytes(hash)
-                    .ToArray();
+                other._hashValue = _hashValue;
             }
+
+            protected override IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken) =>
+                new HashValue(BitConverter.GetBytes(_hashValue), 64);
         }
+        
+        protected abstract class BlockTransformer_ExtendedBase<TSelf>
+            : HashFunctionBlockTransformerBase<TSelf>
+            where TSelf : BlockTransformer_ExtendedBase<TSelf>, new()
+        {
+            protected UInt32[] _prime;
+
+            protected UInt32[] _hashValue;
+            protected int _hashSizeInBytes;
+
+            public BlockTransformer_ExtendedBase()
+            {
+
+            }
+
+            public BlockTransformer_ExtendedBase(FNVPrimeOffset fnvPrimeOffset)
+                : this()
+            {
+                _prime = fnvPrimeOffset.Prime.ToArray();
+
+                _hashValue = fnvPrimeOffset.Offset.ToArray();
+                _hashSizeInBytes = _hashValue.Length * 4;
+            }
 
 
+            protected override void CopyStateTo(TSelf other)
+            {
+                base.CopyStateTo(other);
 
-        /// <summary>
-        /// Apply 32-bit FNV algorithm on all data supplied.
-        /// </summary>
-        /// <param name="hash">Hash value before calculations.</param>
-        /// <param name="prime">FNV prime to use for calculations.</param>
-        /// <param name="data">Data to process.</param>
-        /// <param name="position">The starting index of the data array.</param>
-        /// <param name="length">The length of the data in the data array, starting from the position parameter.</param>
-        protected abstract void ProcessBytes32(ref UInt32 hash, UInt32 prime, byte[] data, int position, int length);
+                other._prime = _prime;
 
-        /// <summary>
-        /// Apply 64-bit FNV algorithm on all data supplied.
-        /// </summary>
-        /// <param name="hash">Hash value before calculations.</param>
-        /// <param name="prime">FNV prime to use for calculations.</param>
-        /// <param name="data">Data to process.</param>
-        /// <param name="position">The starting index of the data array.</param>
-        /// <param name="length">The length of the data in the data array, starting from the position parameter.</param>
-        protected abstract void ProcessBytes64(ref UInt64 hash, UInt64 prime, byte[] data, int position, int length);
+                other._hashValue = _hashValue;
+                other._hashSizeInBytes = _hashSizeInBytes;
+            }
 
-        /// <summary>
-        /// Apply FNV algorithm on all data supplied.
-        /// </summary>
-        /// <param name="hash">Hash value before calculations.</param>
-        /// <param name="prime">FNV prime to use for calculations.</param>
-        /// <param name="data">Data to process.</param>
-        /// <param name="position">The starting index of the data array.</param>
-        /// <param name="length">The length of the data in the data array, starting from the position parameter.</param>
-        protected abstract void ProcessBytes(ref UInt32[] hash, IReadOnlyList<UInt32> prime, byte[] data, int position, int length);
+            protected override IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken) =>
+                new HashValue(UInt32ArrayToBytes(_hashValue), _hashSizeInBytes * 8);
+        }
 
 
         /// <summary>

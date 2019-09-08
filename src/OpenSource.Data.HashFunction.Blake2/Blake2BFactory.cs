@@ -40,7 +40,7 @@ namespace OpenSource.Data.HashFunction.Blake2
         /// <returns>
         /// A <see cref="IBlake2B" /> instance.
         /// </returns>
-        /// <exception cref="ArgumentNullException">config</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
         public IBlake2B Create(IBlake2BConfig config)
         {
             if (config == null)

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace OpenSource.Data.HashFunction.Core.Utilities
 {
     /// <summary>
-    /// Contains utilities to be shared with implementers of <see cref="HashFunctionBase" /> or <see cref="HashFunctionAsyncBase" />.
+    /// Contains utilities to be shared with implementers of <see cref="HashFunctionBase" /> or <see cref="StreamableHashFunctionBase" />.
     /// </summary>
     internal static class NamespaceDoc
     {

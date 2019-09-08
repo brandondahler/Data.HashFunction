@@ -321,7 +321,7 @@ namespace OpenSource.Data.HashFunction.Test.FNV
 
 
         public class IHashFunctionAsync_Tests
-            : IHashFunctionAsync_TestBase<IFNV1a>
+            : IStreamableHashFunction_TestBase<IFNV1a>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {

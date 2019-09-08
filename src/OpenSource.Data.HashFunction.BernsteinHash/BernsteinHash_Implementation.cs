@@ -1,6 +1,6 @@
 ﻿using OpenSource.Data.HashFunction.BernsteinHash;
 using OpenSource.Data.HashFunction.Core;
-using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
+using OpenSource.Data.HashFunction.Core.Utilities;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -9,44 +9,48 @@ using System.Threading.Tasks;
 namespace OpenSource.Data.HashFunction.BernsteinHash
 {
     internal class BernsteinHash_Implementation
-        : HashFunctionAsyncBase,
+        : StreamableHashFunctionBase,
             IBernsteinHash
     {
         public override int HashSizeInBits { get; } = 32;
-        
 
-        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
+
+        public override IHashFunctionBlockTransformer CreateBlockTransformer() =>
+            new BlockTransformer();
+
+
+        private class BlockTransformer
+            : HashFunctionBlockTransformerBase<BlockTransformer>
         {
-            UInt32 h = 0;
-
-            data.ForEachRead(
-                (dataBytes, position, length) => {
-                    ProcessBytes(ref h, dataBytes, position, length);
-                },
-                cancellationToken);
-            
-            return BitConverter.GetBytes(h);
-        }
-        
-        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
-        {
-            UInt32 h = 0;
-
-            await data.ForEachReadAsync(
-                    (dataBytes, position, length) => {
-                        ProcessBytes(ref h, dataBytes, position, length);
-                    },
-                    cancellationToken)
-                .ConfigureAwait(false);
-
-            return BitConverter.GetBytes(h);
-        }
+            private UInt32 _hashValue;
 
 
-        private static void ProcessBytes(ref UInt32 h, byte[] dataBytes, int position, int length)
-        {
-            for (var x = position; x < position + length; ++x)
-                h = (33 * h) + dataBytes[x];
+            protected override void CopyStateTo(BlockTransformer other)
+            {
+                base.CopyStateTo(other);
+
+                other._hashValue = _hashValue;
+            }
+
+            protected override void TransformByteGroupsInternal(ArraySegment<byte> data)
+            {
+                var dataArray = data.Array;
+                var endOffset = data.Offset + data.Count;
+
+                var tempHashValue = _hashValue;
+
+                for (var currentOffset = data.Offset; currentOffset < endOffset; ++currentOffset)
+                    tempHashValue = (33 * tempHashValue) + dataArray[currentOffset];
+
+                _hashValue = tempHashValue;
+            }
+
+            protected override IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken)
+            {
+                return new HashValue(
+                    BitConverter.GetBytes(_hashValue),
+                    32);
+            }
         }
     }
 }

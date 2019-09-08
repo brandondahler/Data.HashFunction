@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenSource.Data.HashFunction.Core;
-using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenSource.Data.HashFunction.Core.Utilities;
 
 namespace OpenSource.Data.HashFunction.ELF64
 {
@@ -18,55 +18,57 @@ namespace OpenSource.Data.HashFunction.ELF64
     /// Contrary to the name, the hash algorithm is only designed for 32-bit output hash sizes.
     /// </summary>
     internal class ELF64_Implementation
-        : HashFunctionAsyncBase,
+        : StreamableHashFunctionBase,
             IELF64
     {
         public override int HashSizeInBits { get; } = 32;
-        
 
-        /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
+
+        public override IHashFunctionBlockTransformer CreateBlockTransformer() =>
+            new BlockTransformer();
+
+
+        private class BlockTransformer
+            : HashFunctionBlockTransformerBase<BlockTransformer>
         {
-            UInt32 hash = 0;
-
-            data.ForEachRead(
-                (dataBytes, position, length) => {
-                    ProcessBytes(ref hash, dataBytes, position, length);
-                },
-                cancellationToken);
-
-            return BitConverter.GetBytes(hash);
-        }
-        
-        /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
-        {
-            UInt32 hash = 0;
-
-            await data.ForEachReadAsync(
-                    (dataBytes, position, length) => {
-                        ProcessBytes(ref hash, dataBytes, position, length);
-                    },
-                    cancellationToken)
-                .ConfigureAwait(false);
-
-            return BitConverter.GetBytes(hash);
-        }
+            private UInt32 _hashValue;
 
 
-        private static void ProcessBytes(ref UInt32 hash, byte[] dataBytes, int position, int length)
-        {
-            for (var x = position; x < position + length; ++x )
+            protected override void CopyStateTo(BlockTransformer other)
             {
-                hash <<= 4;
-                hash += dataBytes[x];
+                base.CopyStateTo(other);
 
-                var tmp = hash & 0xF0000000;
+                other._hashValue = _hashValue;
+            }
 
-                if (tmp != 0)
-                    hash ^= tmp >> 24;
+            protected override void TransformByteGroupsInternal(ArraySegment<byte> data)
+            {
+                var dataArray = data.Array;
+                var endOffset = data.Offset + data.Count;
 
-                hash &= 0x0FFFFFFF;
+                var tempHashValue = _hashValue;
+
+                for (var currentOffset = data.Offset; currentOffset < endOffset; ++currentOffset)
+                {
+                    tempHashValue <<= 4;
+                    tempHashValue += dataArray[currentOffset];
+
+                    var tmp = tempHashValue & 0xF0000000;
+
+                    if (tmp != 0)
+                        tempHashValue ^= tmp >> 24;
+
+                    tempHashValue &= 0x0FFFFFFF;
+                }
+
+                _hashValue = tempHashValue;
+            }
+
+            protected override IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken)
+            {
+                return new HashValue(
+                    BitConverter.GetBytes(_hashValue),
+                    32);
             }
         }
     }

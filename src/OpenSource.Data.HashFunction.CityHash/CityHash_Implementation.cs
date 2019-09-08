@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using OpenSource.Data.HashFunction.CityHash.Utilities;
 using OpenSource.Data.HashFunction.Core;
-using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenSource.Data.HashFunction.Core.Utilities;
 
 namespace OpenSource.Data.HashFunction.CityHash
 {
     internal class CityHash_Implementation
-        : HashFunctionAsyncBase,
+        : HashFunctionBase,
             ICityHash
     {
 
@@ -85,116 +85,80 @@ namespace OpenSource.Data.HashFunction.CityHash
 
         /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
         /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
-        {
-            byte[] hash = null;
-            var dataArray = data.ToArray(cancellationToken);
-            
+        protected override IHashValue ComputeHashInternal(ArraySegment<byte> data, CancellationToken cancellationToken)
+        {   
             switch (_config.HashSizeInBits)
             {
                 case 32:
-                    hash = BitConverter.GetBytes(
-                        ComputeHash32(dataArray));
+                    {
+                        var result = ComputeHash32(data, cancellationToken);
 
-                    break;
+                        return new HashValue(
+                            BitConverter.GetBytes(result),
+                            32);
+                    }
 
                 case 64:
-                    hash = BitConverter.GetBytes(
-                        ComputeHash64(dataArray));
+                    {
 
-                    break;
+                        var result = ComputeHash64(data, cancellationToken);
+
+                        return new HashValue(
+                            BitConverter.GetBytes(result),
+                            64);
+                    }
 
                 case 128:
-                    var result = ComputeHash128(dataArray);
+                    {
+                        var result = ComputeHash128(data, cancellationToken);
 
+                        var hashValueBytes = BitConverter.GetBytes(result.Low)
+                            .Concat(BitConverter.GetBytes(result.High));
 
-                    hash = new byte[16];
-
-                    BitConverter.GetBytes(result.Low)
-                        .CopyTo(hash, 0);
-
-                    BitConverter.GetBytes(result.High)
-                        .CopyTo(hash, 8);
-
-                    break;
+                        return new HashValue(hashValueBytes, 128);
+                    }
 
                 default:
                     throw new NotImplementedException();
             }
-
-            return hash;
         }
-
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
-        /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
-        {
-            byte[] hash = null;
-            var dataArray = await data.ToArrayAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            switch (_config.HashSizeInBits)
-            {
-                case 32:
-                    hash = BitConverter.GetBytes(
-                        ComputeHash32(dataArray));
-
-                    break;
-
-                case 64:
-                    hash = BitConverter.GetBytes(
-                        ComputeHash64(dataArray));
-
-                    break;
-
-                case 128:
-                    var result = ComputeHash128(dataArray);
-
-
-                    hash = new byte[16];
-                    
-                    BitConverter.GetBytes(result.Low)
-                        .CopyTo(hash, 0);
-
-                    BitConverter.GetBytes(result.High)
-                        .CopyTo(hash, 8);
-
-                    break;
-
-                default:
-                    throw new NotImplementedException();
-            }
-
-            return hash;
-        }
-
 
         #region ComputeHash32
 
         /// <summary>32-bit implementation of ComputeHash.</summary>
         /// <param name="data">Data to be hashed.</param>
         /// <returns>UInt32 value representing the hash value.</returns>
-        protected virtual UInt32 ComputeHash32(byte[] data)
+        protected virtual UInt32 ComputeHash32(ArraySegment<byte> data, CancellationToken cancellationToken)
         {
-            if (data.Length <= 24)
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var dataCount = data.Count;
+
+            if (dataCount <= 24)
             {
-                if (data.Length <= 12)
-                    return (data.Length <= 4 ? Hash32Len0to4(data) : Hash32Len5to12(data));
+                if (dataCount <= 12)
+                    return (dataCount <= 4 ? Hash32Len0to4(data) : Hash32Len5to12(data));
                 else
                     return Hash32Len13to24(data);
             }
 
-            // data.Length > 24
-            UInt32 h = (UInt32) data.Length;
-            UInt32 g = (UInt32) data.Length * c1;
-            UInt32 f = g;
 
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+            var endOffset = dataOffset + dataCount;
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // dataCount > 24
+            UInt32 h = (UInt32) dataCount;
+            UInt32 g = (UInt32) dataCount * c1;
+            UInt32 f = g;
             {
-                UInt32 a0 = RotateRight(BitConverter.ToUInt32(data, data.Length - 4) * c1, 17) * c2;
-                UInt32 a1 = RotateRight(BitConverter.ToUInt32(data, data.Length - 8) * c1, 17) * c2;
-                UInt32 a2 = RotateRight(BitConverter.ToUInt32(data, data.Length - 16) * c1, 17) * c2;
-                UInt32 a3 = RotateRight(BitConverter.ToUInt32(data, data.Length - 12) * c1, 17) * c2;
-                UInt32 a4 = RotateRight(BitConverter.ToUInt32(data, data.Length - 20) * c1, 17) * c2;
+                UInt32 a0 = RotateRight(BitConverter.ToUInt32(dataArray, endOffset - 4) * c1, 17) * c2;
+                UInt32 a1 = RotateRight(BitConverter.ToUInt32(dataArray, endOffset - 8) * c1, 17) * c2;
+                UInt32 a2 = RotateRight(BitConverter.ToUInt32(dataArray, endOffset - 16) * c1, 17) * c2;
+                UInt32 a3 = RotateRight(BitConverter.ToUInt32(dataArray, endOffset - 12) * c1, 17) * c2;
+                UInt32 a4 = RotateRight(BitConverter.ToUInt32(dataArray, endOffset - 20) * c1, 17) * c2;
 
                 h ^= a0;
                 h = RotateRight(h, 19);
@@ -215,13 +179,19 @@ namespace OpenSource.Data.HashFunction.CityHash
                 f = f * 5 + 0xe6546b64;
             }
 
-            for (int x = 0; x < (data.Length - 1) / 20; ++x)
+
+            var groupsToProcess = (dataCount - 1) / 20;
+            var groupEndOffset = dataOffset + (groupsToProcess * 20);
+
+            for (int groupOffset = dataOffset; groupOffset < groupEndOffset; groupOffset += 20)
             {
-                UInt32 a0 = RotateRight(BitConverter.ToUInt32(data, 20 * x + 0) * c1, 17) * c2;
-                UInt32 a1 =  BitConverter.ToUInt32(data, 20 * x + 4);
-                UInt32 a2 = RotateRight(BitConverter.ToUInt32(data, 20 * x + 8) * c1, 17) * c2;
-                UInt32 a3 = RotateRight(BitConverter.ToUInt32(data, 20 * x + 12) * c1, 17) * c2;
-                UInt32 a4 =  BitConverter.ToUInt32(data, 20 * x + 16);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                UInt32 a0 = RotateRight(BitConverter.ToUInt32(dataArray, groupOffset + 0) * c1, 17) * c2;
+                UInt32 a1 =  BitConverter.ToUInt32(dataArray, groupOffset + 4);
+                UInt32 a2 = RotateRight(BitConverter.ToUInt32(dataArray, groupOffset + 8) * c1, 17) * c2;
+                UInt32 a3 = RotateRight(BitConverter.ToUInt32(dataArray, groupOffset + 12) * c1, 17) * c2;
+                UInt32 a4 =  BitConverter.ToUInt32(dataArray, groupOffset + 16);
 
                 h ^= a0;
                 h = RotateRight(h, 18);
@@ -250,6 +220,8 @@ namespace OpenSource.Data.HashFunction.CityHash
                 Permute3(ref f, ref h, ref g);
             }
 
+            cancellationToken.ThrowIfCancellationRequested();
+
             g = RotateRight(g, 11) * c1;
             g = RotateRight(g, 17) * c1;
 
@@ -267,44 +239,59 @@ namespace OpenSource.Data.HashFunction.CityHash
         }
 
 
-        private UInt32 Hash32Len0to4(byte[] data) 
+        private UInt32 Hash32Len0to4(ArraySegment<byte> data) 
         {
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+            var dataCount = data.Count;
+
+            var endOffset = dataOffset + dataCount;
+
             UInt32 b = 0;
             UInt32 c = 9;
 
-            foreach (var v in data)
+            for (var currentOffset = dataOffset; currentOffset < endOffset; currentOffset += 1)
             {
-                b = b * c1 + v;
+                b = b * c1 + dataArray[currentOffset];
                 c ^= b;
             }
 
-            return Mix(Mur(b, Mur((UInt32) data.Length, c)));
+            return Mix(Mur(b, Mur((UInt32) dataCount, c)));
         }
 
-        private UInt32 Hash32Len5to12(byte[] data) 
+        private UInt32 Hash32Len5to12(ArraySegment<byte> data) 
         {
-            UInt32 a = (UInt32) data.Length;
-            UInt32 b = (UInt32) data.Length * 5;
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+            var dataCount = data.Count;
+
+            UInt32 a = (UInt32) dataCount;
+            UInt32 b = (UInt32) dataCount * 5;
 
             UInt32 c = 9;
             UInt32 d = b;
 
-            a += BitConverter.ToUInt32(data, 0);
-            b += BitConverter.ToUInt32(data, data.Length - 4);
-            c += BitConverter.ToUInt32(data, (data.Length >> 1) & 4);
+            a += BitConverter.ToUInt32(dataArray, dataOffset);
+            b += BitConverter.ToUInt32(dataArray, dataOffset + dataCount - 4);
+            c += BitConverter.ToUInt32(dataArray, dataOffset + ((dataCount >> 1) & 4));
 
             return Mix(Mur(c, Mur(b, Mur(a, d))));
         }
 
-        private UInt32 Hash32Len13to24(byte[] data) 
+        private UInt32 Hash32Len13to24(ArraySegment<byte> data) 
         {
-            UInt32 a = BitConverter.ToUInt32(data, (data.Length >> 1) - 4);
-            UInt32 b = BitConverter.ToUInt32(data, 4);
-            UInt32 c = BitConverter.ToUInt32(data, data.Length - 8);
-            UInt32 d = BitConverter.ToUInt32(data, data.Length >> 1);
-            UInt32 e = BitConverter.ToUInt32(data, 0);
-            UInt32 f = BitConverter.ToUInt32(data, data.Length - 4);
-            UInt32 h = (UInt32) data.Length;
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+            var dataCount = data.Count;
+
+
+            UInt32 a = BitConverter.ToUInt32(dataArray, dataOffset + (dataCount >> 1) - 4);
+            UInt32 b = BitConverter.ToUInt32(dataArray, dataOffset + 4);
+            UInt32 c = BitConverter.ToUInt32(dataArray, dataOffset + dataCount - 8);
+            UInt32 d = BitConverter.ToUInt32(dataArray, dataOffset + (dataCount >> 1));
+            UInt32 e = BitConverter.ToUInt32(dataArray, dataOffset);
+            UInt32 f = BitConverter.ToUInt32(dataArray, dataOffset + dataCount - 4);
+            UInt32 h = (UInt32) dataCount;
             
             return Mix(Mur(f, Mur(e, Mur(d, Mur(c, Mur(b, Mur(a, h)))))));
         }
@@ -316,41 +303,55 @@ namespace OpenSource.Data.HashFunction.CityHash
         /// <summary>64-bit implementation of ComputeHash.</summary>
         /// <param name="data">Data to be hashed.</param>
         /// <returns>UInt64 value representing the hash value.</returns>
-        protected virtual UInt64 ComputeHash64(byte[] data) 
+        protected virtual UInt64 ComputeHash64(ArraySegment<byte> data, CancellationToken cancellationToken) 
         {
-            if (data.Length <= 32) 
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var dataCount = data.Count;
+
+            if (dataCount <= 32) 
             {
-                if (data.Length <= 16) {
+                if (dataCount <= 16) {
                     return HashLen0to16(data);
                 } else {
                     return HashLen17to32(data);
                 }
-            } else if (data.Length <= 64) {
+            } else if (dataCount <= 64) {
                 return HashLen33to64(data);
             }
 
+
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+            var endOffset = dataOffset + dataCount;
+
             // For strings over 64 bytes we hash the end first, and then as we
             // loop we keep 56 bytes of state: v, w, x, y, and z.
-            UInt64 x = BitConverter.ToUInt64(data, data.Length - 40);
-            UInt64 y = BitConverter.ToUInt64(data,  data.Length - 16) + BitConverter.ToUInt64(data,  data.Length - 56);
+            UInt64 x = BitConverter.ToUInt64(dataArray, endOffset - 40);
+            UInt64 y = BitConverter.ToUInt64(dataArray, endOffset - 16) + BitConverter.ToUInt64(dataArray, endOffset - 56);
             UInt64 z = HashLen16(
-                BitConverter.ToUInt64(data,  data.Length - 48) + (UInt64) data.Length, 
-                BitConverter.ToUInt64(data,  data.Length - 24));
+                BitConverter.ToUInt64(dataArray, endOffset - 48) + (UInt64) dataCount, 
+                BitConverter.ToUInt64(dataArray, endOffset - 24));
             
-            UInt128 v = WeakHashLen32WithSeeds(data,  data.Length - 64, (UInt64) data.Length, z);
-            UInt128 w = WeakHashLen32WithSeeds(data,  data.Length - 32, y + k1, x);
+            UInt128 v = WeakHashLen32WithSeeds(dataArray, endOffset - 64, (UInt64) dataCount, z);
+            UInt128 w = WeakHashLen32WithSeeds(dataArray, endOffset - 32, y + k1, x);
 
-            x = x * k1 + BitConverter.ToUInt64(data, 0);
-            
-            for (int i = 0; i < (data.Length >> 6); ++i)
+            x = x * k1 + BitConverter.ToUInt64(dataArray, 0);
+
+            // For each 64-byte chunk
+            var groupEndOffset = dataOffset + (dataCount - (dataCount % 64));
+
+            for (var currentOffset = dataOffset; currentOffset < groupEndOffset; currentOffset += 64)
             {
-                x = RotateRight(x + y + v.Low + BitConverter.ToUInt64(data, 64 * i + 8), 37) * k1;
-                y = RotateRight(y + v.High + BitConverter.ToUInt64(data, 64 * i + 48), 42) * k1;
+                cancellationToken.ThrowIfCancellationRequested();
+
+                x = RotateRight(x + y + v.Low + BitConverter.ToUInt64(dataArray, currentOffset + 8), 37) * k1;
+                y = RotateRight(y + v.High + BitConverter.ToUInt64(dataArray, currentOffset + 48), 42) * k1;
                 x ^= w.High;
-                y += v.Low + BitConverter.ToUInt64(data, 64 * i + 40);
+                y += v.Low + BitConverter.ToUInt64(dataArray, currentOffset + 40);
                 z = RotateRight(z + w.Low, 33) * k1;
-                v = WeakHashLen32WithSeeds(data, 64 * i, v.High * k1, x + w.Low);
-                w = WeakHashLen32WithSeeds(data, 64 * i + 32, z + w.High, y + BitConverter.ToUInt64(data, 64 * i + 16));
+                v = WeakHashLen32WithSeeds(dataArray, currentOffset, v.High * k1, x + w.Low);
+                w = WeakHashLen32WithSeeds(dataArray, currentOffset + 32, z + w.High, y + BitConverter.ToUInt64(dataArray, currentOffset + 16));
                 
                 UInt64 temp = x;
                 x = z;
@@ -379,34 +380,40 @@ namespace OpenSource.Data.HashFunction.CityHash
             return b;
         }
 
-        private UInt64 HashLen0to16(byte[] data) 
+        private UInt64 HashLen0to16(ArraySegment<byte> data) 
         {
-            if (data.Length >= 8) 
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+            var dataCount = data.Count;
+
+            var endOffset = dataOffset + dataCount;
+
+            if (dataCount >= 8) 
             {
-                UInt64 mul = k2 + (UInt64) data.Length * 2;
-                UInt64 a = BitConverter.ToUInt64(data, 0) + k2;
-                UInt64 b = BitConverter.ToUInt64(data, data.Length - 8);
+                UInt64 mul = k2 + (UInt64) dataCount * 2;
+                UInt64 a = BitConverter.ToUInt64(dataArray, dataOffset) + k2;
+                UInt64 b = BitConverter.ToUInt64(dataArray, endOffset - 8);
                 UInt64 c = RotateRight(b, 37) * mul + a;
                 UInt64 d = (RotateRight(a, 25) + b) * mul;
 
                 return HashLen16(c, d, mul);
             }
 
-            if (data.Length >= 4) 
+            if (dataCount >= 4) 
             {
-                UInt64 mul = k2 + (UInt64) data.Length * 2;
-                UInt64 a = BitConverter.ToUInt32(data, 0);
-                return HashLen16((UInt64) data.Length + (a << 3), BitConverter.ToUInt32(data, data.Length - 4), mul);
+                UInt64 mul = k2 + (UInt64) dataCount * 2;
+                UInt64 a = BitConverter.ToUInt32(dataArray, dataOffset);
+                return HashLen16((UInt64) dataCount + (a << 3), BitConverter.ToUInt32(dataArray, endOffset - 4), mul);
             }
 
-            if (data.Length > 0) 
+            if (dataCount > 0) 
             {
-                byte a = data[0];
-                byte b = data[data.Length >> 1];
-                byte c = data[data.Length - 1];
+                byte a = dataArray[0];
+                byte b = dataArray[dataOffset + (dataCount >> 1)];
+                byte c = dataArray[endOffset - 1];
 
                 UInt32 y = (UInt32) a + ((UInt32) b << 8);
-                UInt32 z = (UInt32) data.Length + ((UInt32) c << 2);
+                UInt32 z = (UInt32) dataCount + ((UInt32) c << 2);
 
                 return Mix((UInt64) (y * k2 ^ z * k0)) * k2;
             }
@@ -416,13 +423,19 @@ namespace OpenSource.Data.HashFunction.CityHash
 
         // This probably works well for 16-byte strings as well, but it may be overkill
         // in that case.
-        private UInt64 HashLen17to32(byte[] data) 
+        private UInt64 HashLen17to32(ArraySegment<byte> data) 
         {
-            UInt64 mul = k2 + (UInt64) data.Length * 2;
-            UInt64 a = BitConverter.ToUInt64(data, 0) * k1;
-            UInt64 b = BitConverter.ToUInt64(data, 8);
-            UInt64 c = BitConverter.ToUInt64(data, data.Length - 8) * mul;
-            UInt64 d = BitConverter.ToUInt64(data, data.Length - 16) * k2;
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+            var dataCount = data.Count;
+
+            var endOffset = dataOffset + dataCount;
+
+            UInt64 mul = k2 + (UInt64) dataCount * 2;
+            UInt64 a = BitConverter.ToUInt64(dataArray, dataOffset) * k1;
+            UInt64 b = BitConverter.ToUInt64(dataArray, dataOffset + 8);
+            UInt64 c = BitConverter.ToUInt64(dataArray, endOffset - 8) * mul;
+            UInt64 d = BitConverter.ToUInt64(dataArray, endOffset - 16) * k2;
 
             return HashLen16(
                 RotateRight(a + b, 43) +
@@ -461,17 +474,23 @@ namespace OpenSource.Data.HashFunction.CityHash
         }
 
         // Return an 8-byte hash for 33 to 64 bytes.
-        private UInt64 HashLen33to64(byte[] data) 
+        private UInt64 HashLen33to64(ArraySegment<byte> data) 
         {
-            UInt64 mul = k2 + (UInt64) data.Length * 2;
-            UInt64 a = BitConverter.ToUInt64(data, 0) * k2;
-            UInt64 b = BitConverter.ToUInt64(data, 8);
-            UInt64 c = BitConverter.ToUInt64(data, data.Length - 24);
-            UInt64 d = BitConverter.ToUInt64(data, data.Length - 32);
-            UInt64 e = BitConverter.ToUInt64(data, 16) * k2;
-            UInt64 f = BitConverter.ToUInt64(data, 24) * 9;
-            UInt64 g = BitConverter.ToUInt64(data, data.Length - 8);
-            UInt64 h = BitConverter.ToUInt64(data, data.Length - 16) * mul;
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+            var dataCount = data.Count;
+
+            var endOffset = dataOffset + dataCount;
+
+            UInt64 mul = k2 + (UInt64) dataCount * 2;
+            UInt64 a = BitConverter.ToUInt64(dataArray, dataOffset) * k2;
+            UInt64 b = BitConverter.ToUInt64(dataArray, dataOffset + 8);
+            UInt64 c = BitConverter.ToUInt64(dataArray, endOffset - 24);
+            UInt64 d = BitConverter.ToUInt64(dataArray, endOffset - 32);
+            UInt64 e = BitConverter.ToUInt64(dataArray, dataOffset + 16) * k2;
+            UInt64 f = BitConverter.ToUInt64(dataArray, dataOffset + 24) * 9;
+            UInt64 g = BitConverter.ToUInt64(dataArray, endOffset - 8);
+            UInt64 h = BitConverter.ToUInt64(dataArray, endOffset - 16) * mul;
 
             UInt64 u = RotateRight(a + g,43) + (RotateRight(b, 30) + c) * 9;
             UInt64 v = ((a + g) ^ d) + f + 1;
@@ -492,115 +511,104 @@ namespace OpenSource.Data.HashFunction.CityHash
         /// <summary>128-bit implementation of ComputeHash.</summary>
         /// <param name="data">Data to be hashed.</param>
         /// <returns>UInt128 value representing the hash value.</returns>
-        private UInt128 ComputeHash128(byte[] data) {
-            return 
-                data.Length >= 16 ?
-                CityHash128WithSeed(
-                    data.Skip(16).ToArray(), 
-                    new UInt128(
-                        BitConverter.ToUInt64(data, 0), 
-                        BitConverter.ToUInt64(data, 8) + k0)) :
-                CityHash128WithSeed(
-                    data,
-                    new UInt128(k0, k1));
-        }
-
-
-        // A subroutine for CityHash128().  Returns a decent 128-bit hash for strings
-        // of any length representable in signed long.  Based on City and Murmur.
-        private UInt128 CityMurmur(byte[] data, UInt128 seed) {
-            UInt64 a = seed.Low;
-            UInt64 b = seed.High;
-            UInt64 c = 0;
-            UInt64 d = 0;
-
-            int l = data.Length - 16;
-            if (l <= 0) {  // len <= 16
-                a = Mix(a * k1) * k1;
-                c = b * k1 + HashLen0to16(data);
-                d = Mix(a + (data.Length >= 8 ? BitConverter.ToUInt64(data, 0) : c));
-            } else {  // len > 16
-                c = HashLen16(BitConverter.ToUInt64(data, data.Length - 8) + k1, a);
-                d = HashLen16(b + (UInt64) data.Length, c + BitConverter.ToUInt64(data, data.Length - 16));
-                a += d;
-
-                for (int i = 0; i < (data.Length - 1) / 16; ++i)
-                {
-                    a ^= Mix(BitConverter.ToUInt64(data, i * 16) * k1) * k1;
-                    a *= k1;
-                    b ^= a;
-                    c ^= Mix(BitConverter.ToUInt64(data, i * 16 + 8) * k1) * k1;
-                    c *= k1;
-                    d ^= c;
-                }
-
-            }
-            a = HashLen16(a, c);
-            b = HashLen16(d, b);
-            return new UInt128(a ^ b, HashLen16(b, a));
-        }
-        
-        private UInt128 CityHash128WithSeed(byte[] data, UInt128 seed)
+        private UInt128 ComputeHash128(ArraySegment<byte> data, CancellationToken cancellationToken)
         {
-            if (data.Length < 128) {
+            var dataCount = data.Count;
+
+            if (dataCount < 16)
+                return CityHash128WithSeed(data, new UInt128(k0, k1), cancellationToken);
+
+
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+
+            return CityHash128WithSeed(
+                new ArraySegment<byte>(dataArray, dataOffset + 16, dataCount - 16),
+                new UInt128(
+                    BitConverter.ToUInt64(dataArray, dataOffset),
+                    BitConverter.ToUInt64(dataArray, dataOffset + 8) + k0),
+                cancellationToken);
+        }
+
+        private UInt128 CityHash128WithSeed(ArraySegment<byte> data, UInt128 seed, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var dataCount = data.Count;
+
+            if (dataCount < 128) {
                 return CityMurmur(data, seed);
             }
+
+
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+
+            var endOffset = dataOffset + dataCount;
 
             // We expect len >= 128 to be the common case.  Keep 56 bytes of state:
             // v, w, x, y, and z.
             UInt128 v;
             {
-                var vLow = RotateRight(seed.High ^ k1, 49) * k1 + BitConverter.ToUInt64(data, 0);
+                var vLow = RotateRight(seed.High ^ k1, 49) * k1 + BitConverter.ToUInt64(dataArray, dataOffset);
                 v = new UInt128(
                     vLow,
-                    RotateRight(vLow, 42) * k1 + BitConverter.ToUInt64(data, 8));
+                    RotateRight(vLow, 42) * k1 + BitConverter.ToUInt64(dataArray, dataOffset + 8));
             }
 
 
             UInt128 w = new UInt128(
-                RotateRight(seed.High + ((UInt64) data.Length * k1), 35) * k1 + seed.Low,
-                RotateRight(seed.Low + BitConverter.ToUInt64(data, 88), 53) * k1);
+                RotateRight(seed.High + ((UInt64) dataCount * k1), 35) * k1 + seed.Low,
+                RotateRight(seed.Low + BitConverter.ToUInt64(dataArray, dataOffset + 88), 53) * k1);
 
             UInt64 x = seed.Low;
             UInt64 y = seed.High;
-            UInt64 z = (UInt64) data.Length * k1;
+            UInt64 z = (UInt64) dataCount * k1;
 
 
 
-            // This is the same inner loop as CityHash64(), manually unrolled.
-            for (int i = 0; i < data.Length / 128; ++i)
+            // This is the same inner loop as CityHash64()
+            int lastGroupEndOffset;
             {
-                x = RotateRight(x + y + v.Low + BitConverter.ToUInt64(data, (128 * i) + 8), 37) * k1;
-                y = RotateRight(y + v.High + BitConverter.ToUInt64(data, (128 * i) + 48), 42) * k1;
-                x ^= w.High;
-                y += v.Low + BitConverter.ToUInt64(data, (128 * i) + 40);
-                z = RotateRight(z + w.Low, 33) * k1;
-                v = WeakHashLen32WithSeeds(data, 128 * i, v.High * k1, x + w.Low);
-                w = WeakHashLen32WithSeeds(data, (128 * i) + 32, z + w.High, y + BitConverter.ToUInt64(data, (128 * i) + 16));
+                var groupEndOffset = dataOffset + (dataCount - (dataCount % 128));
 
+                for (var groupCurrentOffset = dataOffset; groupCurrentOffset < groupEndOffset; groupCurrentOffset += 128)
                 {
-                    UInt64 temp = z;
-                    z = x;
-                    x = temp;
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    x = RotateRight(x + y + v.Low + BitConverter.ToUInt64(dataArray, groupCurrentOffset + 8), 37) * k1;
+                    y = RotateRight(y + v.High + BitConverter.ToUInt64(dataArray, groupCurrentOffset + 48), 42) * k1;
+                    x ^= w.High;
+                    y += v.Low + BitConverter.ToUInt64(dataArray, groupCurrentOffset + 40);
+                    z = RotateRight(z + w.Low, 33) * k1;
+                    v = WeakHashLen32WithSeeds(dataArray, groupCurrentOffset, v.High * k1, x + w.Low);
+                    w = WeakHashLen32WithSeeds(dataArray, groupCurrentOffset + 32, z + w.High, y + BitConverter.ToUInt64(dataArray, groupCurrentOffset + 16));
+
+                    {
+                        UInt64 temp = z;
+                        z = x;
+                        x = temp;
+                    }
+
+                    x = RotateRight(x + y + v.Low + BitConverter.ToUInt64(dataArray, groupCurrentOffset + 72), 37) * k1;
+                    y = RotateRight(y + v.High + BitConverter.ToUInt64(dataArray, groupCurrentOffset + 112), 42) * k1;
+                    x ^= w.High;
+                    y += v.Low + BitConverter.ToUInt64(dataArray, groupCurrentOffset + 104);
+                    z = RotateRight(z + w.Low, 33) * k1;
+                    v = WeakHashLen32WithSeeds(dataArray, groupCurrentOffset + 64, v.High * k1, x + w.Low);
+                    w = WeakHashLen32WithSeeds(dataArray, groupCurrentOffset + 96, z + w.High, y + BitConverter.ToUInt64(dataArray, groupCurrentOffset + 80));
+
+                    {
+                        UInt64 temp = z;
+                        z = x;
+                        x = temp;
+                    }
                 }
 
-                x = RotateRight(x + y + v.Low + BitConverter.ToUInt64(data, (128 * i) + 72), 37) * k1;
-                y = RotateRight(y + v.High + BitConverter.ToUInt64(data, (128 * i) + 112), 42) * k1;
-                x ^= w.High;
-                y += v.Low + BitConverter.ToUInt64(data, (128 * i) + 104);
-                z = RotateRight(z + w.Low, 33) * k1;
-                v = WeakHashLen32WithSeeds(data, (128 * i) + 64, v.High * k1, x + w.Low);
-                w = WeakHashLen32WithSeeds(data, (128 * i) + 96, z + w.High, y + BitConverter.ToUInt64(data, (128 * i) + 80));
-
-                {
-                    UInt64 temp = z;
-                    z = x;
-                    x = temp;
-                }
-
-
+                lastGroupEndOffset = groupEndOffset;
             }
 
+            cancellationToken.ThrowIfCancellationRequested();
 
             x += RotateRight(v.Low + z, 49) * k0;
             y = y * k0 + RotateRight(w.High, 37);
@@ -609,17 +617,23 @@ namespace OpenSource.Data.HashFunction.CityHash
             v = new UInt128(v.Low * k0, v.High);
 
 
-            
-            // If 0 < len < 128, hash up to 4 chunks of 32 bytes each from the end of s.
-            for (int i = 1; i <= (((data.Length % 128) + 31) / 32); ++i) 
+
+            // Hash up to 4 chunks of 32 bytes each from the end of data.
             {
-                y = RotateRight(x + y, 42) * k0 + v.High;
-                w = new UInt128(w.Low + BitConverter.ToUInt64(data, data.Length - (32 * i) + 16), w.High);
-                x = x * k0 + w.Low;
-                z += w.High + BitConverter.ToUInt64(data, data.Length - (32 * i));
-                w = new UInt128(w.Low, w.High + v.Low);
-                v = WeakHashLen32WithSeeds(data, data.Length - (32 * i), v.Low + z, v.High);
-                v = new UInt128(v.Low * k0, v.High);
+                var groupEndOffset = lastGroupEndOffset - 32;
+
+                for (var groupCurrentOffset = endOffset - 32; groupCurrentOffset > groupEndOffset; groupCurrentOffset -= 32) 
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    y = RotateRight(x + y, 42) * k0 + v.High;
+                    w = new UInt128(w.Low + BitConverter.ToUInt64(dataArray, groupCurrentOffset + 16), w.High);
+                    x = x * k0 + w.Low;
+                    z += w.High + BitConverter.ToUInt64(dataArray, groupCurrentOffset);
+                    w = new UInt128(w.Low, w.High + v.Low);
+                    v = WeakHashLen32WithSeeds(dataArray, groupCurrentOffset, v.Low + z, v.High);
+                    v = new UInt128(v.Low * k0, v.High);
+                }
             }
 
             // At this point our 56 bytes of state should contain more than
@@ -632,7 +646,55 @@ namespace OpenSource.Data.HashFunction.CityHash
                 HashLen16(x + v.High, w.High) + y,
                 HashLen16(x + w.High, y + v.High));
         }
+        
 
+
+        // A subroutine for CityHash128().  Returns a decent 128-bit hash for strings
+        // of any length representable in signed long.  Based on City and Murmur.
+        private UInt128 CityMurmur(ArraySegment<byte> data, UInt128 seed)
+        {
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+            var dataCount = data.Count;
+
+            var endOffset = dataOffset + dataCount;
+
+            UInt64 a = seed.Low;
+            UInt64 b = seed.High;
+            UInt64 c;
+            UInt64 d;
+
+            if (dataCount <= 16)
+            {  
+                // len <= 16
+                a = Mix(a * k1) * k1;
+                c = b * k1 + HashLen0to16(data);
+                d = Mix(a + (dataCount >= 8 ? BitConverter.ToUInt64(dataArray, dataOffset) : c));
+
+            } else {  
+                // len > 16
+                c = HashLen16(BitConverter.ToUInt64(dataArray, endOffset - 8) + k1, a);
+                d = HashLen16(b + (UInt64) dataCount, c + BitConverter.ToUInt64(dataArray, endOffset - 16));
+                a += d;
+
+                var groupEndOffset = dataOffset + dataCount - 16;
+
+                for (var groupCurrentOffset = dataOffset; groupCurrentOffset < groupEndOffset; groupCurrentOffset += 16)
+                {
+                    a ^= Mix(BitConverter.ToUInt64(dataArray, groupCurrentOffset) * k1) * k1;
+                    a *= k1;
+                    b ^= a;
+                    c ^= Mix(BitConverter.ToUInt64(dataArray, groupCurrentOffset + 8) * k1) * k1;
+                    c *= k1;
+                    d ^= c;
+                }
+            }
+
+            a = HashLen16(a, c);
+            b = HashLen16(d, b);
+            return new UInt128(a ^ b, HashLen16(b, a));
+        }
+        
         #endregion
 
         #region Shared Utilities

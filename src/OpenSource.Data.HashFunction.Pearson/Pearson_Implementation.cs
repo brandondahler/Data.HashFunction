@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using OpenSource.Data.HashFunction.Core;
 using OpenSource.Data.HashFunction.Core.Utilities;
-using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,7 +15,7 @@ namespace OpenSource.Data.HashFunction.Pearson
     ///   http://cs.mwsu.edu/~griffin/courses/2133/downloads/Spring11/p677-pearson.pdf.
     /// </summary>
     internal class Pearson_Implementation
-        : HashFunctionAsyncBase,
+        : StreamableHashFunctionBase,
             IPearson
     {
 
@@ -67,53 +65,81 @@ namespace OpenSource.Data.HashFunction.Pearson
 
 
 
-        /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
+        public override IHashFunctionBlockTransformer CreateBlockTransformer()
         {
-            var h = new byte[HashSizeInBits / 8];
-            bool firstByte = true;
-
-            data.ForEachRead(
-                (dataBytes, position, length) => {
-                    ProcessBytes(ref h, ref firstByte, dataBytes, position, length);
-                },
-                cancellationToken);
-
-            return h;
-        }
-        
-        /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
-        {
-            var h = new byte[HashSizeInBits / 8];
-            bool firstByte = true;
-
-            await data.ForEachReadAsync(
-                    (dataBytes, position, length) => {
-                        ProcessBytes(ref h, ref firstByte, dataBytes, position, length);
-                    },
-                    cancellationToken)
-                .ConfigureAwait(false);
-
-            return h;
+            return new BlockTransformer(_config);
         }
 
-
-        private void ProcessBytes(ref byte[] h, ref bool firstByte, byte[] dataBytes, int position, int length)
+        private class BlockTransformer
+            : HashFunctionBlockTransformerBase<BlockTransformer>
         {
-            var table = _config.Table;
+            private IReadOnlyList<byte> _table;
 
-            for (var x = position; x < position + length; ++x)
+            private bool _anyBytesProcessed;
+            private byte[] _hashValue;
+
+            public BlockTransformer()
             {
-                for (int y = 0; y < HashSizeInBits / 8; ++y)
+
+            }
+
+            public BlockTransformer(IPearsonConfig config)
+                : this()
+            {
+                _table = config.Table;
+
+                _anyBytesProcessed = false;
+                _hashValue = new byte[config.HashSizeInBits / 8];
+            }
+
+            protected override void CopyStateTo(BlockTransformer other)
+            {
+                base.CopyStateTo(other);
+
+                other._table = _table;
+
+                other._anyBytesProcessed = false;
+
+                // _hashValue
                 {
-                    if (!firstByte)
-                        h[y] = table[h[y] ^ dataBytes[x]];
-                    else
-                        h[y] = table[(dataBytes[x] + y) & 0xff];
+                    other._hashValue = new byte[_hashValue.Length];
+
+                    Array.Copy(_hashValue, other._hashValue, _hashValue.Length);
+                }
+            }
+
+            protected override void TransformByteGroupsInternal(ArraySegment<byte> data)
+            {
+                var dataArray = data.Array;
+                var dataCount = data.Count;
+                var endOffset = data.Offset + dataCount;
+
+                var tempHashValue = _hashValue;
+                var tempAnyBytesProcessed = _anyBytesProcessed;
+
+                var tempTable = _table;
+                var tempHashValueLength = tempHashValue.Length;
+
+
+                for (var currentOffset = data.Offset; currentOffset < endOffset; ++currentOffset)
+                {
+                    for (int y = 0; y < tempHashValueLength; ++y)
+                    {
+                        if (tempAnyBytesProcessed)
+                            tempHashValue[y] = tempTable[tempHashValue[y] ^ dataArray[currentOffset]];
+                        else
+                            tempHashValue[y] = tempTable[(dataArray[currentOffset] + y) & 0xff];
+                    }
+
+                    tempAnyBytesProcessed = true;
                 }
 
-                firstByte = false;
+                _anyBytesProcessed = tempAnyBytesProcessed;
+            }
+
+            protected override IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken)
+            {
+                return new HashValue(_hashValue, _hashValue.Length * 8);
             }
         }
     }

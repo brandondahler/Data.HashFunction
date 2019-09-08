@@ -16,8 +16,8 @@ using OpenSource.Data.HashFunction.Test._Utilities;
 
 namespace OpenSource.Data.HashFunction.Test
 {
-    public abstract class IHashFunction_TestBase<IHashFunctionT>
-        where IHashFunctionT : class, IHashFunction
+    public abstract class IHashFunction_TestBase<THashFunction>
+        where THashFunction : IHashFunction
     {
         protected abstract IEnumerable<KnownValue> KnownValues { get; }
         
@@ -34,24 +34,6 @@ namespace OpenSource.Data.HashFunction.Test
                 Assert.Equal(
                     new HashValue(knownValue.ExpectedValue.Take((hf.HashSizeInBits + 7) / 8), hf.HashSizeInBits), 
                     hashResults);
-            }
-        }
-
-        [Fact]
-        public void IHashFunction_ComputeHash_Stream_Seekable_MatchesKnownValues()
-        {
-            foreach (var knownValue in KnownValues)
-            {
-                var hf = CreateHashFunction(knownValue.HashSize);
-
-                using (var ms = new MemoryStream(knownValue.TestValue))
-                {
-                    var hashResults = hf.ComputeHash(ms);
-
-                    Assert.Equal(
-                        new HashValue(knownValue.ExpectedValue.Take((hf.HashSizeInBits + 7) / 8), hf.HashSizeInBits), 
-                        hashResults);
-                }
             }
         }
 
@@ -93,7 +75,7 @@ namespace OpenSource.Data.HashFunction.Test
         }
 
 
-        protected abstract IHashFunctionT CreateHashFunction(int hashSize);
+        protected abstract THashFunction CreateHashFunction(int hashSize);
 
 
         private static byte[] ToBytes(UInt64 value, int bitLength)

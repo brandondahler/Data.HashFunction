@@ -20,7 +20,7 @@ namespace OpenSource.Data.HashFunction.CityHash
     /// </summary>
     /// <seealso cref="IHashFunctionAsync" />
     public interface ICityHash
-        : IHashFunctionAsync
+        : IHashFunction
     {
         /// <summary>
         /// Configuration used when creating this instance.

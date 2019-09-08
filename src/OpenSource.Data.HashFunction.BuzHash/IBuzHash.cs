@@ -12,7 +12,7 @@ namespace OpenSource.Data.HashFunction.BuzHash
     /// </summary>
     /// <seealso cref="IHashFunctionAsync" />
     public interface IBuzHash
-        : IHashFunctionAsync
+        : IStreamableHashFunction
     {
 
         /// <summary>

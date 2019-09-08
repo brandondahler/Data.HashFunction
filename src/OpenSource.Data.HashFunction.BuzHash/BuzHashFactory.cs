@@ -41,7 +41,7 @@ namespace OpenSource.Data.HashFunction.BuzHash
         /// <returns>
         /// A <see cref="IBuzHash" /> instance.
         /// </returns>
-        /// <exception cref="ArgumentNullException">config</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
         public IBuzHash Create(IBuzHashConfig config)
         {
             if (config == null)

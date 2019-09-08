@@ -8,7 +8,7 @@ namespace OpenSource.Data.HashFunction.SpookyHash
     /// Implementation of SpookyHash V1 or SpookyHash V2 as specified at http://burtleburtle.net/bob/hash/spooky.html.
     /// </summary>
     public interface ISpookyHash
-        : IHashFunctionAsync
+        : IStreamableHashFunction
     {
 
         /// <summary>

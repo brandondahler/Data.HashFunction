@@ -23,31 +23,5 @@ namespace OpenSource.Data.HashFunction.Test.Core
                 .ParamName);
         }
 
-        [Fact]
-        public void HashFunctionBase_ComputeHash_Stream_IsNull_Throws()
-        {
-            var hashFunction = new HashFunctionImpl();
-
-            Assert.Equal("data",
-                Assert.Throws<ArgumentNullException>(() =>
-                    hashFunction.ComputeHash((Stream) null))
-                .ParamName);
-        }
-
-        [Fact]
-        public void HashFunctionBase_ComputeHash_Stream_NotReadable_Throws()
-        {
-            var memoryStreamMock = new Mock<MemoryStream>();
-
-            memoryStreamMock.SetupGet(ms => ms.CanRead)
-                .Returns(false);
-
-            var hashFunction = new HashFunctionImpl();
-
-            Assert.Equal("data",
-                Assert.Throws<ArgumentException>(() =>
-                    hashFunction.ComputeHash(memoryStreamMock.Object))
-                .ParamName);
-        }
     }
 }
