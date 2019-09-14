@@ -9,7 +9,7 @@ namespace OpenSource.Data.HashFunction.xxHash
     ///   https://github.com/Cyan4973/xxHash.
     /// </summary>
     public interface IxxHash
-        : IHashFunctionAsync
+        : IStreamableHashFunction
     {
 
         /// <summary>

@@ -193,7 +193,7 @@ namespace OpenSource.Data.HashFunction.Test.xxHash
 
 
         public class IHashFunctionAsync_Tests_xxHash
-            : IHashFunctionAsync_TestBase<IxxHash>
+            : IStreamableHashFunction_TestBase<IxxHash>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -216,7 +216,7 @@ namespace OpenSource.Data.HashFunction.Test.xxHash
     
 
         public class IHashFunctionAsync_Tests_xxHash_DefaultConstructor
-            : IHashFunctionAsync_TestBase<IxxHash>
+            : IStreamableHashFunction_TestBase<IxxHash>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -232,7 +232,7 @@ namespace OpenSource.Data.HashFunction.Test.xxHash
     
 
         public class IHashFunctionAsync_Tests_xxHash_WithInitVal
-            : IHashFunctionAsync_TestBase<IxxHash>
+            : IStreamableHashFunction_TestBase<IxxHash>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {

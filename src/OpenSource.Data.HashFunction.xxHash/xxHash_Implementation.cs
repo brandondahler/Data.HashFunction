@@ -2,13 +2,8 @@
 using System.Collections.Generic;
 using OpenSource.Data.HashFunction.Core;
 using OpenSource.Data.HashFunction.Core.Utilities;
-using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
-using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenSource.Data.HashFunction.xxHash
 {
@@ -17,7 +12,7 @@ namespace OpenSource.Data.HashFunction.xxHash
     ///   https://github.com/Cyan4973/xxHash.
     /// </summary>
     internal class xxHash_Implementation
-        : HashFunctionAsyncBase,
+        : StreamableHashFunctionBase,
             IxxHash
     {
 
@@ -36,23 +31,6 @@ namespace OpenSource.Data.HashFunction.xxHash
         private readonly IxxHashConfig _config;
 
 
-        private static readonly IReadOnlyList<UInt32> _primes32 = 
-            new[] {
-                2654435761U,
-                2246822519U,
-                3266489917U,
-                 668265263U,
-                 374761393U
-            };
-
-        private static readonly IReadOnlyList<UInt64> _primes64 = 
-            new[] {
-                11400714785074694791UL,
-                14029467366897019727UL,
-                 1609587929392839161UL,
-                 9650029242287828579UL,
-                 2870177450012600261UL
-            };
 
         private static readonly IEnumerable<int> _validHashSizes = new HashSet<int>() { 32, 64 };
 
@@ -76,327 +54,387 @@ namespace OpenSource.Data.HashFunction.xxHash
         }
 
 
-
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
-        /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
+        public override IHashFunctionBlockTransformer CreateBlockTransformer()
         {
-            byte[] hash;
-
             switch (_config.HashSizeInBits)
             {
                 case 32:
-                {
-                    var h = ((UInt32) _config.Seed) + _primes32[4];
-
-                    ulong dataCount = 0;
-                    byte[] remainder = null;
-
-
-                    var initValues = new[] {
-                        ((UInt32) _config.Seed) + _primes32[0] + _primes32[1],
-                        ((UInt32) _config.Seed) + _primes32[1],
-                        ((UInt32) _config.Seed),
-                        ((UInt32) _config.Seed) - _primes32[0]
-                    };
-
-                    data.ForEachGroup(16, 
-                        (dataGroup, position, length) => {
-                            for (int x = position; x < position + length; x += 16)
-                            {
-                                for (var y = 0; y < 4; ++y)
-                                {
-                                    initValues[y] += BitConverter.ToUInt32(dataGroup, x + (y * 4)) * _primes32[1];
-                                    initValues[y] = RotateLeft(initValues[y], 13);
-                                    initValues[y] *= _primes32[0];
-                                }
-                            }
-
-                            dataCount += (ulong)length;
-                        },
-                        (remainderData, position, length) => {
-                            remainder = new byte[length];
-                            Array.Copy(remainderData, position, remainder, 0, length);
-
-                            dataCount += (ulong)length;
-                        },
-                        cancellationToken);
-
-
-                    PostProcess(ref h, initValues, dataCount, remainder);
-
-                    hash = BitConverter.GetBytes(h);
-                    break;
-                }
+                    return new BlockTransformer32((UInt32) _config.Seed);
 
                 case 64:
-                {
-                     var h = _config.Seed + _primes64[4];
-
-                    ulong dataCount = 0;
-                    byte[] remainder = null;
-
-                    var initValues = new[] {
-                        _config.Seed + _primes64[0] + _primes64[1],
-                        _config.Seed + _primes64[1],
-                        _config.Seed,
-                        _config.Seed - _primes64[0]
-                    };
-
-
-                    data.ForEachGroup(32, 
-                        (dataGroup, position, length) => {
-
-                            for (var x = position; x < position + length; x += 32)
-                            {
-                                for (var y = 0; y < 4; ++y)
-                                {
-                                    initValues[y] += BitConverter.ToUInt64(dataGroup, x + (y * 8)) * _primes64[1];
-                                    initValues[y] = RotateLeft(initValues[y], 31);
-                                    initValues[y] *= _primes64[0];
-                                }
-                            }
-
-                            dataCount += (ulong) length;
-                        },
-                        (remainderData, position, length) => {
-                            remainder = new byte[length];
-                            Array.Copy(remainderData, position, remainder, 0, length);
-
-                            dataCount += (ulong) length;
-                        },
-                        cancellationToken);
-
-
-                    PostProcess(ref h, initValues, dataCount, remainder);
-
-                    hash = BitConverter.GetBytes(h);
-                    break;
-                }
+                    return new BlockTransformer64(_config.Seed);
 
                 default:
                     throw new NotImplementedException();
             }
-
-            return hash;
         }
 
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
-        /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
+        private class BlockTransformer32
+            : HashFunctionBlockTransformerBase<BlockTransformer32>
         {
-            byte[] hash;
-            
-            switch (_config.HashSizeInBits)
+            private static readonly IReadOnlyList<UInt32> _primes32 = 
+                new[] {
+                    2654435761U,
+                    2246822519U,
+                    3266489917U,
+                     668265263U,
+                     374761393U
+                };
+
+            private UInt32 _seed;
+
+            private UInt32 _a;
+            private UInt32 _b;
+            private UInt32 _c;
+            private UInt32 _d;
+
+            private ulong _bytesProcessed = 0;
+
+
+            public BlockTransformer32() 
+                : base(inputBlockSize: 16)
             {
-                case 32:
-                {
-                    var h = ((UInt32)_config.Seed) + _primes32[4];
 
-                    ulong dataCount = 0;
-                    byte[] remainder = null;
-
-
-                    var initValues = new[] {
-                        ((UInt32) _config.Seed) + _primes32[0] + _primes32[1],
-                        ((UInt32) _config.Seed) + _primes32[1],
-                        ((UInt32) _config.Seed),
-                        ((UInt32) _config.Seed) - _primes32[0]
-                    };
-
-                    await data.ForEachGroupAsync(16, 
-                            (dataGroup, position, length) => {
-                                for (var x = position; x < position + length; x += 16)
-                                {
-                                    for (var y = 0; y < 4; ++y)
-                                    {
-                                        initValues[y] += BitConverter.ToUInt32(dataGroup, x + (y * 4)) * _primes32[1];
-                                        initValues[y] = RotateLeft(initValues[y], 13);
-                                        initValues[y] *= _primes32[0];
-                                    }
-                                }
-
-                                dataCount += (ulong) length;
-                            },
-                            (remainderData, position, length) => {
-                                remainder = new byte[length];
-                                Array.Copy(remainderData, position, remainder, 0, length);
-
-                                dataCount += (ulong) length;
-                            },
-                            cancellationToken)
-                        .ConfigureAwait(false);
-
-                    PostProcess(ref h, initValues, dataCount, remainder);
-
-                    hash = BitConverter.GetBytes(h);
-                    break;
-                }
-
-                case 64:
-                {
-                     var h = _config.Seed + _primes64[4];
-
-                    ulong dataCount = 0;
-                    byte[] remainder = null;
-
-                    var initValues = new[] {
-                        _config.Seed + _primes64[0] + _primes64[1],
-                        _config.Seed + _primes64[1],
-                        _config.Seed,
-                        _config.Seed - _primes64[0]
-                    };
-
-
-                    await data.ForEachGroupAsync(32, 
-                            (dataGroup, position, length) => {
-                                for (var x = position; x < position + length; x += 32)
-                                {
-                                    for (var y = 0; y < 4; ++y)
-                                    {
-                                        initValues[y] += BitConverter.ToUInt64(dataGroup, x + (y * 8)) * _primes64[1];
-                                        initValues[y] = RotateLeft(initValues[y], 31);
-                                        initValues[y] *= _primes64[0];
-                                    }
-                                }
-
-                                dataCount += (ulong) length;
-                            },
-                            (remainderData, position, length) => {
-                                remainder = new byte[length];
-                                Array.Copy(remainderData, position, remainder, 0, length);
-
-                                dataCount += (ulong) remainder.Length;
-                            },
-                            cancellationToken)
-                        .ConfigureAwait(false);
-
-
-                    PostProcess(ref h, initValues, dataCount, remainder);
-
-                    hash = BitConverter.GetBytes(h);
-                    break;
-                }
-
-                default:
-                    throw new NotImplementedException();
             }
 
-            return hash;
-        }
-
-
-        private void PostProcess(ref UInt32 h, UInt32[] initValues, ulong dataCount, byte[] remainder)
-        {
-            if (dataCount >= 16)
+            public BlockTransformer32(UInt32 seed)
+                : this()
             {
-                h = RotateLeft(initValues[0], 1) + 
-                    RotateLeft(initValues[1], 7) + 
-                    RotateLeft(initValues[2], 12) + 
-                    RotateLeft(initValues[3], 18);
+                _seed = seed;
+
+                _a = _seed + _primes32[0] + _primes32[1];
+                _b = _seed + _primes32[1];
+                _c = _seed;
+                _d = _seed - _primes32[0];
             }
 
-
-            h += (UInt32) dataCount;
-
-            if (remainder != null)
+            protected override void CopyStateTo(BlockTransformer32 other)
             {
-                // In 4-byte chunks, process all process all full chunks
-                for (int x = 0; x < remainder.Length / 4; ++x)
-                {
-                    h += BitConverter.ToUInt32(remainder, x * 4) * _primes32[2];
-                    h  = RotateLeft(h, 17) * _primes32[3];
-                }
+                base.CopyStateTo(other);
 
+                other._seed = _seed;
 
-                // Process last 4 bytes in 1-byte chunks (only runs if data.Length % 4 != 0)
-                for (int x = remainder.Length - (remainder.Length % 4); x < remainder.Length; ++x)
-                {
-                    h += (UInt32) remainder[x] * _primes32[4];
-                    h  = RotateLeft(h, 11) * _primes32[0];
-                }
+                other._a = _a;
+                other._b = _b;
+                other._c = _c;
+                other._d = _d;
+
+                other._bytesProcessed = _bytesProcessed;
             }
 
-            h ^= h >> 15;
-            h *= _primes32[1];
-            h ^= h >> 13;
-            h *= _primes32[2];
-            h ^= h >> 16;
-        }
-
-        private void PostProcess(ref UInt64 h, UInt64[] initValues, ulong dataCount, byte[] remainder)
-        {
-            if (dataCount >= 32)
+            protected override void TransformByteGroupsInternal(ArraySegment<byte> data)
             {
-                h = RotateLeft(initValues[0], 1) +
-                    RotateLeft(initValues[1], 7) +
-                    RotateLeft(initValues[2], 12) +
-                    RotateLeft(initValues[3], 18);
+                var dataArray = data.Array;
+                var dataOffset = data.Offset;
+                var dataCount = data.Count;
 
+                var endOffset = dataOffset + dataCount;
 
-                for (var x = 0; x < initValues.Length; ++x)
+                var tempA = _a;
+                var tempB = _b;
+                var tempC = _c;
+                var tempD = _d;
+
+                var tempPrime0 = _primes32[0];
+                var tempPrime1 = _primes32[1];
+
+                for (var currentIndex = dataOffset; currentIndex < endOffset; currentIndex += 16)
                 {
-                    initValues[x] *= _primes64[1];
-                    initValues[x] = RotateLeft(initValues[x], 31);
-                    initValues[x] *= _primes64[0];
+                    tempA += BitConverter.ToUInt32(dataArray, currentIndex) * tempPrime1;
+                    tempA = RotateLeft(tempA, 13);
+                    tempA *= tempPrime0;
 
-                    h ^= initValues[x];
-                    h = (h * _primes64[0]) + _primes64[3];
+                    tempB += BitConverter.ToUInt32(dataArray, currentIndex + 4) * tempPrime1;
+                    tempB = RotateLeft(tempB, 13);
+                    tempB *= tempPrime0;
+
+                    tempC += BitConverter.ToUInt32(dataArray, currentIndex + 8) * tempPrime1;
+                    tempC = RotateLeft(tempC, 13);
+                    tempC *= tempPrime0;
+
+                    tempD += BitConverter.ToUInt32(dataArray, currentIndex + 12) * tempPrime1;
+                    tempD = RotateLeft(tempD, 13);
+                    tempD *= tempPrime0;
                 }
+
+                _a = tempA;
+                _b = tempB;
+                _c = tempC;
+                _d = tempD;
+
+                _bytesProcessed += (ulong) dataCount;
             }
 
-            h += (UInt64) dataCount;
-
-            if (remainder != null)
-            { 
-                // In 8-byte chunks, process all full chunks
-                for (int x = 0; x < remainder.Length / 8; ++x)
+            protected override IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken)
+            {
+                UInt32 hashValue;
                 {
-                    h ^= RotateLeft(BitConverter.ToUInt64(remainder, x * 8) * _primes64[1], 31) * _primes64[0];
-                    h  = (RotateLeft(h, 27) * _primes64[0]) + _primes64[3];
+                    if (_bytesProcessed > 0)
+                        hashValue = RotateLeft(_a, 1) + RotateLeft(_b, 7) + RotateLeft(_c, 12) + RotateLeft(_d, 18);
+                    else 
+                        hashValue = _seed + _primes32[4];
                 }
 
+                var remainder = FinalizeInputBuffer;
+                var remainderLength = (remainder?.Length).GetValueOrDefault();
 
-                // Process a 4-byte chunk if it exists
-                if ((remainder.Length % 8) >= 4)
+                hashValue += (UInt32) (_bytesProcessed + (ulong) remainderLength);
+
+                if (remainderLength > 0)
                 {
-                    h ^= ((UInt64) BitConverter.ToUInt32(remainder, remainder.Length - (remainder.Length % 8))) * _primes64[0];
-                    h  = (RotateLeft(h, 23) * _primes64[1]) + _primes64[2];
+                    // In 4-byte chunks, process all process all full chunks
+                    {
+                        var endOffset = remainderLength - (remainderLength % 4);
+
+                        for (var currentOffset = 0; currentOffset < endOffset; currentOffset += 4)
+                        {
+                            hashValue += BitConverter.ToUInt32(remainder, currentOffset) * _primes32[2];
+                            hashValue = RotateLeft(hashValue, 17) * _primes32[3];
+                        }
+                    }
+
+                    // Process last 4 bytes in 1-byte chunks (only runs if data.Length % 4 != 0)
+                    {
+                        var startOffset = remainderLength - (remainderLength % 4);
+                        var endOffset = remainderLength;
+
+                        for (var currentOffset = startOffset; currentOffset < endOffset; currentOffset += 1)
+                        {
+                            hashValue += (UInt32) remainder[currentOffset] * _primes32[4];
+                            hashValue = RotateLeft(hashValue, 11) * _primes32[0];
+                        }
+                    }
                 }
 
-                // Process last 4 bytes in 1-byte chunks (only runs if data.Length % 4 != 0)
-                for (int x = remainder.Length - (remainder.Length % 4); x < remainder.Length; ++x)
-                {
-                    h ^= (UInt64) remainder[x] * _primes64[4];
-                    h  = RotateLeft(h, 11) * _primes64[0];
-                }
+                hashValue ^= hashValue >> 15;
+                hashValue *= _primes32[1];
+                hashValue ^= hashValue >> 13;
+                hashValue *= _primes32[2];
+                hashValue ^= hashValue >> 16;
+
+                return new HashValue(
+                    BitConverter.GetBytes(hashValue),
+                    32);
             }
 
 
-            h ^= h >> 33;
-            h *= _primes64[1];
-            h ^= h >> 29;
-            h *= _primes64[2];
-            h ^= h >> 32;
+            private static UInt32 RotateLeft(UInt32 operand, int shiftCount)
+            {
+                shiftCount &= 0x1f;
+
+                return
+                    (operand << shiftCount) |
+                    (operand >> (32 - shiftCount));
+            }
         }
 
 
-        private static UInt32 RotateLeft(UInt32 operand, int shiftCount)
+        private class BlockTransformer64
+            : HashFunctionBlockTransformerBase<BlockTransformer64>
         {
-            shiftCount &= 0x1f;
+            private static readonly IReadOnlyList<UInt64> _primes64 =
+                new[] {
+                    11400714785074694791UL,
+                    14029467366897019727UL,
+                     1609587929392839161UL,
+                     9650029242287828579UL,
+                     2870177450012600261UL
+                };
 
-            return
-                (operand << shiftCount) |
-                (operand >> (32 - shiftCount));
+
+            private UInt64 _seed;
+
+            private UInt64 _a;
+            private UInt64 _b;
+            private UInt64 _c;
+            private UInt64 _d;
+
+            private ulong _bytesProcessed = 0;
+
+
+            public BlockTransformer64()
+                : base(inputBlockSize: 32)
+            {
+
+            }
+
+            public BlockTransformer64(UInt64 seed)
+                : this()
+            {
+                _seed = seed;
+
+                _a = _seed + _primes64[0] + _primes64[1];
+                _b = _seed + _primes64[1];
+                _c = _seed;
+                _d = _seed - _primes64[0];
+            }
+
+            protected override void CopyStateTo(BlockTransformer64 other)
+            {
+                base.CopyStateTo(other);
+
+                other._seed = _seed;
+
+                other._a = _a;
+                other._b = _b;
+                other._c = _c;
+                other._d = _d;
+
+                other._bytesProcessed = _bytesProcessed;
+            }
+
+            protected override void TransformByteGroupsInternal(ArraySegment<byte> data)
+            {
+                var dataArray = data.Array;
+                var dataOffset = data.Offset;
+                var dataCount = data.Count;
+
+                var endOffset = dataOffset + dataCount;
+
+                var tempA = _a;
+                var tempB = _b;
+                var tempC = _c;
+                var tempD = _d;
+
+                var tempPrime0 = _primes64[0];
+                var tempPrime1 = _primes64[1];
+
+                for (var currentIndex = dataOffset; currentIndex < endOffset; currentIndex += 32)
+                {
+                    tempA += BitConverter.ToUInt64(dataArray, currentIndex) * tempPrime1;
+                    tempA = RotateLeft(tempA, 31);
+                    tempA *= tempPrime0;
+
+                    tempB += BitConverter.ToUInt64(dataArray, currentIndex + 8) * tempPrime1;
+                    tempB = RotateLeft(tempB, 31);
+                    tempB *= tempPrime0;
+
+                    tempC += BitConverter.ToUInt64(dataArray, currentIndex + 16) * tempPrime1;
+                    tempC = RotateLeft(tempC, 31);
+                    tempC *= tempPrime0;
+
+                    tempD += BitConverter.ToUInt64(dataArray, currentIndex + 24) * tempPrime1;
+                    tempD = RotateLeft(tempD, 31);
+                    tempD *= tempPrime0;
+                }
+
+                _a = tempA;
+                _b = tempB;
+                _c = tempC;
+                _d = tempD;
+
+                _bytesProcessed += (ulong)dataCount;
+            }
+
+            protected override IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken)
+            {
+                UInt64 hashValue;
+                {
+                    if (_bytesProcessed > 0)
+                    {
+                        var tempA = _a;
+                        var tempB = _b;
+                        var tempC = _c;
+                        var tempD = _d;
+
+
+                        hashValue = RotateLeft(_a, 1) + RotateLeft(_b, 7) + RotateLeft(_c, 12) + RotateLeft(_d, 18);
+
+                        // A
+                        tempA *= _primes64[1];
+                        tempA = RotateLeft(tempA, 31);
+                        tempA *= _primes64[0];
+
+                        hashValue ^= tempA;
+                        hashValue = (hashValue * _primes64[0]) + _primes64[3];
+
+                        // B
+                        tempB *= _primes64[1];
+                        tempB = RotateLeft(tempB, 31);
+                        tempB *= _primes64[0];
+
+                        hashValue ^= tempB;
+                        hashValue = (hashValue * _primes64[0]) + _primes64[3];
+
+                        // C
+                        tempC *= _primes64[1];
+                        tempC = RotateLeft(tempC, 31);
+                        tempC *= _primes64[0];
+
+                        hashValue ^= tempC;
+                        hashValue = (hashValue * _primes64[0]) + _primes64[3];
+
+                        // D
+                        tempD *= _primes64[1];
+                        tempD = RotateLeft(tempD, 31);
+                        tempD *= _primes64[0];
+
+                        hashValue ^= tempD;
+                        hashValue = (hashValue * _primes64[0]) + _primes64[3];
+
+                    } else {
+                        hashValue = _seed + _primes64[4];
+                    }
+                }
+
+                var remainder = FinalizeInputBuffer;
+                var remainderLength = (remainder?.Length).GetValueOrDefault();
+
+                hashValue += (UInt64) _bytesProcessed + (UInt64) remainderLength;
+
+                if (remainderLength > 0)
+                {
+
+                    // In 8-byte chunks, process all full chunks
+                    for (int x = 0; x < remainder.Length / 8; ++x)
+                    {
+                        hashValue ^= RotateLeft(BitConverter.ToUInt64(remainder, x * 8) * _primes64[1], 31) * _primes64[0];
+                        hashValue = (RotateLeft(hashValue, 27) * _primes64[0]) + _primes64[3];
+                    }
+
+                    // Process a 4-byte chunk if it exists
+                    if ((remainderLength % 8) >= 4)
+                    {
+                        var startOffset = remainderLength - (remainderLength % 8);
+
+                        hashValue ^= ((UInt64) BitConverter.ToUInt32(remainder, startOffset)) * _primes64[0];
+                        hashValue = (RotateLeft(hashValue, 23) * _primes64[1]) + _primes64[2];
+                    }
+
+                    // Process last 4 bytes in 1-byte chunks (only runs if data.Length % 4 != 0)
+                    {
+                        var startOffset = remainderLength - (remainderLength % 4);
+                        var endOffset = remainderLength;
+
+                        for (var currentOffset = startOffset; currentOffset < endOffset; currentOffset += 1)
+                        {
+                            hashValue ^= (UInt64) remainder[currentOffset] * _primes64[4];
+                            hashValue = RotateLeft(hashValue, 11) * _primes64[0];
+                        }
+                    }
+                }
+
+                hashValue ^= hashValue >> 33;
+                hashValue *= _primes64[1];
+                hashValue ^= hashValue >> 29;
+                hashValue *= _primes64[2];
+                hashValue ^= hashValue >> 32;
+
+                return new HashValue(
+                    BitConverter.GetBytes(hashValue),
+                    64);
+            }
+
+
+            private static UInt64 RotateLeft(UInt64 operand, int shiftCount)
+            {
+                shiftCount &= 0x3f;
+
+                return
+                    (operand << shiftCount) |
+                    (operand >> (64 - shiftCount));
+            }
         }
 
-        private static UInt64 RotateLeft(UInt64 operand, int shiftCount)
-        {
-            shiftCount &= 0x3f;
-
-            return
-                (operand << shiftCount) |
-                (operand >> (64 - shiftCount));
-        }
     }
 }
