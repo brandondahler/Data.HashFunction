@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D0A9A68F-2401-42E4-A6E7-D9FF9F080197}"
 	ProjectSection(SolutionItems) = preProject
@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D0A9A6
 		..\appveyor.production.yml = ..\appveyor.production.yml
 		..\appveyor.yml = ..\appveyor.yml
 		Data.HashFunction.runsettings = Data.HashFunction.runsettings
+		Directory.Build.props = Directory.Build.props
 		FriendAssemblies.cs = FriendAssemblies.cs
 		SolutionInfo.cs = SolutionInfo.cs
 	EndProjectSection

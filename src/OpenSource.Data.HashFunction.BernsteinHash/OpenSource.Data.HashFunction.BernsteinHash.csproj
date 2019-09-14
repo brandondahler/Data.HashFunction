@@ -12,7 +12,7 @@
     <AssemblyOriginatorKeyFile>../Data.HashFunction.Production.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    <PackageId>BrandonDahler.Data.HashFunction.BernsteinHash</PackageId>
+    <PackageId>$(PackageIdPrefix).Data.HashFunction.BernsteinHash</PackageId>
     <PackageTags>Bernstein;hash;function;djb2</PackageTags>
     <PackageReleaseNotes>https://github.com/brandondahler/Data.HashFunction/wiki/Release-Notes</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>

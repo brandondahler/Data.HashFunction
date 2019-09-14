@@ -12,7 +12,7 @@
     <AssemblyOriginatorKeyFile>../Data.HashFunction.Production.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    <PackageId>BrandonDahler.Data.HashFunction.MurmurHash</PackageId>
+    <PackageId>$(PackageIdPrefix).Data.HashFunction.MurmurHash</PackageId>
     <PackageTags>MurMur;hash;function</PackageTags>
     <PackageReleaseNotes>https://github.com/brandondahler/Data.HashFunction/wiki/Release-Notes</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
