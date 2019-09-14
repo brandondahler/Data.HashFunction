@@ -12,7 +12,7 @@
     <AssemblyOriginatorKeyFile>../Data.HashFunction.Production.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    <PackageId>BrandonDahler.Data.HashFunction.BuzHash</PackageId>
+    <PackageId>$(PackageIdPrefix).Data.HashFunction.BuzHash</PackageId>
     <PackageTags>BuzHash;hash;function;buz</PackageTags>
     <PackageReleaseNotes>https://github.com/brandondahler/Data.HashFunction/wiki/Release-Notes</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>

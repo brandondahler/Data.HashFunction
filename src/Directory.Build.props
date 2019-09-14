@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup>
+    <PackageIdPrefix>OpenSource</PackageIdPrefix>
+  </PropertyGroup>
+</Project>
