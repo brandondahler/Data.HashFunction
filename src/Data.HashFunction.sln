@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D0A9A68F-2401-42E4-A6E7-D9FF9F080197}"
 	ProjectSection(SolutionItems) = preProject
@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D0A9A6
 		..\appveyor.production.yml = ..\appveyor.production.yml
 		..\appveyor.yml = ..\appveyor.yml
 		Data.HashFunction.runsettings = Data.HashFunction.runsettings
+		Directory.Build.props = Directory.Build.props
 		FriendAssemblies.cs = FriendAssemblies.cs
 		SolutionInfo.cs = SolutionInfo.cs
 	EndProjectSection
@@ -25,41 +26,41 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{FED52411
 		..\build\coverity.ps1 = ..\build\coverity.ps1
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Interfaces", "System.Data.HashFunction.Interfaces\System.Data.HashFunction.Interfaces.csproj", "{58B4D4D3-90EC-4F34-8C8F-E57DABD859CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSource.Data.HashFunction.Interfaces", "OpenSource.Data.HashFunction.Interfaces\OpenSource.Data.HashFunction.Interfaces.csproj", "{58B4D4D3-90EC-4F34-8C8F-E57DABD859CF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Core", "System.Data.HashFunction.Core\System.Data.HashFunction.Core.csproj", "{FCD2D38D-5A85-425E-952C-969A95395E1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSource.Data.HashFunction.Core", "OpenSource.Data.HashFunction.Core\OpenSource.Data.HashFunction.Core.csproj", "{FCD2D38D-5A85-425E-952C-969A95395E1E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.BernsteinHash", "System.Data.HashFunction.BernsteinHash\System.Data.HashFunction.BernsteinHash.csproj", "{6BC9E1F2-B802-4ED9-92E6-E12C1D9840BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSource.Data.HashFunction.BernsteinHash", "OpenSource.Data.HashFunction.BernsteinHash\OpenSource.Data.HashFunction.BernsteinHash.csproj", "{6BC9E1F2-B802-4ED9-92E6-E12C1D9840BC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Blake2", "System.Data.HashFunction.Blake2\System.Data.HashFunction.Blake2.csproj", "{C41485CB-8446-4F3C-995E-A3121249A668}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSource.Data.HashFunction.Blake2", "OpenSource.Data.HashFunction.Blake2\OpenSource.Data.HashFunction.Blake2.csproj", "{C41485CB-8446-4F3C-995E-A3121249A668}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.BuzHash", "System.Data.HashFunction.BuzHash\System.Data.HashFunction.BuzHash.csproj", "{23BD0A7E-1B5A-49F6-B98D-B45CF5F6DE87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSource.Data.HashFunction.BuzHash", "OpenSource.Data.HashFunction.BuzHash\OpenSource.Data.HashFunction.BuzHash.csproj", "{23BD0A7E-1B5A-49F6-B98D-B45CF5F6DE87}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.CityHash", "System.Data.HashFunction.CityHash\System.Data.HashFunction.CityHash.csproj", "{7B02E48B-A8BD-4BA9-81D9-CF9D99E41863}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSource.Data.HashFunction.CityHash", "OpenSource.Data.HashFunction.CityHash\OpenSource.Data.HashFunction.CityHash.csproj", "{7B02E48B-A8BD-4BA9-81D9-CF9D99E41863}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.CRC", "System.Data.HashFunction.CRC\System.Data.HashFunction.CRC.csproj", "{430008BB-7973-40D6-87A5-36F9DE82854E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSource.Data.HashFunction.CRC", "OpenSource.Data.HashFunction.CRC\OpenSource.Data.HashFunction.CRC.csproj", "{430008BB-7973-40D6-87A5-36F9DE82854E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.ELF64", "System.Data.HashFunction.ELF64\System.Data.HashFunction.ELF64.csproj", "{5B210687-E8B4-4BC4-A65D-3E504212C207}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSource.Data.HashFunction.ELF64", "OpenSource.Data.HashFunction.ELF64\OpenSource.Data.HashFunction.ELF64.csproj", "{5B210687-E8B4-4BC4-A65D-3E504212C207}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.FNV", "System.Data.HashFunction.FNV\System.Data.HashFunction.FNV.csproj", "{B1C242A6-9A88-4BFC-A75E-F20E29F8F3D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSource.Data.HashFunction.FNV", "OpenSource.Data.HashFunction.FNV\OpenSource.Data.HashFunction.FNV.csproj", "{B1C242A6-9A88-4BFC-A75E-F20E29F8F3D6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Jenkins", "System.Data.HashFunction.Jenkins\System.Data.HashFunction.Jenkins.csproj", "{D93196A6-0525-4E49-81C8-29CB694E26B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSource.Data.HashFunction.Jenkins", "OpenSource.Data.HashFunction.Jenkins\OpenSource.Data.HashFunction.Jenkins.csproj", "{D93196A6-0525-4E49-81C8-29CB694E26B6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.MurmurHash", "System.Data.HashFunction.MurmurHash\System.Data.HashFunction.MurmurHash.csproj", "{51D02F05-0557-4586-8288-5FF95D89FD3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSource.Data.HashFunction.MurmurHash", "OpenSource.Data.HashFunction.MurmurHash\OpenSource.Data.HashFunction.MurmurHash.csproj", "{51D02F05-0557-4586-8288-5FF95D89FD3E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Pearson", "System.Data.HashFunction.Pearson\System.Data.HashFunction.Pearson.csproj", "{FB716555-104D-4F62-9A8F-DF915378B52F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSource.Data.HashFunction.Pearson", "OpenSource.Data.HashFunction.Pearson\OpenSource.Data.HashFunction.Pearson.csproj", "{FB716555-104D-4F62-9A8F-DF915378B52F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.SpookyHash", "System.Data.HashFunction.SpookyHash\System.Data.HashFunction.SpookyHash.csproj", "{E3B6C41C-F55D-4980-9E12-00BAEF1D26F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSource.Data.HashFunction.SpookyHash", "OpenSource.Data.HashFunction.SpookyHash\OpenSource.Data.HashFunction.SpookyHash.csproj", "{E3B6C41C-F55D-4980-9E12-00BAEF1D26F5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.Test", "System.Data.HashFunction.Test\System.Data.HashFunction.Test.csproj", "{CEC9E70A-A7A6-49B1-A10D-521FED0FD47D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSource.Data.HashFunction.Test", "OpenSource.Data.HashFunction.Test\OpenSource.Data.HashFunction.Test.csproj", "{CEC9E70A-A7A6-49B1-A10D-521FED0FD47D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.xxHash", "System.Data.HashFunction.xxHash\System.Data.HashFunction.xxHash.csproj", "{048E84BE-B266-453C-96B9-D4AAAD5ABF34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSource.Data.HashFunction.xxHash", "OpenSource.Data.HashFunction.xxHash\OpenSource.Data.HashFunction.xxHash.csproj", "{048E84BE-B266-453C-96B9-D4AAAD5ABF34}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Data.HashFunction.HashAlgorithm", "System.Data.HashFunction.HashAlgorithm\System.Data.HashFunction.HashAlgorithm.csproj", "{89C43129-57DC-445C-9521-5C7A6011A878}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSource.Data.HashFunction.HashAlgorithm", "OpenSource.Data.HashFunction.HashAlgorithm\OpenSource.Data.HashFunction.HashAlgorithm.csproj", "{89C43129-57DC-445C-9521-5C7A6011A878}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Data.HashFunction.FarmHash", "System.Data.HashFunction.FarmHash\System.Data.HashFunction.FarmHash.csproj", "{62D94F50-2DDD-4F81-B4AF-9D1A53C1404C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenSource.Data.HashFunction.FarmHash", "OpenSource.Data.HashFunction.FarmHash\OpenSource.Data.HashFunction.FarmHash.csproj", "{62D94F50-2DDD-4F81-B4AF-9D1A53C1404C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Data.HashFunction.MetroHash", "System.Data.HashFunction.MetroHash\System.Data.HashFunction.MetroHash.csproj", "{F65860E9-DF4C-44F4-9AF0-3E8B2BC682FE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenSource.Data.HashFunction.MetroHash", "OpenSource.Data.HashFunction.MetroHash\OpenSource.Data.HashFunction.MetroHash.csproj", "{F65860E9-DF4C-44F4-9AF0-3E8B2BC682FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

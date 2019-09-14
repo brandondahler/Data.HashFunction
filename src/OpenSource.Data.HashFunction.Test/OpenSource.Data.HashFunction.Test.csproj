@@ -1,0 +1,77 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Test suite for Data.HashFunction implementations.</Description>
+    <Copyright>Copyright 2014</Copyright>
+    <AssemblyTitle>Data.HashFunction.Test</AssemblyTitle>
+    <VersionPrefix>3.0.0</VersionPrefix>
+    <Authors>Data.HashFunction Developers</Authors>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <AssemblyName>OpenSource.Data.HashFunction.Test</AssemblyName>
+    <AssemblyOriginatorKeyFile>../Data.HashFunction.Production.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    <PackageId>$(PackageIdPrefix).Data.HashFunction.Test</PackageId>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>True</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="results.xml" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
+    <None Include="App.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.BernsteinHash\OpenSource.Data.HashFunction.BernsteinHash.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.Blake2\OpenSource.Data.HashFunction.Blake2.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.BuzHash\OpenSource.Data.HashFunction.BuzHash.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.CityHash\OpenSource.Data.HashFunction.CityHash.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.Core\OpenSource.Data.HashFunction.Core.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.CRC\OpenSource.Data.HashFunction.CRC.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.ELF64\OpenSource.Data.HashFunction.ELF64.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.FarmHash\OpenSource.Data.HashFunction.FarmHash.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.FNV\OpenSource.Data.HashFunction.FNV.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.Interfaces\OpenSource.Data.HashFunction.Interfaces.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.HashAlgorithm\OpenSource.Data.HashFunction.HashAlgorithm.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.Jenkins\OpenSource.Data.HashFunction.Jenkins.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.MetroHash\OpenSource.Data.HashFunction.MetroHash.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.MurmurHash\OpenSource.Data.HashFunction.MurmurHash.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.Pearson\OpenSource.Data.HashFunction.Pearson.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.SpookyHash\OpenSource.Data.HashFunction.SpookyHash.csproj" />
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.xxHash\OpenSource.Data.HashFunction.xxHash.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.1" />
+    <PackageReference Include="morelinq" Version="2.10.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+    <PackageReference Include="Moq" Version="4.8.2" />
+    <PackageReference Include="xunit" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">
+    <PackageReference Include="Microsoft.CodeCoverage" Version="1.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="OpenCover" Version="4.6.519" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+</Project>

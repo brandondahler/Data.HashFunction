@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Data.HashFunction implementation of xxHash (https://code.google.com/p/xxhash/).</Description>
+    <Copyright>Copyright 2014</Copyright>
+    <AssemblyTitle>Data.HashFunction.xxHash</AssemblyTitle>
+    <VersionPrefix>3.0.0</VersionPrefix>
+    <Authors>Data.HashFunction Developers</Authors>
+    <TargetFrameworks>netstandard1.1;net45</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>OpenSource.Data.HashFunction.xxHash</AssemblyName>
+    <AssemblyOriginatorKeyFile>../Data.HashFunction.Production.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    <PackageId>$(PackageIdPrefix).Data.HashFunction.xxHash</PackageId>
+    <PackageTags>xxHash;hash;function</PackageTags>
+    <PackageReleaseNotes>https://github.com/brandondahler/Data.HashFunction/wiki/Release-Notes</PackageReleaseNotes>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/brandondahler/Data.HashFunction/</RepositoryUrl>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(VcsRevision)'!=''">
+    <PackageReleaseNotes>$(PackageReleaseNotes)
+
+vcs-revision: $(VcsRevision)
+    </PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>True</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\FriendAssemblies.cs" Link="Properties\FriendAssemblies.cs" />
+    <Compile Include="..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpenSource.Data.HashFunction.Core\OpenSource.Data.HashFunction.Core.csproj" />
+  </ItemGroup>
+
+</Project>
