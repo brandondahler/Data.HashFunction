@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenSource.Data.HashFunction.Core;
-using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenSource.Data.HashFunction.Core.Utilities;
 
 namespace OpenSource.Data.HashFunction.FarmHash
 {
@@ -12,7 +12,7 @@ namespace OpenSource.Data.HashFunction.FarmHash
     /// Implementation of FarmHash's Fingerprint32 method as specified at https://github.com/google/farmhash.
     /// </summary>
     internal class FarmHashFingerprint32_Implementation
-        : HashFunctionAsyncBase,
+        : HashFunctionBase,
             IFarmHashFingerprint32
     {
         private const UInt32 c1 = 0xcc9e2d51;
@@ -21,54 +21,50 @@ namespace OpenSource.Data.HashFunction.FarmHash
 
         public override int HashSizeInBits { get; } = 32;
 
-        
 
-
-        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
+        protected override IHashValue ComputeHashInternal(ArraySegment<byte> data, CancellationToken cancellationToken)
         {
-            var dataArray = data.ToArray(cancellationToken);
+            var dataCount = data.Count;
 
-            return BitConverter.GetBytes(
-                ComputeHashFromArray(dataArray));
-        }
+            UInt32 hashValue;
 
-        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
-        {
-            var dataArray = await data.ToArrayAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            return BitConverter.GetBytes(
-                ComputeHashFromArray(dataArray));
-        }
-
-
-        private static UInt32 ComputeHashFromArray(byte[] dataArray)
-        {
-            var dataLength = dataArray.Length;
-
-            if (dataLength <= 24)
+            if (dataCount > 24)
             {
-                if (dataLength >= 13)
-                    return ComputeHash13To24(dataArray);
+                hashValue = ComputeHash25Plus(data, cancellationToken);
 
-                if (dataLength >= 5)
-                    return ComputeHash5To12(dataArray);
+            } else if (dataCount > 12) {
+                hashValue = ComputeHash13To24(data);
 
-                return ComputeHash0To4(dataArray);
+            } else if (dataCount > 4) {
+                hashValue = ComputeHash5To12(data);
+
+            } else {
+                hashValue = ComputeHash0To4(data);
             }
 
+            return new HashValue(
+                BitConverter.GetBytes(hashValue),
+                32);
+        }
+        
+        private static UInt32 ComputeHash25Plus(ArraySegment<byte> data, CancellationToken cancellationToken)
+        {
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+            var dataCount = data.Count;
+
+            var endOffset = dataOffset + dataCount;
 
 
-            // dataLength > 24
-            var h = (UInt32) dataLength;
-            var g = (UInt32) (c1 * dataLength);
+            var h = (UInt32) dataCount;
+            var g = (UInt32) (c1 * dataCount);
             var f = g;
 
-            var a0 = RotateRight(BitConverter.ToUInt32(dataArray, dataLength - 4) * c1, 17) * c2;
-            var a1 = RotateRight(BitConverter.ToUInt32(dataArray, dataLength - 8) * c1, 17) * c2;
-            var a2 = RotateRight(BitConverter.ToUInt32(dataArray, dataLength - 16) * c1, 17) * c2;
-            var a3 = RotateRight(BitConverter.ToUInt32(dataArray, dataLength - 12) * c1, 17) * c2;
-            var a4 = RotateRight(BitConverter.ToUInt32(dataArray, dataLength - 20) * c1, 17) * c2;
+            var a0 = RotateRight(BitConverter.ToUInt32(dataArray, endOffset - 4) * c1, 17) * c2;
+            var a1 = RotateRight(BitConverter.ToUInt32(dataArray, endOffset - 8) * c1, 17) * c2;
+            var a2 = RotateRight(BitConverter.ToUInt32(dataArray, endOffset - 16) * c1, 17) * c2;
+            var a3 = RotateRight(BitConverter.ToUInt32(dataArray, endOffset - 12) * c1, 17) * c2;
+            var a4 = RotateRight(BitConverter.ToUInt32(dataArray, endOffset - 20) * c1, 17) * c2;
 
             h ^= a0;
             h = RotateRight(h, 19);
@@ -85,24 +81,30 @@ namespace OpenSource.Data.HashFunction.FarmHash
             f += a4;
             f = RotateRight(f, 19) + 113;
 
-            for (int x = 0; x < dataLength - 20; x += 20)
+            // Process groups of 20 bytes, leaving 1 to 20 bytes remaining.
             {
+                var groupEndOffset = endOffset - 20;
 
-                var a = BitConverter.ToUInt32(dataArray, x);
-                var b = BitConverter.ToUInt32(dataArray, x + 4);
-                var c = BitConverter.ToUInt32(dataArray, x + 8);
-                var d = BitConverter.ToUInt32(dataArray, x + 12);
-                var e = BitConverter.ToUInt32(dataArray, x + 16);
+                for (var currentOffset = dataOffset; currentOffset < groupEndOffset; currentOffset += 20)
+                {
 
-                h += a;
-                g += b;
-                f += c;
-                h = Mur(d, h) + e;
-                g = Mur(c, g) + a;
-                f = Mur(b + e * c1, f) + d;
-                f += g;
-                g += f;
+                    var a = BitConverter.ToUInt32(dataArray, currentOffset);
+                    var b = BitConverter.ToUInt32(dataArray, currentOffset + 4);
+                    var c = BitConverter.ToUInt32(dataArray, currentOffset + 8);
+                    var d = BitConverter.ToUInt32(dataArray, currentOffset + 12);
+                    var e = BitConverter.ToUInt32(dataArray, currentOffset + 16);
+
+                    h += a;
+                    g += b;
+                    f += c;
+                    h = Mur(d, h) + e;
+                    g = Mur(c, g) + a;
+                    f = Mur(b + e * c1, f) + d;
+                    f += g;
+                    g += f;
+                }
             }
+
 
             g = RotateRight(g, 11) * c1;
             g = RotateRight(g, 17) * c1;
@@ -120,17 +122,21 @@ namespace OpenSource.Data.HashFunction.FarmHash
         }
 
 
-        private static UInt32 ComputeHash13To24(byte[] dataArray)
+        private static UInt32 ComputeHash13To24(ArraySegment<byte> data)
         {
-            var dataLength = dataArray.Length;
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+            var dataCount = data.Count;
 
-            var a = BitConverter.ToUInt32(dataArray, (dataLength >> 1) - 4);
-            var b = BitConverter.ToUInt32(dataArray, 4);
-            var c = BitConverter.ToUInt32(dataArray, dataLength - 8);
-            var d = BitConverter.ToUInt32(dataArray, (dataLength >> 1));
-            var e = BitConverter.ToUInt32(dataArray, 0);
-            var f = BitConverter.ToUInt32(dataArray, dataLength - 4);
-            var h = (d * c1) + (UInt32) dataLength;
+            var endOffset = dataOffset + dataCount;
+
+            var a = BitConverter.ToUInt32(dataArray, dataOffset + (dataCount >> 1) - 4);
+            var b = BitConverter.ToUInt32(dataArray, dataOffset + 4);
+            var c = BitConverter.ToUInt32(dataArray, endOffset - 8);
+            var d = BitConverter.ToUInt32(dataArray, dataOffset + (dataCount >> 1));
+            var e = BitConverter.ToUInt32(dataArray, dataOffset);
+            var f = BitConverter.ToUInt32(dataArray, endOffset - 4);
+            var h = (d * c1) + (UInt32) dataCount;
 
 
             a = RotateRight(a, 12) + f;
@@ -143,38 +149,46 @@ namespace OpenSource.Data.HashFunction.FarmHash
             return FMix(h);
         }
 
-        private static UInt32 ComputeHash0To4(byte[] dataArray) 
+        private static UInt32 ComputeHash5To12(ArraySegment<byte> data) 
         {
-            var dataLength = dataArray.Length;
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+            var dataCount = data.Count;
+
+            var endOffset = dataOffset + dataCount;
+
+            var a = (UInt32) dataCount;
+            var b = (UInt32) (dataCount * 5);
+            var c = 9U;
+            var d = b;
+
+            a += BitConverter.ToUInt32(dataArray, dataOffset);
+            b += BitConverter.ToUInt32(dataArray, endOffset - 4);
+            c += BitConverter.ToUInt32(dataArray, dataOffset + ((dataCount >> 1) & 4));
+
+            return FMix(Mur(c, Mur(b, Mur(a, d))));
+        }
+        
+        private static UInt32 ComputeHash0To4(ArraySegment<byte> data) 
+        {
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+            var dataCount = data.Count;
+
+            var endOffset = dataOffset + dataCount;
 
             var b = 0U;
             var c = 9U;
 
-            for (var x = 0; x < dataLength; ++x)
+            for (var currentOffset = dataOffset; currentOffset < endOffset; currentOffset += 1)
             {
-                var v = (sbyte) dataArray[x];
+                var v = (sbyte) dataArray[currentOffset];
 
                 b = (UInt32) ((b * c1) + v);
                 c ^= b;
             }
 
-            return FMix(Mur(b, Mur((UInt32) dataLength, c)));
-        }
-
-        private static UInt32 ComputeHash5To12(byte[] dataArray) 
-        {
-            var dataLength = dataArray.Length;
-
-            var a = (UInt32) dataLength;
-            var b = (UInt32) (dataLength * 5);
-            var c = 9U;
-            var d = b;
-
-            a += BitConverter.ToUInt32(dataArray, 0);
-            b += BitConverter.ToUInt32(dataArray, dataLength - 4);
-            c += BitConverter.ToUInt32(dataArray, (dataLength >> 1) & 4);
-
-            return FMix(Mur(c, Mur(b, Mur(a, d))));
+            return FMix(Mur(b, Mur((UInt32) dataCount, c)));
         }
 
 

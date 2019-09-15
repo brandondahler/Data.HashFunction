@@ -65,22 +65,5 @@ namespace OpenSource.Data.HashFunction.Test.FarmHash.Utilities
 
         #endregion
 
-        #region GetBytes
-
-        [Fact]
-        public void UInt128_GetBytes_Works()
-        {
-            var uint128 = new UInt128(0x010afe7329b03c39UL, 0x238e8c0d1aa452b0UL);
-
-            var expectedBytes = new byte[] {
-                0x39, 0x3c, 0xb0, 0x29, 0x73, 0xfe, 0x0a, 0x01,
-                0xb0, 0x52, 0xa4, 0x1a, 0x0d, 0x8c, 0x8e, 0x23
-            };
-
-            Assert.Equal(expectedBytes, uint128.GetBytes());
-        }
-
-        #endregion
-
     }
 }

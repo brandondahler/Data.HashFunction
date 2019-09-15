@@ -8,8 +8,7 @@ namespace OpenSource.Data.HashFunction.FarmHash
     /// Provides instances of implementations of <see cref="IFarmHashFingerprint32"/>.
     /// </summary>
     public sealed class FarmHashFingerprint32Factory
-        : FarmHashFingerprint32FactoryBase<IFarmHashFingerprint32>,
-            IFarmHashFingerprint32Factory
+        : IFarmHashFingerprint32Factory
     {
         /// <summary>
         /// Gets the singleton instance of this factory.
@@ -27,7 +26,7 @@ namespace OpenSource.Data.HashFunction.FarmHash
         /// Creates a new <see cref="IFarmHashFingerprint32"/> instance.
         /// </summary>
         /// <returns>A <see cref="IFarmHashFingerprint32"/> instance.</returns>
-        public override IFarmHashFingerprint32 Create() =>
+        public IFarmHashFingerprint32 Create() =>
             new FarmHashFingerprint32_Implementation();
     }
 }
