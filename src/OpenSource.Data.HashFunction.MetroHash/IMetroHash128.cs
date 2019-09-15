@@ -15,7 +15,7 @@ namespace OpenSource.Data.HashFunction.MetroHash
     /// "
     /// </summary>
     /// <seealso cref="IMetroHash" />
-    /// <seealso cref="IHashFunctionAsync" />
+    /// <seealso cref="IStreamableHashFunction" />
     public interface IMetroHash128
         : IMetroHash
     {

@@ -14,9 +14,9 @@ namespace OpenSource.Data.HashFunction.MetroHash
     /// having been selected from a very large set of hash functions that have been constructed this way.
     /// "
     /// </summary>
-    /// <seealso cref="IHashFunctionAsync" />
+    /// <seealso cref="IStreamableHashFunction" />
     public interface IMetroHash
-        : IHashFunctionAsync
+        : IStreamableHashFunction
     {
         /// <summary>
         /// Configuration used when creating this instance.
