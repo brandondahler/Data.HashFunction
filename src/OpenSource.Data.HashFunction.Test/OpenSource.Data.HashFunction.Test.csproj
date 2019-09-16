@@ -25,11 +25,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Blake2\**" />
     <Compile Remove="MurmurHash\**" />
-    <EmbeddedResource Remove="Blake2\**" />
     <EmbeddedResource Remove="MurmurHash\**" />
-    <None Remove="Blake2\**" />
     <None Remove="MurmurHash\**" />
   </ItemGroup>
 

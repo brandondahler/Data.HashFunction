@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using OpenSource.Data.HashFunction.Blake2.Utilities;
 using OpenSource.Data.HashFunction.Core;
-using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using OpenSource.Data.HashFunction.Core.Utilities;
 
 namespace OpenSource.Data.HashFunction.Blake2
 {
 	internal partial class Blake2B_Implementation
-		: HashFunctionAsyncBase,
+		: StreamableHashFunctionBase,
             IBlake2B
     {
         public IBlake2BConfig Config => _config.Clone();
@@ -39,16 +37,16 @@ namespace OpenSource.Data.HashFunction.Blake2
 
 		private const int BlockSizeBytes = 128;
 
-        private static readonly UInt64[] IVs = new[] { 
-            0x6A09E667F3BCC908UL,
-		    0xBB67AE8584CAA73BUL,
-            0x3C6EF372FE94F82BUL,
-            0xA54FF53A5F1D36F1UL,
-            0x510E527FADE682D1UL,
-            0x9B05688C2B3E6C1FUL,
-            0x1F83D9ABFB41BD6BUL,
-            0x5BE0CD19137E2179UL
-        };
+        private const UInt64 _iv1 = 0x6A09E667F3BCC908UL;
+		private const UInt64 _iv2 = 0xBB67AE8584CAA73BUL;
+        private const UInt64 _iv3 = 0x3C6EF372FE94F82BUL;
+        private const UInt64 _iv4 = 0xA54FF53A5F1D36F1UL;
+        private const UInt64 _iv5 = 0x510E527FADE682D1UL;
+        private const UInt64 _iv6 = 0x9B05688C2B3E6C1FUL;
+        private const UInt64 _iv7 = 0x1F83D9ABFB41BD6BUL;
+        private const UInt64 _iv8 = 0x5BE0CD19137E2179UL;
+
+
 
 
         private class InternalState
@@ -61,21 +59,6 @@ namespace OpenSource.Data.HashFunction.Blake2
             public readonly UInt64[] FinalizationFlags = new UInt64[2];
 
 
-            public InternalState(int hashSize, uint originalKeyLength, byte[] salt, byte[] personalization)
-            {
-                Array.Copy(IVs, H, IVs.Length);
-
-                H[0] ^= 0x01010000U |
-                    ((uint) hashSize / 8) |
-                    (originalKeyLength << 8);
-
-
-                H[4] ^= BitConverter.ToUInt64(salt, 0);
-                H[5] ^= BitConverter.ToUInt64(salt, 8);
-
-                H[6] ^= BitConverter.ToUInt64(personalization, 0);
-                H[7] ^= BitConverter.ToUInt64(personalization, 8);
-            }
         }
 
 
@@ -133,154 +116,266 @@ namespace OpenSource.Data.HashFunction.Blake2
 		}
 
 
-        /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
-		{
-            var internalState = new InternalState(_config.HashSizeInBits, _originalKeyLength, _salt, _personalization);
-
-
-			if (_originalKeyLength > 0)
-				ProcessBytes(internalState, _key, 0, _key.Length);
-
-            data.ForEachGroup(
-                BlockSizeBytes,
-                (array, start, count) => ProcessBytes(internalState, array, start, count),
-                (array, start, count) => ProcessBytes(internalState, array, start, count),
-                cancellationToken);
-
-            return Final(_config.HashSizeInBits, internalState);
-		}
-
-
-
-		/// <inheritdoc />
-		protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
-		{
-            var internalState = new InternalState(_config.HashSizeInBits, _originalKeyLength, _salt, _personalization);
-
+        public override IHashFunctionBlockTransformer CreateBlockTransformer()
+        {
+            var blockTransformer = new BlockTransformer(_config.HashSizeInBits, _originalKeyLength, _salt, _personalization);
 
             if (_originalKeyLength > 0)
-                ProcessBytes(internalState, _key, 0, _key.Length);
+                blockTransformer.TransformBytes(_key);
+            
+            return blockTransformer;
+        }
 
-			await data.ForEachGroupAsync(
-                    BlockSizeBytes,
-                    (array, start, count) => ProcessBytes(internalState, array, start, count),
-                    (array, start, count) => ProcessBytes(internalState, array, start, count),
-                    cancellationToken)
-                .ConfigureAwait(false);
-
-			return Final(_config.HashSizeInBits, internalState);
-		}
-
-
-        private void ProcessBytes(InternalState internalState, byte[] array, int start, int count)
+        private class BlockTransformer
+            : HashFunctionBlockTransformerBase<BlockTransformer>
         {
-			int bufferRemaining = BlockSizeBytes - internalState.BufferFilled;
+            private int _hashSizeInBits;
+            private uint _originalKeyLength;
 
-			if (internalState.BufferFilled > 0 && count > bufferRemaining)
-			{
-				Array.Copy(
-                    array, start, 
-                    internalState.Buffer, internalState.BufferFilled, 
-                    bufferRemaining);
+            private UInt64 _a;
+            private UInt64 _b;
+            private UInt64 _c;
+            private UInt64 _d;
+            private UInt64 _e;
+            private UInt64 _f;
+            private UInt64 _g;
+            private UInt64 _h;
 
-
-				internalState.Counter += new UInt128(BlockSizeBytes);
-				
-                Compress(internalState, internalState.Buffer, 0);
-
-				start += bufferRemaining;
-				count -= bufferRemaining;
-				internalState.BufferFilled = 0;
-			}
-
-			while (count > BlockSizeBytes)
-			{
-				internalState.Counter += new UInt128(BlockSizeBytes);
-				
-				Compress(internalState, array, start);
-				
-                start += BlockSizeBytes;
-				count -= BlockSizeBytes;
-			}
-
-			if (count > 0)
-			{
-				Array.Copy(
-                    array, start, 
-                    internalState.Buffer, internalState.BufferFilled, 
-                    count);
-
-				internalState.BufferFilled += count;
-			}
-		}
+            private UInt128 _counter = new UInt128(0);
+            private byte[] _delayedInputBuffer = null;
 
 
-		private byte[] Final(int hashSize, InternalState internalState)
-		{
-			//Last compression
-			internalState.Counter += new UInt128((UInt64) internalState.BufferFilled);
-			internalState.FinalizationFlags[0] = UInt64.MaxValue;
-
-			for (int i = internalState.BufferFilled; i < internalState.Buffer.Length; i++)
-				internalState.Buffer[i] = 0;
-
-			Compress(internalState, internalState.Buffer, 0);
-
-
-			byte[] hash = new byte[64];
-
-            for (int i = 0; i < 8; ++i)
+            public BlockTransformer()
+                : base(inputBlockSize: 128)
             {
-                Array.Copy(
-                    BitConverter.GetBytes(internalState.H[i]), 0, 
-                    hash, i * 8, 
-                    8);
+
+            }
+
+            public BlockTransformer(int hashSizeInBits, uint originalKeyLength, byte[] salt, byte[] personalization)
+                : this()
+            {
+                _hashSizeInBits = hashSizeInBits;
+                _originalKeyLength = originalKeyLength;
+
+
+                _a = _iv1;
+                _b = _iv2;
+                _c = _iv3;
+                _d = _iv4;
+                _e = _iv5;
+                _f = _iv6;
+                _g = _iv7;
+                _h = _iv8;
+
+
+                _a ^= 0x01010000U |
+                    ((uint) hashSizeInBits / 8) |
+                    (originalKeyLength << 8);
+
+
+                _e ^= BitConverter.ToUInt64(salt, 0);
+                _f ^= BitConverter.ToUInt64(salt, 8);
+
+                _g ^= BitConverter.ToUInt64(personalization, 0);
+                _h ^= BitConverter.ToUInt64(personalization, 8);
             }
 
 
-            if (hash.Length != hashSize / 8)
-			{
-                var result = new byte[hashSize / 8];
+            protected override void CopyStateTo(BlockTransformer other)
+            {
+                base.CopyStateTo(other);
 
-				Array.Copy(
-                    hash, 
-                    result, result.Length);
+                other._hashSizeInBits = _hashSizeInBits;
+                other._originalKeyLength = _originalKeyLength;
 
+                other._a = _a;
+                other._b = _b;
+                other._c = _c;
+                other._d = _d;
+                other._e = _e;
+                other._f = _f;
+                other._g = _g;
+                other._h = _h;
 
-				return result;
-			}
+                other._counter = _counter;
+                other._delayedInputBuffer = _delayedInputBuffer;
+            }
 
-			return hash;
-		}
-
-		private static void Compress(InternalState internalState, byte[] block, int start)
-		{
-            var m = new UInt64[16];
-		    Buffer.BlockCopy(block, start, m, 0, BlockSizeBytes);
-
-
-            var v = new UInt64[16];
-            Array.Copy(internalState.H, v, internalState.H.Length);
-            Array.Copy(IVs, 0, v, 8, IVs.Length);
-
-			v[12] ^= internalState.Counter.Low;
-			v[13] ^= internalState.Counter.High;
-			v[14] ^= internalState.FinalizationFlags[0];
-			v[15] ^= internalState.FinalizationFlags[1];
+            protected override void TransformByteGroupsInternal(ArraySegment<byte> data)
+            {
+                var dataArray = data.Array;
+                var dataOffset = data.Offset;
+                var dataCount = data.Count;
 
 
-            ComputeRounds(v, m);
+                var tempA = _a;
+                var tempB = _b;
+                var tempC = _c;
+                var tempD = _d;
+                var tempE = _e;
+                var tempF = _f;
+                var tempG = _g;
+                var tempH = _h;
 
-			//Finalization
-			internalState.H[0] ^= v[0] ^ v[8];
-			internalState.H[1] ^= v[1] ^ v[9];
-			internalState.H[2] ^= v[2] ^ v[10];
-			internalState.H[3] ^= v[3] ^ v[11];
-			internalState.H[4] ^= v[4] ^ v[12];
-			internalState.H[5] ^= v[5] ^ v[13];
-			internalState.H[6] ^= v[6] ^ v[14];
-			internalState.H[7] ^= v[7] ^ v[15];
-		}
+                var tempCounter = _counter;
+
+
+                // Process _delayedInputBuffer
+                if (_delayedInputBuffer != null)
+                {
+                    tempCounter += new UInt128(128);
+
+                    Compress(
+                        ref tempA, ref tempB, ref tempC, ref tempD, ref tempE, ref tempF, ref tempG, ref tempH,
+                        tempCounter,
+                        _delayedInputBuffer, 0,
+                        false);
+                }
+
+                // Delay the last 128 bytes of input
+                {
+                    _delayedInputBuffer = new byte[128];
+                    Array.Copy(dataArray, dataOffset + dataCount - 128, _delayedInputBuffer, 0, 128);
+
+                    dataCount -= 128;
+                }
+
+                // Process all non-delayed input
+                if (dataCount > 0)
+                {
+                    var endOffset = dataOffset + dataCount;
+
+                    for (var currentOffset = dataOffset; currentOffset < endOffset; currentOffset += 128)
+                    {
+                        tempCounter += new UInt128(128);
+
+                        Compress(
+                            ref tempA, ref tempB, ref tempC, ref tempD, ref tempE, ref tempF, ref tempG, ref tempH,
+                            tempCounter,
+                            dataArray, currentOffset, 
+                            false);
+                    }
+                }
+
+                _a = tempA;
+                _b = tempB;
+                _c = tempC;
+                _d = tempD;
+                _e = tempE;
+                _f = tempF;
+                _g = tempG;
+                _h = tempH;
+
+                _counter = tempCounter;
+            }
+
+            protected override IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken)
+            {
+                var remainder = FinalizeInputBuffer;
+                var remainderCount = (remainder?.Length).GetValueOrDefault();
+
+                var tempA = _a;
+                var tempB = _b;
+                var tempC = _c;
+                var tempD = _d;
+                var tempE = _e;
+                var tempF = _f;
+                var tempG = _g;
+                var tempH = _h;
+
+                var tempCounter = _counter;
+
+
+                if (_delayedInputBuffer != null)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+
+                    tempCounter += new UInt128(128);
+
+                    Compress(
+                        ref tempA, ref tempB, ref tempC, ref tempD, ref tempE, ref tempF, ref tempG, ref tempH,
+                        tempCounter,
+                        _delayedInputBuffer, 0,
+                        remainderCount == 0);
+                }
+
+
+                if (remainderCount > 0 || _delayedInputBuffer == null)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    var finalBuffer = new byte[128];
+
+                    if (remainderCount > 0)
+                        Array.Copy(remainder, 0, finalBuffer, 0, remainderCount);
+
+
+                    tempCounter += new UInt128((UInt64) remainderCount);
+
+                    Compress(
+                        ref tempA, ref tempB, ref tempC, ref tempD, ref tempE, ref tempF, ref tempG, ref tempH,
+                        tempCounter,
+                        finalBuffer, 0,
+                        true);
+                }
+
+
+                var hashValueBytes = BitConverter.GetBytes(tempA)
+                    .Concat(BitConverter.GetBytes(tempB))
+                    .Concat(BitConverter.GetBytes(tempC))
+                    .Concat(BitConverter.GetBytes(tempD))
+                    .Concat(BitConverter.GetBytes(tempE))
+                    .Concat(BitConverter.GetBytes(tempF))
+                    .Concat(BitConverter.GetBytes(tempG))
+                    .Concat(BitConverter.GetBytes(tempH))
+                    .Take(_hashSizeInBits / 8)
+                    .ToArray();
+
+
+                return new HashValue(hashValueBytes, _hashSizeInBits);
+            }
+
+
+
+            private static void Compress(
+                ref UInt64 a, ref UInt64 b, ref UInt64 c, ref UInt64 d, ref UInt64 e, ref UInt64 f, ref UInt64 g, ref UInt64 h, 
+                UInt128 counter,
+                byte[] dataArray, int dataOffset,
+                bool isFinal)
+            {
+                var reinterpretedData = new UInt64[16];
+                Buffer.BlockCopy(dataArray, dataOffset, reinterpretedData, 0, BlockSizeBytes);
+
+
+                var v = new UInt64[16] {
+                    a, b, c, d, e, f, g, h,
+                    _iv1, _iv2, _iv3, _iv4, _iv5, _iv6, _iv7, _iv8
+                };
+
+
+                v[12] ^= counter.Low;
+                v[13] ^= counter.High;
+
+                if (isFinal)
+                    v[14] ^= UInt64.MaxValue;
+
+
+                ComputeRounds(v, reinterpretedData);
+
+
+                //Finalization
+                a ^= v[0] ^ v[8];
+                b ^= v[1] ^ v[9];
+                c ^= v[2] ^ v[10];
+                d ^= v[3] ^ v[11];
+                e ^= v[4] ^ v[12];
+                f ^= v[5] ^ v[13];
+                g ^= v[6] ^ v[14];
+                h ^= v[7] ^ v[15];
+            }
+
+        }
+
 	}
 }

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using OpenSource.Data.HashFunction.Blake2;
 using Moq;
 using OpenSource.Data.HashFunction.Test._Utilities;
@@ -299,7 +298,7 @@ namespace OpenSource.Data.HashFunction.Test.Blake2
 
 
         public class IHashFunctionAsync_Tests
-            : IHashFunctionAsync_TestBase<IBlake2B>
+            : IStreamableHashFunction_TestBase<IBlake2B>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -342,7 +341,7 @@ namespace OpenSource.Data.HashFunction.Test.Blake2
 
 
         public class IHashFunctionAsync_Tests_DefaultConstructor
-            : IHashFunctionAsync_TestBase<IBlake2B>
+            : IStreamableHashFunction_TestBase<IBlake2B>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -358,7 +357,7 @@ namespace OpenSource.Data.HashFunction.Test.Blake2
 
 
         public class IHashFunctionAsync_Tests_WithHashSizeAndFoobarAsKey
-            : IHashFunctionAsync_TestBase<IBlake2B>
+            : IStreamableHashFunction_TestBase<IBlake2B>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -395,7 +394,7 @@ namespace OpenSource.Data.HashFunction.Test.Blake2
         
 
         public class IHashFunctionAsync_Tests_WithHashSizeAndFoobarAsKeySaltAndPersonalization
-            : IHashFunctionAsync_TestBase<IBlake2B>
+            : IStreamableHashFunction_TestBase<IBlake2B>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -435,7 +434,7 @@ namespace OpenSource.Data.HashFunction.Test.Blake2
         
 
         public class IHashFunctionAsync_Tests_CanonicalUnKeyed
-            : IHashFunctionAsync_TestBase<IBlake2B>
+            : IStreamableHashFunction_TestBase<IBlake2B>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -706,7 +705,7 @@ namespace OpenSource.Data.HashFunction.Test.Blake2
 
 
         public class IHashFunctionAsync_Tests_CanonicalKeyed
-            : IHashFunctionAsync_TestBase<IBlake2B>
+            : IStreamableHashFunction_TestBase<IBlake2B>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
