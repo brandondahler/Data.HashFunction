@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using OpenSource.Data.HashFunction.Core;
 using OpenSource.Data.HashFunction.Core.Utilities;
-using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -20,7 +19,7 @@ namespace OpenSource.Data.HashFunction.MurmurHash
     /// This hash function has been superseded by <seealso cref="IMurmurHash2">MurmurHash2</seealso> and <seealso cref="IMurmurHash3">MurmurHash3</seealso>.
     /// </summary>
     internal class MurmurHash1_Implementation
-        : HashFunctionAsyncBase,
+        : HashFunctionBase,
             IMurmurHash1
     {
 
@@ -38,7 +37,7 @@ namespace OpenSource.Data.HashFunction.MurmurHash
         /// <summary>
         /// Constant m as defined by MurmurHash1 specification.
         /// </summary>
-        private const UInt32 m = 0XC6A4A793;
+        private const UInt32 _m = 0XC6A4A793;
 
 
         private readonly IMurmurHash1Config _config;
@@ -58,78 +57,56 @@ namespace OpenSource.Data.HashFunction.MurmurHash
         }
 
 
-        /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
+        protected override IHashValue ComputeHashInternal(ArraySegment<byte> data, CancellationToken cancellationToken)
         {
-            UInt32 h = _config.Seed ^ ((UInt32) data.Length * m);
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+            var dataCount = data.Count;
 
-            data.ForEachGroup(4, 
-                (dataGroup, position, length) => {
-                    ProcessGroup(ref h, dataGroup, position, length);
-                },
-                (remainder, position, length) => {
-                    ProcessRemainder(ref h, remainder, position, length);
-                },
-                cancellationToken);
- 
-            h *= m;
-            h ^= h >> 10;
-            h *= m;
-            h ^= h >> 17;
+            var endOffset = dataOffset + dataCount;
+            var remainderCount = dataCount % 4;
 
-            return BitConverter.GetBytes(h);
-        }
-        
-        /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
-        {
-            UInt32 h = _config.Seed ^ ((UInt32) data.Length * m);
+            UInt32 hashValue = _config.Seed ^ ((UInt32) dataCount * _m);
 
-            await data.ForEachGroupAsync(4,
-                    (dataGroup, position, length) => {
-                        ProcessGroup(ref h, dataGroup, position, length);
-                    },
-                    (remainder, position, length) => {
-                        ProcessRemainder(ref h, remainder, position, length);
-                    },
-                    cancellationToken)
-                .ConfigureAwait(false);
-
-            h *= m;
-            h ^= h >> 10;
-            h *= m;
-            h ^= h >> 17;
-
-            return BitConverter.GetBytes(h);
-        }
-
-
-        private static void ProcessGroup(ref UInt32 h, byte[] dataGroup, int position, int length)
-        {
-            for (var x = position; x < position + length; x += 4)
+            // Process 4-byte groups
             {
-                h += BitConverter.ToUInt32(dataGroup, x);
-                h *= m;
-                h ^= h >> 16;
+                var groupEndOffset = endOffset - remainderCount;
+
+                for (var currentOffset = dataOffset; currentOffset < groupEndOffset; currentOffset += 4)
+                {
+                    hashValue += BitConverter.ToUInt32(dataArray, currentOffset);
+                    hashValue *= _m;
+                    hashValue ^= hashValue >> 16;
+                }
             }
-        }
 
-        private static void ProcessRemainder(ref UInt32 h, byte[] remainder, int position, int length)
-        {
-            Debug.Assert(length > 0);
-            Debug.Assert(length < 4);
-
-            switch (length)
+            // Process remainder
+            if (remainderCount > 0)
             {
-                case 3: h += (UInt32) remainder[position + 2] << 16; goto case 2;
-                case 2: h += (UInt32) remainder[position + 1] <<  8; goto case 1;
-                case 1:
-                    h += (UInt32) remainder[position];
-                    break;
-            };
+                var remainderOffset = endOffset - remainderCount;
 
-            h *= m;
-            h ^= h >> 16;
+                switch (remainderCount)
+                {
+                    case 3: hashValue += (UInt32) dataArray[remainderOffset + 2] << 16; goto case 2;
+                    case 2: hashValue += (UInt32) dataArray[remainderOffset + 1] << 8; goto case 1;
+                    case 1:
+                        hashValue += (UInt32) dataArray[remainderOffset];
+                        break;
+                };
+
+                hashValue *= _m;
+                hashValue ^= hashValue >> 16;
+            }
+
+
+            hashValue *= _m;
+            hashValue ^= hashValue >> 10;
+            hashValue *= _m;
+            hashValue ^= hashValue >> 17;
+
+            return new HashValue(
+                BitConverter.GetBytes(hashValue),
+                32);
         }
     }
 }

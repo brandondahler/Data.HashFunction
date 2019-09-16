@@ -152,44 +152,9 @@ namespace OpenSource.Data.HashFunction.Test.MurmurHash
 
         #endregion
 
-        #region ComputeHashAsync
-
-        [Fact]
-        public async Task MurmurHash2_Implementation_ComputeHashAsync_HashSizeInBits_MagicallyInvalid_Throws()
-        {
-            var murmurHash2ConfigMock = new Mock<IMurmurHash2Config>();
-            {
-                var readCount = 0;
-
-                murmurHash2ConfigMock.SetupGet(jlc => jlc.HashSizeInBits)
-                    .Returns(() => {
-                        readCount += 1;
-
-                        if (readCount == 1)
-                            return 32;
-
-                        return 33;
-                    });
-
-                murmurHash2ConfigMock.Setup(jlc => jlc.Clone())
-                    .Returns(() => murmurHash2ConfigMock.Object);
-            }
-
-
-            var murmurHash2 = new MurmurHash2_Implementation(murmurHash2ConfigMock.Object);
-
-            using (var memoryStream = new MemoryStream(new byte[1]))
-            {
-                await Assert.ThrowsAsync<NotImplementedException>(
-                    () => murmurHash2.ComputeHashAsync(memoryStream));
-            }
-        }
-
-        #endregion
-
 
         public class IHashFunctionAsync_Tests_MurmurHash2
-            : IHashFunctionAsync_TestBase<IMurmurHash2>
+            : IHashFunction_TestBase<IMurmurHash2>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -210,7 +175,7 @@ namespace OpenSource.Data.HashFunction.Test.MurmurHash
     
 
         public class IHashFunctionAsync_Tests_MurmurHash2_DefaultConstructor
-            : IHashFunctionAsync_TestBase<IMurmurHash2>
+            : IHashFunction_TestBase<IMurmurHash2>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {

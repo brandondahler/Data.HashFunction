@@ -25,12 +25,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="MurmurHash\**" />
-    <EmbeddedResource Remove="MurmurHash\**" />
-    <None Remove="MurmurHash\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="results.xml" />
   </ItemGroup>
   
