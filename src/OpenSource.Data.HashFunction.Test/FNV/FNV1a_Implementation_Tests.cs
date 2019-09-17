@@ -320,7 +320,7 @@ namespace OpenSource.Data.HashFunction.Test.FNV
         #endregion
 
 
-        public class IHashFunctionAsync_Tests
+        public class IStreamableHashFunction_Tests
             : IStreamableHashFunction_TestBase<IFNV1a>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =

@@ -8,7 +8,6 @@ namespace OpenSource.Data.HashFunction.BernsteinHash
     /// <summary>
     /// Provides instances of implementations of <see cref="IBernsteinHash"/>.
     /// </summary>
-    /// <seealso cref="IBernsteinHashFactory" />
     public sealed class BernsteinHashFactory
         : IBernsteinHashFactory
     {

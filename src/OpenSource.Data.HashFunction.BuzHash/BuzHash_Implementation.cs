@@ -17,8 +17,6 @@ namespace OpenSource.Data.HashFunction.BuzHash
     /// Relies on a random table of 256 (preferably distinct) 64-bit integers.
     /// Also can be set to use left or right rotation when running the rotate step.
     /// </summary>
-    /// <seealso cref="HashFunctionAsyncBase" />
-    /// <seealso cref="IBuzHash" />
     internal class BuzHash_Implementation
         : StreamableHashFunctionBase,
             IBuzHash
@@ -287,14 +285,6 @@ namespace OpenSource.Data.HashFunction.BuzHash
 
         #region CShift
 
-        /// <summary>
-        /// Rotate bits of input byte by amount specified.  Shifts left or right based on ShiftDirection parameter.
-        /// </summary>
-        /// <param name="n">Byte value to shift.</param>
-        /// <param name="shiftCount">Number of bits to shift the integer by.</param>
-        /// <returns>
-        /// Byte value after rotating by the specified amount of bits.
-        /// </returns>
         private static byte CShift(byte n, int shiftCount, CircularShiftDirection shiftDirection)
         {
             if (shiftDirection == CircularShiftDirection.Right)
@@ -303,14 +293,6 @@ namespace OpenSource.Data.HashFunction.BuzHash
             return RotateLeft(n, shiftCount);
         }
 
-        /// <summary>
-        /// Rotate bits of input integer by amount specified.  Shifts left or right based on ShiftDirection parameter.
-        /// </summary>
-        /// <param name="n">UInt16 value to shift.</param>
-        /// <param name="shiftCount">Number of bits to shift the integer by.</param>
-        /// <returns>
-        /// UInt16 value after rotating by the specified amount of bits.
-        /// </returns>
         private static UInt16 CShift(UInt16 n, int shiftCount, CircularShiftDirection shiftDirection)
         {
             if (shiftDirection == CircularShiftDirection.Right)
@@ -319,14 +301,6 @@ namespace OpenSource.Data.HashFunction.BuzHash
             return RotateLeft(n, shiftCount);
         }
 
-        /// <summary>
-        /// Rotate bits of input integer by amount specified.  Shifts left or right based on ShiftDirection parameter.
-        /// </summary>
-        /// <param name="n">UInt32 value to shift.</param>
-        /// <param name="shiftCount">Number of bits to shift the integer by.</param>
-        /// <returns>
-        /// UInt32 value after rotating by the specified amount of bits.
-        /// </returns>
         private static UInt32 CShift(UInt32 n, int shiftCount, CircularShiftDirection shiftDirection)
         {
             if (shiftDirection == CircularShiftDirection.Right)
@@ -335,14 +309,6 @@ namespace OpenSource.Data.HashFunction.BuzHash
             return RotateLeft(n, shiftCount);
         }
 
-        /// <summary>
-        /// Rotate bits of input integer by amount specified.  Shifts left or right based on ShiftDirection parameter.
-        /// </summary>
-        /// <param name="n">UInt64 value to shift.</param>
-        /// <param name="shiftCount">Number of bits to shift the integer by.</param>
-        /// <returns>
-        /// UInt64 value after rotating by the specified amount of bits.
-        /// </returns>
         private static UInt64 CShift(UInt64 n, int shiftCount, CircularShiftDirection shiftDirection)
         {
             if (shiftDirection == CircularShiftDirection.Right)

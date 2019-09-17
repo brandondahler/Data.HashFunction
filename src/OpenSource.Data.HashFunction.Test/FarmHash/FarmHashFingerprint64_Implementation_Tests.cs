@@ -36,7 +36,7 @@ namespace OpenSource.Data.HashFunction.Test.FarmHash
 
 
 
-        public class IHashFunctionAsync_Tests
+        public class IHashFunction_Tests
             : IHashFunction_TestBase<IFarmHashFingerprint64>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =

@@ -9,7 +9,7 @@ namespace OpenSource.Data.HashFunction.Test.Jenkins
     public class JenkinsOneAtATime_Implementation_Tests
     {
 
-        public class IHashFunctionAsync_Tests
+        public class IStreamableHashFunction_Tests
             : IStreamableHashFunction_TestBase<IJenkinsOneAtATime>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =

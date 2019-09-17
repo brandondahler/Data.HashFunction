@@ -7,7 +7,6 @@ namespace OpenSource.Data.HashFunction.Blake2
     /// <summary>
     /// Provides instances of implementations of <see cref="IBlake2B"/>.
     /// </summary>
-    /// <seealso cref="IBlake2BFactory" />
     public sealed class Blake2BFactory
         : IBlake2BFactory
     {

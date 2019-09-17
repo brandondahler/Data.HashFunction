@@ -372,7 +372,7 @@ namespace OpenSource.Data.HashFunction.Test.BuzHash
         #endregion
 
 
-        public class IHashFunctionAsync_Tests
+        public class IStreamableHashFunction_Tests
             : IStreamableHashFunction_TestBase<IBuzHash>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
@@ -399,7 +399,7 @@ namespace OpenSource.Data.HashFunction.Test.BuzHash
         }
     
 
-        public class IHashFunctionAsync_Tests_DefaultConstructor
+        public class IStreamableHashFunction_Tests_DefaultConstructor
             : IStreamableHashFunction_TestBase<IBuzHash>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
@@ -415,7 +415,7 @@ namespace OpenSource.Data.HashFunction.Test.BuzHash
         }
     
 
-        public class IHashFunctionAsync_Tests_RightShift
+        public class IStreamableHashFunction_Tests_RightShift
             : IStreamableHashFunction_TestBase<IBuzHash>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
@@ -443,7 +443,7 @@ namespace OpenSource.Data.HashFunction.Test.BuzHash
         }
     
 
-        public class IHashFunctionAsync_Tests_RightShift_DefaultConstructor
+        public class IStreamableHashFunction_Tests_RightShift_DefaultConstructor
             : IStreamableHashFunction_TestBase<IBuzHash>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =

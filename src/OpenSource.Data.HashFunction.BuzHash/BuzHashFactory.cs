@@ -7,7 +7,6 @@ namespace OpenSource.Data.HashFunction.BuzHash
     /// <summary>
     /// Provides instances of implementations of <see cref="IBuzHash"/>.
     /// </summary>
-    /// <seealso cref="IBuzHashFactory" />
     public sealed class BuzHashFactory
         : IBuzHashFactory
     {

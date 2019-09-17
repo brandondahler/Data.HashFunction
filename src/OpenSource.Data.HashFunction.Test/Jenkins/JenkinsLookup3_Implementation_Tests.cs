@@ -158,7 +158,7 @@ namespace OpenSource.Data.HashFunction.Test.Jenkins
         #endregion
 
 
-        public class IHashFunctionAsync_Tests
+        public class IHashFunction_Tests
             : IHashFunction_TestBase<IJenkinsLookup3>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
@@ -185,7 +185,7 @@ namespace OpenSource.Data.HashFunction.Test.Jenkins
         }
     
 
-        public class IHashFunctionAsync_Tests_DefaultConstructor
+        public class IHashFunction_Tests_DefaultConstructor
             : IHashFunction_TestBase<IJenkinsLookup3>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
@@ -204,7 +204,7 @@ namespace OpenSource.Data.HashFunction.Test.Jenkins
         }
     
 
-        public class IHashFunctionAsync_Tests_WithInitVals
+        public class IHashFunction_Tests_WithInitVals
             : IHashFunction_TestBase<IJenkinsLookup3>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
@@ -224,7 +224,7 @@ namespace OpenSource.Data.HashFunction.Test.Jenkins
         }
     
 
-        public class IHashFunctionAsync_Tests_WithInitVals_DefaultHashSize
+        public class IHashFunction_Tests_WithInitVals_DefaultHashSize
             : IHashFunction_TestBase<IJenkinsLookup3>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =

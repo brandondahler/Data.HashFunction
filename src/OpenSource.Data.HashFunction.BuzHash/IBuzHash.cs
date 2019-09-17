@@ -10,7 +10,6 @@ namespace OpenSource.Data.HashFunction.BuzHash
     /// Relies on a table of 256 (preferably distinct) 64-bit integers.
     /// Also can be set to use left or right rotation when running the rotate step.
     /// </summary>
-    /// <seealso cref="IHashFunctionAsync" />
     public interface IBuzHash
         : IStreamableHashFunction
     {

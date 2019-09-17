@@ -297,7 +297,7 @@ namespace OpenSource.Data.HashFunction.Test.Blake2
         #endregion
 
 
-        public class IHashFunctionAsync_Tests
+        public class IStreamableHashFunction_Tests
             : IStreamableHashFunction_TestBase<IBlake2B>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
@@ -340,7 +340,7 @@ namespace OpenSource.Data.HashFunction.Test.Blake2
             }
 
 
-        public class IHashFunctionAsync_Tests_DefaultConstructor
+        public class IStreamableHashFunction_Tests_DefaultConstructor
             : IStreamableHashFunction_TestBase<IBlake2B>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
@@ -356,7 +356,7 @@ namespace OpenSource.Data.HashFunction.Test.Blake2
         }
 
 
-        public class IHashFunctionAsync_Tests_WithHashSizeAndFoobarAsKey
+        public class IStreamableHashFunction_Tests_WithHashSizeAndFoobarAsKey
             : IStreamableHashFunction_TestBase<IBlake2B>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
@@ -393,7 +393,7 @@ namespace OpenSource.Data.HashFunction.Test.Blake2
         }
         
 
-        public class IHashFunctionAsync_Tests_WithHashSizeAndFoobarAsKeySaltAndPersonalization
+        public class IStreamableHashFunction_Tests_WithHashSizeAndFoobarAsKeySaltAndPersonalization
             : IStreamableHashFunction_TestBase<IBlake2B>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
@@ -433,7 +433,7 @@ namespace OpenSource.Data.HashFunction.Test.Blake2
 
         
 
-        public class IHashFunctionAsync_Tests_CanonicalUnKeyed
+        public class IStreamableHashFunction_Tests_CanonicalUnKeyed
             : IStreamableHashFunction_TestBase<IBlake2B>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
@@ -704,7 +704,7 @@ namespace OpenSource.Data.HashFunction.Test.Blake2
         }
 
 
-        public class IHashFunctionAsync_Tests_CanonicalKeyed
+        public class IStreamableHashFunction_Tests_CanonicalKeyed
             : IStreamableHashFunction_TestBase<IBlake2B>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =

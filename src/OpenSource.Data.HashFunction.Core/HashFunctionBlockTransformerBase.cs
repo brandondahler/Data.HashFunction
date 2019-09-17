@@ -8,13 +8,29 @@ using System.Threading.Tasks;
 
 namespace OpenSource.Data.HashFunction.Core
 {
+    /// <summary>
+    /// Base implementation for an internal state of an iteratively computable hash function value.
+    /// 
+    /// Provides buffering and cancellation handling features.
+    /// </summary>
+    /// <typeparam name="TSelf">The final derived type to use when cloning.</typeparam>
     public abstract partial class HashFunctionBlockTransformerBase<TSelf>
         : IHashFunctionBlockTransformer
         where TSelf : HashFunctionBlockTransformerBase<TSelf>, new()
     {
-        protected const int _defaultCancellationBatchSize = 4096;
-        protected const int _defaultInputBlockSize = 1;
+        /// <summary>
+        /// The default number of bytes to process before re-checking the cancellation token.
+        /// </summary>
+        protected const int DefaultCancellationBatchSize = 4096;
 
+        /// <summary>
+        /// The default block size to pass to <see cref="TransformByteGroupsInternal(ArraySegment{byte})"/>.
+        /// </summary>
+        protected const int DefaultInputBlockSize = 1;
+
+        /// <summary>
+        /// The input buffer that should be fetched during the <see cref="FinalizeHashValueInternal(CancellationToken)" /> methods.
+        /// </summary>
         protected byte[] FinalizeInputBuffer { get => _inputBuffer; }
 
         private readonly int _cancellationBatchSize;
@@ -24,12 +40,20 @@ namespace OpenSource.Data.HashFunction.Core
         private bool _isCorrupted = false;
         
 
-        protected HashFunctionBlockTransformerBase(int cancellationBatchSize = _defaultCancellationBatchSize, int inputBlockSize = _defaultInputBlockSize)
+        /// <summary>
+        /// Construct <see cref="HashFunctionBlockTransformerBase{TSelf}"/> with optional parameters to configure features.
+        /// </summary>
+        /// <param name="cancellationBatchSize">Maximum number of bytes to process before re-checking the cancellation token.</param>
+        /// <param name="inputBlockSize">Block size to pass to <see cref="TransformByteGroupsInternal(ArraySegment{byte})"/>.</param>
+        protected HashFunctionBlockTransformerBase(int cancellationBatchSize = DefaultCancellationBatchSize, int inputBlockSize = DefaultInputBlockSize)
         {
             _cancellationBatchSize = cancellationBatchSize;
             _inputBlockSize = inputBlockSize;
+
+            // Ensure _cancellationBatchSize is a multiple of _inputBlockSize, preferrably rounding down.
             {
                 var blockSizeRemainder = _cancellationBatchSize % _inputBlockSize;
+
                 if (blockSizeRemainder > 0)
                 {
                     _cancellationBatchSize -= blockSizeRemainder;
@@ -115,9 +139,7 @@ namespace OpenSource.Data.HashFunction.Core
         /// Updates the internal state of this transformer with the given data.
         /// </summary>
         /// <param name="data">The data to process into this transformer's internal state.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to cease processing of the provided data.</param>
         /// <exception cref="ArgumentException">data must be an ArraySegment of Count > 0.;<paramref name="data"/></exception>
-        /// <exception cref="TaskCanceledException">The <paramref name="cancellationToken"/> was canceled.</exception>
         /// <exception cref="InvalidOperationException">A previous transformation cancellation has resulted in an undefined internal state.</exception>
         public void TransformBytes(ArraySegment<byte> data) =>
             TransformBytes(data, CancellationToken.None);
@@ -178,7 +200,11 @@ namespace OpenSource.Data.HashFunction.Core
             return clone;
         }
 
-
+        /// <summary>
+        /// Copies the internal state of the current instance to the provided instance.
+        /// </summary>
+        /// <param name="other">The instance to copy the internal state into.</param>
+        /// <remarks>All overriders should ensure base.CopyStateTo(other) is called.</remarks>
         protected virtual void CopyStateTo(TSelf other)
         {
             other._inputBuffer = _inputBuffer;
@@ -203,7 +229,12 @@ namespace OpenSource.Data.HashFunction.Core
             _isCorrupted = true;
         }
 
-        protected virtual void TransformBytesInternal(ArraySegment<byte> data, CancellationToken cancellationToken)
+        /// <summary>
+        /// Updates the internal state of this transformer with the given data.
+        /// </summary>
+        /// <param name="data">The data to process into this transformer's internal state.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to cease processing of the provided data.</param>
+        protected void TransformBytesInternal(ArraySegment<byte> data, CancellationToken cancellationToken)
         {
             var dataArray = data.Array;
             var dataCurrentOffset = data.Offset;
@@ -294,7 +325,19 @@ namespace OpenSource.Data.HashFunction.Core
         }
 
 
+        /// <summary>
+        /// Updates the internal state of this transformer with the given data.
+        /// 
+        /// The data's size will be a multiple of the provided inputBlockSize in the constructor.
+        /// </summary>
+        /// <param name="data">The data to process into this transformer's internal state.</param>
         protected abstract void TransformByteGroupsInternal(ArraySegment<byte> data);
+
+        /// <summary>
+        /// Completes any finalization processing and returns the resulting <see cref="IHashValue"/>.
+        /// </summary>
+        /// <remarks>Internal state will remain unmodified, therefore this method will not invalidate future calls to any other TransformBytes or FinalizeTransformation calls.</remarks>
+        /// <exception cref="InvalidOperationException">A previous transformation cancellation has resulted in an undefined internal state.</exception>
         protected abstract IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken);
 
 

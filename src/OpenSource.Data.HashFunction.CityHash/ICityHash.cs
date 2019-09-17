@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OpenSource.Data.HashFunction.CityHash
 {
-    
+
     /// <summary>
     /// Implementation of CityHash as specified at https://code.google.com/p/cityhash/.
     /// 
@@ -18,7 +18,6 @@ namespace OpenSource.Data.HashFunction.CityHash
     /// It's slower than necessary on shorter strings, but we expect that case to be relatively unimportant.
     /// "
     /// </summary>
-    /// <seealso cref="IHashFunctionAsync" />
     public interface ICityHash
         : IHashFunction
     {

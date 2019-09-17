@@ -19,7 +19,7 @@ namespace OpenSource.Data.HashFunction.Test.BernsteinHash
         }
 
 
-        public class IHashFunctionAsync_Tests
+        public class IStreamableHashFunction_Tests
             : IStreamableHashFunction_TestBase<IBernsteinHash>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =

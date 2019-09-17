@@ -145,7 +145,7 @@ namespace OpenSource.Data.HashFunction.Test.CityHash
         #endregion
 
 
-        public class IHashFunctionAsync_Tests
+        public class IHashFunction_Tests
             : IHashFunction_TestBase<ICityHash>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
@@ -184,7 +184,7 @@ namespace OpenSource.Data.HashFunction.Test.CityHash
         }
     
 
-        public class IHashFunctionAsync_Tests_DefaultConstructor
+        public class IHashFunction_Tests_DefaultConstructor
             : IHashFunction_TestBase<ICityHash>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =

@@ -105,10 +105,7 @@ namespace OpenSource.Data.HashFunction.CityHash
 
         #region ComputeHash32
 
-        /// <summary>32-bit implementation of ComputeHash.</summary>
-        /// <param name="data">Data to be hashed.</param>
-        /// <returns>UInt32 value representing the hash value.</returns>
-        protected virtual IHashValue ComputeHash32(ArraySegment<byte> data, CancellationToken cancellationToken)
+        private IHashValue ComputeHash32(ArraySegment<byte> data, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -297,10 +294,7 @@ namespace OpenSource.Data.HashFunction.CityHash
 
         #region ComputeHash64
 
-        /// <summary>64-bit implementation of ComputeHash.</summary>
-        /// <param name="data">Data to be hashed.</param>
-        /// <returns>UInt64 value representing the hash value.</returns>
-        protected virtual IHashValue ComputeHash64(ArraySegment<byte> data, CancellationToken cancellationToken) 
+        private IHashValue ComputeHash64(ArraySegment<byte> data, CancellationToken cancellationToken) 
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -518,9 +512,6 @@ namespace OpenSource.Data.HashFunction.CityHash
 
         #region ComputeHash128
 
-        /// <summary>128-bit implementation of ComputeHash.</summary>
-        /// <param name="data">Data to be hashed.</param>
-        /// <returns>UInt128 value representing the hash value.</returns>
         private IHashValue ComputeHash128(ArraySegment<byte> data, CancellationToken cancellationToken)
         {
             var dataCount = data.Count;

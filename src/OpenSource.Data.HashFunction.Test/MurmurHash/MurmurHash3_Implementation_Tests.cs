@@ -188,7 +188,7 @@ namespace OpenSource.Data.HashFunction.Test.MurmurHash
         #endregion
 
 
-        public class IHashFunctionAsync_Tests_MurmurHash3
+        public class IStreamableHashFunction_Tests_MurmurHash3
             : IStreamableHashFunction_TestBase<IMurmurHash3>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
@@ -210,7 +210,7 @@ namespace OpenSource.Data.HashFunction.Test.MurmurHash
         }
     
 
-        public class IHashFunctionAsync_Tests_MurmurHash3_DefaultConstructor
+        public class IStreamableHashFunction_Tests_MurmurHash3_DefaultConstructor
             : IStreamableHashFunction_TestBase<IMurmurHash3>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =

@@ -24,7 +24,6 @@ namespace OpenSource.Data.HashFunction.BernsteinHash
     ///     a degenerate case and cause excessive collisions.
     /// "
     /// </summary>
-    /// <seealso cref="IStreamableHashFunction" />
     public interface IBernsteinHash
         : IStreamableHashFunction
     {

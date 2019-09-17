@@ -79,7 +79,7 @@ namespace OpenSource.Data.HashFunction.Test.MetroHash
 
         #endregion
         
-        public class IHashFunctionAsync_Tests
+        public class IStreamableHashFunction_Tests
             : IStreamableHashFunction_TestBase<IMetroHash128>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
@@ -97,7 +97,7 @@ namespace OpenSource.Data.HashFunction.Test.MetroHash
         }
     
 
-        public class IHashFunctionAsync_Tests_WithSeed
+        public class IStreamableHashFunction_Tests_WithSeed
             : IStreamableHashFunction_TestBase<IMetroHash128>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =

@@ -7,7 +7,6 @@ namespace OpenSource.Data.HashFunction.CityHash
     /// <summary>
     /// Defines a configuration for a <see cref="ICityHash"/> implementation.
     /// </summary>
-    /// <seealso cref="ICityHashConfig" />
     public class CityHashConfig
         : ICityHashConfig
     {

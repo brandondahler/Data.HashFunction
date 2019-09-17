@@ -7,7 +7,6 @@ namespace OpenSource.Data.HashFunction.CRC
     /// <summary>
     /// Provides instances of implementations of <see cref="ICRC"/>.
     /// </summary>
-    /// <seealso cref="ICRCFactory" />
     public sealed class CRCFactory
         : ICRCFactory
     {

@@ -192,7 +192,7 @@ namespace OpenSource.Data.HashFunction.Test.xxHash
         #endregion
 
 
-        public class IHashFunctionAsync_Tests_xxHash
+        public class IStreamableHashFunction_Tests_xxHash
             : IStreamableHashFunction_TestBase<IxxHash>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
@@ -215,7 +215,7 @@ namespace OpenSource.Data.HashFunction.Test.xxHash
         }
     
 
-        public class IHashFunctionAsync_Tests_xxHash_DefaultConstructor
+        public class IStreamableHashFunction_Tests_xxHash_DefaultConstructor
             : IStreamableHashFunction_TestBase<IxxHash>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
@@ -231,7 +231,7 @@ namespace OpenSource.Data.HashFunction.Test.xxHash
         }
     
 
-        public class IHashFunctionAsync_Tests_xxHash_WithInitVal
+        public class IStreamableHashFunction_Tests_xxHash_WithInitVal
             : IStreamableHashFunction_TestBase<IxxHash>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =

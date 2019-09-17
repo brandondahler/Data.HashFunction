@@ -63,7 +63,7 @@ namespace OpenSource.Data.HashFunction.Test.Jenkins
         #endregion
 
 
-        public class IHashFunctionAsync_Tests
+        public class IStreamableHashFunction_Tests
             : IStreamableHashFunction_TestBase<IJenkinsLookup2>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
@@ -81,7 +81,7 @@ namespace OpenSource.Data.HashFunction.Test.Jenkins
         }
     
 
-        public class IHashFunctionAsync_Tests_WithInitVal
+        public class IStreamableHashFunction_Tests_WithInitVal
             : IStreamableHashFunction_TestBase<IJenkinsLookup2>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =

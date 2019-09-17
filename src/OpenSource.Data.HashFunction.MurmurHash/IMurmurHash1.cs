@@ -8,7 +8,7 @@ namespace OpenSource.Data.HashFunction.MurmurHash
     /// Implementation of MurmurHash1 as specified at https://github.com/aappleby/smhasher/blob/master/src/MurmurHash1.cpp 
     ///   and https://github.com/aappleby/smhasher/wiki/MurmurHash1.
     /// 
-    /// This hash function has been superseded by <seealso cref="IMurmurHash2">MurmurHash2</seealso> and <seealso cref="IMurmurHash3">MurmurHash3</seealso>.
+    /// This hash function has been superseded by <see cref="IMurmurHash2">MurmurHash2</see> and <see cref="IMurmurHash3">MurmurHash3</see>.
     /// </summary>
     public interface IMurmurHash1
         : IMurmurHash
