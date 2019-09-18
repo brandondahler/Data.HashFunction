@@ -10,40 +10,20 @@ using System.Threading.Tasks;
 
 namespace OpenSource.Data.HashFunction.Pearson
 {
-    /// <summary>
-    /// Implementation of Pearson hashing as specified at http://en.wikipedia.org/wiki/Pearson_hashing and
-    ///   http://cs.mwsu.edu/~griffin/courses/2133/downloads/Spring11/p677-pearson.pdf.
-    /// </summary>
     internal class Pearson_Implementation
         : StreamableHashFunctionBase,
             IPearson
     {
 
-        /// <summary>
-        /// Configuration used when creating this instance.
-        /// </summary>
-        /// <value>
-        /// A clone of configuration that was used when creating this instance.
-        /// </value>
         public IPearsonConfig Config => _config.Clone();
         
 
         public override int HashSizeInBits => _config.HashSizeInBits;
 
 
-
         private readonly IPearsonConfig _config;
 
 
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Pearson_Implementation"/> class.
-        /// </summary>
-        /// <param name="config">The configuration to use for this instance.</param>
-        /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
-        /// <exception cref="System.ArgumentException"><paramref name="config"/>.<see cref="IPearsonConfig.Table"/> must be non-null.;<paramref name="config"/>.<see cref="IPearsonConfig.Table"/></exception>
-        /// <exception cref="System.ArgumentException"><paramref name="config"/>.<see cref="IPearsonConfig.Table"/> must be a permutation of [<c>0</c>, <c>255</c>].;<paramref name="config"/>.<see cref="IPearsonConfig.Table"/></exception>
-        /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IPearsonConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IPearsonConfig.HashSizeInBits"/> must be a positive multiple of <c>8</c>.</exception>
         public Pearson_Implementation(IPearsonConfig config)
         {
             if (config == null)
@@ -65,13 +45,13 @@ namespace OpenSource.Data.HashFunction.Pearson
 
 
 
-        public override IHashFunctionBlockTransformer CreateBlockTransformer()
+        public override IBlockTransformer CreateBlockTransformer()
         {
             return new BlockTransformer(_config);
         }
 
         private class BlockTransformer
-            : HashFunctionBlockTransformerBase<BlockTransformer>
+            : BlockTransformerBase<BlockTransformer>
         {
             private IReadOnlyList<byte> _table;
 

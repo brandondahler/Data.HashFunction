@@ -11,11 +11,6 @@ using System.Threading.Tasks;
 
 namespace OpenSource.Data.HashFunction.Jenkins
 {
-    /// <summary>
-    /// Implementation of Bob Jenkins' One-at-a-Time hash function as specified at http://www.burtleburtle.net/bob/hash/doobs.html (function named "one_at_a_time").
-    /// 
-    /// This hash function has been superseded by JenkinsLookup2 and JenkinsLookup3.
-    /// </summary>
     internal class JenkinsOneAtATime_Implementation
         : StreamableHashFunctionBase,
             IJenkinsOneAtATime
@@ -23,12 +18,12 @@ namespace OpenSource.Data.HashFunction.Jenkins
         public override int HashSizeInBits { get; } = 32;
 
 
-        public override IHashFunctionBlockTransformer CreateBlockTransformer() =>
+        public override IBlockTransformer CreateBlockTransformer() =>
             new BlockTransformer();
 
 
         private class BlockTransformer
-            : HashFunctionBlockTransformerBase<BlockTransformer>
+            : BlockTransformerBase<BlockTransformer>
         {
             private UInt32 _hashValue;
 

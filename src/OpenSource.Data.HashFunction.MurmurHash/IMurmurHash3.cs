@@ -9,8 +9,7 @@ namespace OpenSource.Data.HashFunction.MurmurHash
     ///   and https://github.com/aappleby/smhasher/wiki/MurmurHash3.
     /// </summary>
     public interface IMurmurHash3
-        : IMurmurHash,
-            IStreamableHashFunction
+        : IStreamableHashFunction
     {
 
         /// <summary>

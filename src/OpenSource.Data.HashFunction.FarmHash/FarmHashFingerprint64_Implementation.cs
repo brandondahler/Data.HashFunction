@@ -9,9 +9,6 @@ using OpenSource.Data.HashFunction.Core.Utilities;
 
 namespace OpenSource.Data.HashFunction.FarmHash
 {
-    /// <summary>
-    /// Implementation of FarmHash's Fingerprint64 method as specified at https://github.com/google/farmhash.
-    /// </summary>
     internal class FarmHashFingerprint64_Implementation
         : HashFunctionBase,
             IFarmHashFingerprint64

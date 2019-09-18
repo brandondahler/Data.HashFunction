@@ -9,8 +9,15 @@ namespace OpenSource.Data.HashFunction
     /// <summary>
     /// An internal state of an iteratively computable hash function value.
     /// </summary>
-    public interface IHashFunctionBlockTransformer
+    public interface IBlockTransformer
     {
+        /// <summary>
+        /// Clones this transformer's internal state to a new, unassociated instance of this transformer.
+        /// </summary>
+        /// <returns>A new, unassociated instance of this transformer.</returns>
+        IBlockTransformer Clone();
+
+
         /// <summary>
         /// Updates the internal state of this transformer with the given data.
         /// </summary>
@@ -89,11 +96,5 @@ namespace OpenSource.Data.HashFunction
         /// <exception cref="TaskCanceledException">The <paramref name="cancellationToken"/> was canceled.</exception>
         /// <exception cref="InvalidOperationException">A previous transformation cancellation has resulted in an undefined internal state.</exception>
         IHashValue FinalizeHashValue(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Clones this transformer's internal state to a new, unassociated instance of this transformer.
-        /// </summary>
-        /// <returns>A new, unassociated instance of this transformer.</returns>
-        IHashFunctionBlockTransformer Clone();
     }
 }

@@ -14,8 +14,8 @@ namespace OpenSource.Data.HashFunction
         /// <summary>
         /// Creates a new transformer that will process data and hold the internal state using this hash function's algorithm.
         /// </summary>
-        /// <returns>A new instance of <see cref="IHashFunctionBlockTransformer"/> that can process input iteratively and produce a final <see cref="IHashValue"/> for that input.</returns>
-        IHashFunctionBlockTransformer CreateBlockTransformer();
+        /// <returns>A new instance of <see cref="IBlockTransformer"/> that can process input iteratively and produce a final <see cref="IHashValue"/> for that input.</returns>
+        IBlockTransformer CreateBlockTransformer();
 
         /// <summary>
         /// Computes hash value for given stream.
@@ -33,7 +33,7 @@ namespace OpenSource.Data.HashFunction
         /// Computes hash value for given stream.
         /// </summary>
         /// <param name="data">Stream of data to hash.</param>
-        /// <param name="cancellationToken">A cancellation token to observe while calculating the hash value.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while calculating the hash value.</param>
         /// <returns>
         /// Hash value of the data.
         /// </returns>
@@ -62,7 +62,7 @@ namespace OpenSource.Data.HashFunction
         /// Computes hash value for given stream asynchronously.
         /// </summary>
         /// <param name="data">Stream of data to hash.</param>
-        /// <param name="cancellationToken">A cancellation token to observe while calculating the hash value.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while calculating the hash value.</param>
         /// <returns>
         /// Hash value of the data.
         /// </returns>

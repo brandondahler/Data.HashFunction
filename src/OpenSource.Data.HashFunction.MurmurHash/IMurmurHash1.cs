@@ -11,7 +11,7 @@ namespace OpenSource.Data.HashFunction.MurmurHash
     /// This hash function has been superseded by <see cref="IMurmurHash2">MurmurHash2</see> and <see cref="IMurmurHash3">MurmurHash3</see>.
     /// </summary>
     public interface IMurmurHash1
-        : IMurmurHash
+        : IHashFunction
     {
 
         /// <summary>

@@ -12,45 +12,21 @@ using System.Threading.Tasks;
 
 namespace OpenSource.Data.HashFunction.MurmurHash
 {
-    /// <summary>
-    /// Implementation of MurmurHash3 as specified at https://github.com/aappleby/smhasher/blob/master/src/MurmurHash3.cpp 
-    ///   and https://github.com/aappleby/smhasher/wiki/MurmurHash3.
-    /// </summary>
     internal class MurmurHash3_Implementation
         : StreamableHashFunctionBase,
             IMurmurHash3
     {
 
-        /// <summary>
-        /// Configuration used when creating this instance.
-        /// </summary>
-        /// <value>
-        /// A clone of configuration that was used when creating this instance.
-        /// </value>
         public IMurmurHash3Config Config => _config.Clone();
 
         public override int HashSizeInBits => _config.HashSizeInBits;
 
 
-        /// <summary>
-        /// Constant c1 for 32-bit calculation as defined by MurmurHash3 specification.
-        /// </summary>
         private const UInt32 c1_32 = 0xcc9e2d51;
-
-        /// <summary>
-        /// Constant c2 for 32-bit calculation as defined by MurmurHash3 specification.
-        /// </summary>
         private const UInt32 c2_32 = 0x1b873593;
 
 
-        /// <summary>
-        /// Constant c1 for 128-bit calculation as defined by MurMurHash3 specification.
-        /// </summary>
         private const UInt64 c1_128 = 0x87c37b91114253d5;
-
-        /// <summary>
-        /// Constant c2 for 128-bit calculation as defined by MurMurHash3 specification.
-        /// </summary>
         private const UInt64 c2_128 = 0x4cf5ad432745937f;
 
 
@@ -60,12 +36,6 @@ namespace OpenSource.Data.HashFunction.MurmurHash
 
 
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MurmurHash3_Implementation"/> class.
-        /// </summary>
-        /// <param name="config">The configuration to use for this instance.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IMurmurHash3Config.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IMurmurHash3Config.HashSizeInBits"/> must be contained within MurmurHash3.ValidHashSizes.</exception>
         public MurmurHash3_Implementation(IMurmurHash3Config config)
         {
             if (config == null)
@@ -80,7 +50,7 @@ namespace OpenSource.Data.HashFunction.MurmurHash
 
 
 
-        public override IHashFunctionBlockTransformer CreateBlockTransformer()
+        public override IBlockTransformer CreateBlockTransformer()
         {
             switch (_config.HashSizeInBits)
             {
@@ -97,7 +67,7 @@ namespace OpenSource.Data.HashFunction.MurmurHash
 
 
         private class BlockTransformer32
-            : HashFunctionBlockTransformerBase<BlockTransformer32>
+            : BlockTransformerBase<BlockTransformer32>
         {
             private UInt32 _hashValue;
 
@@ -211,7 +181,7 @@ namespace OpenSource.Data.HashFunction.MurmurHash
         }
 
         private class BlockTransformer128
-            : HashFunctionBlockTransformerBase<BlockTransformer128>
+            : BlockTransformerBase<BlockTransformer128>
         {
             private UInt64 _hashValue1;
             private UInt64 _hashValue2;

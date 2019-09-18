@@ -12,9 +12,6 @@ using System.Threading.Tasks;
 
 namespace OpenSource.Data.HashFunction.Jenkins
 {
-    /// <summary>
-    /// Implementation of Bob Jenkins' Lookup3 hash function as specified at http://burtleburtle.net/bob/c/lookup3.c.
-    /// </summary>
     internal class JenkinsLookup3_Implementation
         : HashFunctionBase,
             IJenkinsLookup3
@@ -30,12 +27,6 @@ namespace OpenSource.Data.HashFunction.Jenkins
         private static readonly IEnumerable<int> _validHashSizes = new HashSet<int>() { 32, 64 };
 
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="JenkinsLookup3_Implementation"/> class.
-        /// </summary>
-        /// <param name="config">The configuration to use for this instance.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IJenkinsLookup3Config.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IJenkinsLookup3Config.HashSizeInBits"/> must be contained within JenkinsLookup3.ValidHashSizes.</exception>
         public JenkinsLookup3_Implementation(IJenkinsLookup3Config config)
         {
             if (config == null)

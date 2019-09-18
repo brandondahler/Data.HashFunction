@@ -18,8 +18,8 @@ namespace OpenSource.Data.HashFunction.Core
         /// <summary>
         /// Creates a new transformer that will process data and hold the internal state using this hash function's algorithm.
         /// </summary>
-        /// <returns>A new instance of <see cref="IHashFunctionBlockTransformer"/> that can process input iteratively and produce a final <see cref="IHashValue"/> for that input.</returns>
-        public abstract IHashFunctionBlockTransformer CreateBlockTransformer();
+        /// <returns>A new instance of <see cref="IBlockTransformer"/> that can process input iteratively and produce a final <see cref="IHashValue"/> for that input.</returns>
+        public abstract IBlockTransformer CreateBlockTransformer();
 
         /// <summary>
         /// Computes hash value for given stream.

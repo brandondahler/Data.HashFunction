@@ -5,16 +5,6 @@ using OpenSource.Data.HashFunction.Core.Utilities;
 
 namespace OpenSource.Data.HashFunction.MetroHash
 {
-    /// <summary>
-    /// Implementation of MetroHash64 as specified at https://github.com/jandrewrogers/MetroHash.
-    /// 
-    /// "
-    /// MetroHash is a set of state-of-the-art hash functions for non-cryptographic use cases. 
-    /// They are notable for being algorithmically generated in addition to their exceptional performance. 
-    /// The set of published hash functions may be expanded in the future, 
-    /// having been selected from a very large set of hash functions that have been constructed this way.
-    /// "
-    /// </summary>
     internal class MetroHash64_Implementation
         : StreamableHashFunctionBase,
             IMetroHash64
@@ -33,11 +23,11 @@ namespace OpenSource.Data.HashFunction.MetroHash
             _config = config.Clone();
         }
 
-        public override IHashFunctionBlockTransformer CreateBlockTransformer() =>
+        public override IBlockTransformer CreateBlockTransformer() =>
             new BlockTransformer(_config.Seed);
 
         private class BlockTransformer
-            : HashFunctionBlockTransformerBase<BlockTransformer>
+            : BlockTransformerBase<BlockTransformer>
         {
             private const UInt64 _k0 = 0xD6D018F5;
             private const UInt64 _k1 = 0xA2AA033B;

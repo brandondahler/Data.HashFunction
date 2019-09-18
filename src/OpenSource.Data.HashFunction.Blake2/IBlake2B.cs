@@ -9,7 +9,6 @@ namespace OpenSource.Data.HashFunction.Blake2
     /// hash output sizes of 8 through 512 bits in 8-bit increments and allowing it to be seeded with a key, salt,
     /// and/or personalization sequence.
     /// </summary>
-    /// <seealso cref="IStreamableHashFunction" />
     public interface IBlake2B
         : IStreamableHashFunction
     {

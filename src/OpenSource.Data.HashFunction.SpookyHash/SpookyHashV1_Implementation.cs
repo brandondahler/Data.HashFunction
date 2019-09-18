@@ -8,25 +8,12 @@ using System.Diagnostics;
 
 namespace OpenSource.Data.HashFunction.SpookyHash
 {
-    /// <summary>
-    /// Implementation of SpookyHash V1 as specified at http://burtleburtle.net/bob/hash/spooky.html.
-    /// 
-    /// This hash function has been superseded by <see cref="ISpookyHashV2"/> due to a loss of entropy from a 
-    ///   coding error in the original specification.  It still passes the hash function tests the creator set for it,
-    ///   but it is preferred that SpookyHash V2 is used.
-    /// </summary>
     [Obsolete("SpookyHashV1 has known issues, use SpookyHashV2.")]
     internal class SpookyHashV1_Implementation
         : StreamableHashFunctionBase,
             ISpookyHashV1
     {
 
-        /// <summary>
-        /// Configuration used when creating this instance.
-        /// </summary>
-        /// <value>
-        /// A clone of configuration that was used when creating this instance.
-        /// </value>
         public ISpookyHashConfig Config => _config.Clone();
 
         public override int HashSizeInBits => _config.HashSizeInBits;
@@ -40,13 +27,6 @@ namespace OpenSource.Data.HashFunction.SpookyHash
 
 
 
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SpookyHashV1_Implementation"/> class.
-        /// </summary>
-        /// <param name="config">The configuration to use for this instance.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="ISpookyHashConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="ISpookyHashConfig.HashSizeInBits"/> must be contained within SpookyHashV1.ValidHashSizes.</exception>
         public SpookyHashV1_Implementation(ISpookyHashConfig config)
         {
             if (config == null)
@@ -78,11 +58,11 @@ namespace OpenSource.Data.HashFunction.SpookyHash
             }
         }
 
-        public override IHashFunctionBlockTransformer CreateBlockTransformer() =>
+        public override IBlockTransformer CreateBlockTransformer() =>
             new BlockTransformer(HashSizeInBits, _seed1, _seed2);
 
         private class BlockTransformer
-            : HashFunctionBlockTransformerBase<BlockTransformer>
+            : BlockTransformerBase<BlockTransformer>
         {
             private static readonly IReadOnlyList<int> _MixRotationParameters = 
                 new[] {

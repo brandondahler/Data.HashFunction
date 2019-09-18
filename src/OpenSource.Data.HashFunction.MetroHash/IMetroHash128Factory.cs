@@ -8,13 +8,12 @@ namespace OpenSource.Data.HashFunction.MetroHash
     /// Provides instances of implementations of <see cref="IMetroHash128"/>.
     /// </summary>
     public interface IMetroHash128Factory
-        : IMetroHashFactory
     {
         /// <summary>
         /// Creates a new <see cref="IMetroHash128"/> instance with the default configuration.
         /// </summary>
         /// <returns>A <see cref="IMetroHash128"/> instance.</returns>
-        new IMetroHash128 Create();
+        IMetroHash128 Create();
 
 
         /// <summary>
@@ -25,6 +24,6 @@ namespace OpenSource.Data.HashFunction.MetroHash
         /// A <see cref="IMetroHash128" /> instance.
         /// </returns>
         /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
-        new IMetroHash128 Create(IMetroHashConfig config);
+        IMetroHash128 Create(IMetroHashConfig config);
     }
 }

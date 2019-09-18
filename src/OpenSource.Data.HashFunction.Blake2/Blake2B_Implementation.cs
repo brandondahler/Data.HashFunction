@@ -29,7 +29,6 @@ namespace OpenSource.Data.HashFunction.Blake2
 
 		private const int MinHashSizeBits = 8;
 		private const int MaxHashSizeBits = 512;
-		private const int DefaultHashSizeBits = 512;
 
 		private const int MaxKeySizeBytes = 64;
 		private const int SaltSizeBytes = 16;
@@ -37,43 +36,16 @@ namespace OpenSource.Data.HashFunction.Blake2
 
 		private const int BlockSizeBytes = 128;
 
-        private const UInt64 _iv1 = 0x6A09E667F3BCC908UL;
-		private const UInt64 _iv2 = 0xBB67AE8584CAA73BUL;
-        private const UInt64 _iv3 = 0x3C6EF372FE94F82BUL;
-        private const UInt64 _iv4 = 0xA54FF53A5F1D36F1UL;
-        private const UInt64 _iv5 = 0x510E527FADE682D1UL;
-        private const UInt64 _iv6 = 0x9B05688C2B3E6C1FUL;
-        private const UInt64 _iv7 = 0x1F83D9ABFB41BD6BUL;
-        private const UInt64 _iv8 = 0x5BE0CD19137E2179UL;
+        private const UInt64 IV1 = 0x6A09E667F3BCC908UL;
+		private const UInt64 IV2 = 0xBB67AE8584CAA73BUL;
+        private const UInt64 IV3 = 0x3C6EF372FE94F82BUL;
+        private const UInt64 IV4 = 0xA54FF53A5F1D36F1UL;
+        private const UInt64 IV5 = 0x510E527FADE682D1UL;
+        private const UInt64 IV6 = 0x9B05688C2B3E6C1FUL;
+        private const UInt64 IV7 = 0x1F83D9ABFB41BD6BUL;
+        private const UInt64 IV8 = 0x5BE0CD19137E2179UL;
 
 
-
-
-        private class InternalState
-        {
-            public int BufferFilled = 0;
-            public readonly byte[] Buffer = new byte[128];
-
-            public readonly UInt64[] H = new UInt64[8];
-            public UInt128 Counter = new UInt128();
-            public readonly UInt64[] FinalizationFlags = new UInt64[2];
-
-
-        }
-
-
-
-        /// <summary>
-        /// Initializes an instance of the <see cref="Blake2B_Implementation"/> class with the provided
-        /// <paramref name="config"/>.
-        /// </summary>
-        /// <param name="config">The configuration to use for this instance.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IBlake2BConfig.HashSizeInBits"/>;Expected: <see cref="MinHashSizeBits"/> >= <paramref name="config"/>.<see cref="IBlake2BConfig.HashSizeInBits"/> &lt;= <see cref="MaxHashSizeBits"/></exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IBlake2BConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IBlake2BConfig.HashSizeInBits"/> must be a multiple of 8.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IBlake2BConfig.Key"/>;Expected: <paramref name="config"/>.<see cref="IBlake2BConfig.Key"/>.Count &lt;= <see cref="MaxKeySizeBytes"/></exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IBlake2BConfig.Salt"/>;Expected: <paramref name="config"/>.<see cref="IBlake2BConfig.Salt"/>.Count == <see cref="SaltSizeBytes"/></exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IBlake2BConfig.Personalization"/>;Expected: <paramref name="config"/>.<see cref="IBlake2BConfig.Personalization"/>.Count == <see cref="PersonalizationSizeBytes"/></exception>
         public Blake2B_Implementation(IBlake2BConfig config)
         {
             if (config == null)
@@ -116,7 +88,7 @@ namespace OpenSource.Data.HashFunction.Blake2
 		}
 
 
-        public override IHashFunctionBlockTransformer CreateBlockTransformer()
+        public override IBlockTransformer CreateBlockTransformer()
         {
             var blockTransformer = new BlockTransformer(_config.HashSizeInBits, _originalKeyLength, _salt, _personalization);
 
@@ -127,7 +99,7 @@ namespace OpenSource.Data.HashFunction.Blake2
         }
 
         private class BlockTransformer
-            : HashFunctionBlockTransformerBase<BlockTransformer>
+            : BlockTransformerBase<BlockTransformer>
         {
             private int _hashSizeInBits;
             private uint _originalKeyLength;
@@ -158,14 +130,14 @@ namespace OpenSource.Data.HashFunction.Blake2
                 _originalKeyLength = originalKeyLength;
 
 
-                _a = _iv1;
-                _b = _iv2;
-                _c = _iv3;
-                _d = _iv4;
-                _e = _iv5;
-                _f = _iv6;
-                _g = _iv7;
-                _h = _iv8;
+                _a = IV1;
+                _b = IV2;
+                _c = IV3;
+                _d = IV4;
+                _e = IV5;
+                _f = IV6;
+                _g = IV7;
+                _h = IV8;
 
 
                 _a ^= 0x01010000U |
@@ -350,7 +322,7 @@ namespace OpenSource.Data.HashFunction.Blake2
 
                 var v = new UInt64[16] {
                     a, b, c, d, e, f, g, h,
-                    _iv1, _iv2, _iv3, _iv4, _iv5, _iv6, _iv7, _iv8
+                    IV1, IV2, IV3, IV4, IV5, IV6, IV7, IV8
                 };
 
 
@@ -374,8 +346,6 @@ namespace OpenSource.Data.HashFunction.Blake2
                 g ^= v[6] ^ v[14];
                 h ^= v[7] ^ v[15];
             }
-
         }
-
 	}
 }

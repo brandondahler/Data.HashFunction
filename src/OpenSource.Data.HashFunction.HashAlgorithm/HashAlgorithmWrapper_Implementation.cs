@@ -13,27 +13,12 @@ namespace OpenSource.Data.HashFunction.HashAlgorithm
 {
     using HashAlgorithm = System.Security.Cryptography.HashAlgorithm;
 
-    /// <summary>
-    /// Implementation of <see cref="IHashFunction" /> that wraps cryptographic hash functions known as <see cref="HashAlgorithm" />.
-    /// </summary>
     internal class HashAlgorithmWrapper_Implementation
         : HashFunctionBase, 
             IHashAlgorithmWrapper
     {
-        /// <summary>
-        /// Size of produced hash, in bits.
-        /// </summary>
-        /// <value>
-        /// The size of the hash, in bits.
-        /// </value>
         public override int HashSizeInBits { get; }
 
-        /// <summary>
-        /// Configuration used when creating this instance.
-        /// </summary>
-        /// <value>
-        /// A clone of configuration that was used when creating this instance.
-        /// </value>
         public IHashAlgorithmWrapperConfig Config => _config.Clone();
 
 
@@ -42,12 +27,6 @@ namespace OpenSource.Data.HashFunction.HashAlgorithm
 
 
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HashAlgorithmWrapper_Implementation"/> class.
-        /// </summary>
-        /// <param name="config">The configuration to use for this instance.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
-        /// <exception cref="ArgumentException"><paramref name="config"/>.<see cref="IHashAlgorithmWrapperConfig.InstanceFactory"/> has not been set.;<paramref name="config"/>.<see cref="IHashAlgorithmWrapperConfig.InstanceFactory"/></exception>
         public HashAlgorithmWrapper_Implementation(IHashAlgorithmWrapperConfig config)
         {
             if (config == null)
@@ -65,7 +44,6 @@ namespace OpenSource.Data.HashFunction.HashAlgorithm
                 HashSizeInBits = hashAlgorithm.HashSize;
         }
 
-        /// <inheritdoc />
         public IHashValue ComputeHash(Stream data)
         {
             using (var hashAlgorithm = _config.InstanceFactory())

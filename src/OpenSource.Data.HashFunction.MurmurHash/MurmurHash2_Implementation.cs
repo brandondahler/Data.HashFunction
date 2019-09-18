@@ -12,23 +12,11 @@ using System.Threading.Tasks;
 
 namespace OpenSource.Data.HashFunction.MurmurHash
 {
-    /// <summary>
-    /// Implementation of MurmurHash2 as specified at https://github.com/aappleby/smhasher/blob/master/src/MurmurHash2.cpp 
-    ///   and https://github.com/aappleby/smhasher/wiki/MurmurHash2.
-    /// 
-    /// This hash function has been superseded by <see cref="IMurmurHash3">MurmurHash3</see>.
-    /// </summary>
     internal class MurmurHash2_Implementation
         : HashFunctionBase,
             IMurmurHash2
     {
 
-        /// <summary>
-        /// Configuration used when creating this instance.
-        /// </summary>
-        /// <value>
-        /// A clone of configuration that was used when creating this instance.
-        /// </value>
         public IMurmurHash2Config Config => _config.Clone();
 
 
@@ -36,9 +24,6 @@ namespace OpenSource.Data.HashFunction.MurmurHash
 
 
 
-        /// <summary>
-        /// Constant as defined by MurmurHash2 specification.
-        /// </summary>
         private const UInt32 _mixConstant32 = 0x5bd1e995;
         private const UInt64 _mixConstant64 = 0xc6a4a7935bd1e995;
 
@@ -49,12 +34,6 @@ namespace OpenSource.Data.HashFunction.MurmurHash
         private static readonly IEnumerable<int> _validHashSizes = new HashSet<int>() { 32, 64 };
 
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MurmurHash2_Implementation"/> class.
-        /// </summary>
-        /// <param name="config">The configuration to use for this instance.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IMurmurHash2Config.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IMurmurHash2Config.HashSizeInBits"/> must be contained within MurmurHash2.ValidHashSizes.</exception>
         public MurmurHash2_Implementation(IMurmurHash2Config config)
         {
             if (config == null)

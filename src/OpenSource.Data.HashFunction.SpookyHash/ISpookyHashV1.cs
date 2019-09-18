@@ -13,8 +13,16 @@ namespace OpenSource.Data.HashFunction.SpookyHash
     /// </summary>
     [Obsolete("SpookyHashV1 has known issues, use SpookyHashV2.")]
     public interface ISpookyHashV1
-        : ISpookyHash
+        : IStreamableHashFunction
     {
+
+        /// <summary>
+        /// Configuration used when creating this instance.
+        /// </summary>
+        /// <value>
+        /// A clone of configuration that was used when creating this instance.
+        /// </value>
+        ISpookyHashConfig Config { get; }
 
     }
 }

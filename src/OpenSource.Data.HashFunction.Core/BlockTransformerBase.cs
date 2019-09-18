@@ -14,9 +14,9 @@ namespace OpenSource.Data.HashFunction.Core
     /// Provides buffering and cancellation handling features.
     /// </summary>
     /// <typeparam name="TSelf">The final derived type to use when cloning.</typeparam>
-    public abstract partial class HashFunctionBlockTransformerBase<TSelf>
-        : IHashFunctionBlockTransformer
-        where TSelf : HashFunctionBlockTransformerBase<TSelf>, new()
+    public abstract partial class BlockTransformerBase<TSelf>
+        : IBlockTransformer
+        where TSelf : BlockTransformerBase<TSelf>, new()
     {
         /// <summary>
         /// The default number of bytes to process before re-checking the cancellation token.
@@ -41,11 +41,11 @@ namespace OpenSource.Data.HashFunction.Core
         
 
         /// <summary>
-        /// Construct <see cref="HashFunctionBlockTransformerBase{TSelf}"/> with optional parameters to configure features.
+        /// Construct <see cref="BlockTransformerBase{TSelf}"/> with optional parameters to configure features.
         /// </summary>
         /// <param name="cancellationBatchSize">Maximum number of bytes to process before re-checking the cancellation token.</param>
         /// <param name="inputBlockSize">Block size to pass to <see cref="TransformByteGroupsInternal(ArraySegment{byte})"/>.</param>
-        protected HashFunctionBlockTransformerBase(int cancellationBatchSize = DefaultCancellationBatchSize, int inputBlockSize = DefaultInputBlockSize)
+        protected BlockTransformerBase(int cancellationBatchSize = DefaultCancellationBatchSize, int inputBlockSize = DefaultInputBlockSize)
         {
             _cancellationBatchSize = cancellationBatchSize;
             _inputBlockSize = inputBlockSize;
@@ -188,7 +188,7 @@ namespace OpenSource.Data.HashFunction.Core
         /// Clones this transformer's internal state to a new, unassociated instance of this transformer.
         /// </summary>
         /// <returns>A new, unassociated instance of this transformer.</returns>
-        public IHashFunctionBlockTransformer Clone()
+        public IBlockTransformer Clone()
         {
             ThrowIfCorrupted();
 

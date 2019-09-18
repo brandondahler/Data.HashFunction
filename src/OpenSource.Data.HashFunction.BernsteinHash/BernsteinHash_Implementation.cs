@@ -15,12 +15,12 @@ namespace OpenSource.Data.HashFunction.BernsteinHash
         public override int HashSizeInBits { get; } = 32;
 
 
-        public override IHashFunctionBlockTransformer CreateBlockTransformer() =>
+        public override IBlockTransformer CreateBlockTransformer() =>
             new BlockTransformer();
 
 
         private class BlockTransformer
-            : HashFunctionBlockTransformerBase<BlockTransformer>
+            : BlockTransformerBase<BlockTransformer>
         {
             private UInt32 _hashValue;
 

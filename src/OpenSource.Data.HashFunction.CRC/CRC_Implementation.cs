@@ -11,20 +11,10 @@ using System.Threading.Tasks;
 
 namespace OpenSource.Data.HashFunction.CRC
 {
-    /// <summary>
-    /// Implementation of the cyclic redundancy check error-detecting code as defined at http://en.wikipedia.org/wiki/Cyclic_redundancy_check.
-    /// This implementation is generalized to encompass all possible CRC parameters from 1 to 64 bits.
-    /// </summary>
     internal class CRC_Implementation
         : StreamableHashFunctionBase,
             ICRC
     {
-        /// <summary>
-        /// Configuration used when creating this instance.
-        /// </summary>
-        /// <value>
-        /// A clone of configuration that was used when creating this instance.
-        /// </value>
         public ICRCConfig Config => _config.Clone();
 
         public override int HashSizeInBits => _config.HashSizeInBits;
@@ -37,12 +27,6 @@ namespace OpenSource.Data.HashFunction.CRC
             new ConcurrentDictionary<(int, ulong, bool), IReadOnlyList<ulong>>();
 
 
-        /// <summary>
-        /// Creates a new <see cref="CRC_Implementation" /> instance with given configuration.
-        /// </summary>
-        /// <param name="config">The configuration to use.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
-        /// <exception cref="ArgumentException"><paramref name="config"/>.<see cref="ICRCConfig.HashSizeInBits"/> must be &gt;= <c>1</c> and &lt;= <c>64</c>;<paramref name="config"/>.<see cref="ICRCConfig.HashSizeInBits"/></exception>
         public CRC_Implementation(ICRCConfig config)
         {
             if (config == null)
@@ -56,12 +40,12 @@ namespace OpenSource.Data.HashFunction.CRC
         }
 
 
-        public override IHashFunctionBlockTransformer CreateBlockTransformer() =>
+        public override IBlockTransformer CreateBlockTransformer() =>
             new BlockTransformer(_config);
 
 
         private class BlockTransformer
-            : HashFunctionBlockTransformerBase<BlockTransformer>
+            : BlockTransformerBase<BlockTransformer>
         {
             private int _hashSizeInBits;
             private IReadOnlyList<UInt64> _crcTable;
