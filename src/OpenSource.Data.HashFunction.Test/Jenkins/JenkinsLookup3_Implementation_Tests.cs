@@ -157,44 +157,9 @@ namespace OpenSource.Data.HashFunction.Test.Jenkins
 
         #endregion
 
-        #region ComputeHashAsync
 
-        [Fact]
-        public async Task JenkinsLookup3_Implementation_ComputeHashAsync_HashSizeInBits_MagicallyInvalid_Throws()
-        {
-            var jenkinsLookupConfigMock = new Mock<IJenkinsLookup3Config>();
-            {
-                var readCount = 0;
-
-                jenkinsLookupConfigMock.SetupGet(jlc => jlc.HashSizeInBits)
-                    .Returns(() => {
-                        readCount += 1;
-
-                        if (readCount == 1)
-                            return 32;
-
-                        return 33;
-                    });
-
-                jenkinsLookupConfigMock.Setup(jlc => jlc.Clone())
-                    .Returns(() => jenkinsLookupConfigMock.Object);
-            }
-
-
-            var jenkinsLookup3 = new JenkinsLookup3_Implementation(jenkinsLookupConfigMock.Object);
-
-            using (var memoryStream = new MemoryStream(new byte[1]))
-            {
-                await Assert.ThrowsAsync<NotImplementedException>(
-                    () => jenkinsLookup3.ComputeHashAsync(memoryStream));
-            }
-        }
-
-        #endregion
-
-
-        public class IHashFunctionAsync_Tests
-            : IHashFunctionAsync_TestBase<IJenkinsLookup3>
+        public class IHashFunction_Tests
+            : IHashFunction_TestBase<IJenkinsLookup3>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -220,8 +185,8 @@ namespace OpenSource.Data.HashFunction.Test.Jenkins
         }
     
 
-        public class IHashFunctionAsync_Tests_DefaultConstructor
-            : IHashFunctionAsync_TestBase<IJenkinsLookup3>
+        public class IHashFunction_Tests_DefaultConstructor
+            : IHashFunction_TestBase<IJenkinsLookup3>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -239,8 +204,8 @@ namespace OpenSource.Data.HashFunction.Test.Jenkins
         }
     
 
-        public class IHashFunctionAsync_Tests_WithInitVals
-            : IHashFunctionAsync_TestBase<IJenkinsLookup3>
+        public class IHashFunction_Tests_WithInitVals
+            : IHashFunction_TestBase<IJenkinsLookup3>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -259,8 +224,8 @@ namespace OpenSource.Data.HashFunction.Test.Jenkins
         }
     
 
-        public class IHashFunctionAsync_Tests_WithInitVals_DefaultHashSize
-            : IHashFunctionAsync_TestBase<IJenkinsLookup3>
+        public class IHashFunction_Tests_WithInitVals_DefaultHashSize
+            : IHashFunction_TestBase<IJenkinsLookup3>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {

@@ -17,7 +17,7 @@ namespace OpenSource.Data.HashFunction
         /// Gets the length of the hash value in bits.
         /// </summary>
         /// <value>
-        /// The length of the hash value bit.
+        /// The length of the hash value in bits.
         /// </value>
         int BitLength { get; }
 

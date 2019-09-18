@@ -15,12 +15,12 @@ using OpenSource.Data.HashFunction.Core.Utilities;
 
 namespace OpenSource.Data.HashFunction.Test
 {
-    public abstract class IHashFunctionAsync_TestBase<IHashFunctionAsyncT>
-        : IHashFunction_TestBase<IHashFunctionAsyncT>
-        where IHashFunctionAsyncT : class, IHashFunctionAsync
+    public abstract class IStreamableHashFunction_TestBase<TStreamableHashFunction>
+        : IHashFunction_TestBase<TStreamableHashFunction>
+        where TStreamableHashFunction : IStreamableHashFunction
     {
         [Fact]
-        public async void IHashFunctionAsync_ComputeHashAsync_Stream_Seekable_MatchesKnownValues()
+        public async void IStreamableHashFunction_ComputeHashAsync_Stream_Seekable_MatchesKnownValues()
         {
             foreach (var knownValue in KnownValues)
             {
@@ -39,7 +39,7 @@ namespace OpenSource.Data.HashFunction.Test
 
 
         [Fact]
-        public async void IHashFunctionAsync_ComputeHashAsync_Stream_Seekable_MatchesKnownValues_SlowStream()
+        public async void IStreamableHashFunction_ComputeHashAsync_Stream_Seekable_MatchesKnownValues_SlowStream()
         {
             foreach (var knownValue in KnownValues)
             {

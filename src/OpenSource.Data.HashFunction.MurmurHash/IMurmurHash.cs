@@ -8,7 +8,7 @@ namespace OpenSource.Data.HashFunction.MurmurHash
     /// Implementation of MurmurHash1, MurmurHash2, or MurmurHash3 as specified at https://github.com/aappleby/smhasher/wiki/MurmurHash.\
     /// </summary>
     public interface IMurmurHash
-        : IHashFunctionAsync
+        : IHashFunction
     {
 
     }

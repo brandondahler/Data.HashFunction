@@ -6,6 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using OpenSource.Data.HashFunction.FNV.Utilities;
 
 namespace OpenSource.Data.HashFunction.FNV
 {
@@ -28,39 +29,127 @@ namespace OpenSource.Data.HashFunction.FNV
         }
 
 
-        /// <inheritdoc />
-        protected override void ProcessBytes(
-            ref UInt32[] hash, IReadOnlyList<UInt32> prime, byte[] data, int position, int length)
+        public override IHashFunctionBlockTransformer CreateBlockTransformer()
         {
-            var hashSizeInBytes = HashSizeInBits / 8;
-
-            for (var x = position; x < position + length; ++x)
+            switch (_config.HashSizeInBits)
             {
-                hash = ExtendedMultiply(hash, prime, hashSizeInBytes);
-                hash[0] ^= data[x];
-            }
+                case 32:
+                    return new BlockTransformer_32Bit(_fnvPrimeOffset);
 
-        }
+                case 64:
+                    return new BlockTransformer_64Bit(_fnvPrimeOffset);
 
-        /// <inheritdoc />
-        protected override void ProcessBytes32(ref UInt32 hash, UInt32 prime, byte[] data, int position, int length)
-        {
-            for (var x = position; x < position + length; ++x)
-            {
-                hash *= prime;
-                hash ^= data[x];
+                default:
+                    return new BlockTransformer_Extended(_fnvPrimeOffset);
             }
         }
 
-        /// <inheritdoc />
-        protected override void ProcessBytes64(ref UInt64 hash, UInt64 prime, byte[] data, int position, int length)
+        private class BlockTransformer_32Bit
+            : BlockTransformer_32BitBase<BlockTransformer_32Bit>
         {
-            for (var x = position; x < position + length; ++x)
+            public BlockTransformer_32Bit()
+                : base()
             {
-                hash *= prime;
-                hash ^= data[x];
+
+            }
+
+            public BlockTransformer_32Bit(FNVPrimeOffset fnvPrimeOffset)
+                : base(fnvPrimeOffset)
+            {
+
+            }
+
+
+            protected override void TransformByteGroupsInternal(ArraySegment<byte> data)
+            {
+                var dataArray = data.Array;
+                var dataCount = data.Count;
+                var endOffset = data.Offset + dataCount;
+
+                var tempHashValue = _hashValue;
+                var tempPrime = _prime;
+
+                for (int currentOffset = data.Offset; currentOffset < endOffset; ++currentOffset)
+                {
+                    tempHashValue *= tempPrime;
+                    tempHashValue ^= dataArray[currentOffset];
+                }
+
+                _hashValue = tempHashValue;
             }
         }
 
+        private class BlockTransformer_64Bit
+            : BlockTransformer_64BitBase<BlockTransformer_64Bit>
+        {
+            public BlockTransformer_64Bit()
+                : base()
+            {
+
+            }
+
+            public BlockTransformer_64Bit(FNVPrimeOffset fnvPrimeOffset)
+                : base(fnvPrimeOffset)
+            {
+
+            }
+
+
+            protected override void TransformByteGroupsInternal(ArraySegment<byte> data)
+            {
+                var dataArray = data.Array;
+                var dataCount = data.Count;
+                var endOffset = data.Offset + dataCount;
+
+                var tempHashValue = _hashValue;
+                var tempPrime = _prime;
+
+                for (int currentOffset = data.Offset; currentOffset < endOffset; ++currentOffset)
+                {
+                    tempHashValue *= tempPrime;
+                    tempHashValue ^= dataArray[currentOffset];
+                }
+
+                _hashValue = tempHashValue;
+            }
+        }
+
+        private class BlockTransformer_Extended
+            : BlockTransformer_ExtendedBase<BlockTransformer_Extended>
+        {
+            public BlockTransformer_Extended()
+                : base()
+            {
+
+            }
+
+            public BlockTransformer_Extended(FNVPrimeOffset fnvPrimeOffset)
+                : base(fnvPrimeOffset)
+            {
+
+            }
+
+
+            protected override void TransformByteGroupsInternal(ArraySegment<byte> data)
+            {
+                var dataArray = data.Array;
+                var dataCount = data.Count;
+                var endOffset = data.Offset + dataCount;
+
+                var tempHashValue = _hashValue;
+                var tempPrime = _prime;
+
+                var tempHashSizeInBytes = _hashSizeInBytes;
+
+                for (int currentOffset = data.Offset; currentOffset < endOffset; ++currentOffset)
+                {
+
+                    tempHashValue = ExtendedMultiply(tempHashValue, tempPrime, tempHashSizeInBytes);
+                    tempHashValue[0] ^= dataArray[currentOffset];
+                }
+
+                _hashValue = tempHashValue;
+            }
+        }
     }
 }

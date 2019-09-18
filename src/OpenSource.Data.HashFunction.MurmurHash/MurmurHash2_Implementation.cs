@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using OpenSource.Data.HashFunction.Core;
 using OpenSource.Data.HashFunction.Core.Utilities;
-using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -17,10 +16,10 @@ namespace OpenSource.Data.HashFunction.MurmurHash
     /// Implementation of MurmurHash2 as specified at https://github.com/aappleby/smhasher/blob/master/src/MurmurHash2.cpp 
     ///   and https://github.com/aappleby/smhasher/wiki/MurmurHash2.
     /// 
-    /// This hash function has been superseded by <seealso cref="IMurmurHash3">MurmurHash3</seealso>.
+    /// This hash function has been superseded by <see cref="IMurmurHash3">MurmurHash3</see>.
     /// </summary>
     internal class MurmurHash2_Implementation
-        : HashFunctionAsyncBase,
+        : HashFunctionBase,
             IMurmurHash2
     {
 
@@ -40,7 +39,8 @@ namespace OpenSource.Data.HashFunction.MurmurHash
         /// <summary>
         /// Constant as defined by MurmurHash2 specification.
         /// </summary>
-        private const UInt64 MixConstant = 0xc6a4a7935bd1e995;
+        private const UInt32 _mixConstant32 = 0x5bd1e995;
+        private const UInt64 _mixConstant64 = 0xc6a4a7935bd1e995;
 
 
         private readonly IMurmurHash2Config _config;
@@ -69,211 +69,138 @@ namespace OpenSource.Data.HashFunction.MurmurHash
         }
 
 
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
-        /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
+        protected override IHashValue ComputeHashInternal(ArraySegment<byte> data, CancellationToken cancellationToken)
         {
-            byte[] hash = null;
-
             switch (_config.HashSizeInBits)
             {
                 case 32:
-                {        
-                    const UInt32 m = unchecked((UInt32) MixConstant);
-
-                    UInt32 h = (UInt32) _config.Seed ^ (UInt32) data.Length;
-
-                    data.ForEachGroup(4, 
-                        (dataGroup, position, length) => {
-                            ProcessGroup(ref h, m, dataGroup, position, length);
-                        }, 
-                        (remainder, position, length) => {
-                            ProcessRemainder(ref h, m, remainder, position, length);
-                        },
-                        cancellationToken);
-
-                    // Do a few final mixes of the hash to ensure the last few
-                    // bytes are well-incorporated.
-
-                    h ^= h >> 13;
-                    h *= m;
-                    h ^= h >> 15;
-
-                    hash = BitConverter.GetBytes(h);
-                    break;
-                }
+                    return ComputeHash32(data, cancellationToken);
 
                 case 64:
-                { 
-                    const UInt64 m = MixConstant;
+                    return ComputeHash64(data, cancellationToken);
 
-                    UInt64 h = _config.Seed ^ ((UInt64) data.Length * m);
-            
-                    data.ForEachGroup(8, 
-                        (dataGroup, position, length) => {
-                            ProcessGroup(ref h, m, dataGroup, position, length);
-                        },
-                        (remainder, position, length) => {
-                            ProcessRemainder(ref h, m, remainder, position, length);
-                        },
-                        cancellationToken);
- 
-                    h ^= h >> 47;
-                    h *= m;
-                    h ^= h >> 47;
-
-                    hash = BitConverter.GetBytes(h);
-                    break;
-                }
-                    
                 default:
-                {
                     throw new NotImplementedException();
+            }
+        }
+
+
+
+        protected IHashValue ComputeHash32(ArraySegment<byte> data, CancellationToken cancellationToken)
+        {
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+            var dataCount = data.Count;
+
+            var endOffset = dataOffset + dataCount;
+            var remainderCount = dataCount % 4;
+
+            UInt32 hashValue = (UInt32) _config.Seed ^ (UInt32) dataCount;
+
+            // Process 4-byte groups
+            {
+                var groupEndOffset = endOffset - remainderCount;
+
+                for (var currentOffset = dataOffset; currentOffset < groupEndOffset; currentOffset += 4)
+                {
+                    UInt32 k = BitConverter.ToUInt32(dataArray, currentOffset);
+
+                    k *= _mixConstant32;
+                    k ^= k >> 24;
+                    k *= _mixConstant32;
+
+                    hashValue *= _mixConstant32;
+                    hashValue ^= k;
                 }
             }
 
-            return hash;
-        }
-
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
-        /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
-        {
-            byte[] hash = null;
-
-            switch (_config.HashSizeInBits)
+            // Process remainder
+            if (remainderCount > 0)
             {
-                case 32:
-                {        
-                    const UInt32 m = unchecked((UInt32) MixConstant);
+                var remainderOffset = endOffset - remainderCount;
 
-                    UInt32 h = (UInt32) _config.Seed ^ (UInt32) data.Length;
+                switch (remainderCount)
+                {
+                    case 3: hashValue ^= (UInt32) dataArray[remainderOffset + 2] << 16; goto case 2;
+                    case 2: hashValue ^= (UInt32) dataArray[remainderOffset + 1] << 8; goto case 1;
+                    case 1:
+                        hashValue ^= (UInt32) dataArray[remainderOffset];
+                        break;
+                };
 
-                    await data.ForEachGroupAsync(4, 
-                            (dataGroup, position, length) => {
-                                ProcessGroup(ref h, m, dataGroup, position, length);
-                            }, 
-                            (remainder, position, length) => {
-                                ProcessRemainder(ref h, m, remainder, position, length);
-                            },
-                            cancellationToken)
-                        .ConfigureAwait(false);
+                hashValue *= _mixConstant32;
+            }
 
-                    // Do a few final mixes of the hash to ensure the last few
-                    // bytes are well-incorporated.
 
-                    h ^= h >> 13;
-                    h *= m;
-                    h ^= h >> 15;
+            hashValue ^= hashValue >> 13;
+            hashValue *= _mixConstant32;
+            hashValue ^= hashValue >> 15;
 
-                    hash = BitConverter.GetBytes(h);
-                    break;
-                }
-
-                case 64:
-                { 
-                    const UInt64 m = MixConstant;
-
-                    UInt64 h = _config.Seed ^ ((UInt64) data.Length * m);
-            
-                    await data.ForEachGroupAsync(8, 
-                            (dataGroup, position, length) => {
-                                ProcessGroup(ref h, m, dataGroup, position, length);
-                            },
-                            (remainder, position, length) => {
-                                ProcessRemainder(ref h, m, remainder, position, length);
-                            },
-                            cancellationToken)
-                        .ConfigureAwait(false);
- 
-                    h ^= h >> 47;
-                    h *= m;
-                    h ^= h >> 47;
-
-                    hash = BitConverter.GetBytes(h);
-                    break;
-                }
+            return new HashValue(
+                BitConverter.GetBytes(hashValue),
+                32);
+        }
         
-                default:
+        protected IHashValue ComputeHash64(ArraySegment<byte> data, CancellationToken cancellationToken)
+        {
+            var dataArray = data.Array;
+            var dataOffset = data.Offset;
+            var dataCount = data.Count;
+
+            var endOffset = dataOffset + dataCount;
+            var remainderCount = dataCount % 8;
+
+            UInt64 hashValue = _config.Seed ^ ((UInt64) dataCount * _mixConstant64);
+
+            // Process 8-byte groups
+            {
+                var groupEndOffset = endOffset - remainderCount;
+
+                for (var currentOffset = dataOffset; currentOffset < groupEndOffset; currentOffset += 8)
                 {
-                    throw new NotImplementedException();
+                    UInt64 k = BitConverter.ToUInt64(dataArray, currentOffset);
+
+                    k *= _mixConstant64;
+                    k ^= k >> 47;
+                    k *= _mixConstant64;
+
+                    hashValue ^= k;
+                    hashValue *= _mixConstant64;
                 }
             }
 
-            return hash;
-        }
-
-
-        private static void ProcessGroup(ref UInt32 h, UInt32 m, byte[] dataGroup, int position, int length)
-        {
-            for (var x = position; x < position + length; x += 4)
+            // Process remainder
+            if (remainderCount > 0)
             {
-                UInt32 k = BitConverter.ToUInt32(dataGroup, x);
+                var remainderOffset = endOffset - remainderCount;
 
-                k *= m;
-                k ^= k >> 24;
-                k *= m;
+                switch (remainderCount)
+                {
+                    case 7: hashValue ^= (UInt64) dataArray[remainderOffset + 6] << 48; goto case 6;
+                    case 6: hashValue ^= (UInt64) dataArray[remainderOffset + 5] << 40; goto case 5;
+                    case 5: hashValue ^= (UInt64) dataArray[remainderOffset + 4] << 32; goto case 4;
+                    case 4:
+                        hashValue ^= (UInt64) BitConverter.ToUInt32(dataArray, remainderOffset);
+                        break;
 
-                h *= m;
-                h ^= k;
+                    case 3: hashValue ^= (UInt64) dataArray[remainderOffset + 2] << 16; goto case 2;
+                    case 2: hashValue ^= (UInt64) dataArray[remainderOffset + 1] << 8; goto case 1;
+                    case 1:
+                        hashValue ^= (UInt64) dataArray[remainderOffset];
+                        break;
+                };
+
+                hashValue *= _mixConstant64;
             }
-        }
-
-        private static void ProcessGroup(ref UInt64 h, UInt64 m, byte[] dataGroup, int position, int length)
-        {
-            for (var x = position; x < position + length; x += 8)
-            {
-                UInt64 k = BitConverter.ToUInt64(dataGroup, x);
-
-                k *= m;
-                k ^= k >> 47;
-                k *= m;
-
-                h ^= k;
-                h *= m;
-            }
-        }
-
-        private static void ProcessRemainder(ref UInt32 h, UInt32 m, byte[] remainder, int position, int length)
-        {
-            Debug.Assert(length > 0);
-            Debug.Assert(length < 4);
-
-            switch (length)
-            {
-                case 3: h ^= (UInt32) remainder[position + 2] << 16;   goto case 2;
-                case 2: h ^= (UInt32) remainder[position + 1] <<  8;   goto case 1;
-                case 1:
-                    h ^= remainder[position];
-                    break;
-            };
-
-            h *= m;
-        }
 
 
-        private static void ProcessRemainder(ref UInt64 h, UInt64 m, byte[] remainder, int position, int length)
-        {
-            Debug.Assert(length > 0);
-            Debug.Assert(length < 8);
+            hashValue ^= hashValue >> 47;
+            hashValue *= _mixConstant64;
+            hashValue ^= hashValue >> 47;
 
-            switch (length)
-            {
-                case 7: h ^= (UInt64) remainder[position + 6] << 48;  goto case 6;
-                case 6: h ^= (UInt64) remainder[position + 5] << 40;  goto case 5;
-                case 5: h ^= (UInt64) remainder[position + 4] << 32;  goto case 4;
-                case 4: 
-                    h ^= (UInt64) BitConverter.ToUInt32(remainder, position);
-                    break;
-
-                case 3: h ^= (UInt64) remainder[position + 2] << 16;  goto case 2;
-                case 2: h ^= (UInt64) remainder[position + 1] <<  8;  goto case 1;
-                case 1: 
-                    h ^= (UInt64) remainder[position];
-                    break;
-            };
-
-            h *= m;
+            return new HashValue(
+                BitConverter.GetBytes(hashValue),
+                64);
         }
     }
 }

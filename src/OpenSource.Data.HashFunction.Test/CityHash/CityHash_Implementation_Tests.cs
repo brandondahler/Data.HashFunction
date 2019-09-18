@@ -144,44 +144,9 @@ namespace OpenSource.Data.HashFunction.Test.CityHash
 
         #endregion
 
-        #region ComputeHash{,Async}Internal
 
-        [Fact]
-        public async Task CityHash_Implementation_ComputeHashInternal_WhenInvalidHashSize_Throws()
-        {
-            var shouldReturnValidHashSize = true;
-
-            var cityHashConfigMock = new Mock<ICityHashConfig>();
-            {
-                cityHashConfigMock.SetupGet(chc => chc.HashSizeInBits)
-                    .Returns(() => shouldReturnValidHashSize ? 32 : 1);
-
-                cityHashConfigMock.Setup(chc => chc.Clone())
-                    .Returns(() => cityHashConfigMock.Object);
-            }
-
-
-            var cityHash = new CityHash_Implementation(cityHashConfigMock.Object);
-
-            shouldReturnValidHashSize = false;
-
-            Assert.Throws<NotImplementedException>(
-                () => cityHash.ComputeHash(new byte[0]));
-
-            using (var memoryStream = new MemoryStream(new byte[0]))
-            {
-                Assert.Throws<NotImplementedException>(
-                    () => cityHash.ComputeHash(memoryStream));
-
-                await Assert.ThrowsAsync<NotImplementedException>(
-                    () => cityHash.ComputeHashAsync(memoryStream));
-            }
-        }
-
-        #endregion
-
-        public class IHashFunctionAsync_Tests
-            : IHashFunctionAsync_TestBase<ICityHash>
+        public class IHashFunction_Tests
+            : IHashFunction_TestBase<ICityHash>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -219,8 +184,8 @@ namespace OpenSource.Data.HashFunction.Test.CityHash
         }
     
 
-        public class IHashFunctionAsync_Tests_DefaultConstructor
-            : IHashFunctionAsync_TestBase<ICityHash>
+        public class IHashFunction_Tests_DefaultConstructor
+            : IHashFunction_TestBase<ICityHash>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {

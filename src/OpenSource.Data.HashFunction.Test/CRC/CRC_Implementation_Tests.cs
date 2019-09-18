@@ -171,8 +171,8 @@ namespace OpenSource.Data.HashFunction.Test.CRC
         #endregion
         
 
-        public class IHashFunctionAsync_Tests_CRC3_ROHC
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC3_ROHC
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -183,8 +183,8 @@ namespace OpenSource.Data.HashFunction.Test.CRC
                 new CRC_Implementation(CRCConfig.CRC3_ROHC);
         }
 
-        public class IHashFunctionAsync_Tests_CRC4_ITU
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC4_ITU
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -195,21 +195,21 @@ namespace OpenSource.Data.HashFunction.Test.CRC
                 new CRC_Implementation(CRCConfig.CRC4_ITU);
         }
 
-        public class IHashFunctionAsync_Tests_CRC5_EPC
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC5_EPC
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues =>
-new KnownValue[] {
-                        new KnownValue(5, "123456789", 0x00),
-                    };
+                new KnownValue[] {
+                    new KnownValue(5, "123456789", 0x00),
+                };
 
 
             protected override ICRC CreateHashFunction(int hashSize) =>
                 new CRC_Implementation(CRCConfig.CRC5_EPC);
         }
 
-        public class IHashFunctionAsync_Tests_CRC5_ITU
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC5_ITU
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues =>
                 new KnownValue[] {
@@ -221,8 +221,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC5_ITU);
         }
 
-        public class IHashFunctionAsync_Tests_CRC5_USB
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC5_USB
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -233,8 +233,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC5_USB);
         }
 
-        public class IHashFunctionAsync_Tests_CRC6_CDMA2000A
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC6_CDMA2000A
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -245,8 +245,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC6_CDMA2000A);
         }
 
-        public class IHashFunctionAsync_Tests_CRC6_CDMA2000B
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC6_CDMA2000B
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -257,8 +257,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC6_CDMA2000B);
         }
 
-        public class IHashFunctionAsync_Tests_CRC6_DARC
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC6_DARC
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -269,8 +269,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC6_DARC);
         }
 
-        public class IHashFunctionAsync_Tests_CRC6_ITU
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC6_ITU
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -281,8 +281,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC6_ITU);
         }
 
-        public class IHashFunctionAsync_Tests_CRC7
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC7
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -293,8 +293,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC7);
         }
 
-        public class IHashFunctionAsync_Tests_CRC7_ROHC
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC7_ROHC
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -305,8 +305,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC7_ROHC);
         }
 
-        public class IHashFunctionAsync_Tests_CRC8
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC8
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -317,8 +317,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC8);
         }
 
-        public class IHashFunctionAsync_Tests_CRC8_CDMA2000
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC8_CDMA2000
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -329,8 +329,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC8_CDMA2000);
         }
 
-        public class IHashFunctionAsync_Tests_CRC8_DARC
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC8_DARC
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -341,8 +341,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC8_DARC);
         }
 
-        public class IHashFunctionAsync_Tests_CRC8_DVBS2
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC8_DVBS2
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -353,8 +353,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC8_DVBS2);
         }
 
-        public class IHashFunctionAsync_Tests_CRC8_EBU
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC8_EBU
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -365,8 +365,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC8_EBU);
         }
 
-        public class IHashFunctionAsync_Tests_CRC8_ICODE
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC8_ICODE
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -377,8 +377,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC8_ICODE);
         }
 
-        public class IHashFunctionAsync_Tests_CRC8_ITU
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC8_ITU
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -389,8 +389,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC8_ITU);
         }
 
-        public class IHashFunctionAsync_Tests_CRC8_MAXIM
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC8_MAXIM
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -401,8 +401,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC8_MAXIM);
         }
 
-        public class IHashFunctionAsync_Tests_CRC8_ROHC
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC8_ROHC
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -413,8 +413,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC8_ROHC);
         }
 
-        public class IHashFunctionAsync_Tests_CRC8_WCDMA
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC8_WCDMA
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -425,8 +425,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC8_WCDMA);
         }
 
-        public class IHashFunctionAsync_Tests_CRC10
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC10
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -437,8 +437,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC10);
         }
 
-        public class IHashFunctionAsync_Tests_CRC10_CDMA2000
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC10_CDMA2000
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -449,8 +449,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC10_CDMA2000);
         }
 
-        public class IHashFunctionAsync_Tests_CRC11
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC11
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -461,8 +461,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC11);
         }
 
-        public class IHashFunctionAsync_Tests_CRC12_3GPP
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC12_3GPP
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -473,8 +473,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC12_3GPP);
         }
 
-        public class IHashFunctionAsync_Tests_CRC12_CDMA2000
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC12_CDMA2000
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -485,8 +485,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC12_CDMA2000);
         }
 
-        public class IHashFunctionAsync_Tests_CRC12_DECT
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC12_DECT
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -497,8 +497,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC12_DECT);
         }
 
-        public class IHashFunctionAsync_Tests_CRC13_BBC
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC13_BBC
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -509,8 +509,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC13_BBC);
         }
 
-        public class IHashFunctionAsync_Tests_CRC14_DARC
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC14_DARC
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -521,8 +521,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC14_DARC);
         }
 
-        public class IHashFunctionAsync_Tests_CRC15
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC15
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -533,8 +533,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC15);
         }
 
-        public class IHashFunctionAsync_Tests_CRC15_MPT1327
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC15_MPT1327
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -545,8 +545,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC15_MPT1327);
         }
 
-        public class IHashFunctionAsync_Tests_ARC
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_ARC
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -557,8 +557,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.ARC);
         }
 
-        public class IHashFunctionAsync_Tests_CRC16_AUGCCITT
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC16_AUGCCITT
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -569,8 +569,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC16_AUGCCITT);
         }
 
-        public class IHashFunctionAsync_Tests_CRC16_BUYPASS
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC16_BUYPASS
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -581,8 +581,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC16_BUYPASS);
         }
 
-        public class IHashFunctionAsync_Tests_CRC16_CCITTFALSE
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC16_CCITTFALSE
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -593,8 +593,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC16_CCITTFALSE);
         }
 
-        public class IHashFunctionAsync_Tests_CRC16_CDMA2000
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC16_CDMA2000
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -605,8 +605,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC16_CDMA2000);
         }
 
-        public class IHashFunctionAsync_Tests_CRC16_DDS110
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC16_DDS110
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -617,8 +617,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC16_DDS110);
         }
 
-        public class IHashFunctionAsync_Tests_CRC16_DECTR
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC16_DECTR
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -629,8 +629,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC16_DECTR);
         }
 
-        public class IHashFunctionAsync_Tests_CRC16_DECTX
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC16_DECTX
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -641,8 +641,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC16_DECTX);
         }
 
-        public class IHashFunctionAsync_Tests_CRC16_DNP
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC16_DNP
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -653,8 +653,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC16_DNP);
         }
 
-        public class IHashFunctionAsync_Tests_CRC16_EN13757
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC16_EN13757
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -665,8 +665,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC16_EN13757);
         }
 
-        public class IHashFunctionAsync_Tests_CRC16_GENIBUS
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC16_GENIBUS
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -677,8 +677,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC16_GENIBUS);
         }
 
-        public class IHashFunctionAsync_Tests_CRC16_MAXIM
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC16_MAXIM
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -689,8 +689,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC16_MAXIM);
         }
 
-        public class IHashFunctionAsync_Tests_CRC16_MCRF4XX
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC16_MCRF4XX
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -701,8 +701,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC16_MCRF4XX);
         }
 
-        public class IHashFunctionAsync_Tests_CRC16_RIELLO
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC16_RIELLO
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -713,8 +713,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC16_RIELLO);
         }
 
-        public class IHashFunctionAsync_Tests_CRC16_T10DIF
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC16_T10DIF
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -725,8 +725,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC16_T10DIF);
         }
 
-        public class IHashFunctionAsync_Tests_CRC16_TELEDISK
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC16_TELEDISK
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -737,8 +737,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC16_TELEDISK);
         }
 
-        public class IHashFunctionAsync_Tests_CRC16_TMS37157
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC16_TMS37157
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -749,8 +749,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC16_TMS37157);
         }
 
-        public class IHashFunctionAsync_Tests_CRC16_USB
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC16_USB
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -761,8 +761,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC16_USB);
         }
 
-        public class IHashFunctionAsync_Tests_CRCA
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRCA
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -773,8 +773,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRCA);
         }
 
-        public class IHashFunctionAsync_Tests_KERMIT
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_KERMIT
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -785,8 +785,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.KERMIT);
         }
 
-        public class IHashFunctionAsync_Tests_MODBUS
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_MODBUS
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -797,8 +797,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.MODBUS);
         }
 
-        public class IHashFunctionAsync_Tests_X25
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_X25
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -809,8 +809,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.X25);
         }
 
-        public class IHashFunctionAsync_Tests_XMODEM
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_XMODEM
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -821,8 +821,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.XMODEM);
         }
 
-        public class IHashFunctionAsync_Tests_CRC24
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC24
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -833,8 +833,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC24);
         }
 
-        public class IHashFunctionAsync_Tests_CRC24_FLEXRAYA
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC24_FLEXRAYA
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -845,8 +845,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC24_FLEXRAYA);
         }
 
-        public class IHashFunctionAsync_Tests_CRC24_FLEXRAYB
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC24_FLEXRAYB
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -857,8 +857,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC24_FLEXRAYB);
         }
 
-        public class IHashFunctionAsync_Tests_CRC31_PHILIPS
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC31_PHILIPS
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -869,8 +869,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC31_PHILIPS);
         }
 
-        public class IHashFunctionAsync_Tests_CRC32
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC32
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -881,8 +881,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC32);
         }
 
-        public class IHashFunctionAsync_Tests_CRC32_BZIP2
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC32_BZIP2
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -893,8 +893,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC32_BZIP2);
         }
 
-        public class IHashFunctionAsync_Tests_CRC32C
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC32C
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -905,8 +905,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC32C);
         }
 
-        public class IHashFunctionAsync_Tests_CRC32D
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC32D
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -917,8 +917,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC32D);
         }
 
-        public class IHashFunctionAsync_Tests_CRC32_MPEG2
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC32_MPEG2
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -929,8 +929,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC32_MPEG2);
         }
 
-        public class IHashFunctionAsync_Tests_CRC32_POSIX
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC32_POSIX
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -941,8 +941,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC32_POSIX);
         }
 
-        public class IHashFunctionAsync_Tests_CRC32Q
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC32Q
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -953,8 +953,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC32Q);
         }
 
-        public class IHashFunctionAsync_Tests_JAMCRC
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_JAMCRC
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -965,8 +965,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.JAMCRC);
         }
 
-        public class IHashFunctionAsync_Tests_XFER
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_XFER
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -977,8 +977,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.XFER);
         }
 
-        public class IHashFunctionAsync_Tests_CRC40_GSM
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC40_GSM
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -989,8 +989,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC40_GSM);
         }
 
-        public class IHashFunctionAsync_Tests_CRC64
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC64
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -1001,8 +1001,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC64);
         }
 
-        public class IHashFunctionAsync_Tests_CRC64_WE
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC64_WE
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -1013,8 +1013,8 @@ new KnownValue[] {
                 new CRC_Implementation(CRCConfig.CRC64_WE);
         }
 
-        public class IHashFunctionAsync_Tests_CRC64_XZ
-            : IHashFunctionAsync_TestBase<ICRC>
+        public class IStreamableHashFunction_Tests_CRC64_XZ
+            : IStreamableHashFunction_TestBase<ICRC>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {

@@ -14,8 +14,6 @@ namespace OpenSource.Data.HashFunction.MetroHash
     /// having been selected from a very large set of hash functions that have been constructed this way.
     /// "
     /// </summary>
-    /// <seealso cref="IMetroHash" />
-    /// <seealso cref="IHashFunctionAsync" />
     public interface IMetroHash64
         : IMetroHash
     {

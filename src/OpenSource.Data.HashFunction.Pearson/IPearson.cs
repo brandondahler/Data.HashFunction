@@ -9,7 +9,7 @@ namespace OpenSource.Data.HashFunction.Pearson
     ///   http://cs.mwsu.edu/~griffin/courses/2133/downloads/Spring11/p677-pearson.pdf.
     /// </summary>
     public interface IPearson
-        : IHashFunctionAsync
+        : IStreamableHashFunction
     {
 
         /// <summary>

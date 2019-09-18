@@ -8,7 +8,7 @@
             <ModulePaths>
               <Exclude>
                 <ModulePath>.*\\moq\.dll$</ModulePath>
-                <ModulePath>.*\\System\.Data\.HashFunction\.Test(\..+)?\.dll$</ModulePath>
+                <ModulePath>.*\\OpenSource\.Data\.HashFunction\.Test(\..+)?\.dll$</ModulePath>
                 <ModulePath>.*\\xunit\..*\.dll$</ModulePath>
               </Exclude>
             </ModulePaths>

@@ -7,7 +7,6 @@ namespace OpenSource.Data.HashFunction.CityHash
     /// <summary>
     /// Provides instances of implementations of <see cref="ICityHash"/>.
     /// </summary>
-    /// <seealso cref="ICityHashFactory" />
     public sealed class CityHashFactory
         : ICityHashFactory
     {

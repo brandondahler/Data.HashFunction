@@ -63,8 +63,8 @@ namespace OpenSource.Data.HashFunction.Test.MurmurHash
         #endregion
 
 
-        public class IHashFunctionAsync_Tests
-            : IHashFunctionAsync_TestBase<IMurmurHash1>
+        public class IHashFunction_Tests
+            : IHashFunction_TestBase<IMurmurHash1>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {

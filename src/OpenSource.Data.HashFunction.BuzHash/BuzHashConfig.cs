@@ -7,7 +7,6 @@ namespace OpenSource.Data.HashFunction.BuzHash
     /// <summary>
     /// Defines a configuration for a <see cref="IBuzHash"/> implementation.
     /// </summary>
-    /// <seealso cref="IBuzHashConfig" />
     public class BuzHashConfig
         : IBuzHashConfig
     {
@@ -49,7 +48,7 @@ namespace OpenSource.Data.HashFunction.BuzHash
         /// The shift direction.
         /// </value>
         /// <remarks>
-        /// Defaults to <seealso cref="CircularShiftDirection.Left"/>.
+        /// Defaults to <see cref="CircularShiftDirection.Left"/>.
         /// </remarks>
         public CircularShiftDirection ShiftDirection { get; set; } = CircularShiftDirection.Left;
 

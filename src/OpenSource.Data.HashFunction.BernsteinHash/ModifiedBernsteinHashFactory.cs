@@ -7,7 +7,6 @@ namespace OpenSource.Data.HashFunction.BernsteinHash
     /// <summary>
     /// Provides instances of implementations of <see cref="IModifiedBernsteinHash"/>.
     /// </summary>
-    /// <seealso cref="IBernsteinHashFactory" />
     public class ModifiedBernsteinHashFactory
         : IModifiedBernsteinHashFactory
     {

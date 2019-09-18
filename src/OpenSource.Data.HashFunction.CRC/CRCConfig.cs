@@ -7,7 +7,6 @@ namespace OpenSource.Data.HashFunction.CRC
     /// <summary>
     /// Defines a configuration for a <see cref="ICRC"/> implementation.
     /// </summary>
-    /// <seealso cref="ICRCConfig" />
     public class CRCConfig
         : ICRCConfig
     {

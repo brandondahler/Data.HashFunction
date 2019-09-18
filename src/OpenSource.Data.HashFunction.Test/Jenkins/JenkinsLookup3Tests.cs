@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using OpenSource.Data.HashFunction.Jenkins;
 using OpenSource.Data.HashFunction.Test._Utilities;
 using System.IO;
@@ -35,14 +34,11 @@ namespace OpenSource.Data.HashFunction.Test.Jenkins
                     HashSizeInBits = 32 
                 });
 
-            using (var ms = new MemoryStream(knownValue))
-            {
-                var resultBytes = jenkinsLookup3.ComputeHash(ms);
+            var resultBytes = jenkinsLookup3.ComputeHash(knownValue);
 
-                Assert.Equal(
-                    0x85c64fdU,
-                    BitConverter.ToUInt32(resultBytes.Hash, 0));
-            }
+            Assert.Equal(
+                0x85c64fdU,
+                BitConverter.ToUInt32(resultBytes.Hash, 0));
         }
     }
 }

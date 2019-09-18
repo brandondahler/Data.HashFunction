@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenSource.Data.HashFunction.Core;
 
 namespace OpenSource.Data.HashFunction.HashAlgorithm
 {
@@ -16,16 +17,16 @@ namespace OpenSource.Data.HashFunction.HashAlgorithm
     /// Implementation of <see cref="IHashFunction" /> that wraps cryptographic hash functions known as <see cref="HashAlgorithm" />.
     /// </summary>
     internal class HashAlgorithmWrapper_Implementation
-        : IHashAlgorithmWrapper
+        : HashFunctionBase, 
+            IHashAlgorithmWrapper
     {
-
         /// <summary>
         /// Size of produced hash, in bits.
         /// </summary>
         /// <value>
         /// The size of the hash, in bits.
         /// </value>
-        public int HashSizeInBits { get; }
+        public override int HashSizeInBits { get; }
 
         /// <summary>
         /// Configuration used when creating this instance.
@@ -64,12 +65,8 @@ namespace OpenSource.Data.HashFunction.HashAlgorithm
                 HashSizeInBits = hashAlgorithm.HashSize;
         }
 
-
         /// <inheritdoc />
-        public IHashValue ComputeHash(byte[] data) => ComputeHash(data, CancellationToken.None);
-
-        /// <inheritdoc />
-        public IHashValue ComputeHash(byte[] data, CancellationToken cancellationToken)
+        public IHashValue ComputeHash(Stream data)
         {
             using (var hashAlgorithm = _config.InstanceFactory())
             {
@@ -79,18 +76,12 @@ namespace OpenSource.Data.HashFunction.HashAlgorithm
             }
         }
 
-
-        /// <inheritdoc />
-        public IHashValue ComputeHash(Stream data) => 
-            ComputeHash(data, CancellationToken.None);
-
-        /// <inheritdoc />
-        public IHashValue ComputeHash(Stream data, CancellationToken cancellationToken)
+        protected override IHashValue ComputeHashInternal(ArraySegment<byte> data, CancellationToken cancellationToken)
         {
             using (var hashAlgorithm = _config.InstanceFactory())
             {
                 return new HashValue(
-                    hashAlgorithm.ComputeHash(data),
+                    hashAlgorithm.ComputeHash(data.Array, data.Offset, data.Count),
                     HashSizeInBits);
             }
         }

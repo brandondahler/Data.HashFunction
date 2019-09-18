@@ -7,7 +7,6 @@ namespace OpenSource.Data.HashFunction.BuzHash
     /// <summary>
     /// Provides instances of implementations of <see cref="IBuzHash"/>.
     /// </summary>
-    /// <seealso cref="IBuzHashFactory" />
     public sealed class BuzHashFactory
         : IBuzHashFactory
     {
@@ -41,7 +40,7 @@ namespace OpenSource.Data.HashFunction.BuzHash
         /// <returns>
         /// A <see cref="IBuzHash" /> instance.
         /// </returns>
-        /// <exception cref="ArgumentNullException">config</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
         public IBuzHash Create(IBuzHashConfig config)
         {
             if (config == null)

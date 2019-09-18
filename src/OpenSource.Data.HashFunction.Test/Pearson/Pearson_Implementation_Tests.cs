@@ -218,8 +218,8 @@ namespace OpenSource.Data.HashFunction.Test.Pearson
         #endregion
 
 
-        public class IHashFunctionAsync_Tests_WikipediaPearson
-            : IHashFunctionAsync_TestBase<IPearson>
+        public class IStreamableHashFunction_Tests_WikipediaPearson
+            : IStreamableHashFunction_TestBase<IPearson>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -272,8 +272,8 @@ namespace OpenSource.Data.HashFunction.Test.Pearson
         }
     
 
-        public class IHashFunctionAsync_Tests_WikipediaPearson_DefaultConstructor
-            : IHashFunctionAsync_TestBase<IPearson>
+        public class IStreamableHashFunction_Tests_WikipediaPearson_DefaultConstructor
+            : IStreamableHashFunction_TestBase<IPearson>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {

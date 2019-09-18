@@ -24,8 +24,8 @@ namespace OpenSource.Data.HashFunction.Test.ELF64
 
 
 
-        public class IHashFunctionAsync_Tests_ELF64
-            : IHashFunctionAsync_TestBase<IELF64>
+        public class IStreamableHashFunction_Tests_ELF64
+            : IStreamableHashFunction_TestBase<IELF64>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {

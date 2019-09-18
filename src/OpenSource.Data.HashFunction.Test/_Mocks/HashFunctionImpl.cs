@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using OpenSource.Data.HashFunction.Core;
 using OpenSource.Data.HashFunction.Core.Utilities;
-using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,10 +11,9 @@ using System.Threading.Tasks;
 namespace OpenSource.Data.HashFunction.Test._Mocks
 {
     public class HashFunctionImpl
-            : HashFunctionAsyncBase
+            : HashFunctionBase
     {
-        public Func<IUnifiedData, CancellationToken, byte[]> OnComputeHashInternal { get; set; } = (_, __) => new byte[0];
-        public Func<IUnifiedData, CancellationToken, Task<byte[]>> OnComputeHashAsyncInternal { get; set; } = (_, __) => Task.FromResult(new byte[0]);
+        public Func<ArraySegment<byte>, CancellationToken, IHashValue> OnComputeHashInternal { get; set; } = (_, __) => new HashValue(new byte[1], 1);
 
 
         public override int HashSizeInBits { get; }
@@ -23,7 +21,7 @@ namespace OpenSource.Data.HashFunction.Test._Mocks
 
 
         public HashFunctionImpl()
-            : this(0)
+            : this(1)
         {
 
         }
@@ -34,14 +32,9 @@ namespace OpenSource.Data.HashFunction.Test._Mocks
         }
 
 
-        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
+        protected override IHashValue ComputeHashInternal(ArraySegment<byte> data, CancellationToken cancellationToken)
         {
             return OnComputeHashInternal(data, cancellationToken);
-        }
-        
-        protected override Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
-        {
-            return OnComputeHashAsyncInternal(data, cancellationToken);
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using OpenSource.Data.HashFunction.Core;
 using OpenSource.Data.HashFunction.Core.Utilities;
-using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -18,10 +17,8 @@ namespace OpenSource.Data.HashFunction.BuzHash
     /// Relies on a random table of 256 (preferably distinct) 64-bit integers.
     /// Also can be set to use left or right rotation when running the rotate step.
     /// </summary>
-    /// <seealso cref="HashFunctionAsyncBase" />
-    /// <seealso cref="IBuzHash" />
     internal class BuzHash_Implementation
-        : HashFunctionAsyncBase,
+        : StreamableHashFunctionBase,
             IBuzHash
     {
         public IBuzHashConfig Config => _config.Clone();
@@ -64,249 +61,257 @@ namespace OpenSource.Data.HashFunction.BuzHash
         }
 
 
-
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
-        /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
+        public override IHashFunctionBlockTransformer CreateBlockTransformer()
         {
-            byte[] hash = null;
 
-            switch (HashSizeInBits)
+            switch (_config.HashSizeInBits)
             {
                 case 8:
-                    {
-                        byte h = (byte) _config.Seed;
-
-                        data.ForEachRead(
-                            (dataBytes, position, length) =>
-                            {
-                                ProcessBytes(ref h, dataBytes, position, length);
-                            },
-                            cancellationToken);
-
-                        hash = new byte[] { h };
-                        break;
-                    }
+                    return new BlockTransformer_8Bit(_config);
 
                 case 16:
-                    {
-                        UInt16 h = (UInt16) _config.Seed;
-
-                        data.ForEachRead(
-                            (dataBytes, position, length) =>
-                            {
-                                ProcessBytes(ref h, dataBytes, position, length);
-                            },
-                            cancellationToken);
-
-                        hash = BitConverter.GetBytes(h);
-                        break;
-                    }
+                    return new BlockTransformer_16Bit(_config);
 
                 case 32:
-                    {
-                        UInt32 h = (UInt32) _config.Seed;
-
-                        data.ForEachRead(
-                            (dataBytes, position, length) =>
-                            {
-                                ProcessBytes(ref h, dataBytes, position, length);
-                            },
-                            cancellationToken);
-
-                        hash = BitConverter.GetBytes(h);
-                        break;
-                    }
+                    return new BlockTransformer_32Bit(_config);
 
                 case 64:
-                    {
-                        UInt64 h = _config.Seed;
-
-                        data.ForEachRead(
-                            (dataBytes, position, length) =>
-                            {
-                                ProcessBytes(ref h, dataBytes, position, length);
-                            },
-                            cancellationToken);
-
-                        hash = BitConverter.GetBytes(h);
-                        break;
-                    }
+                    return new BlockTransformer_64Bit(_config);
 
                 default:
                     throw new NotImplementedException();
             }
-
-            return hash;
         }
 
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
-        /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
+
+        private class BlockTransformer_8Bit
+            : HashFunctionBlockTransformerBase<BlockTransformer_8Bit>
         {
-            byte[] hash = null;
+            private IReadOnlyList<UInt64> _rtab;
+            private CircularShiftDirection _shiftDirection;
 
-            switch (HashSizeInBits)
+            private byte _hashValue;
+
+            public BlockTransformer_8Bit()
             {
-                case 8:
-                    {
-                        byte h = (byte) _config.Seed;
 
-                        await data.ForEachReadAsync(
-                                (dataBytes, position, length) =>
-                                {
-                                    ProcessBytes(ref h, dataBytes, position, length);
-                                },
-                                cancellationToken)
-                            .ConfigureAwait(false);
-
-                        hash = new byte[] { h };
-                        break;
-                    }
-
-                case 16:
-                    {
-                        UInt16 h = (UInt16) _config.Seed;
-
-                        await data.ForEachReadAsync(
-                                (dataBytes, position, length) =>
-                                {
-                                    ProcessBytes(ref h, dataBytes, position, length);
-                                },
-                                cancellationToken)
-                            .ConfigureAwait(false);
-
-                        hash = BitConverter.GetBytes(h);
-                        break;
-                    }
-
-                case 32:
-                    {
-                        UInt32 h = (UInt32) _config.Seed;
-
-                        await data.ForEachReadAsync(
-                                (dataBytes, position, length) =>
-                                {
-                                    ProcessBytes(ref h, dataBytes, position, length);
-                                },
-                                cancellationToken)
-                            .ConfigureAwait(false);
-
-                        hash = BitConverter.GetBytes(h);
-                        break;
-                    }
-
-                case 64:
-                    {
-                        UInt64 h = _config.Seed;
-
-                        await data.ForEachReadAsync(
-                                (dataBytes, position, length) =>
-                                {
-                                    ProcessBytes(ref h, dataBytes, position, length);
-                                },
-                                cancellationToken)
-                            .ConfigureAwait(false);
-
-                        hash = BitConverter.GetBytes(h);
-                        break;
-                    }
-
-                default:
-                    throw new NotImplementedException();
             }
 
-            return hash;
+            public BlockTransformer_8Bit(IBuzHashConfig config)
+                : this()
+            {
+                _rtab = config.Rtab;
+                _shiftDirection = config.ShiftDirection;
+
+                _hashValue = (byte) config.Seed;
+            }
+
+            protected override void CopyStateTo(BlockTransformer_8Bit other)
+            {
+                base.CopyStateTo(other);
+
+                other._hashValue = _hashValue;
+                other._rtab = _rtab;
+            }
+
+            protected override void TransformByteGroupsInternal(ArraySegment<byte> data)
+            {
+                var dataArray = data.Array;
+                var dataCount = data.Count;
+                var endOffset = data.Offset + dataCount;
+
+                var tempHashValue = _hashValue;
+                var tempRtab = _rtab;
+
+                for (var currentOffset = data.Offset; currentOffset < endOffset; ++currentOffset)
+                    tempHashValue = (byte) (CShift(tempHashValue, 1, _shiftDirection) ^ (byte) tempRtab[dataArray[currentOffset]]);
+
+                _hashValue = tempHashValue;
+            }
+
+            protected override IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken) =>
+                new HashValue(new byte[] { _hashValue }, 8);
         }
 
 
-
-        private void ProcessBytes(ref byte h, byte[] dataBytes, int position, int length)
+        private class BlockTransformer_16Bit
+            : HashFunctionBlockTransformerBase<BlockTransformer_16Bit>
         {
-            for (var x = position; x < position + length; ++x)
-                h = (byte)(CShift(h, 1) ^ (byte) _config.Rtab[dataBytes[x]]);
+            
+            private IReadOnlyList<UInt64> _rtab;
+            private CircularShiftDirection _shiftDirection;
+
+            private UInt16 _hashValue;
+
+            public BlockTransformer_16Bit()
+            {
+
+            }
+
+            public BlockTransformer_16Bit(IBuzHashConfig config)
+                : this()
+            {
+                _rtab = config.Rtab;
+                _shiftDirection = config.ShiftDirection;
+
+                _hashValue = (UInt16) config.Seed;
+            }
+
+            protected override void CopyStateTo(BlockTransformer_16Bit other)
+            {
+                base.CopyStateTo(other);
+
+                other._hashValue = _hashValue;
+                other._rtab = _rtab;
+            }
+
+            protected override void TransformByteGroupsInternal(ArraySegment<byte> data)
+            {
+                var dataArray = data.Array;
+                var dataCount = data.Count;
+                var endOffset = data.Offset + dataCount;
+
+                var tempHashValue = _hashValue;
+                var tempRtab = _rtab;
+
+                for (var currentOffset = data.Offset; currentOffset < endOffset; ++currentOffset)
+                    tempHashValue = (UInt16) (CShift(tempHashValue, 1, _shiftDirection) ^ (UInt16) tempRtab[dataArray[currentOffset]]);
+
+                _hashValue = tempHashValue;
+            }
+
+            protected override IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken) =>
+                new HashValue(BitConverter.GetBytes(_hashValue), 16);
         }
 
-        private void ProcessBytes(ref UInt16 h, byte[] dataBytes, int position, int length)
+        private class BlockTransformer_32Bit
+        : HashFunctionBlockTransformerBase<BlockTransformer_32Bit>
         {
-            for (var x = position; x < position + length; ++x)
-                h = (UInt16)(CShift(h, 1) ^ (UInt16) _config.Rtab[dataBytes[x]]);
+            
+            private IReadOnlyList<UInt64> _rtab;
+            private CircularShiftDirection _shiftDirection;
+
+            private UInt32 _hashValue;
+
+            public BlockTransformer_32Bit()
+            {
+
+            }
+
+            public BlockTransformer_32Bit(IBuzHashConfig config)
+                : this()
+            {
+                _rtab = config.Rtab;
+                _shiftDirection = config.ShiftDirection;
+
+                _hashValue = (UInt32) config.Seed;
+            }
+
+            protected override void CopyStateTo(BlockTransformer_32Bit other)
+            {
+                base.CopyStateTo(other);
+
+                other._hashValue = _hashValue;
+                other._rtab = _rtab;
+            }
+
+            protected override void TransformByteGroupsInternal(ArraySegment<byte> data)
+            {
+                var dataArray = data.Array;
+                var dataCount = data.Count;
+                var endOffset = data.Offset + dataCount;
+
+                var tempHashValue = _hashValue;
+                var tempRtab = _rtab;
+
+                for (var currentOffset = data.Offset; currentOffset < endOffset; ++currentOffset)
+                    tempHashValue = (UInt32) (CShift(tempHashValue, 1, _shiftDirection) ^ (UInt32) tempRtab[dataArray[currentOffset]]);
+
+                _hashValue = tempHashValue;
+            }
+
+            protected override IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken) =>
+                new HashValue(BitConverter.GetBytes(_hashValue), 32);
         }
 
-        private void ProcessBytes(ref UInt32 h, byte[] dataBytes, int position, int length)
+        private class BlockTransformer_64Bit
+            : HashFunctionBlockTransformerBase<BlockTransformer_64Bit>
         {
-            for (var x = position; x < position + length; ++x)
-                h = CShift(h, 1) ^ (UInt32) _config.Rtab[dataBytes[x]];
-        }
+            private IReadOnlyList<UInt64> _rtab;
+            private CircularShiftDirection _shiftDirection;
 
-        private void ProcessBytes(ref UInt64 h, byte[] dataBytes, int position, int length)
-        {
-            for (var x = position; x < position + length; ++x)
-                h = CShift(h, 1) ^ _config.Rtab[dataBytes[x]];
-        }
+            private UInt64 _hashValue;
 
+            public BlockTransformer_64Bit()
+            {
+
+            }
+
+            public BlockTransformer_64Bit(IBuzHashConfig config)
+                : this()
+            {
+                _rtab = config.Rtab;
+                _shiftDirection = config.ShiftDirection;
+
+                _hashValue = (UInt64) config.Seed;
+            }
+
+            protected override void CopyStateTo(BlockTransformer_64Bit other)
+            {
+                base.CopyStateTo(other);
+
+                other._hashValue = _hashValue;
+                other._rtab = _rtab;
+            }
+
+            protected override void TransformByteGroupsInternal(ArraySegment<byte> data)
+            {
+                var dataArray = data.Array;
+                var dataCount = data.Count;
+                var endOffset = data.Offset + dataCount;
+
+                var tempHashValue = _hashValue;
+                var tempRtab = _rtab;
+
+                for (var currentOffset = data.Offset; currentOffset < endOffset; ++currentOffset)
+                    tempHashValue = (UInt64) (CShift(tempHashValue, 1, _shiftDirection) ^ (UInt64) tempRtab[dataArray[currentOffset]]);
+
+                _hashValue = tempHashValue;
+            }
+
+            protected override IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken) =>
+                new HashValue(BitConverter.GetBytes(_hashValue), 64);
+        }
 
         #region CShift
 
-        /// <summary>
-        /// Rotate bits of input byte by amount specified.  Shifts left or right based on ShiftDirection parameter.
-        /// </summary>
-        /// <param name="n">Byte value to shift.</param>
-        /// <param name="shiftCount">Number of bits to shift the integer by.</param>
-        /// <returns>
-        /// Byte value after rotating by the specified amount of bits.
-        /// </returns>
-        private byte CShift(byte n, int shiftCount)
+        private static byte CShift(byte n, int shiftCount, CircularShiftDirection shiftDirection)
         {
-            if (_config.ShiftDirection == CircularShiftDirection.Right)
+            if (shiftDirection == CircularShiftDirection.Right)
                 return RotateRight(n, shiftCount);
 
             return RotateLeft(n, shiftCount);
         }
 
-        /// <summary>
-        /// Rotate bits of input integer by amount specified.  Shifts left or right based on ShiftDirection parameter.
-        /// </summary>
-        /// <param name="n">UInt16 value to shift.</param>
-        /// <param name="shiftCount">Number of bits to shift the integer by.</param>
-        /// <returns>
-        /// UInt16 value after rotating by the specified amount of bits.
-        /// </returns>
-        private UInt16 CShift(UInt16 n, int shiftCount)
+        private static UInt16 CShift(UInt16 n, int shiftCount, CircularShiftDirection shiftDirection)
         {
-            if (_config.ShiftDirection == CircularShiftDirection.Right)
+            if (shiftDirection == CircularShiftDirection.Right)
                 return RotateRight(n, shiftCount);
 
             return RotateLeft(n, shiftCount);
         }
 
-        /// <summary>
-        /// Rotate bits of input integer by amount specified.  Shifts left or right based on ShiftDirection parameter.
-        /// </summary>
-        /// <param name="n">UInt32 value to shift.</param>
-        /// <param name="shiftCount">Number of bits to shift the integer by.</param>
-        /// <returns>
-        /// UInt32 value after rotating by the specified amount of bits.
-        /// </returns>
-        private UInt32 CShift(UInt32 n, int shiftCount)
+        private static UInt32 CShift(UInt32 n, int shiftCount, CircularShiftDirection shiftDirection)
         {
-            if (_config.ShiftDirection == CircularShiftDirection.Right)
+            if (shiftDirection == CircularShiftDirection.Right)
                 return RotateRight(n, shiftCount);
 
             return RotateLeft(n, shiftCount);
         }
 
-        /// <summary>
-        /// Rotate bits of input integer by amount specified.  Shifts left or right based on ShiftDirection parameter.
-        /// </summary>
-        /// <param name="n">UInt64 value to shift.</param>
-        /// <param name="shiftCount">Number of bits to shift the integer by.</param>
-        /// <returns>
-        /// UInt64 value after rotating by the specified amount of bits.
-        /// </returns>
-        private UInt64 CShift(UInt64 n, int shiftCount)
+        private static UInt64 CShift(UInt64 n, int shiftCount, CircularShiftDirection shiftDirection)
         {
-            if (_config.ShiftDirection == CircularShiftDirection.Right)
+            if (shiftDirection == CircularShiftDirection.Right)
                 return RotateRight(n, shiftCount);
 
             return RotateLeft(n, shiftCount);

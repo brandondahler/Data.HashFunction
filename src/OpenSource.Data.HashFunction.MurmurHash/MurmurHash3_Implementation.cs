@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using OpenSource.Data.HashFunction.Core;
 using OpenSource.Data.HashFunction.Core.Utilities;
-using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -18,7 +17,7 @@ namespace OpenSource.Data.HashFunction.MurmurHash
     ///   and https://github.com/aappleby/smhasher/wiki/MurmurHash3.
     /// </summary>
     internal class MurmurHash3_Implementation
-        : HashFunctionAsyncBase,
+        : StreamableHashFunctionBase,
             IMurmurHash3
     {
 
@@ -81,334 +80,300 @@ namespace OpenSource.Data.HashFunction.MurmurHash
 
 
 
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
-        /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
+        public override IHashFunctionBlockTransformer CreateBlockTransformer()
         {
-            byte[] hash;
-
             switch (_config.HashSizeInBits)
             {
                 case 32:
-                {
-                    UInt32 h1 = _config.Seed;
-                    int dataCount = 0;
-
-
-                    data.ForEachGroup(4, 
-                        (dataGroup, position, length) => {
-                            ProcessGroup(ref h1, dataGroup, position, length);
-
-                            dataCount += length;
-                        },
-                        (remainder, position, length) => {
-                            ProcessRemainder(ref h1, remainder, position, length);
-
-                            dataCount += length;
-                        },
-                        cancellationToken);
-            
-
-                    h1 ^= (UInt32) dataCount;
-                    Mix(ref h1);
-
-                    hash = BitConverter.GetBytes(h1);
-                    break;
-                }
+                    return new BlockTransformer32((UInt32) _config.Seed);
 
                 case 128:
-                {
-                    UInt64 h1 = (UInt64) _config.Seed;
-                    UInt64 h2 = (UInt64) _config.Seed;
-
-                    int dataCount = 0;
-
-            
-                    data.ForEachGroup(16, 
-                        (dataGroup, position, length) => {
-                            ProcessGroup(ref h1, ref h2, dataGroup, position, length);
-
-                            dataCount += length;
-                        },
-                        (remainder, position, length) => {
-                            ProcessRemainder(ref h1, ref h2, remainder, position, length);
-
-                            dataCount += length;
-                        },
-                        cancellationToken);
-
-
-                    h1 ^= (UInt64) dataCount; 
-                    h2 ^= (UInt64) dataCount;
-
-                    h1 += h2;
-                    h2 += h1;
-
-                    Mix(ref h1);
-                    Mix(ref h2);
-
-                    h1 += h2;
-                    h2 += h1;
-
-
-                    var hashBytes = new byte[16];
-
-                    BitConverter.GetBytes(h1)
-                        .CopyTo(hashBytes, 0);
-
-                    BitConverter.GetBytes(h2)
-                        .CopyTo(hashBytes, 8);
-
-                    hash = hashBytes;
-                    break;
-                }
+                    return new BlockTransformer128(_config.Seed);
 
                 default:
                     throw new NotImplementedException();
             }
-
-            return hash;
         }
 
-        /// <exception cref="System.InvalidOperationException">HashSize set to an invalid value.</exception>
-        /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
+
+        private class BlockTransformer32
+            : HashFunctionBlockTransformerBase<BlockTransformer32>
         {
-            byte[] hash;
+            private UInt32 _hashValue;
 
-            switch (_config.HashSizeInBits)
+            private int _bytesProcessed = 0;
+
+            public BlockTransformer32()
+                : base(inputBlockSize: 4)
             {
-                case 32:
+
+            }
+
+            public BlockTransformer32(UInt32 seed)
+                : this()
+            {
+                _hashValue = seed;
+            }
+
+            protected override void CopyStateTo(BlockTransformer32 other)
+            {
+                base.CopyStateTo(other);
+
+                other._hashValue = _hashValue;
+
+                other._bytesProcessed = _bytesProcessed;
+            }
+
+            protected override void TransformByteGroupsInternal(ArraySegment<byte> data)
+            {
+                var dataArray = data.Array;
+                var dataOffset = data.Offset;
+                var dataCount = data.Count;
+
+                var endOffset = dataOffset + dataCount;
+
+                var tempHashValue = _hashValue;
+
+                for (var currentOffset = dataOffset; currentOffset < endOffset; currentOffset += 4)
                 {
-                    UInt32 h1 = _config.Seed;
-                    int dataCount = 0;
+                    UInt32 k1 = BitConverter.ToUInt32(dataArray, currentOffset);
 
+                    k1 *= c1_32;
+                    k1 = RotateLeft(k1, 15);
+                    k1 *= c2_32;
 
-                    await data.ForEachGroupAsync(4, 
-                            (dataGroup, position, length) => {
-                                ProcessGroup(ref h1, dataGroup, position, length);
-
-                                dataCount += length;
-                            },
-                            (remainder, position, length) => {
-                                ProcessRemainder(ref h1, remainder, position, length);
-
-                                dataCount += length;
-                            },
-                            cancellationToken)
-                        .ConfigureAwait(false);
-            
-
-                    h1 ^= (UInt32) dataCount;
-                    Mix(ref h1);
-
-                    hash = BitConverter.GetBytes(h1);
-                    break;
+                    tempHashValue ^= k1;
+                    tempHashValue = RotateLeft(tempHashValue, 13);
+                    tempHashValue = (tempHashValue * 5) + 0xe6546b64;
                 }
 
-                case 128:
+                _hashValue = tempHashValue;
+
+                _bytesProcessed += dataCount;
+            }
+
+            protected override IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken)
+            {
+                var remainder = FinalizeInputBuffer;
+                var remainderCount = (remainder?.Length).GetValueOrDefault();
+
+                var tempHashValue = _hashValue;
+
+                var tempBytesProcessed = _bytesProcessed;
+
+                if (remainderCount > 0)
                 {
-                    UInt64 h1 = (UInt64) _config.Seed;
-                    UInt64 h2 = (UInt64) _config.Seed;
+                    UInt32 k2 = 0;
 
-                    int dataCount = 0;
+                    switch (remainderCount)
+                    {
+                        case 3: k2 ^= (UInt32)remainder[2] << 16; goto case 2;
+                        case 2: k2 ^= (UInt32)remainder[1] << 8; goto case 1;
+                        case 1:
+                            k2 ^= (UInt32)remainder[0];
+                            break;
+                    }
 
-            
-                    await data.ForEachGroupAsync(16, 
-                            (dataGroup, position, length) => {
-                                ProcessGroup(ref h1, ref h2, dataGroup, position, length);
+                    k2 *= c1_32;
+                    k2 = RotateLeft(k2, 15);
+                    k2 *= c2_32;
+                    tempHashValue ^= k2;
 
-                                dataCount += length;
-                            },
-                            (remainder, position, length) => {
-                                ProcessRemainder(ref h1, ref h2, remainder, position, length);
-
-                                dataCount += length;
-                            },
-                            cancellationToken)
-                        .ConfigureAwait(false);
-
-
-                    h1 ^= (UInt64) dataCount; 
-                    h2 ^= (UInt64) dataCount;
-
-                    h1 += h2;
-                    h2 += h1;
-
-                    Mix(ref h1);
-                    Mix(ref h2);
-
-                    h1 += h2;
-                    h2 += h1;
-
-
-                    hash = new byte[16];
-
-                    BitConverter.GetBytes(h1)
-                        .CopyTo(hash, 0);
-
-                    BitConverter.GetBytes(h2)
-                        .CopyTo(hash, 8);
-
-                    break;
+                    tempBytesProcessed += remainderCount;
                 }
-        
-                default:
-                    throw new NotImplementedException();
+
+
+                tempHashValue ^= (UInt32) tempBytesProcessed;
+                Mix(ref tempHashValue);
+
+                return new HashValue(
+                    BitConverter.GetBytes(tempHashValue),
+                    32);
             }
 
-            return hash;
-        }
-
-
-        private void ProcessGroup(ref UInt32 h1, byte[] dataGroup, int position, int length)
-        {
-            for (var x = position; x < position + length; x += 4)
+            private static void Mix(ref UInt32 h)
             {
-                UInt32 k1 = BitConverter.ToUInt32(dataGroup, x);
-
-                k1 *= c1_32;
-                k1 = RotateLeft(k1, 15);
-                k1 *= c2_32;
-
-                h1 ^= k1;
-                h1 = RotateLeft(h1, 13);
-                h1 = (h1 * 5) + 0xe6546b64;
+                h ^= h >> 16;
+                h *= 0x85ebca6b;
+                h ^= h >> 13;
+                h *= 0xc2b2ae35;
+                h ^= h >> 16;
             }
-        }
 
-        private void ProcessGroup(ref UInt64 h1, ref UInt64 h2, byte[] dataGroup, int position, int length)
-        {
-            for (var x = position; x < position + length; x += 16)
+            private static UInt32 RotateLeft(UInt32 operand, int shiftCount)
             {
-                UInt64 k1 = BitConverter.ToUInt64(dataGroup, x);
-                UInt64 k2 = BitConverter.ToUInt64(dataGroup, x + 8);
+                shiftCount &= 0x1f;
 
-                k1 *= c1_128;
-                k1 = RotateLeft(k1, 31);
-                k1 *= c2_128;
-                h1 ^= k1;
-
-                h1 = RotateLeft(h1, 27);
-                h1 += h2;
-                h1 = (h1 * 5) + 0x52dce729;
-
-                k2 *= c2_128;
-                k2 = RotateLeft(k2, 33);
-                k2 *= c1_128;
-                h2 ^= k2;
-
-                h2 = RotateLeft(h2, 31);
-                h2 += h1;
-                h2 = (h2 * 5) + 0x38495ab5;
+                return
+                    (operand << shiftCount) |
+                    (operand >> (32 - shiftCount));
             }
         }
 
-
-        private void ProcessRemainder(ref UInt32 h1, byte[] remainder, int position, int length)
+        private class BlockTransformer128
+            : HashFunctionBlockTransformerBase<BlockTransformer128>
         {
-            Debug.Assert(length > 0);
-            Debug.Assert(length < 4);
+            private UInt64 _hashValue1;
+            private UInt64 _hashValue2;
 
-            UInt32 k2 = 0;
+            private int _bytesProcessed = 0;
 
-            switch (length)
+            public BlockTransformer128()
+                : base(inputBlockSize: 16)
             {
-                case 3: k2 ^= (UInt32) remainder[position + 2] << 16; goto case 2;
-                case 2: k2 ^= (UInt32) remainder[position + 1] <<  8; goto case 1;
-                case 1:
-                    k2 ^= (UInt32) remainder[position];        
-                    break;
+
             }
 
-            k2 *= c1_32;
-            k2 = RotateLeft(k2, 15);
-            k2 *= c2_32;
-            h1 ^= k2;
-        }
-
-        private void ProcessRemainder(ref UInt64 h1, ref UInt64 h2, byte[] remainder, int position, int length)
-        {
-            Debug.Assert(length > 0);
-            Debug.Assert(length < 16);
-
-
-            UInt64 k1 = 0;
-            UInt64 k2 = 0;
-
-            switch(length)
+            public BlockTransformer128(UInt64 seed)
+                : this()
             {
-                case 15: k2 ^= (UInt64) remainder[position + 14] << 48;   goto case 14;
-                case 14: k2 ^= (UInt64) remainder[position + 13] << 40;   goto case 13;
-                case 13: k2 ^= (UInt64) remainder[position + 12] << 32;   goto case 12;
-                case 12: k2 ^= (UInt64) remainder[position + 11] << 24;   goto case 11;
-                case 11: k2 ^= (UInt64) remainder[position + 10] << 16;   goto case 10;
-                case 10: k2 ^= (UInt64) remainder[position +  9] <<  8;   goto case 9;
-                case  9: 
-                    k2 ^= ((UInt64) remainder[position + 8]) <<  0;
-                    k2 *= c2_128; 
-                    k2  = RotateLeft(k2, 33); 
-                    k2 *= c1_128; h2 ^= k2;
-
-                    goto case 8;
-
-                case  8:
-                    k1 ^= BitConverter.ToUInt64(remainder, position);
-                    break;
-
-                case  7: k1 ^= (UInt64) remainder[position + 6] << 48;    goto case 6;
-                case  6: k1 ^= (UInt64) remainder[position + 5] << 40;    goto case 5;
-                case  5: k1 ^= (UInt64) remainder[position + 4] << 32;    goto case 4;
-                case  4: k1 ^= (UInt64) remainder[position + 3] << 24;    goto case 3;
-                case  3: k1 ^= (UInt64) remainder[position + 2] << 16;    goto case 2;
-                case  2: k1 ^= (UInt64) remainder[position + 1] <<  8;    goto case 1;
-                case  1: 
-                    k1 ^= (UInt64) remainder[position] << 0;
-                    break;
+                _hashValue1 = seed;
+                _hashValue2 = seed;
             }
 
-            k1 *= c1_128;
-            k1  = RotateLeft(k1, 31);
-            k1 *= c2_128;
-            h1 ^= k1;
-        }
+            protected override void CopyStateTo(BlockTransformer128 other)
+            {
+                base.CopyStateTo(other);
+
+                other._hashValue1 = _hashValue1;
+                other._hashValue2 = _hashValue2;
+
+                other._bytesProcessed = _bytesProcessed;
+            }
+
+            protected override void TransformByteGroupsInternal(ArraySegment<byte> data)
+            {
+                var dataArray = data.Array;
+                var dataOffset = data.Offset;
+                var dataCount = data.Count;
+
+                var endOffset = dataOffset + dataCount;
+
+                var tempHashValue1 = _hashValue1;
+                var tempHashValue2 = _hashValue2;
+
+                for (var currentOffset = dataOffset; currentOffset < endOffset; currentOffset += 16)
+                {
+                    UInt64 k1 = BitConverter.ToUInt64(dataArray, currentOffset);
+                    UInt64 k2 = BitConverter.ToUInt64(dataArray, currentOffset + 8);
+
+                    k1 *= c1_128;
+                    k1 = RotateLeft(k1, 31);
+                    k1 *= c2_128;
+                    tempHashValue1 ^= k1;
+
+                    tempHashValue1 = RotateLeft(tempHashValue1, 27);
+                    tempHashValue1 += tempHashValue2;
+                    tempHashValue1 = (tempHashValue1 * 5) + 0x52dce729;
+
+                    k2 *= c2_128;
+                    k2 = RotateLeft(k2, 33);
+                    k2 *= c1_128;
+                    tempHashValue2 ^= k2;
+
+                    tempHashValue2 = RotateLeft(tempHashValue2, 31);
+                    tempHashValue2 += tempHashValue1;
+                    tempHashValue2 = (tempHashValue2 * 5) + 0x38495ab5;
+                }
+
+                _hashValue1 = tempHashValue1;
+                _hashValue2 = tempHashValue2;
+
+                _bytesProcessed += dataCount;
+            }
+
+            protected override IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken)
+            {
+                var remainder = FinalizeInputBuffer;
+                var remainderCount = (remainder?.Length).GetValueOrDefault();
+
+                var tempHashValue1 = _hashValue1;
+                var tempHashValue2 = _hashValue2;
+
+                var tempBytesProcessed = _bytesProcessed;
+
+                if (remainderCount > 0)
+                {
+                    UInt64 k1 = 0;
+                    UInt64 k2 = 0;
+
+                    switch(remainderCount)
+                    {
+                        case 15: k2 ^= (UInt64) remainder[14] << 48;   goto case 14;
+                        case 14: k2 ^= (UInt64) remainder[13] << 40;   goto case 13;
+                        case 13: k2 ^= (UInt64) remainder[12] << 32;   goto case 12;
+                        case 12: k2 ^= (UInt64) remainder[11] << 24;   goto case 11;
+                        case 11: k2 ^= (UInt64) remainder[10] << 16;   goto case 10;
+                        case 10: k2 ^= (UInt64) remainder[ 9] <<  8;   goto case 9;
+                        case  9:
+                            k2 ^= ((UInt64) remainder[8]);
+                            k2 *= c2_128; 
+                            k2  = RotateLeft(k2, 33); 
+                            k2 *= c1_128;
+                            tempHashValue2 ^= k2;
+
+                            goto case 8;
+
+                        case  8:
+                            k1 ^= BitConverter.ToUInt64(remainder, 0);
+                            break;
+
+                        case  7: k1 ^= (UInt64) remainder[6] << 48;    goto case 6;
+                        case  6: k1 ^= (UInt64) remainder[5] << 40;    goto case 5;
+                        case  5: k1 ^= (UInt64) remainder[4] << 32;    goto case 4;
+                        case  4: k1 ^= (UInt64) remainder[3] << 24;    goto case 3;
+                        case  3: k1 ^= (UInt64) remainder[2] << 16;    goto case 2;
+                        case  2: k1 ^= (UInt64) remainder[1] <<  8;    goto case 1;
+                        case  1: 
+                            k1 ^= (UInt64) remainder[0];
+                            break;
+                    }
+
+                    k1 *= c1_128;
+                    k1  = RotateLeft(k1, 31);
+                    k1 *= c2_128;
+                    tempHashValue1 ^= k1;
+
+                    tempBytesProcessed += remainderCount;
+                }
 
 
-        private static void Mix(ref UInt32 h)
-        {
-            h ^= h >> 16;
-            h *= 0x85ebca6b;
-            h ^= h >> 13;
-            h *= 0xc2b2ae35;
-            h ^= h >> 16;
-        }
+                tempHashValue1 ^= (UInt64) tempBytesProcessed;
+                tempHashValue2 ^= (UInt64) tempBytesProcessed;
 
-        private static void Mix(ref UInt64 k)
-        {
-            k ^= k >> 33;
-            k *= 0xff51afd7ed558ccd;
-            k ^= k >> 33;
-            k *= 0xc4ceb9fe1a85ec53;
-            k ^= k >> 33;
-        }
+                tempHashValue1 += tempHashValue2;
+                tempHashValue2 += tempHashValue1;
 
+                Mix(ref tempHashValue1);
+                Mix(ref tempHashValue2);
 
-        private static UInt32 RotateLeft(UInt32 operand, int shiftCount)
-        {
-            shiftCount &= 0x1f;
+                tempHashValue1 += tempHashValue2;
+                tempHashValue2 += tempHashValue1;
 
-            return
-                (operand << shiftCount) |
-                (operand >> (32 - shiftCount));
-        }
+                var hashValueBytes = BitConverter.GetBytes(tempHashValue1)
+                    .Concat(BitConverter.GetBytes(tempHashValue2))
+                    .ToArray();
 
-        private static UInt64 RotateLeft(UInt64 operand, int shiftCount)
-        {
-            shiftCount &= 0x3f;
+                return new HashValue(hashValueBytes, 128);
+            }
 
-            return
-                (operand << shiftCount) |
-                (operand >> (64 - shiftCount));
+            private static void Mix(ref UInt64 k)
+            {
+                k ^= k >> 33;
+                k *= 0xff51afd7ed558ccd;
+                k ^= k >> 33;
+                k *= 0xc4ceb9fe1a85ec53;
+                k ^= k >> 33;
+            }
+
+            private static UInt64 RotateLeft(UInt64 operand, int shiftCount)
+            {
+                shiftCount &= 0x3f;
+
+                return
+                    (operand << shiftCount) |
+                    (operand >> (64 - shiftCount));
+            }
         }
     }
 }

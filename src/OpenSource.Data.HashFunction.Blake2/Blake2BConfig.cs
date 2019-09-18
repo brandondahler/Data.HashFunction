@@ -6,7 +6,6 @@ namespace OpenSource.Data.HashFunction.Blake2
     /// <summary>
     /// Defines a configuration for a Blake2B hash function implementation.
     /// </summary>
-    /// <seealso cref="IBlake2BConfig" />
     public class Blake2BConfig
         : IBlake2BConfig
     {

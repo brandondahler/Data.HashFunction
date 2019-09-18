@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using OpenSource.Data.HashFunction.Core;
 using OpenSource.Data.HashFunction.Core.Utilities;
-using OpenSource.Data.HashFunction.Core.Utilities.UnifiedData;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -18,57 +17,56 @@ namespace OpenSource.Data.HashFunction.Jenkins
     /// This hash function has been superseded by JenkinsLookup2 and JenkinsLookup3.
     /// </summary>
     internal class JenkinsOneAtATime_Implementation
-        : HashFunctionAsyncBase,
+        : StreamableHashFunctionBase,
             IJenkinsOneAtATime
     {
         public override int HashSizeInBits { get; } = 32;
-        
 
-        /// <inheritdoc />
-        protected override byte[] ComputeHashInternal(IUnifiedData data, CancellationToken cancellationToken)
+
+        public override IHashFunctionBlockTransformer CreateBlockTransformer() =>
+            new BlockTransformer();
+
+
+        private class BlockTransformer
+            : HashFunctionBlockTransformerBase<BlockTransformer>
         {
-            UInt32 hash = 0;
-            
-            data.ForEachRead(
-                (dataBytes, position, length) => {
-                    ProcessBytes(ref hash, dataBytes, position, length);
-                },
-                cancellationToken);
-            
-            hash += hash << 3;
-            hash ^= hash >> 11;
-            hash += hash << 15;
-
-            return BitConverter.GetBytes(hash);
-        }
-        
-        /// <inheritdoc />
-        protected override async Task<byte[]> ComputeHashAsyncInternal(IUnifiedDataAsync data, CancellationToken cancellationToken)
-        {
-            UInt32 hash = 0;
-
-            await data.ForEachReadAsync(
-                    (dataBytes, position, length) => {
-                        ProcessBytes(ref hash, dataBytes, position, length);
-                    },
-                    cancellationToken)
-                .ConfigureAwait(false);
-
-            hash += hash << 3;
-            hash ^= hash >> 11;
-            hash += hash << 15;
-
-            return BitConverter.GetBytes(hash);
-        }
+            private UInt32 _hashValue;
 
 
-        private static void ProcessBytes(ref UInt32 hash, byte[] dataBytes, int position, int length)
-        {
-            for (var x = position; x < position + length; ++x)
+            protected override void CopyStateTo(BlockTransformer other)
             {
-                hash += dataBytes[x];
-                hash += (hash << 10);
-                hash ^= (hash >> 6);
+                base.CopyStateTo(other);
+
+                other._hashValue = _hashValue;
+            }
+
+            protected override void TransformByteGroupsInternal(ArraySegment<byte> data)
+            {
+                var dataArray = data.Array;
+                var endOffset = data.Offset + data.Count;
+
+                var tempHashValue = _hashValue;
+
+                for (var currentOffset = data.Offset; currentOffset < endOffset; ++currentOffset)
+                {
+                    tempHashValue += dataArray[currentOffset];
+                    tempHashValue += (tempHashValue << 10);
+                    tempHashValue ^= (tempHashValue >> 6);
+                }
+
+                _hashValue = tempHashValue;
+            }
+
+            protected override IHashValue FinalizeHashValueInternal(CancellationToken cancellationToken)
+            {
+                var finalHashValue = _hashValue;
+                finalHashValue += finalHashValue << 3;
+                finalHashValue ^= finalHashValue >> 11;
+                finalHashValue += finalHashValue << 15;
+
+                return new HashValue(
+                    BitConverter.GetBytes(finalHashValue),
+                    32);
             }
         }
     }

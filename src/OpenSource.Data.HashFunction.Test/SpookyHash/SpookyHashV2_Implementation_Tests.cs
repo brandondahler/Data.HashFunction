@@ -206,8 +206,8 @@ namespace OpenSource.Data.HashFunction.Test.SpookyHash
         #endregion
 
 
-        public class IHashFunctionAsync_Tests_SpookyHashV2
-            : IHashFunctionAsync_TestBase<ISpookyHashV2>
+        public class IStreamableHashFunction_Tests_SpookyHashV2
+            : IStreamableHashFunction_TestBase<ISpookyHashV2>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -240,8 +240,8 @@ namespace OpenSource.Data.HashFunction.Test.SpookyHash
         }
     
 
-        public class IHashFunctionAsync_Tests_SpookyHashV2_DefaultConstructor
-            : IHashFunctionAsync_TestBase<ISpookyHashV2>
+        public class IStreamableHashFunction_Tests_SpookyHashV2_DefaultConstructor
+            : IStreamableHashFunction_TestBase<ISpookyHashV2>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -258,8 +258,8 @@ namespace OpenSource.Data.HashFunction.Test.SpookyHash
         }
     
 
-        public class IHashFunctionAsync_Tests_SpookyHashV2_WithInitVals
-            : IHashFunctionAsync_TestBase<ISpookyHashV2>
+        public class IStreamableHashFunction_Tests_SpookyHashV2_WithInitVals
+            : IStreamableHashFunction_TestBase<ISpookyHashV2>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
@@ -294,8 +294,8 @@ namespace OpenSource.Data.HashFunction.Test.SpookyHash
         }
     
 
-        public class IHashFunctionAsync_Tests_SpookyHashV2_WithInitVals_DefaultHashSize
-            : IHashFunctionAsync_TestBase<ISpookyHashV2>
+        public class IStreamableHashFunction_Tests_SpookyHashV2_WithInitVals_DefaultHashSize
+            : IStreamableHashFunction_TestBase<ISpookyHashV2>
         {
             protected override IEnumerable<KnownValue> KnownValues { get; } =
                 new KnownValue[] {
