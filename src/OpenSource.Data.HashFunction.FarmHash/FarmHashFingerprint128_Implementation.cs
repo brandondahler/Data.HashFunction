@@ -8,9 +8,6 @@ using System.Linq;
 
 namespace OpenSource.Data.HashFunction.FarmHash
 {
-    /// <summary>
-    /// Implementation of FarmHash's Fingerprint128 method as specified at https://github.com/google/farmhash.
-    /// </summary>
     internal class FarmHashFingerprint128_Implementation
         : HashFunctionBase,
             IFarmHashFingerprint128

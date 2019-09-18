@@ -10,18 +10,11 @@ using OpenSource.Data.HashFunction.FNV.Utilities;
 
 namespace OpenSource.Data.HashFunction.FNV
 {
-    /// <summary>
-    /// Implementation of Fowler–Noll–Vo hash function (FNV-1) as specified at http://www.isthe.com/chongo/tech/comp/fnv/index.html. 
-    /// </summary>
     internal class FNV1_Implementation
         : FNV1Base,
             IFNV1
     {
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FNV1_Implementation"/> class.
-        /// </summary>
-        /// <inheritdoc cref="FNV1Base(IFNVConfig)" />
         public FNV1_Implementation(IFNVConfig config)
             : base(config)
         {
@@ -29,7 +22,7 @@ namespace OpenSource.Data.HashFunction.FNV
         }
 
 
-        public override IHashFunctionBlockTransformer CreateBlockTransformer()
+        public override IBlockTransformer CreateBlockTransformer()
         {
             switch (_config.HashSizeInBits)
             {

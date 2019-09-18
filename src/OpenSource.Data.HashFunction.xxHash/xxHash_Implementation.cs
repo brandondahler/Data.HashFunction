@@ -7,21 +7,11 @@ using System.Threading;
 
 namespace OpenSource.Data.HashFunction.xxHash
 {
-    /// <summary>
-    /// Implements xxHash as specified at https://github.com/Cyan4973/xxHash/blob/dev/xxhash.c and 
-    ///   https://github.com/Cyan4973/xxHash.
-    /// </summary>
     internal class xxHash_Implementation
         : StreamableHashFunctionBase,
             IxxHash
     {
 
-        /// <summary>
-        /// Configuration used when creating this instance.
-        /// </summary>
-        /// <value>
-        /// A clone of configuration that was used when creating this instance.
-        /// </value>
         public IxxHashConfig Config => _config.Clone();
 
         public override int HashSizeInBits => _config.HashSizeInBits;
@@ -35,12 +25,6 @@ namespace OpenSource.Data.HashFunction.xxHash
         private static readonly IEnumerable<int> _validHashSizes = new HashSet<int>() { 32, 64 };
 
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="xxHash_Implementation" /> class.
-        /// </summary>
-        /// <param name="config">The configuration to use for this instance.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IxxHashConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IxxHashConfig.HashSizeInBits"/> must be contained within xxHash.ValidHashSizes</exception>
         public xxHash_Implementation(IxxHashConfig config)
         {
             if (config == null)
@@ -54,7 +38,7 @@ namespace OpenSource.Data.HashFunction.xxHash
         }
 
 
-        public override IHashFunctionBlockTransformer CreateBlockTransformer()
+        public override IBlockTransformer CreateBlockTransformer()
         {
             switch (_config.HashSizeInBits)
             {
@@ -70,7 +54,7 @@ namespace OpenSource.Data.HashFunction.xxHash
         }
 
         private class BlockTransformer32
-            : HashFunctionBlockTransformerBase<BlockTransformer32>
+            : BlockTransformerBase<BlockTransformer32>
         {
             private static readonly IReadOnlyList<UInt32> _primes32 = 
                 new[] {
@@ -230,7 +214,7 @@ namespace OpenSource.Data.HashFunction.xxHash
 
 
         private class BlockTransformer64
-            : HashFunctionBlockTransformerBase<BlockTransformer64>
+            : BlockTransformerBase<BlockTransformer64>
         {
             private static readonly IReadOnlyList<UInt64> _primes64 =
                 new[] {

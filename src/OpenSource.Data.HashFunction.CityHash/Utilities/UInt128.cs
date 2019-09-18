@@ -8,10 +8,7 @@ namespace OpenSource.Data.HashFunction.CityHash.Utilities
 {
     internal struct UInt128
     {
-        /// <summary>Low-order 64-bits.</summary>
         public UInt64 Low { get; }
-
-        /// <summary>High-order 64-bits.</summary>
         public UInt64 High { get; }
 
         public UInt128(UInt64 low)

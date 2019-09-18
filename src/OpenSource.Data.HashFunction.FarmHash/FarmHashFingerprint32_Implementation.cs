@@ -8,9 +8,6 @@ using OpenSource.Data.HashFunction.Core.Utilities;
 
 namespace OpenSource.Data.HashFunction.FarmHash
 {
-    /// <summary>
-    /// Implementation of FarmHash's Fingerprint32 method as specified at https://github.com/google/farmhash.
-    /// </summary>
     internal class FarmHashFingerprint32_Implementation
         : HashFunctionBase,
             IFarmHashFingerprint32

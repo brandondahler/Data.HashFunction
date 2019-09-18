@@ -33,7 +33,7 @@ namespace OpenSource.Data.HashFunction
         /// Computes hash value for given byte array.
         /// </summary>
         /// <param name="data">Array of data to hash.</param>
-        /// <param name="cancellationToken">A cancellation token to observe while calculating the hash value.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while calculating the hash value.</param>
         /// <returns>
         /// Hash value of the data.
         /// </returns>
@@ -61,7 +61,7 @@ namespace OpenSource.Data.HashFunction
         /// <param name="data">Array of data to hash.</param>
         /// <param name="offset">The offset from which to begin using the data.</param>
         /// <param name="count">The number of bytes to use as data.</param>
-        /// <param name="cancellationToken">A cancellation token to observe while calculating the hash value.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while calculating the hash value.</param>
         /// <returns>
         /// Hash value of the data.
         /// </returns>
@@ -84,7 +84,7 @@ namespace OpenSource.Data.HashFunction
         /// Computes hash value for given array segment.
         /// </summary>
         /// <param name="data">Array segment of data to hash.</param>
-        /// <param name="cancellationToken">A cancellation token to observe while calculating the hash value.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while calculating the hash value.</param>
         /// <returns>
         /// Hash value of the data.
         /// </returns>

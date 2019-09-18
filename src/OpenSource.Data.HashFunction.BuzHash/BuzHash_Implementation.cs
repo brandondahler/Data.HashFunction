@@ -11,12 +11,6 @@ using System.Threading.Tasks;
 
 namespace OpenSource.Data.HashFunction.BuzHash
 {
-    /// <summary>
-    /// Implementation of BuzHash as specified at http://www.serve.net/buz/hash.adt/java.002.html.
-    /// 
-    /// Relies on a random table of 256 (preferably distinct) 64-bit integers.
-    /// Also can be set to use left or right rotation when running the rotate step.
-    /// </summary>
     internal class BuzHash_Implementation
         : StreamableHashFunctionBase,
             IBuzHash
@@ -33,15 +27,6 @@ namespace OpenSource.Data.HashFunction.BuzHash
             new HashSet<int>() { 8, 16, 32, 64 };
 
 
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BuzHash_Implementation" /> class.
-        /// </summary>
-        /// <param name="config">The configuration to use for this instance.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
-        /// <exception cref="ArgumentException"><paramref name="config"/>.<see cref="IBuzHashConfig.Rtab"/>;<paramref name="config"/>.<see cref="IBuzHashConfig.Rtab"/> must be non-null list of 256 <see cref="UInt64"/> values.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IBuzHashConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IBuzHashConfig.HashSizeInBits"/> must be contained within BuzHashBase.ValidHashSizes</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IBuzHashConfig.ShiftDirection"/>;<paramref name="config"/>.<see cref="IBuzHashConfig.ShiftDirection"/> must be a valid <see cref="CircularShiftDirection"/> value</exception>
         public BuzHash_Implementation(IBuzHashConfig config)
         {
             if (config == null)
@@ -61,7 +46,7 @@ namespace OpenSource.Data.HashFunction.BuzHash
         }
 
 
-        public override IHashFunctionBlockTransformer CreateBlockTransformer()
+        public override IBlockTransformer CreateBlockTransformer()
         {
 
             switch (_config.HashSizeInBits)
@@ -85,7 +70,7 @@ namespace OpenSource.Data.HashFunction.BuzHash
 
 
         private class BlockTransformer_8Bit
-            : HashFunctionBlockTransformerBase<BlockTransformer_8Bit>
+            : BlockTransformerBase<BlockTransformer_8Bit>
         {
             private IReadOnlyList<UInt64> _rtab;
             private CircularShiftDirection _shiftDirection;
@@ -135,7 +120,7 @@ namespace OpenSource.Data.HashFunction.BuzHash
 
 
         private class BlockTransformer_16Bit
-            : HashFunctionBlockTransformerBase<BlockTransformer_16Bit>
+            : BlockTransformerBase<BlockTransformer_16Bit>
         {
             
             private IReadOnlyList<UInt64> _rtab;
@@ -185,7 +170,7 @@ namespace OpenSource.Data.HashFunction.BuzHash
         }
 
         private class BlockTransformer_32Bit
-        : HashFunctionBlockTransformerBase<BlockTransformer_32Bit>
+        : BlockTransformerBase<BlockTransformer_32Bit>
         {
             
             private IReadOnlyList<UInt64> _rtab;
@@ -235,7 +220,7 @@ namespace OpenSource.Data.HashFunction.BuzHash
         }
 
         private class BlockTransformer_64Bit
-            : HashFunctionBlockTransformerBase<BlockTransformer_64Bit>
+            : BlockTransformerBase<BlockTransformer_64Bit>
         {
             private IReadOnlyList<UInt64> _rtab;
             private CircularShiftDirection _shiftDirection;

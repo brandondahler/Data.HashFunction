@@ -8,8 +8,7 @@ namespace OpenSource.Data.HashFunction.MetroHash
     /// Provides instances of implementations of <see cref="IMetroHash64"/>.
     /// </summary>
     public sealed class MetroHash64Factory
-        : MetroHashFactoryBase<IMetroHash64>,
-            IMetroHash64Factory
+        : IMetroHash64Factory
     {
         /// <summary>
         /// Gets the singleton instance of this factory.
@@ -27,7 +26,7 @@ namespace OpenSource.Data.HashFunction.MetroHash
         /// Creates a new <see cref="IMetroHash64"/> instance with the default configuration.
         /// </summary>
         /// <returns>A <see cref="IMetroHash64"/> instance.</returns>
-        public override IMetroHash64 Create() => Create(new MetroHashConfig());
+        public IMetroHash64 Create() => Create(new MetroHashConfig());
 
 
         /// <summary>
@@ -38,7 +37,7 @@ namespace OpenSource.Data.HashFunction.MetroHash
         /// A <see cref="IMetroHash64" /> instance.
         /// </returns>
         /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
-        public override IMetroHash64 Create(IMetroHashConfig config)
+        public IMetroHash64 Create(IMetroHashConfig config)
         {
             if (config == null)
                 throw new ArgumentNullException(nameof(config));

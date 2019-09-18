@@ -12,11 +12,6 @@ using System.Threading.Tasks;
 
 namespace OpenSource.Data.HashFunction.Jenkins
 {
-    /// <summary>
-    /// Implementation of Bob Jenkins' Lookup2 hash function as specified at http://burtleburtle.net/bob/c/lookup2.c and http://www.burtleburtle.net/bob/hash/doobs.html.
-    /// 
-    /// This hash function has been superseded by JenkinsLookup3.
-    /// </summary>
     internal class JenkinsLookup2_Implementation
         : StreamableHashFunctionBase, 
             IJenkinsLookup2
@@ -30,11 +25,6 @@ namespace OpenSource.Data.HashFunction.Jenkins
 
 
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="JenkinsLookup2_Implementation"/> class.
-        /// </summary>
-        /// <param name="config">The configuration to use for this instance.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
         public JenkinsLookup2_Implementation(IJenkinsLookup2Config config)
         {
             if (config == null)
@@ -45,12 +35,12 @@ namespace OpenSource.Data.HashFunction.Jenkins
 
 
 
-        public override IHashFunctionBlockTransformer CreateBlockTransformer() =>
+        public override IBlockTransformer CreateBlockTransformer() =>
             new BlockTransformer(_config);
 
 
         private class BlockTransformer
-            : HashFunctionBlockTransformerBase<BlockTransformer>
+            : BlockTransformerBase<BlockTransformer>
         {
             private UInt32 _a;
             private UInt32 _b;

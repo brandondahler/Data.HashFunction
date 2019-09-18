@@ -10,20 +10,11 @@ using System.Threading;
 
 namespace OpenSource.Data.HashFunction.FNV
 {
-    /// <summary>
-    /// Abstract implementation of Fowler–Noll–Vo hash function (FNV-1 and FNV-1a) as specified at http://www.isthe.com/chongo/tech/comp/fnv/index.html.
-    /// </summary>
     internal abstract class FNV1Base
         : StreamableHashFunctionBase,
             IFNV
     {
 
-        /// <summary>
-        /// Configuration used when creating this instance.
-        /// </summary>
-        /// <value>
-        /// A clone of configuration that was used when creating this instance.
-        /// </value>
         public IFNVConfig Config => _config.Clone();
 
         public override int HashSizeInBits => _config.HashSizeInBits;
@@ -34,13 +25,6 @@ namespace OpenSource.Data.HashFunction.FNV
         protected readonly FNVPrimeOffset _fnvPrimeOffset;
 
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FNV1Base"/> class.
-        /// </summary>
-        /// <exception cref="System.ArgumentNullException"><paramref name="config"/></exception>
-        /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IFNVConfig.HashSizeInBits"/>;<paramref name="config"/>.<see cref="IFNVConfig.HashSizeInBits"/> must be a positive a multiple of 32.</exception>
-        /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IFNVConfig.Prime"/>;<paramref name="config"/>.<see cref="IFNVConfig.Prime"/> must be non-zero.</exception>
-        /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="config"/>.<see cref="IFNVConfig.Offset"/>;<paramref name="config"/>.<see cref="IFNVConfig.Offset"/> must be non-zero.</exception>
         protected FNV1Base(IFNVConfig config)
         {
             if (config == null)
@@ -65,7 +49,7 @@ namespace OpenSource.Data.HashFunction.FNV
 
 
         protected abstract class BlockTransformer_32BitBase<TSelf>
-            : HashFunctionBlockTransformerBase<TSelf>
+            : BlockTransformerBase<TSelf>
             where TSelf : BlockTransformer_32BitBase<TSelf>, new()
         {
             protected UInt32 _prime;
@@ -100,7 +84,7 @@ namespace OpenSource.Data.HashFunction.FNV
         }
         
         protected abstract class BlockTransformer_64BitBase<TSelf>
-            : HashFunctionBlockTransformerBase<TSelf>
+            : BlockTransformerBase<TSelf>
             where TSelf : BlockTransformer_64BitBase<TSelf>, new()
         {
             protected UInt64 _prime;
@@ -135,7 +119,7 @@ namespace OpenSource.Data.HashFunction.FNV
         }
         
         protected abstract class BlockTransformer_ExtendedBase<TSelf>
-            : HashFunctionBlockTransformerBase<TSelf>
+            : BlockTransformerBase<TSelf>
             where TSelf : BlockTransformer_ExtendedBase<TSelf>, new()
         {
             protected UInt32[] _prime;

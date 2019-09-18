@@ -12,42 +12,22 @@ using System.Threading.Tasks;
 
 namespace OpenSource.Data.HashFunction.MurmurHash
 {
-    /// <summary>
-    /// Implementation of MurmurHash1 as specified at https://github.com/aappleby/smhasher/blob/master/src/MurmurHash1.cpp 
-    ///   and https://github.com/aappleby/smhasher/wiki/MurmurHash1.
-    /// 
-    /// This hash function has been superseded by <see cref="IMurmurHash2">MurmurHash2</see> and <see cref="IMurmurHash3">MurmurHash3</see>.
-    /// </summary>
     internal class MurmurHash1_Implementation
         : HashFunctionBase,
             IMurmurHash1
     {
 
-        /// <summary>
-        /// Configuration used when creating this instance.
-        /// </summary>
-        /// <value>
-        /// A clone of configuration that was used when creating this instance.
-        /// </value>
         public IMurmurHash1Config Config => _config.Clone();
 
         public override int HashSizeInBits { get; } = 32;
 
 
-        /// <summary>
-        /// Constant m as defined by MurmurHash1 specification.
-        /// </summary>
         private const UInt32 _m = 0XC6A4A793;
 
 
         private readonly IMurmurHash1Config _config;
 
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MurmurHash1_Implementation"/> class.
-        /// </summary>
-        /// <param name="config">The configuration to use for this instance.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="config"/></exception>
         public MurmurHash1_Implementation(IMurmurHash1Config config)
         {
             if (config == null)

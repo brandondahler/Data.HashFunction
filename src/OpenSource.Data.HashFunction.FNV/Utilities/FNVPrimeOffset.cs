@@ -9,27 +9,9 @@ using System.Threading.Tasks;
 
 namespace OpenSource.Data.HashFunction.FNV.Utilities
 {
-    /// <summary>
-    /// Class for storing FNV prime and offset combinations.
-    /// 
-    /// Values specified as System.Numerics.BigInteger, converted to collections of UInt32 values.
-    /// </summary>
     internal sealed class FNVPrimeOffset
     {
-        /// <summary>
-        /// FNV prime number as an <see cref="IReadOnlyList{UInt32}" />.
-        /// </summary>
-        /// <value>
-        /// The prime number as an <see cref="IReadOnlyList{UInt32}" />.
-        /// </value>
         public IReadOnlyList<UInt32> Prime { get; }
-
-        /// <summary>
-        /// FNV offset as an <see cref="IReadOnlyList{UInt32}" />.
-        /// </summary>
-        /// <value>
-        /// The offset as an <see cref="IReadOnlyList{UInt32}" />.
-        /// </value>
         public IReadOnlyList<UInt32> Offset { get; }
 
 
@@ -38,11 +20,6 @@ namespace OpenSource.Data.HashFunction.FNV.Utilities
             new ConcurrentDictionary<(BigInteger, int), IReadOnlyList<uint>>();
 
 
-        /// <summary>
-        /// Initializes a new instance of <see cref="FNVPrimeOffset"/>.
-        /// </summary>
-        /// <param name="prime">Prime value to be represented.</param>
-        /// <param name="offset">Offset value to be represented.</param>
         private FNVPrimeOffset(IReadOnlyList<UInt32> prime, IReadOnlyList<UInt32> offset)
         {
             Debug.Assert(prime != null);
@@ -53,12 +30,6 @@ namespace OpenSource.Data.HashFunction.FNV.Utilities
         }
 
 
-        /// <summary>
-        /// Creates a new instance of <see cref="FNVPrimeOffset"/>.
-        /// </summary>
-        /// <param name="bitSize">Number of bits the prime and offset use each.</param>
-        /// <param name="prime">Prime integer to be represented.</param>
-        /// <param name="offset">Offset integer to be represented.</param>
         public static FNVPrimeOffset Create(int bitSize, BigInteger prime, BigInteger offset)
         { 
             if (bitSize <= 0 || bitSize % 32 != 0)

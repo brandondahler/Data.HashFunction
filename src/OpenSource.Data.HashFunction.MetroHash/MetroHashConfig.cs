@@ -5,7 +5,7 @@ using System.Text;
 namespace OpenSource.Data.HashFunction.MetroHash
 {
     /// <summary>
-    /// Defines a configuration for a <see cref="IMetroHash"/> implementation.
+    /// Defines a configuration for a MetroHash implementation.
     /// </summary>
     public class MetroHashConfig
         : IMetroHashConfig

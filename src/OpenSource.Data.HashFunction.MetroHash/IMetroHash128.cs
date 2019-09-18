@@ -15,7 +15,16 @@ namespace OpenSource.Data.HashFunction.MetroHash
     /// "
     /// </summary>
     public interface IMetroHash128
-        : IMetroHash
+        : IStreamableHashFunction
     {
+
+        /// <summary>
+        /// Configuration used when creating this instance.
+        /// </summary>
+        /// <value>
+        /// A clone of configuration that was used when creating this instance.
+        /// </value>
+        IMetroHashConfig Config { get; }
+
     }
 }
