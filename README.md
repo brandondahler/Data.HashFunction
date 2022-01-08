@@ -1,6 +1,8 @@
 Data.HashFunction ![License](https://img.shields.io/github/license/brandondahler/Data.HashFunction.svg)
 =================
 
+**Due to personal reasons, I no longer have time to maintain this library and will be archiving it soon. If you would like to take over ownership of this project please contact me at the email listed on my profile.**
+
 Data.HashFunction is a C# library to create a common interface to [non-cryptographic hash functions](http://en.wikipedia.org/wiki/List_of_hash_functions#Non-cryptographic_hash_functions) and provide implementations of public hash functions.  It is licensed under the permissive and OSI approved [MIT](http://opensource.org/licenses/MIT) license.
 
 
@@ -10,7 +12,6 @@ All code within the libarary is commented using Visual Studio-compatible XML com
 
 Status
 ------
-
 
 ### Master
 
